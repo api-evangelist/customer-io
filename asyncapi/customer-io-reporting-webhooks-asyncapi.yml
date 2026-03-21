@@ -1,0 +1,469 @@
+asyncapi: 2.6.0
+info:
+  title: Customer.io Reporting Webhooks
+  description: >-
+    Customer.io Reporting Webhooks send real-time message activity events as
+    JSON payloads via HTTP POST to a configured endpoint. These events include
+    message sends, deliveries, opens, clicks, bounces, unsubscribes, and other
+    engagement actions. Reporting webhooks are configured in Data and
+    Integrations settings and can be filtered to receive specific event types.
+    They are useful for analyzing message activity outside of Customer.io,
+    syncing delivery data to external systems, and building real-time
+    dashboards.
+  version: '1.0.0'
+  contact:
+    name: Customer.io Support
+    url: https://customer.io/contact
+  license:
+    name: Proprietary
+    url: https://customer.io/legal/terms-of-service
+servers:
+  userEndpoint:
+    url: '{webhookUrl}'
+    protocol: https
+    description: >-
+      Your webhook endpoint that receives reporting events from Customer.io.
+      Configure this URL in your Customer.io workspace under Data and
+      Integrations.
+    variables:
+      webhookUrl:
+        description: >-
+          The URL of your webhook endpoint.
+    security:
+      - hmacSignature: []
+channels:
+  /webhook:
+    description: >-
+      The webhook endpoint that receives real-time message activity events
+      from Customer.io. Each event is delivered as an HTTP POST with a JSON
+      payload. Events include a unique delivery ID in the X-CIO-Delivery-ID
+      header for deduplication and tracking.
+    publish:
+      operationId: receiveReportingEvent
+      summary: Receive a reporting webhook event
+      description: >-
+        Customer.io sends reporting webhook events to your configured endpoint
+        when message activity occurs. Events are sent in real-time and include
+        details about the message, recipient, and action taken.
+      message:
+        oneOf:
+          - $ref: '#/components/messages/EmailSent'
+          - $ref: '#/components/messages/EmailDelivered'
+          - $ref: '#/components/messages/EmailOpened'
+          - $ref: '#/components/messages/EmailClicked'
+          - $ref: '#/components/messages/EmailBounced'
+          - $ref: '#/components/messages/EmailSpammed'
+          - $ref: '#/components/messages/EmailDropped'
+          - $ref: '#/components/messages/Unsubscribed'
+          - $ref: '#/components/messages/EmailConverted'
+          - $ref: '#/components/messages/EmailFailed'
+          - $ref: '#/components/messages/PushSent'
+          - $ref: '#/components/messages/PushOpened'
+          - $ref: '#/components/messages/PushBounced'
+          - $ref: '#/components/messages/SmsSent'
+          - $ref: '#/components/messages/SmsDelivered'
+          - $ref: '#/components/messages/SmsFailed'
+          - $ref: '#/components/messages/SmsBounced'
+components:
+  securitySchemes:
+    hmacSignature:
+      type: httpApiKey
+      name: X-CIO-Signature
+      in: header
+      description: >-
+        Customer.io signs webhook payloads using HMAC-SHA256 with your
+        webhook signing key. The signature is included in the
+        X-CIO-Signature header. Verify this signature to ensure the
+        webhook payload is authentic and has not been tampered with.
+  messages:
+    EmailSent:
+      name: email_sent
+      title: Email Sent
+      summary: >-
+        Triggered when an email message is sent to a recipient.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/EmailEvent'
+    EmailDelivered:
+      name: email_delivered
+      title: Email Delivered
+      summary: >-
+        Triggered when an email is successfully delivered to the recipient
+        mail server.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/EmailEvent'
+    EmailOpened:
+      name: email_opened
+      title: Email Opened
+      summary: >-
+        Triggered when a recipient opens an email message.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/EmailEvent'
+    EmailClicked:
+      name: email_clicked
+      title: Email Clicked
+      summary: >-
+        Triggered when a recipient clicks a link in an email message.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/EmailClickEvent'
+    EmailBounced:
+      name: email_bounced
+      title: Email Bounced
+      summary: >-
+        Triggered when an email bounces due to a permanent or temporary
+        delivery failure.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/EmailEvent'
+    EmailSpammed:
+      name: email_spammed
+      title: Email Marked as Spam
+      summary: >-
+        Triggered when a recipient marks an email as spam.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/EmailEvent'
+    EmailDropped:
+      name: email_dropped
+      title: Email Dropped
+      summary: >-
+        Triggered when an email is dropped and not sent, typically due to
+        the recipient being suppressed or unsubscribed.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/EmailEvent'
+    Unsubscribed:
+      name: unsubscribed
+      title: Unsubscribed
+      summary: >-
+        Triggered when a recipient unsubscribes from messages.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/EmailEvent'
+    EmailConverted:
+      name: email_converted
+      title: Email Converted
+      summary: >-
+        Triggered when a conversion goal is met after sending an email.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/EmailEvent'
+    EmailFailed:
+      name: email_failed
+      title: Email Failed
+      summary: >-
+        Triggered when an email fails to send due to a system error.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/EmailEvent'
+    PushSent:
+      name: push_sent
+      title: Push Notification Sent
+      summary: >-
+        Triggered when a push notification is sent to a device.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/PushEvent'
+    PushOpened:
+      name: push_opened
+      title: Push Notification Opened
+      summary: >-
+        Triggered when a recipient opens a push notification.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/PushEvent'
+    PushBounced:
+      name: push_bounced
+      title: Push Notification Bounced
+      summary: >-
+        Triggered when a push notification fails to deliver to the device.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/PushEvent'
+    SmsSent:
+      name: sms_sent
+      title: SMS Sent
+      summary: >-
+        Triggered when an SMS message is sent.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/SmsEvent'
+    SmsDelivered:
+      name: sms_delivered
+      title: SMS Delivered
+      summary: >-
+        Triggered when an SMS message is successfully delivered.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/SmsEvent'
+    SmsFailed:
+      name: sms_failed
+      title: SMS Failed
+      summary: >-
+        Triggered when an SMS message fails to send.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/SmsEvent'
+    SmsBounced:
+      name: sms_bounced
+      title: SMS Bounced
+      summary: >-
+        Triggered when an SMS message bounces.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/SmsEvent'
+  schemas:
+    EmailEvent:
+      type: object
+      description: >-
+        An email reporting webhook event payload.
+      required:
+        - event_id
+        - metric
+        - timestamp
+      properties:
+        event_id:
+          type: string
+          description: >-
+            A unique identifier for this event.
+        metric:
+          type: string
+          description: >-
+            The type of event.
+          enum:
+            - sent
+            - delivered
+            - opened
+            - clicked
+            - bounced
+            - spammed
+            - dropped
+            - unsubscribed
+            - converted
+            - failed
+        timestamp:
+          type: integer
+          description: >-
+            UNIX timestamp of when the event occurred.
+        data:
+          type: object
+          description: >-
+            Event data with details about the message and recipient.
+          properties:
+            customer_id:
+              type: string
+              description: >-
+                The recipient customer identifier.
+            email_address:
+              type: string
+              format: email
+              description: >-
+                The recipient email address.
+            delivery_id:
+              type: string
+              description: >-
+                The unique delivery identifier for the message.
+            action_id:
+              type: integer
+              description: >-
+                The campaign action identifier that sent the message.
+            campaign_id:
+              type: integer
+              description: >-
+                The campaign identifier.
+            newsletter_id:
+              type: integer
+              description: >-
+                The newsletter identifier if applicable.
+            broadcast_id:
+              type: integer
+              description: >-
+                The broadcast identifier if applicable.
+            subject:
+              type: string
+              description: >-
+                The email subject line.
+            template_id:
+              type: integer
+              description: >-
+                The message template identifier.
+            content_id:
+              type: integer
+              description: >-
+                The content variant identifier.
+    EmailClickEvent:
+      type: object
+      description: >-
+        An email click reporting webhook event payload with link details.
+      required:
+        - event_id
+        - metric
+        - timestamp
+      properties:
+        event_id:
+          type: string
+          description: >-
+            A unique identifier for this event.
+        metric:
+          type: string
+          description: >-
+            The event type.
+          const: clicked
+        timestamp:
+          type: integer
+          description: >-
+            UNIX timestamp of when the event occurred.
+        data:
+          type: object
+          description: >-
+            Event data with details about the message, recipient, and link.
+          properties:
+            customer_id:
+              type: string
+              description: >-
+                The recipient customer identifier.
+            email_address:
+              type: string
+              format: email
+              description: >-
+                The recipient email address.
+            delivery_id:
+              type: string
+              description: >-
+                The unique delivery identifier.
+            action_id:
+              type: integer
+              description: >-
+                The campaign action identifier.
+            campaign_id:
+              type: integer
+              description: >-
+                The campaign identifier.
+            href:
+              type: string
+              format: uri
+              description: >-
+                The URL that was clicked.
+            link_id:
+              type: integer
+              description: >-
+                The link identifier within the message.
+            subject:
+              type: string
+              description: >-
+                The email subject line.
+    PushEvent:
+      type: object
+      description: >-
+        A push notification reporting webhook event payload.
+      required:
+        - event_id
+        - metric
+        - timestamp
+      properties:
+        event_id:
+          type: string
+          description: >-
+            A unique identifier for this event.
+        metric:
+          type: string
+          description: >-
+            The event type.
+          enum:
+            - sent
+            - opened
+            - bounced
+        timestamp:
+          type: integer
+          description: >-
+            UNIX timestamp of when the event occurred.
+        data:
+          type: object
+          description: >-
+            Event data with details about the notification and recipient.
+          properties:
+            customer_id:
+              type: string
+              description: >-
+                The recipient customer identifier.
+            delivery_id:
+              type: string
+              description: >-
+                The unique delivery identifier.
+            action_id:
+              type: integer
+              description: >-
+                The campaign action identifier.
+            campaign_id:
+              type: integer
+              description: >-
+                The campaign identifier.
+            device_id:
+              type: string
+              description: >-
+                The device identifier that received the notification.
+            platform:
+              type: string
+              description: >-
+                The device platform.
+              enum:
+                - ios
+                - android
+    SmsEvent:
+      type: object
+      description: >-
+        An SMS reporting webhook event payload.
+      required:
+        - event_id
+        - metric
+        - timestamp
+      properties:
+        event_id:
+          type: string
+          description: >-
+            A unique identifier for this event.
+        metric:
+          type: string
+          description: >-
+            The event type.
+          enum:
+            - sent
+            - delivered
+            - failed
+            - bounced
+        timestamp:
+          type: integer
+          description: >-
+            UNIX timestamp of when the event occurred.
+        data:
+          type: object
+          description: >-
+            Event data with details about the SMS and recipient.
+          properties:
+            customer_id:
+              type: string
+              description: >-
+                The recipient customer identifier.
+            delivery_id:
+              type: string
+              description: >-
+                The unique delivery identifier.
+            action_id:
+              type: integer
+              description: >-
+                The campaign action identifier.
+            campaign_id:
+              type: integer
+              description: >-
+                The campaign identifier.
+            from_phone:
+              type: string
+              description: >-
+                The sender phone number.
+            to_phone:
+              type: string
+              description: >-
+                The recipient phone number.

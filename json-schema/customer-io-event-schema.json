@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://customer.io/schemas/customer-io/event.json",
+  "title": "Customer.io Event",
+  "description": "An event in Customer.io representing a customer action or behavior tracked via the Track API or Pipelines API. Events are used to trigger campaigns, build segments, and personalize messages.",
+  "type": "object",
+  "required": ["name"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The event name describing the action the customer took.",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "type": {
+      "type": "string",
+      "description": "The event type. Standard events have no type specified. Use page for page view events.",
+      "enum": ["page", "screen", "event"]
+    },
+    "data": {
+      "type": "object",
+      "description": "Custom data associated with the event. Any key-value pairs included are available for use in campaigns, segments, and message personalization.",
+      "additionalProperties": true
+    },
+    "timestamp": {
+      "type": "integer",
+      "description": "A UNIX timestamp of when the event occurred. If not provided, the current time is used."
+    },
+    "anonymous_id": {
+      "type": "string",
+      "description": "An anonymous identifier for events not yet associated with a known customer. Used for anonymous event tracking and later merging."
+    },
+    "customer_id": {
+      "type": "string",
+      "description": "The customer identifier the event is associated with."
+    },
+    "context": {
+      "$ref": "#/$defs/EventContext"
+    }
+  },
+  "$defs": {
+    "EventContext": {
+      "type": "object",
+      "description": "Contextual information about the event including device, location, and library details.",
+      "properties": {
+        "ip": {
+          "type": "string",
+          "description": "The IP address of the user when the event occurred.",
+          "format": "ipv4"
+        },
+        "locale": {
+          "type": "string",
+          "description": "The locale of the user.",
+          "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+        },
+        "timezone": {
+          "type": "string",
+          "description": "The IANA timezone of the user."
+        },
+        "user_agent": {
+          "type": "string",
+          "description": "The user agent string from the browser or device."
+        },
+        "page": {
+          "type": "object",
+          "description": "Page context for web events.",
+          "properties": {
+            "url": {
+              "type": "string",
+              "format": "uri",
+              "description": "The full page URL."
+            },
+            "title": {
+              "type": "string",
+              "description": "The page title."
+            },
+            "referrer": {
+              "type": "string",
+              "format": "uri",
+              "description": "The referring page URL."
+            },
+            "path": {
+              "type": "string",
+              "description": "The URL path."
+            }
+          }
+        },
+        "device": {
+          "type": "object",
+          "description": "Device context for mobile events.",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "The device identifier."
+            },
+            "manufacturer": {
+              "type": "string",
+              "description": "The device manufacturer."
+            },
+            "model": {
+              "type": "string",
+              "description": "The device model."
+            },
+            "type": {
+              "type": "string",
+              "description": "The device type."
+            }
+          }
+        }
+      }
+    }
+  }
+}

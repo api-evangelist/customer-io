@@ -1,0 +1,600 @@
+openapi: 3.1.0
+info:
+  title: Customer.io Pipelines API
+  description: >-
+    The Customer.io Pipelines API is the newer data ingestion interface for
+    getting customer and event data into Customer.io. It follows the Segment
+    spec and supports identify, track, page, screen, group, and alias calls.
+    Customer.io recommends the Pipelines API for new integrations because it
+    is easier to use, supports outbound data integrations and
+    transformations, and is the focus of ongoing development. It uses a CDP
+    API key for authentication and provides a modern alternative to the
+    legacy Track API.
+  version: '1.0.0'
+  contact:
+    name: Customer.io Support
+    url: https://customer.io/contact
+  termsOfService: https://customer.io/legal/terms-of-service
+externalDocs:
+  description: Pipelines API Documentation
+  url: https://docs.customer.io/integrations/data-in/connections/http-api/
+servers:
+  - url: https://cdp.customer.io/v1
+    description: US Production Server
+  - url: https://cdp-eu.customer.io/v1
+    description: EU Production Server
+tags:
+  - name: Identify
+    description: >-
+      Identify people and set their profile attributes. The identify call
+      tells Customer.io who the current user is and assigns traits to them.
+  - name: Track
+    description: >-
+      Track events to record actions people take in your app or on your
+      website.
+  - name: Page
+    description: >-
+      Record page views from web applications.
+  - name: Screen
+    description: >-
+      Record screen views from mobile applications.
+  - name: Group
+    description: >-
+      Associate people with groups or organizations.
+  - name: Alias
+    description: >-
+      Merge two user identities by creating an alias linking a new identity
+      to an existing one.
+  - name: Batch
+    description: >-
+      Send multiple API calls in a single request for improved performance.
+security:
+  - basicAuth: []
+paths:
+  /identify:
+    post:
+      operationId: identifyPerson
+      summary: Identify a person
+      description: >-
+        Identifies a person and sets their profile attributes. Use this call
+        when a user creates an account, logs in, or updates their profile.
+        Requires at least one of userId or anonymousId. Traits are saved as
+        profile attributes.
+      tags:
+        - Identify
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IdentifyRequest'
+      responses:
+        '200':
+          description: Person identified successfully.
+        '400':
+          description: Bad request. Missing required fields.
+        '401':
+          description: Unauthorized. Invalid CDP API key.
+  /track:
+    post:
+      operationId: trackEvent
+      summary: Track an event
+      description: >-
+        Records an event that a person performed. Every track call requires
+        an event name and at least one of userId or anonymousId. Event
+        properties provide additional context about the action.
+      tags:
+        - Track
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrackRequest'
+      responses:
+        '200':
+          description: Event tracked successfully.
+        '400':
+          description: Bad request. Missing event name or identifiers.
+        '401':
+          description: Unauthorized. Invalid CDP API key.
+  /page:
+    post:
+      operationId: trackPageView
+      summary: Track a page view
+      description: >-
+        Records a page view event from a web application. Use this when a
+        user views a page on your website. Requires at least one of userId or
+        anonymousId.
+      tags:
+        - Page
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PageRequest'
+      responses:
+        '200':
+          description: Page view tracked successfully.
+        '400':
+          description: Bad request. Missing required fields.
+        '401':
+          description: Unauthorized. Invalid CDP API key.
+  /screen:
+    post:
+      operationId: trackScreenView
+      summary: Track a screen view
+      description: >-
+        Records a screen view event from a mobile application. Use this when
+        a user views a screen in your mobile app. Requires at least one of
+        userId or anonymousId.
+      tags:
+        - Screen
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScreenRequest'
+      responses:
+        '200':
+          description: Screen view tracked successfully.
+        '400':
+          description: Bad request. Missing required fields.
+        '401':
+          description: Unauthorized. Invalid CDP API key.
+  /group:
+    post:
+      operationId: groupPerson
+      summary: Associate a person with a group
+      description: >-
+        Associates a person with a group or organization. Requires a groupId
+        and at least one of userId or anonymousId. Group traits set
+        attributes on the group.
+      tags:
+        - Group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupRequest'
+      responses:
+        '200':
+          description: Person grouped successfully.
+        '400':
+          description: Bad request. Missing groupId.
+        '401':
+          description: Unauthorized. Invalid CDP API key.
+  /alias:
+    post:
+      operationId: aliasPerson
+      summary: Alias a person
+      description: >-
+        Creates an alias linking a new identity to an existing one. This
+        merges two user identities so all future events from either identity
+        are associated with the same person. Requires a previousId and a
+        userId.
+      tags:
+        - Alias
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AliasRequest'
+      responses:
+        '200':
+          description: Alias created successfully.
+        '400':
+          description: Bad request. Missing previousId.
+        '401':
+          description: Unauthorized. Invalid CDP API key.
+  /batch:
+    post:
+      operationId: batchCalls
+      summary: Send a batch of API calls
+      description: >-
+        Sends multiple API calls in a single HTTP request. Each item in the
+        batch array is a standard identify, track, page, screen, group, or
+        alias call. The batch request must be smaller than 1MB.
+      tags:
+        - Batch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchRequest'
+      responses:
+        '200':
+          description: Batch processed successfully.
+        '400':
+          description: Bad request. Invalid payload or exceeds size limit.
+        '401':
+          description: Unauthorized. Invalid CDP API key.
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: >-
+        Basic authentication using your CDP API key as the username with a
+        blank password.
+  schemas:
+    IdentifyRequest:
+      type: object
+      description: >-
+        An identify call that assigns traits to a person.
+      properties:
+        userId:
+          type: string
+          description: >-
+            The unique user identifier in your system.
+        anonymousId:
+          type: string
+          description: >-
+            An anonymous identifier for the user.
+        traits:
+          type: object
+          description: >-
+            Attributes to set on the person profile. Common traits include
+            email, name, and plan.
+          additionalProperties: true
+          properties:
+            email:
+              type: string
+              format: email
+              description: >-
+                The person email address.
+            name:
+              type: string
+              description: >-
+                The person full name.
+            first_name:
+              type: string
+              description: >-
+                The person first name.
+            last_name:
+              type: string
+              description: >-
+                The person last name.
+            phone:
+              type: string
+              description: >-
+                The person phone number.
+            created_at:
+              type: string
+              format: date-time
+              description: >-
+                When the person account was created.
+        context:
+          $ref: '#/components/schemas/Context'
+        timestamp:
+          type: string
+          format: date-time
+          description: >-
+            ISO 8601 timestamp of when the identify call was made.
+        messageId:
+          type: string
+          description: >-
+            A unique identifier for this message for deduplication.
+    TrackRequest:
+      type: object
+      required:
+        - event
+      description: >-
+        A track call that records an event.
+      properties:
+        userId:
+          type: string
+          description: >-
+            The unique user identifier in your system.
+        anonymousId:
+          type: string
+          description: >-
+            An anonymous identifier for the user.
+        event:
+          type: string
+          description: >-
+            The name of the event to track.
+        properties:
+          type: object
+          description: >-
+            Additional properties associated with the event.
+          additionalProperties: true
+        context:
+          $ref: '#/components/schemas/Context'
+        timestamp:
+          type: string
+          format: date-time
+          description: >-
+            ISO 8601 timestamp of when the event occurred.
+        messageId:
+          type: string
+          description: >-
+            A unique identifier for this message for deduplication.
+    PageRequest:
+      type: object
+      description: >-
+        A page call that records a page view.
+      properties:
+        userId:
+          type: string
+          description: >-
+            The unique user identifier in your system.
+        anonymousId:
+          type: string
+          description: >-
+            An anonymous identifier for the user.
+        name:
+          type: string
+          description: >-
+            The name of the page viewed.
+        properties:
+          type: object
+          description: >-
+            Properties of the page such as URL, title, and referrer.
+          additionalProperties: true
+          properties:
+            url:
+              type: string
+              format: uri
+              description: >-
+                The full URL of the page.
+            title:
+              type: string
+              description: >-
+                The page title.
+            referrer:
+              type: string
+              format: uri
+              description: >-
+                The referrer URL.
+            path:
+              type: string
+              description: >-
+                The URL path.
+        context:
+          $ref: '#/components/schemas/Context'
+        timestamp:
+          type: string
+          format: date-time
+          description: >-
+            ISO 8601 timestamp of when the page view occurred.
+        messageId:
+          type: string
+          description: >-
+            A unique identifier for this message for deduplication.
+    ScreenRequest:
+      type: object
+      description: >-
+        A screen call that records a mobile screen view.
+      properties:
+        userId:
+          type: string
+          description: >-
+            The unique user identifier in your system.
+        anonymousId:
+          type: string
+          description: >-
+            An anonymous identifier for the user.
+        name:
+          type: string
+          description: >-
+            The name of the screen viewed.
+        properties:
+          type: object
+          description: >-
+            Properties of the screen view.
+          additionalProperties: true
+        context:
+          $ref: '#/components/schemas/Context'
+        timestamp:
+          type: string
+          format: date-time
+          description: >-
+            ISO 8601 timestamp of when the screen view occurred.
+        messageId:
+          type: string
+          description: >-
+            A unique identifier for this message for deduplication.
+    GroupRequest:
+      type: object
+      required:
+        - groupId
+      description: >-
+        A group call that associates a person with a group.
+      properties:
+        userId:
+          type: string
+          description: >-
+            The unique user identifier in your system.
+        anonymousId:
+          type: string
+          description: >-
+            An anonymous identifier for the user.
+        groupId:
+          type: string
+          description: >-
+            The unique group identifier.
+        traits:
+          type: object
+          description: >-
+            Attributes to set on the group.
+          additionalProperties: true
+          properties:
+            name:
+              type: string
+              description: >-
+                The group name.
+            industry:
+              type: string
+              description: >-
+                The group industry.
+            plan:
+              type: string
+              description: >-
+                The group subscription plan.
+        context:
+          $ref: '#/components/schemas/Context'
+        timestamp:
+          type: string
+          format: date-time
+          description: >-
+            ISO 8601 timestamp of when the group call was made.
+        messageId:
+          type: string
+          description: >-
+            A unique identifier for this message for deduplication.
+    AliasRequest:
+      type: object
+      required:
+        - previousId
+        - userId
+      description: >-
+        An alias call that links two user identities.
+      properties:
+        userId:
+          type: string
+          description: >-
+            The new user identifier.
+        previousId:
+          type: string
+          description: >-
+            The previous user identifier to merge with the new one.
+        context:
+          $ref: '#/components/schemas/Context'
+        timestamp:
+          type: string
+          format: date-time
+          description: >-
+            ISO 8601 timestamp of when the alias was created.
+        messageId:
+          type: string
+          description: >-
+            A unique identifier for this message for deduplication.
+    BatchRequest:
+      type: object
+      required:
+        - batch
+      description: >-
+        A batch of API calls. The request must be smaller than 1MB. Individual
+        calls in the batch are limited to 64KB each.
+      properties:
+        batch:
+          type: array
+          description: >-
+            An array of API calls. Each item should include a type field
+            indicating the call type (identify, track, page, screen, group,
+            or alias) along with the standard fields for that call type.
+          items:
+            type: object
+            required:
+              - type
+            properties:
+              type:
+                type: string
+                description: >-
+                  The type of API call.
+                enum:
+                  - identify
+                  - track
+                  - page
+                  - screen
+                  - group
+                  - alias
+            additionalProperties: true
+    Context:
+      type: object
+      description: >-
+        Contextual information about the API call. Contains information about
+        the device, library, and other environmental details.
+      properties:
+        ip:
+          type: string
+          description: >-
+            The IP address of the user.
+        locale:
+          type: string
+          description: >-
+            The locale of the user.
+        timezone:
+          type: string
+          description: >-
+            The timezone of the user.
+        userAgent:
+          type: string
+          description: >-
+            The user agent string.
+        library:
+          type: object
+          description: >-
+            Information about the library making the call.
+          properties:
+            name:
+              type: string
+              description: >-
+                The library name.
+            version:
+              type: string
+              description: >-
+                The library version.
+        device:
+          type: object
+          description: >-
+            Information about the user device.
+          properties:
+            id:
+              type: string
+              description: >-
+                The device identifier.
+            manufacturer:
+              type: string
+              description: >-
+                The device manufacturer.
+            model:
+              type: string
+              description: >-
+                The device model.
+            type:
+              type: string
+              description: >-
+                The device type.
+        os:
+          type: object
+          description: >-
+            Information about the user operating system.
+          properties:
+            name:
+              type: string
+              description: >-
+                The operating system name.
+            version:
+              type: string
+              description: >-
+                The operating system version.
+        page:
+          type: object
+          description: >-
+            Information about the current page for web contexts.
+          properties:
+            url:
+              type: string
+              format: uri
+              description: >-
+                The page URL.
+            title:
+              type: string
+              description: >-
+                The page title.
+            referrer:
+              type: string
+              format: uri
+              description: >-
+                The referring URL.
+            path:
+              type: string
+              description: >-
+                The page path.

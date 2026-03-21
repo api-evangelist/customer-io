@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://customer.io/schemas/customer-io/customer.json",
+  "title": "Customer.io Customer",
+  "description": "A customer profile in Customer.io representing a person in your audience with attributes, device information, and segment membership.",
+  "type": "object",
+  "required": ["identifiers"],
+  "properties": {
+    "identifiers": {
+      "$ref": "#/$defs/CustomerIdentifiers"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "The customer email address used for email messaging."
+    },
+    "created_at": {
+      "type": "integer",
+      "description": "A UNIX timestamp representing when the customer was first identified."
+    },
+    "anonymous_id": {
+      "type": "string",
+      "description": "An anonymous identifier used to associate pre-identification events with this customer."
+    },
+    "attributes": {
+      "type": "object",
+      "description": "Custom attributes on the customer profile. These can be any key-value pairs set via the Track or Pipelines APIs.",
+      "additionalProperties": true
+    },
+    "unsubscribed": {
+      "type": "boolean",
+      "description": "Whether the customer has unsubscribed from marketing messages."
+    },
+    "devices": {
+      "type": "array",
+      "description": "Push notification devices associated with this customer.",
+      "items": {
+        "$ref": "#/$defs/Device"
+      }
+    },
+    "segments": {
+      "type": "array",
+      "description": "Segments the customer belongs to.",
+      "items": {
+        "$ref": "#/$defs/SegmentMembership"
+      }
+    }
+  },
+  "$defs": {
+    "CustomerIdentifiers": {
+      "type": "object",
+      "description": "Identifiers used to uniquely reference a customer in Customer.io.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The primary customer identifier in your system."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The customer email address, which can serve as a primary identifier."
+        },
+        "cio_id": {
+          "type": "string",
+          "description": "The Customer.io internal identifier automatically assigned to each customer.",
+          "pattern": "^[0-9a-f]+$"
+        }
+      }
+    },
+    "Device": {
+      "type": "object",
+      "description": "A push notification device associated with a customer.",
+      "required": ["id", "platform"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique device token."
+        },
+        "platform": {
+          "type": "string",
+          "description": "The device platform.",
+          "enum": ["ios", "android"]
+        },
+        "last_used": {
+          "type": "integer",
+          "description": "A UNIX timestamp of when the device was last used."
+        }
+      }
+    },
+    "SegmentMembership": {
+      "type": "object",
+      "description": "A segment that the customer belongs to.",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "The segment identifier."
+        },
+        "name": {
+          "type": "string",
+          "description": "The segment name."
+        }
+      }
+    }
+  }
+}

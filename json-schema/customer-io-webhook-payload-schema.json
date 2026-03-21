@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://customer.io/schemas/customer-io/webhook-payload.json",
+  "title": "Customer.io Reporting Webhook Payload",
+  "description": "The payload format for Customer.io reporting webhook events. These events are sent via HTTP POST to your configured webhook endpoint when message activity occurs, such as sends, deliveries, opens, clicks, and bounces.",
+  "type": "object",
+  "required": ["event_id", "metric", "timestamp"],
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "description": "A unique identifier for this webhook event, used for deduplication."
+    },
+    "metric": {
+      "type": "string",
+      "description": "The type of message activity that triggered this webhook event.",
+      "enum": [
+        "sent",
+        "delivered",
+        "opened",
+        "clicked",
+        "bounced",
+        "spammed",
+        "dropped",
+        "unsubscribed",
+        "converted",
+        "failed"
+      ]
+    },
+    "timestamp": {
+      "type": "integer",
+      "description": "A UNIX timestamp of when the event occurred."
+    },
+    "data": {
+      "$ref": "#/$defs/WebhookEventData"
+    }
+  },
+  "$defs": {
+    "WebhookEventData": {
+      "type": "object",
+      "description": "Detailed data about the message activity event.",
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "The identifier of the customer who received the message."
+        },
+        "email_address": {
+          "type": "string",
+          "format": "email",
+          "description": "The email address the message was sent to."
+        },
+        "delivery_id": {
+          "type": "string",
+          "description": "The unique delivery identifier for the message. Referenced in the X-CIO-Delivery-ID header."
+        },
+        "action_id": {
+          "type": "integer",
+          "description": "The campaign action identifier that generated the message."
+        },
+        "campaign_id": {
+          "type": "integer",
+          "description": "The campaign identifier that the message belongs to."
+        },
+        "newsletter_id": {
+          "type": "integer",
+          "description": "The newsletter identifier, if the message was part of a newsletter."
+        },
+        "broadcast_id": {
+          "type": "integer",
+          "description": "The broadcast identifier, if the message was triggered by a broadcast."
+        },
+        "subject": {
+          "type": "string",
+          "description": "The email subject line."
+        },
+        "template_id": {
+          "type": "integer",
+          "description": "The template identifier used for the message."
+        },
+        "content_id": {
+          "type": "integer",
+          "description": "The content variant identifier for A/B test variants."
+        },
+        "href": {
+          "type": "string",
+          "format": "uri",
+          "description": "The URL that was clicked. Only present for click events."
+        },
+        "link_id": {
+          "type": "integer",
+          "description": "The link identifier within the message. Only present for click events."
+        },
+        "device_id": {
+          "type": "string",
+          "description": "The device identifier for push notification events."
+        },
+        "platform": {
+          "type": "string",
+          "description": "The device platform for push notification events.",
+          "enum": ["ios", "android"]
+        },
+        "from_phone": {
+          "type": "string",
+          "description": "The sender phone number for SMS events."
+        },
+        "to_phone": {
+          "type": "string",
+          "description": "The recipient phone number for SMS events."
+        }
+      }
+    }
+  }
+}

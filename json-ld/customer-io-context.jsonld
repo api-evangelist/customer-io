@@ -1,0 +1,198 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "cio": "https://customer.io/ns/",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+
+    "Customer": {
+      "@id": "cio:Customer",
+      "@context": {
+        "identifier": "schema:identifier",
+        "email": "schema:email",
+        "createdAt": {
+          "@id": "dcterms:created",
+          "@type": "xsd:dateTime"
+        },
+        "anonymousId": "cio:anonymousId",
+        "unsubscribed": "cio:unsubscribed",
+        "attributes": "cio:attributes",
+        "devices": {
+          "@id": "cio:devices",
+          "@container": "@set"
+        },
+        "segments": {
+          "@id": "cio:segments",
+          "@container": "@set"
+        }
+      }
+    },
+
+    "Event": {
+      "@id": "cio:Event",
+      "@context": {
+        "name": "schema:name",
+        "eventType": "cio:eventType",
+        "timestamp": {
+          "@id": "dcterms:date",
+          "@type": "xsd:dateTime"
+        },
+        "data": "cio:eventData",
+        "customerId": "cio:customerId",
+        "anonymousId": "cio:anonymousId"
+      }
+    },
+
+    "Campaign": {
+      "@id": "cio:Campaign",
+      "@context": {
+        "name": "schema:name",
+        "campaignType": "cio:campaignType",
+        "active": "cio:active",
+        "createdAt": {
+          "@id": "dcterms:created",
+          "@type": "xsd:dateTime"
+        },
+        "updatedAt": {
+          "@id": "dcterms:modified",
+          "@type": "xsd:dateTime"
+        },
+        "tags": {
+          "@id": "schema:keywords",
+          "@container": "@set"
+        },
+        "actions": {
+          "@id": "cio:actions",
+          "@container": "@set"
+        }
+      }
+    },
+
+    "Segment": {
+      "@id": "cio:Segment",
+      "@context": {
+        "name": "schema:name",
+        "description": "schema:description",
+        "segmentType": "cio:segmentType",
+        "state": "cio:state"
+      }
+    },
+
+    "Message": {
+      "@id": "cio:Message",
+      "@context": {
+        "subject": "cio:subject",
+        "messageType": "cio:messageType",
+        "customerId": "cio:customerId",
+        "campaignId": "cio:campaignId",
+        "deliveryId": "cio:deliveryId",
+        "createdAt": {
+          "@id": "dcterms:created",
+          "@type": "xsd:dateTime"
+        },
+        "sentAt": {
+          "@id": "cio:sentAt",
+          "@type": "xsd:dateTime"
+        },
+        "deliveredAt": {
+          "@id": "cio:deliveredAt",
+          "@type": "xsd:dateTime"
+        },
+        "openedAt": {
+          "@id": "cio:openedAt",
+          "@type": "xsd:dateTime"
+        }
+      }
+    },
+
+    "Broadcast": {
+      "@id": "cio:Broadcast",
+      "@context": {
+        "name": "schema:name",
+        "campaignId": "cio:campaignId",
+        "triggeredAt": {
+          "@id": "cio:triggeredAt",
+          "@type": "xsd:dateTime"
+        },
+        "data": "cio:broadcastData",
+        "recipients": {
+          "@id": "cio:recipients",
+          "@container": "@set"
+        }
+      }
+    },
+
+    "Device": {
+      "@id": "cio:Device",
+      "@context": {
+        "deviceToken": "cio:deviceToken",
+        "platform": "cio:platform",
+        "lastUsed": {
+          "@id": "cio:lastUsed",
+          "@type": "xsd:dateTime"
+        }
+      }
+    },
+
+    "Newsletter": {
+      "@id": "cio:Newsletter",
+      "@context": {
+        "name": "schema:name",
+        "sentAt": {
+          "@id": "cio:sentAt",
+          "@type": "xsd:dateTime"
+        },
+        "numRecipients": "cio:numRecipients",
+        "tags": {
+          "@id": "schema:keywords",
+          "@container": "@set"
+        }
+      }
+    },
+
+    "Collection": {
+      "@id": "cio:Collection",
+      "@context": {
+        "name": "schema:name",
+        "dataType": "cio:dataType",
+        "dataUrl": {
+          "@id": "cio:dataUrl",
+          "@type": "@id"
+        },
+        "createdAt": {
+          "@id": "dcterms:created",
+          "@type": "xsd:dateTime"
+        },
+        "updatedAt": {
+          "@id": "dcterms:modified",
+          "@type": "xsd:dateTime"
+        }
+      }
+    },
+
+    "SenderIdentity": {
+      "@id": "cio:SenderIdentity",
+      "@context": {
+        "name": "schema:name",
+        "address": "schema:email",
+        "replyTo": "cio:replyTo",
+        "verified": "cio:verified"
+      }
+    },
+
+    "WebhookEvent": {
+      "@id": "cio:WebhookEvent",
+      "@context": {
+        "eventId": "schema:identifier",
+        "metric": "cio:metric",
+        "timestamp": {
+          "@id": "dcterms:date",
+          "@type": "xsd:dateTime"
+        },
+        "deliveryId": "cio:deliveryId",
+        "customerId": "cio:customerId"
+      }
+    }
+  }
+}

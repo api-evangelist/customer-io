@@ -1,0 +1,515 @@
+openapi: 3.1.0
+info:
+  title: Customer.io Track API
+  description: >-
+    The Customer.io Track API allows developers to send behavioral data and
+    customer profile information into Customer.io. It provides endpoints for
+    identifying customers, tracking events, managing devices for push
+    notifications, and sending anonymous events. The API uses basic
+    authentication with a Site ID and API key, and accepts JSON request
+    bodies. It is commonly used to build custom integrations that feed
+    customer activity data into Customer.io for use in messaging campaigns
+    and automation workflows.
+  version: '1.0.0'
+  contact:
+    name: Customer.io Support
+    url: https://customer.io/contact
+  termsOfService: https://customer.io/legal/terms-of-service
+externalDocs:
+  description: Track API Documentation
+  url: https://docs.customer.io/integrations/api/track/
+servers:
+  - url: https://track.customer.io/api/v1
+    description: US Production Server
+  - url: https://track-eu.customer.io/api/v1
+    description: EU Production Server
+tags:
+  - name: Customers
+    description: >-
+      Manage customer profiles by creating, updating, and deleting people in
+      your Customer.io workspace.
+  - name: Events
+    description: >-
+      Track customer events and anonymous events to record behavioral data
+      and trigger messaging workflows.
+  - name: Devices
+    description: >-
+      Manage push notification devices associated with customer profiles.
+  - name: Merge
+    description: >-
+      Merge two customer profiles into a single profile.
+  - name: Entity
+    description: >-
+      Track API v2 entity endpoint for creating and managing people and
+      objects using a unified request format.
+  - name: Batch
+    description: >-
+      Track API v2 batch endpoint for sending multiple entity operations in
+      a single request.
+security:
+  - basicAuth: []
+paths:
+  /customers/{identifier}:
+    put:
+      operationId: identifyCustomer
+      summary: Identify a customer
+      description: >-
+        Creates or updates a customer profile in Customer.io. If the customer
+        does not exist, a new profile is created. If the customer already
+        exists, the profile is updated with the provided attributes. The
+        identifier can be an id or email address depending on your workspace
+        configuration.
+      tags:
+        - Customers
+      parameters:
+        - $ref: '#/components/parameters/CustomerIdentifier'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerAttributes'
+      responses:
+        '200':
+          description: Customer identified successfully.
+        '401':
+          description: Unauthorized. Invalid Site ID or API key.
+    delete:
+      operationId: deleteCustomer
+      summary: Delete a customer
+      description: >-
+        Deletes a customer profile from Customer.io. This removes the person
+        and their associated data from your workspace. This action cannot be
+        undone.
+      tags:
+        - Customers
+      parameters:
+        - $ref: '#/components/parameters/CustomerIdentifier'
+      responses:
+        '200':
+          description: Customer deleted successfully.
+        '401':
+          description: Unauthorized. Invalid Site ID or API key.
+        '404':
+          description: Customer not found.
+  /customers/{identifier}/suppress:
+    post:
+      operationId: suppressCustomer
+      summary: Suppress a customer
+      description: >-
+        Suppresses a customer profile, preventing Customer.io from sending
+        messages to the person. The customer is deleted and their identifier
+        is added to a suppression list so they cannot be re-added.
+      tags:
+        - Customers
+      parameters:
+        - $ref: '#/components/parameters/CustomerIdentifier'
+      responses:
+        '200':
+          description: Customer suppressed successfully.
+        '401':
+          description: Unauthorized. Invalid Site ID or API key.
+  /customers/{identifier}/unsuppress:
+    post:
+      operationId: unsuppressCustomer
+      summary: Unsuppress a customer
+      description: >-
+        Removes a customer from the suppression list, allowing them to be
+        re-added to your workspace and receive messages again.
+      tags:
+        - Customers
+      parameters:
+        - $ref: '#/components/parameters/CustomerIdentifier'
+      responses:
+        '200':
+          description: Customer unsuppressed successfully.
+        '401':
+          description: Unauthorized. Invalid Site ID or API key.
+  /customers/{identifier}/events:
+    post:
+      operationId: trackCustomerEvent
+      summary: Track a customer event
+      description: >-
+        Records an event associated with a specific customer. Events are used
+        to trigger campaigns, track user behavior, and segment your audience.
+        The event name is required and custom data can be passed in the data
+        object.
+      tags:
+        - Events
+      parameters:
+        - $ref: '#/components/parameters/CustomerIdentifier'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerEvent'
+      responses:
+        '200':
+          description: Event tracked successfully.
+        '401':
+          description: Unauthorized. Invalid Site ID or API key.
+  /events:
+    post:
+      operationId: trackAnonymousEvent
+      summary: Track an anonymous event
+      description: >-
+        Records an event that is not associated with a known customer profile.
+        Anonymous events can be merged with a customer profile later when the
+        person is identified, if event merging is enabled in your workspace.
+        Anonymous events recorded within the last 30 days can be associated
+        with a person when their anonymous_id matches.
+      tags:
+        - Events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnonymousEvent'
+      responses:
+        '200':
+          description: Anonymous event tracked successfully.
+        '401':
+          description: Unauthorized. Invalid Site ID or API key.
+  /customers/{identifier}/devices:
+    put:
+      operationId: addCustomerDevice
+      summary: Add a customer device
+      description: >-
+        Adds or updates a device associated with a customer for push
+        notifications. The device token and platform are required. This
+        endpoint is used to register mobile devices so Customer.io can send
+        push notifications to the customer.
+      tags:
+        - Devices
+      parameters:
+        - $ref: '#/components/parameters/CustomerIdentifier'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceRequest'
+      responses:
+        '200':
+          description: Device added or updated successfully.
+        '401':
+          description: Unauthorized. Invalid Site ID or API key.
+  /customers/{identifier}/devices/{device_id}:
+    delete:
+      operationId: deleteCustomerDevice
+      summary: Delete a customer device
+      description: >-
+        Removes a device from a customer profile. The customer will no longer
+        receive push notifications on this device.
+      tags:
+        - Devices
+      parameters:
+        - $ref: '#/components/parameters/CustomerIdentifier'
+        - $ref: '#/components/parameters/DeviceId'
+      responses:
+        '200':
+          description: Device deleted successfully.
+        '401':
+          description: Unauthorized. Invalid Site ID or API key.
+        '404':
+          description: Device not found.
+  /merge:
+    post:
+      operationId: mergeCustomers
+      summary: Merge customer profiles
+      description: >-
+        Merges two customer profiles into one. The primary profile is kept
+        and the secondary profile is deleted. Events, attributes, and devices
+        from the secondary profile are merged into the primary profile.
+      tags:
+        - Merge
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MergeRequest'
+      responses:
+        '200':
+          description: Customers merged successfully.
+        '401':
+          description: Unauthorized. Invalid Site ID or API key.
+  ../v2/entity:
+    post:
+      operationId: trackEntity
+      summary: Track a single entity
+      description: >-
+        The v2 entity endpoint provides a unified way to create, update, and
+        track events for people and objects. The request body specifies the
+        entity type, action, identifiers, and attributes or event data. This
+        endpoint determines what to do based on the type and action in the
+        payload.
+      tags:
+        - Entity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntityRequest'
+      responses:
+        '200':
+          description: Entity operation completed successfully.
+        '400':
+          description: Bad request. Invalid payload structure.
+        '401':
+          description: Unauthorized. Invalid Site ID or API key.
+  ../v2/batch:
+    post:
+      operationId: trackBatch
+      summary: Batch entity operations
+      description: >-
+        Sends multiple entity operations in a single request. Each item in
+        the batch array represents an individual entity operation for a
+        person, object, or delivery. You can mix types in a single request.
+        The request must be smaller than 500KB.
+      tags:
+        - Batch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchRequest'
+      responses:
+        '200':
+          description: Batch processed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request. Invalid payload structure or exceeds size limit.
+        '401':
+          description: Unauthorized. Invalid Site ID or API key.
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: >-
+        Basic authentication using your Site ID as the username and your
+        Track API key as the password, Base64-encoded in the format
+        site_id:api_key.
+  parameters:
+    CustomerIdentifier:
+      name: identifier
+      in: path
+      required: true
+      description: >-
+        The unique identifier for the customer. This can be an id or email
+        address depending on your workspace identity configuration.
+      schema:
+        type: string
+    DeviceId:
+      name: device_id
+      in: path
+      required: true
+      description: >-
+        The unique identifier for the device to remove.
+      schema:
+        type: string
+  schemas:
+    CustomerAttributes:
+      type: object
+      description: >-
+        An object containing customer attributes to set or update. Any
+        key-value pairs included will be saved as attributes on the customer
+        profile.
+      properties:
+        email:
+          type: string
+          format: email
+          description: >-
+            The customer email address.
+        created_at:
+          type: integer
+          description: >-
+            A UNIX timestamp representing when the customer was created.
+        anonymous_id:
+          type: string
+          description: >-
+            An anonymous identifier to associate with this customer for
+            merging anonymous events.
+      additionalProperties: true
+    CustomerEvent:
+      type: object
+      required:
+        - name
+      description: >-
+        An event to track for a specific customer.
+      properties:
+        name:
+          type: string
+          description: >-
+            The name of the event to track.
+        data:
+          type: object
+          description: >-
+            Custom data associated with the event. Any key-value pairs
+            included will be available for use in campaigns and segments.
+          additionalProperties: true
+        type:
+          type: string
+          description: >-
+            The event type. Use page for page view events.
+          enum:
+            - page
+    AnonymousEvent:
+      type: object
+      required:
+        - name
+        - anonymous_id
+      description: >-
+        An event not associated with a known customer profile.
+      properties:
+        name:
+          type: string
+          description: >-
+            The name of the event to track.
+        anonymous_id:
+          type: string
+          description: >-
+            A unique anonymous identifier for the person who performed the
+            event. This can be used later to merge the event with a known
+            customer profile.
+        data:
+          type: object
+          description: >-
+            Custom data associated with the event.
+          additionalProperties: true
+    DeviceRequest:
+      type: object
+      required:
+        - device
+      description: >-
+        A request to add or update a device for push notifications.
+      properties:
+        device:
+          type: object
+          required:
+            - id
+            - platform
+          description: >-
+            The device details.
+          properties:
+            id:
+              type: string
+              description: >-
+                The unique device token.
+            platform:
+              type: string
+              description: >-
+                The device platform.
+              enum:
+                - ios
+                - android
+            last_used:
+              type: integer
+              description: >-
+                A UNIX timestamp of when the device was last used.
+    MergeRequest:
+      type: object
+      required:
+        - primary
+        - secondary
+      description: >-
+        A request to merge two customer profiles. The primary profile is
+        kept and the secondary profile is deleted.
+      properties:
+        primary:
+          type: object
+          required:
+            - id
+          description: >-
+            The primary customer profile to keep.
+          properties:
+            id:
+              type: string
+              description: >-
+                The identifier of the primary customer.
+        secondary:
+          type: object
+          required:
+            - id
+          description: >-
+            The secondary customer profile to merge and delete.
+          properties:
+            id:
+              type: string
+              description: >-
+                The identifier of the secondary customer.
+    EntityRequest:
+      type: object
+      required:
+        - type
+        - action
+        - identifiers
+      description: >-
+        A v2 entity operation request. The type and action determine what
+        operation is performed.
+      properties:
+        type:
+          type: string
+          description: >-
+            The entity type.
+          enum:
+            - person
+            - object
+            - delivery
+        action:
+          type: string
+          description: >-
+            The action to perform on the entity.
+          enum:
+            - identify
+            - delete
+            - suppress
+            - unsuppress
+            - event
+            - add_device
+            - delete_device
+            - delete_relationship
+            - merge
+        identifiers:
+          type: object
+          description: >-
+            The identifiers used to locate or create the entity. For people
+            this includes id, email, or cio_id. For objects this includes
+            object_type_id and object_id.
+          additionalProperties: true
+        attributes:
+          type: object
+          description: >-
+            Attributes to set on the entity. Used with identify actions.
+          additionalProperties: true
+        name:
+          type: string
+          description: >-
+            The event name. Required when action is event.
+        data:
+          type: object
+          description: >-
+            Custom data for events.
+          additionalProperties: true
+    BatchRequest:
+      type: object
+      required:
+        - batch
+      description: >-
+        A batch of entity operations. The request must be smaller than 500KB.
+      properties:
+        batch:
+          type: array
+          description: >-
+            An array of entity operations. Each item represents an individual
+            operation for a person, object, or delivery.
+          items:
+            $ref: '#/components/schemas/EntityRequest'

@@ -1,0 +1,1619 @@
+openapi: 3.1.0
+info:
+  title: Customer.io App API
+  description: >-
+    The Customer.io App API enables developers to manage workspace resources
+    and send messages programmatically. It provides endpoints for sending
+    transactional messages, triggering broadcasts, managing customers and
+    segments, retrieving campaign and newsletter data, and exporting customer
+    information. The API uses bearer token authentication with an App API key
+    and is designed for operations that go beyond data ingestion, such as
+    retrieving metrics, managing message templates, and automating outbound
+    communications from Customer.io.
+  version: '1.0.0'
+  contact:
+    name: Customer.io Support
+    url: https://customer.io/contact
+  termsOfService: https://customer.io/legal/terms-of-service
+externalDocs:
+  description: App API Documentation
+  url: https://docs.customer.io/integrations/api/app/
+servers:
+  - url: https://api.customer.io/v1
+    description: US Production Server
+  - url: https://api-eu.customer.io/v1
+    description: EU Production Server
+tags:
+  - name: Transactional
+    description: >-
+      Send transactional messages such as password resets, purchase receipts,
+      and other important notifications triggered by user actions.
+  - name: Broadcasts
+    description: >-
+      Trigger API-triggered broadcasts to send messages to groups of people
+      based on segments or filters.
+  - name: Campaigns
+    description: >-
+      Retrieve information about campaigns, campaign actions, and campaign
+      metrics in your workspace.
+  - name: Newsletters
+    description: >-
+      Retrieve information about newsletters and newsletter variants.
+  - name: Segments
+    description: >-
+      Create and manage manual segments, and retrieve segment membership
+      information.
+  - name: Customers
+    description: >-
+      Look up customer profiles, search for customers, and retrieve customer
+      attributes and activity data.
+  - name: Messages
+    description: >-
+      Retrieve information about individual messages sent to customers.
+  - name: Exports
+    description: >-
+      Export customer data, deliveries, and other information from your
+      workspace.
+  - name: Activities
+    description: >-
+      Retrieve activity logs for your workspace.
+  - name: Collections
+    description: >-
+      Manage collections of data used in message personalization.
+  - name: Sender Identities
+    description: >-
+      Manage sender identities used for sending messages.
+  - name: Snippets
+    description: >-
+      Manage reusable content snippets for use in messages.
+security:
+  - bearerAuth: []
+paths:
+  /send/email:
+    post:
+      operationId: sendTransactionalEmail
+      summary: Send a transactional email
+      description: >-
+        Sends a transactional email message to a specific customer. You can
+        compose the entire message in the request body or use a transactional
+        message template. Transactional messages are triggered by user actions
+        such as password resets, purchase confirmations, and account
+        notifications. Rate limited to 100 requests per second.
+      tags:
+        - Transactional
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionalEmailRequest'
+      responses:
+        '200':
+          description: Transactional email sent successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionalEmailResponse'
+        '400':
+          description: Bad request. Invalid request body.
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '429':
+          description: Rate limit exceeded.
+  /send/push:
+    post:
+      operationId: sendTransactionalPush
+      summary: Send a transactional push notification
+      description: >-
+        Sends a transactional push notification to a specific customer. The
+        customer must have at least one registered device to receive the
+        notification.
+      tags:
+        - Transactional
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionalPushRequest'
+      responses:
+        '200':
+          description: Transactional push sent successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionalMessageResponse'
+        '400':
+          description: Bad request. Invalid request body.
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '429':
+          description: Rate limit exceeded.
+  /campaigns/{campaign_id}/triggers:
+    post:
+      operationId: triggerBroadcast
+      summary: Trigger an API-triggered broadcast
+      description: >-
+        Triggers an API-triggered broadcast campaign. You can specify a
+        segment, list of customer IDs, or a data payload to include with the
+        broadcast. Rate limited to 1 request per 10 seconds.
+      tags:
+        - Broadcasts
+      parameters:
+        - $ref: '#/components/parameters/CampaignId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BroadcastTriggerRequest'
+      responses:
+        '200':
+          description: Broadcast triggered successfully.
+        '400':
+          description: Bad request. Invalid request body.
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Campaign not found.
+        '429':
+          description: Rate limit exceeded.
+  /campaigns:
+    get:
+      operationId: listCampaigns
+      summary: List campaigns
+      description: >-
+        Returns a list of campaigns in your workspace. You can filter by
+        campaign type and status.
+      tags:
+        - Campaigns
+      responses:
+        '200':
+          description: A list of campaigns.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  campaigns:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Campaign'
+        '401':
+          description: Unauthorized. Invalid App API key.
+  /campaigns/{campaign_id}:
+    get:
+      operationId: getCampaign
+      summary: Get a campaign
+      description: >-
+        Returns detailed information about a specific campaign including its
+        actions, status, and metrics.
+      tags:
+        - Campaigns
+      parameters:
+        - $ref: '#/components/parameters/CampaignId'
+      responses:
+        '200':
+          description: Campaign details.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  campaign:
+                    $ref: '#/components/schemas/Campaign'
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Campaign not found.
+  /campaigns/{campaign_id}/actions:
+    get:
+      operationId: listCampaignActions
+      summary: List campaign actions
+      description: >-
+        Returns a list of actions (workflow steps) for a specific campaign.
+      tags:
+        - Campaigns
+      parameters:
+        - $ref: '#/components/parameters/CampaignId'
+      responses:
+        '200':
+          description: A list of campaign actions.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  actions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CampaignAction'
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Campaign not found.
+  /campaigns/{campaign_id}/metrics:
+    get:
+      operationId: getCampaignMetrics
+      summary: Get campaign metrics
+      description: >-
+        Returns metrics for a specific campaign including message delivery
+        statistics, open rates, and click rates.
+      tags:
+        - Campaigns
+      parameters:
+        - $ref: '#/components/parameters/CampaignId'
+        - name: period
+          in: query
+          description: >-
+            The time period for metrics aggregation.
+          schema:
+            type: string
+            enum:
+              - hours
+              - days
+              - weeks
+              - months
+        - name: steps
+          in: query
+          description: >-
+            The number of time periods to return.
+          schema:
+            type: integer
+        - name: type
+          in: query
+          description: >-
+            The type of metric series to return.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Campaign metrics.
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Campaign not found.
+  /newsletters:
+    get:
+      operationId: listNewsletters
+      summary: List newsletters
+      description: >-
+        Returns a list of newsletters in your workspace.
+      tags:
+        - Newsletters
+      responses:
+        '200':
+          description: A list of newsletters.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  newsletters:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Newsletter'
+        '401':
+          description: Unauthorized. Invalid App API key.
+  /newsletters/{newsletter_id}:
+    get:
+      operationId: getNewsletter
+      summary: Get a newsletter
+      description: >-
+        Returns detailed information about a specific newsletter.
+      tags:
+        - Newsletters
+      parameters:
+        - $ref: '#/components/parameters/NewsletterId'
+      responses:
+        '200':
+          description: Newsletter details.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  newsletter:
+                    $ref: '#/components/schemas/Newsletter'
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Newsletter not found.
+  /newsletters/{newsletter_id}/metrics:
+    get:
+      operationId: getNewsletterMetrics
+      summary: Get newsletter metrics
+      description: >-
+        Returns metrics for a specific newsletter including delivery
+        statistics and engagement data.
+      tags:
+        - Newsletters
+      parameters:
+        - $ref: '#/components/parameters/NewsletterId'
+      responses:
+        '200':
+          description: Newsletter metrics.
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Newsletter not found.
+  /segments:
+    get:
+      operationId: listSegments
+      summary: List segments
+      description: >-
+        Returns a list of segments in your workspace.
+      tags:
+        - Segments
+      responses:
+        '200':
+          description: A list of segments.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  segments:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Segment'
+        '401':
+          description: Unauthorized. Invalid App API key.
+    post:
+      operationId: createSegment
+      summary: Create a manual segment
+      description: >-
+        Creates a new manual segment. Manual segments allow you to group
+        customers by explicitly adding or removing them rather than using
+        automatic filter criteria.
+      tags:
+        - Segments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSegmentRequest'
+      responses:
+        '200':
+          description: Segment created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  segment:
+                    $ref: '#/components/schemas/Segment'
+        '400':
+          description: Bad request. Invalid segment data.
+        '401':
+          description: Unauthorized. Invalid App API key.
+  /segments/{segment_id}:
+    get:
+      operationId: getSegment
+      summary: Get a segment
+      description: >-
+        Returns detailed information about a specific segment including its
+        type and customer count.
+      tags:
+        - Segments
+      parameters:
+        - $ref: '#/components/parameters/SegmentId'
+      responses:
+        '200':
+          description: Segment details.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  segment:
+                    $ref: '#/components/schemas/Segment'
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Segment not found.
+  /segments/{segment_id}/membership:
+    get:
+      operationId: getSegmentMembership
+      summary: Get segment membership
+      description: >-
+        Returns customer identifiers that are members of a specific segment.
+      tags:
+        - Segments
+      parameters:
+        - $ref: '#/components/parameters/SegmentId'
+      responses:
+        '200':
+          description: Segment membership list.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ids:
+                    type: array
+                    items:
+                      type: string
+                    description: >-
+                      An array of customer identifiers in the segment.
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Segment not found.
+  /customers:
+    get:
+      operationId: searchCustomers
+      summary: Search customers
+      description: >-
+        Searches for customers in your workspace using complex filter
+        criteria. Returns matching customer profiles with their attributes.
+      tags:
+        - Customers
+      parameters:
+        - name: filter
+          in: query
+          description: >-
+            Filter criteria for searching customers.
+          schema:
+            type: object
+      responses:
+        '200':
+          description: Matching customers.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  identifiers:
+                    type: array
+                    items:
+                      type: object
+                  next:
+                    type: string
+                    description: >-
+                      Pagination cursor for the next page of results.
+        '401':
+          description: Unauthorized. Invalid App API key.
+  /customers/{identifier}/attributes:
+    get:
+      operationId: getCustomerAttributes
+      summary: Get customer attributes
+      description: >-
+        Returns the attributes for a specific customer profile.
+      tags:
+        - Customers
+      parameters:
+        - $ref: '#/components/parameters/CustomerIdentifier'
+      responses:
+        '200':
+          description: Customer attributes.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customer:
+                    $ref: '#/components/schemas/Customer'
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Customer not found.
+  /customers/{identifier}/segments:
+    get:
+      operationId: getCustomerSegments
+      summary: Get customer segments
+      description: >-
+        Returns the segments that a specific customer belongs to.
+      tags:
+        - Customers
+      parameters:
+        - $ref: '#/components/parameters/CustomerIdentifier'
+      responses:
+        '200':
+          description: Customer segments.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  segments:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Segment'
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Customer not found.
+  /customers/{identifier}/activities:
+    get:
+      operationId: getCustomerActivities
+      summary: Get customer activities
+      description: >-
+        Returns a list of activities for a specific customer, including
+        messages sent, events tracked, and other interactions.
+      tags:
+        - Customers
+      parameters:
+        - $ref: '#/components/parameters/CustomerIdentifier'
+      responses:
+        '200':
+          description: Customer activity list.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  activities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Activity'
+                  next:
+                    type: string
+                    description: >-
+                      Pagination cursor for the next page of results.
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Customer not found.
+  /customers/{identifier}/messages:
+    get:
+      operationId: getCustomerMessages
+      summary: Get customer messages
+      description: >-
+        Returns a list of messages sent to a specific customer.
+      tags:
+        - Customers
+      parameters:
+        - $ref: '#/components/parameters/CustomerIdentifier'
+      responses:
+        '200':
+          description: Customer messages.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  messages:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Message'
+                  next:
+                    type: string
+                    description: >-
+                      Pagination cursor for the next page of results.
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Customer not found.
+  /messages/{message_id}:
+    get:
+      operationId: getMessage
+      summary: Get a message
+      description: >-
+        Returns detailed information about a specific message that was sent,
+        including delivery status and engagement metrics.
+      tags:
+        - Messages
+      parameters:
+        - $ref: '#/components/parameters/MessageId'
+      responses:
+        '200':
+          description: Message details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Message not found.
+  /exports/customers:
+    post:
+      operationId: exportCustomers
+      summary: Export customers
+      description: >-
+        Initiates an export of customer data from your workspace. The export
+        runs asynchronously and you receive a download link when complete.
+      tags:
+        - Exports
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportRequest'
+      responses:
+        '200':
+          description: Export initiated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportResponse'
+        '401':
+          description: Unauthorized. Invalid App API key.
+  /exports/deliveries:
+    post:
+      operationId: exportDeliveries
+      summary: Export deliveries
+      description: >-
+        Initiates an export of message delivery data from your workspace.
+      tags:
+        - Exports
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportRequest'
+      responses:
+        '200':
+          description: Export initiated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportResponse'
+        '401':
+          description: Unauthorized. Invalid App API key.
+  /exports/{export_id}:
+    get:
+      operationId: getExport
+      summary: Get an export
+      description: >-
+        Returns the status and download link for a previously initiated export.
+      tags:
+        - Exports
+      parameters:
+        - $ref: '#/components/parameters/ExportId'
+      responses:
+        '200':
+          description: Export details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportResponse'
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Export not found.
+  /activities:
+    get:
+      operationId: listActivities
+      summary: List activities
+      description: >-
+        Returns a list of recent activities in your workspace, including
+        messages sent, customer events, and system events.
+      tags:
+        - Activities
+      parameters:
+        - name: type
+          in: query
+          description: >-
+            Filter activities by type.
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: >-
+            Filter activities by name.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of activities.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  activities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Activity'
+                  next:
+                    type: string
+                    description: >-
+                      Pagination cursor for the next page of results.
+        '401':
+          description: Unauthorized. Invalid App API key.
+  /api/collections:
+    get:
+      operationId: listCollections
+      summary: List collections
+      description: >-
+        Returns a list of data collections in your workspace. Collections
+        are used for personalizing messages with external data.
+      tags:
+        - Collections
+      responses:
+        '200':
+          description: A list of collections.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  collections:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Collection'
+        '401':
+          description: Unauthorized. Invalid App API key.
+    post:
+      operationId: createCollection
+      summary: Create a collection
+      description: >-
+        Creates a new data collection in your workspace.
+      tags:
+        - Collections
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCollectionRequest'
+      responses:
+        '200':
+          description: Collection created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collection'
+        '400':
+          description: Bad request. Invalid collection data.
+        '401':
+          description: Unauthorized. Invalid App API key.
+  /api/collections/{collection_id}:
+    get:
+      operationId: getCollection
+      summary: Get a collection
+      description: >-
+        Returns detailed information about a specific collection.
+      tags:
+        - Collections
+      parameters:
+        - $ref: '#/components/parameters/CollectionId'
+      responses:
+        '200':
+          description: Collection details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collection'
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Collection not found.
+    put:
+      operationId: updateCollection
+      summary: Update a collection
+      description: >-
+        Updates the contents or configuration of a data collection.
+      tags:
+        - Collections
+      parameters:
+        - $ref: '#/components/parameters/CollectionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCollectionRequest'
+      responses:
+        '200':
+          description: Collection updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collection'
+        '400':
+          description: Bad request. Invalid collection data.
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Collection not found.
+    delete:
+      operationId: deleteCollection
+      summary: Delete a collection
+      description: >-
+        Deletes a data collection from your workspace.
+      tags:
+        - Collections
+      parameters:
+        - $ref: '#/components/parameters/CollectionId'
+      responses:
+        '200':
+          description: Collection deleted successfully.
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Collection not found.
+  /sender_identities:
+    get:
+      operationId: listSenderIdentities
+      summary: List sender identities
+      description: >-
+        Returns a list of sender identities configured for sending messages
+        from your workspace.
+      tags:
+        - Sender Identities
+      responses:
+        '200':
+          description: A list of sender identities.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sender_identities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SenderIdentity'
+        '401':
+          description: Unauthorized. Invalid App API key.
+  /sender_identities/{sender_id}:
+    get:
+      operationId: getSenderIdentity
+      summary: Get a sender identity
+      description: >-
+        Returns detailed information about a specific sender identity.
+      tags:
+        - Sender Identities
+      parameters:
+        - $ref: '#/components/parameters/SenderId'
+      responses:
+        '200':
+          description: Sender identity details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SenderIdentity'
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Sender identity not found.
+  /snippets:
+    get:
+      operationId: listSnippets
+      summary: List snippets
+      description: >-
+        Returns a list of reusable content snippets in your workspace.
+      tags:
+        - Snippets
+      responses:
+        '200':
+          description: A list of snippets.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  snippets:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Snippet'
+        '401':
+          description: Unauthorized. Invalid App API key.
+  /snippets/{snippet_name}:
+    put:
+      operationId: updateSnippet
+      summary: Update a snippet
+      description: >-
+        Creates or updates a reusable content snippet.
+      tags:
+        - Snippets
+      parameters:
+        - name: snippet_name
+          in: path
+          required: true
+          description: >-
+            The name of the snippet to create or update.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SnippetRequest'
+      responses:
+        '200':
+          description: Snippet updated successfully.
+        '401':
+          description: Unauthorized. Invalid App API key.
+    delete:
+      operationId: deleteSnippet
+      summary: Delete a snippet
+      description: >-
+        Deletes a content snippet from your workspace.
+      tags:
+        - Snippets
+      parameters:
+        - name: snippet_name
+          in: path
+          required: true
+          description: >-
+            The name of the snippet to delete.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Snippet deleted successfully.
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Snippet not found.
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: >-
+        Bearer token authentication using your App API key. Pass the key in
+        the Authorization header as Bearer {app_api_key}.
+  parameters:
+    CampaignId:
+      name: campaign_id
+      in: path
+      required: true
+      description: >-
+        The unique identifier for the campaign.
+      schema:
+        type: integer
+    NewsletterId:
+      name: newsletter_id
+      in: path
+      required: true
+      description: >-
+        The unique identifier for the newsletter.
+      schema:
+        type: integer
+    SegmentId:
+      name: segment_id
+      in: path
+      required: true
+      description: >-
+        The unique identifier for the segment.
+      schema:
+        type: integer
+    CustomerIdentifier:
+      name: identifier
+      in: path
+      required: true
+      description: >-
+        The unique identifier for the customer. Can be an id, email, or
+        cio_id depending on your workspace configuration.
+      schema:
+        type: string
+    MessageId:
+      name: message_id
+      in: path
+      required: true
+      description: >-
+        The unique identifier for the message.
+      schema:
+        type: string
+    ExportId:
+      name: export_id
+      in: path
+      required: true
+      description: >-
+        The unique identifier for the export.
+      schema:
+        type: integer
+    CollectionId:
+      name: collection_id
+      in: path
+      required: true
+      description: >-
+        The unique identifier for the collection.
+      schema:
+        type: integer
+    SenderId:
+      name: sender_id
+      in: path
+      required: true
+      description: >-
+        The unique identifier for the sender identity.
+      schema:
+        type: integer
+  schemas:
+    TransactionalEmailRequest:
+      type: object
+      required:
+        - transactional_message_id
+        - to
+        - identifiers
+      description: >-
+        A request to send a transactional email. You can use a pre-built
+        template or compose the message inline.
+      properties:
+        transactional_message_id:
+          type: string
+          description: >-
+            The identifier for the transactional message template to use.
+        to:
+          type: string
+          format: email
+          description: >-
+            The email address to send the message to.
+        identifiers:
+          type: object
+          description: >-
+            Identifiers for the customer receiving the message.
+          properties:
+            id:
+              type: string
+              description: >-
+                The customer id.
+            email:
+              type: string
+              format: email
+              description: >-
+                The customer email address.
+            cio_id:
+              type: string
+              description: >-
+                The Customer.io internal identifier.
+        from:
+          type: string
+          description: >-
+            The sender email address. Overrides the template default.
+        reply_to:
+          type: string
+          description: >-
+            The reply-to email address.
+        bcc:
+          type: string
+          description: >-
+            BCC email address.
+        subject:
+          type: string
+          description: >-
+            The email subject line. Overrides the template subject.
+        body:
+          type: string
+          description: >-
+            The HTML email body. Overrides the template body.
+        plaintext_body:
+          type: string
+          description: >-
+            The plaintext email body.
+        message_data:
+          type: object
+          description: >-
+            Custom data to use in message personalization.
+          additionalProperties: true
+        disable_message_retention:
+          type: boolean
+          description: >-
+            If true, Customer.io does not retain the message body after
+            delivery.
+        send_to_unsubscribed:
+          type: boolean
+          description: >-
+            If true, sends the message even if the customer has
+            unsubscribed from marketing messages.
+        queue_draft:
+          type: boolean
+          description: >-
+            If true, holds the message as a draft for review.
+    TransactionalEmailResponse:
+      type: object
+      description: >-
+        The response from sending a transactional email.
+      properties:
+        delivery_id:
+          type: string
+          description: >-
+            The unique identifier for this delivery.
+        queued_at:
+          type: integer
+          description: >-
+            A UNIX timestamp of when the message was queued for sending.
+    TransactionalPushRequest:
+      type: object
+      required:
+        - transactional_message_id
+        - identifiers
+      description: >-
+        A request to send a transactional push notification.
+      properties:
+        transactional_message_id:
+          type: string
+          description: >-
+            The identifier for the transactional push template.
+        identifiers:
+          type: object
+          description: >-
+            Identifiers for the customer receiving the notification.
+          properties:
+            id:
+              type: string
+              description: >-
+                The customer id.
+            email:
+              type: string
+              format: email
+              description: >-
+                The customer email address.
+            cio_id:
+              type: string
+              description: >-
+                The Customer.io internal identifier.
+        message_data:
+          type: object
+          description: >-
+            Custom data to use in notification personalization.
+          additionalProperties: true
+        send_to_unsubscribed:
+          type: boolean
+          description: >-
+            If true, sends the notification even if the customer has
+            unsubscribed.
+        title:
+          type: string
+          description: >-
+            The push notification title. Overrides the template title.
+        message:
+          type: string
+          description: >-
+            The push notification message body.
+        custom_data:
+          type: object
+          description: >-
+            Custom key-value pairs sent with the push notification payload.
+          additionalProperties: true
+    TransactionalMessageResponse:
+      type: object
+      description: >-
+        The response from sending a transactional message.
+      properties:
+        delivery_id:
+          type: string
+          description: >-
+            The unique identifier for this delivery.
+        queued_at:
+          type: integer
+          description: >-
+            A UNIX timestamp of when the message was queued.
+    BroadcastTriggerRequest:
+      type: object
+      description: >-
+        A request to trigger an API-triggered broadcast.
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
+          description: >-
+            An array of customer identifiers to send the broadcast to.
+        emails:
+          type: array
+          items:
+            type: string
+            format: email
+          description: >-
+            An array of email addresses to send the broadcast to.
+        per_user_data:
+          type: array
+          items:
+            type: object
+          description: >-
+            Per-customer data for personalization.
+        data:
+          type: object
+          description: >-
+            Shared data available in the broadcast template.
+          additionalProperties: true
+        id_ignore_missing:
+          type: boolean
+          description: >-
+            If true, ignores IDs that do not match existing customers.
+    Campaign:
+      type: object
+      description: >-
+        A messaging campaign in Customer.io.
+      properties:
+        id:
+          type: integer
+          description: >-
+            The unique campaign identifier.
+        name:
+          type: string
+          description: >-
+            The campaign name.
+        type:
+          type: string
+          description: >-
+            The campaign type.
+        active:
+          type: boolean
+          description: >-
+            Whether the campaign is currently active.
+        created:
+          type: integer
+          description: >-
+            UNIX timestamp of when the campaign was created.
+        updated:
+          type: integer
+          description: >-
+            UNIX timestamp of when the campaign was last updated.
+        tags:
+          type: array
+          items:
+            type: string
+          description: >-
+            Tags associated with the campaign.
+    CampaignAction:
+      type: object
+      description: >-
+        An action (workflow step) within a campaign.
+      properties:
+        id:
+          type: integer
+          description: >-
+            The unique action identifier.
+        campaign_id:
+          type: integer
+          description: >-
+            The parent campaign identifier.
+        type:
+          type: string
+          description: >-
+            The action type (e.g., email, webhook, push).
+        name:
+          type: string
+          description: >-
+            The action name.
+        sending:
+          type: boolean
+          description: >-
+            Whether the action is currently sending.
+        created:
+          type: integer
+          description: >-
+            UNIX timestamp of when the action was created.
+        updated:
+          type: integer
+          description: >-
+            UNIX timestamp of when the action was last updated.
+    Newsletter:
+      type: object
+      description: >-
+        A newsletter in Customer.io.
+      properties:
+        id:
+          type: integer
+          description: >-
+            The unique newsletter identifier.
+        name:
+          type: string
+          description: >-
+            The newsletter name.
+        created:
+          type: integer
+          description: >-
+            UNIX timestamp of when the newsletter was created.
+        updated:
+          type: integer
+          description: >-
+            UNIX timestamp of when the newsletter was last updated.
+        sent_at:
+          type: integer
+          description: >-
+            UNIX timestamp of when the newsletter was sent.
+        num_recipients:
+          type: integer
+          description: >-
+            The number of recipients.
+        tags:
+          type: array
+          items:
+            type: string
+          description: >-
+            Tags associated with the newsletter.
+    Segment:
+      type: object
+      description: >-
+        A customer segment in Customer.io.
+      properties:
+        id:
+          type: integer
+          description: >-
+            The unique segment identifier.
+        name:
+          type: string
+          description: >-
+            The segment name.
+        description:
+          type: string
+          description: >-
+            A description of the segment.
+        type:
+          type: string
+          description: >-
+            The segment type (manual or data-driven).
+          enum:
+            - manual
+            - data_driven
+        state:
+          type: string
+          description: >-
+            The current state of the segment.
+    CreateSegmentRequest:
+      type: object
+      required:
+        - segment
+      description: >-
+        A request to create a manual segment.
+      properties:
+        segment:
+          type: object
+          required:
+            - name
+          properties:
+            name:
+              type: string
+              description: >-
+                The segment name.
+            description:
+              type: string
+              description: >-
+                A description of the segment.
+    Customer:
+      type: object
+      description: >-
+        A customer profile with attributes.
+      properties:
+        id:
+          type: string
+          description: >-
+            The customer identifier.
+        email:
+          type: string
+          format: email
+          description: >-
+            The customer email address.
+        created_at:
+          type: integer
+          description: >-
+            UNIX timestamp of when the customer was created.
+        attributes:
+          type: object
+          description: >-
+            Custom attributes on the customer profile.
+          additionalProperties: true
+    Activity:
+      type: object
+      description: >-
+        An activity record representing an action in your workspace.
+      properties:
+        id:
+          type: string
+          description: >-
+            The unique activity identifier.
+        type:
+          type: string
+          description: >-
+            The activity type.
+        name:
+          type: string
+          description: >-
+            The activity name.
+        timestamp:
+          type: integer
+          description: >-
+            UNIX timestamp of when the activity occurred.
+        delivery_id:
+          type: string
+          description: >-
+            The associated delivery identifier if applicable.
+    Message:
+      type: object
+      description: >-
+        A message that was sent to a customer.
+      properties:
+        id:
+          type: string
+          description: >-
+            The unique message identifier.
+        type:
+          type: string
+          description: >-
+            The message type (email, push, sms, webhook, in-app).
+        subject:
+          type: string
+          description: >-
+            The message subject line.
+        customer_id:
+          type: string
+          description: >-
+            The recipient customer identifier.
+        campaign_id:
+          type: integer
+          description: >-
+            The associated campaign identifier.
+        created:
+          type: integer
+          description: >-
+            UNIX timestamp of when the message was created.
+        metrics:
+          type: object
+          description: >-
+            Message delivery and engagement metrics.
+          properties:
+            sent:
+              type: integer
+              description: >-
+                UNIX timestamp of when the message was sent.
+            delivered:
+              type: integer
+              description: >-
+                UNIX timestamp of when the message was delivered.
+            opened:
+              type: integer
+              description: >-
+                UNIX timestamp of when the message was opened.
+            clicked:
+              type: integer
+              description: >-
+                UNIX timestamp of when a link was clicked.
+            bounced:
+              type: integer
+              description: >-
+                UNIX timestamp of when the message bounced.
+    Collection:
+      type: object
+      description: >-
+        A data collection used in message personalization.
+      properties:
+        id:
+          type: integer
+          description: >-
+            The unique collection identifier.
+        name:
+          type: string
+          description: >-
+            The collection name.
+        data_type:
+          type: string
+          description: >-
+            The type of data in the collection.
+        created_at:
+          type: integer
+          description: >-
+            UNIX timestamp of when the collection was created.
+        updated_at:
+          type: integer
+          description: >-
+            UNIX timestamp of when the collection was last updated.
+    CreateCollectionRequest:
+      type: object
+      required:
+        - name
+        - data
+      description: >-
+        A request to create or update a data collection.
+      properties:
+        name:
+          type: string
+          description: >-
+            The collection name.
+        data:
+          type: array
+          description: >-
+            The collection data as an array of objects.
+          items:
+            type: object
+        url:
+          type: string
+          format: uri
+          description: >-
+            A URL to fetch collection data from. Used for URL-backed
+            collections.
+    SenderIdentity:
+      type: object
+      description: >-
+        A sender identity for sending messages.
+      properties:
+        id:
+          type: integer
+          description: >-
+            The unique sender identity identifier.
+        name:
+          type: string
+          description: >-
+            The sender display name.
+        address:
+          type: string
+          format: email
+          description: >-
+            The sender email address.
+        reply_to:
+          type: string
+          format: email
+          description: >-
+            The reply-to email address.
+        verified:
+          type: boolean
+          description: >-
+            Whether the sender identity has been verified.
+    Snippet:
+      type: object
+      description: >-
+        A reusable content snippet.
+      properties:
+        name:
+          type: string
+          description: >-
+            The snippet name used to reference it in templates.
+        value:
+          type: string
+          description: >-
+            The snippet content.
+        updated_at:
+          type: integer
+          description: >-
+            UNIX timestamp of when the snippet was last updated.
+    SnippetRequest:
+      type: object
+      required:
+        - value
+      description: >-
+        A request to create or update a content snippet.
+      properties:
+        value:
+          type: string
+          description: >-
+            The snippet content.
+    ExportRequest:
+      type: object
+      description: >-
+        A request to export data from your workspace.
+      properties:
+        filters:
+          type: object
+          description: >-
+            Filter criteria for the export.
+          additionalProperties: true
+        start:
+          type: integer
+          description: >-
+            UNIX timestamp for the export start date.
+        end:
+          type: integer
+          description: >-
+            UNIX timestamp for the export end date.
+    ExportResponse:
+      type: object
+      description: >-
+        The response from initiating or checking an export.
+      properties:
+        id:
+          type: integer
+          description: >-
+            The unique export identifier.
+        status:
+          type: string
+          description: >-
+            The export status.
+          enum:
+            - pending
+            - running
+            - completed
+            - failed
+        download_url:
+          type: string
+          format: uri
+          description: >-
+            The URL to download the exported data. Available when status
+            is completed.
