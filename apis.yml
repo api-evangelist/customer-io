@@ -1,5 +1,6 @@
 aid: customer-io
-url: https://raw.githubusercontent.com/api-evangelist/customer-io/refs/heads/main/apis.yml
+url: 
+  https://raw.githubusercontent.com/api-evangelist/customer-io/refs/heads/main/apis.yml
 apis:
   - aid: customer-io:track-api
     name: Customer.io Track API
@@ -9,7 +10,8 @@ apis:
       - Customer Data
       - Event Tracking
       - Behavioral Data
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: 
+      https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: https://track.customer.io
     humanURL: https://docs.customer.io/integrations/api/track/
     properties:
@@ -18,14 +20,11 @@ apis:
       - url: openapi/customer-io-track-api-openapi.yml
         type: OpenAPI
     description: >-
-      The Customer.io Track API allows developers to send behavioral data and
-      customer profile information into Customer.io. It provides endpoints for
-      identifying customers, tracking events, managing devices for push
-      notifications, and sending anonymous events. The API uses basic
-      authentication with a Site ID and API key, and accepts JSON request
-      bodies. It is commonly used to build custom integrations that feed
-      customer activity data into Customer.io for use in messaging campaigns
-      and automation workflows.
+      The Customer.io Track API allows developers to send behavioral data and customer
+      profile information into Customer.io. It provides endpoints for identifying
+      customers, tracking events, managing devices for push notifications, and sending
+      anonymous events. The API uses basic authentication with a Site ID and API key,
+      and accepts JSON request bodies.
   - aid: customer-io:app-api
     name: Customer.io App API
     tags:
@@ -35,7 +34,8 @@ apis:
       - Transactional Email
       - Segments
       - Broadcasts
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: 
+      https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: https://api.customer.io
     humanURL: https://docs.customer.io/integrations/api/app/
     properties:
@@ -44,14 +44,10 @@ apis:
       - url: openapi/customer-io-app-api-openapi.yml
         type: OpenAPI
     description: >-
-      The Customer.io App API enables developers to manage workspace resources
-      and send messages programmatically. It provides endpoints for sending
-      transactional messages, triggering broadcasts, managing customers and
-      segments, retrieving campaign and newsletter data, and exporting customer
-      information. The API uses bearer token authentication with an App API key
-      and is designed for operations that go beyond data ingestion, such as
-      retrieving metrics, managing message templates, and automating outbound
-      communications from Customer.io.
+      The Customer.io App API enables developers to manage workspace resources and
+      send messages programmatically. It provides endpoints for sending transactional
+      messages, triggering broadcasts, managing customers and segments, retrieving
+      campaign and newsletter data, and exporting customer information.
   - aid: customer-io:pipelines-api
     name: Customer.io Pipelines API
     tags:
@@ -60,23 +56,23 @@ apis:
       - Data Ingestion
       - Marketing Automation
       - CDP
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: 
+      https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: https://cdp.customer.io
-    humanURL: https://docs.customer.io/integrations/data-in/connections/http-api/
+    humanURL: 
+      https://docs.customer.io/integrations/data-in/connections/http-api/
     properties:
       - url: https://docs.customer.io/integrations/data-in/connections/http-api/
         type: Documentation
       - url: openapi/customer-io-pipelines-api-openapi.yml
         type: OpenAPI
     description: >-
-      The Customer.io Pipelines API is the newer data ingestion interface for
-      getting customer and event data into Customer.io. It follows the Segment
-      spec and supports identify, track, page, screen, group, and alias calls.
-      Customer.io recommends the Pipelines API for new integrations because it
-      is easier to use, supports outbound data integrations and
-      transformations, and is the focus of ongoing development. It uses a CDP
-      API key for authentication and provides a modern alternative to the
-      legacy Track API.
+      The Customer.io Pipelines API is the newer data ingestion interface for getting
+      customer and event data into Customer.io. It follows the Segment spec and supports
+      identify, track, page, screen, group, and alias calls. Customer.io recommends
+      the Pipelines API for new integrations because it is easier to use, supports
+      outbound data integrations and transformations, and is the focus of ongoing
+      development.
 common:
   - type: AsyncAPI
     url: asyncapi/customer-io-reporting-webhooks-asyncapi.yml
@@ -89,3 +85,6 @@ common:
   - type: JSON-LD
     url: json-ld/customer-io-context.jsonld
 modified: '2026-03-20'
+description: >-
+  Learn about Customer.io's Track API to programmatically add people to your audience
+  and trigger campaigns based on customer behavior.
