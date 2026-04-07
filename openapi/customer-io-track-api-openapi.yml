@@ -24,28 +24,28 @@ servers:
   - url: https://track-eu.customer.io/api/v1
     description: EU Production Server
 tags:
-  - name: Customers
-    description: >-
-      Manage customer profiles by creating, updating, and deleting people in
-      your Customer.io workspace.
-  - name: Events
-    description: >-
-      Track customer events and anonymous events to record behavioral data
-      and trigger messaging workflows.
-  - name: Devices
-    description: >-
-      Manage push notification devices associated with customer profiles.
-  - name: Merge
-    description: >-
-      Merge two customer profiles into a single profile.
-  - name: Entity
-    description: >-
-      Track API v2 entity endpoint for creating and managing people and
-      objects using a unified request format.
   - name: Batch
     description: >-
       Track API v2 batch endpoint for sending multiple entity operations in
       a single request.
+  - name: Customers
+    description: >-
+      Manage customer profiles by creating, updating, and deleting people in
+      your Customer.io workspace.
+  - name: Devices
+    description: >-
+      Manage push notification devices associated with customer profiles.
+  - name: Entity
+    description: >-
+      Track API v2 entity endpoint for creating and managing people and
+      objects using a unified request format.
+  - name: Events
+    description: >-
+      Track customer events and anonymous events to record behavioral data
+      and trigger messaging workflows.
+  - name: Merge
+    description: >-
+      Merge two customer profiles into a single profile.
 security:
   - basicAuth: []
 paths:

@@ -1,17 +1,15 @@
 aid: customer-io
-url: 
-  https://raw.githubusercontent.com/api-evangelist/customer-io/refs/heads/main/apis.yml
+url: https://raw.githubusercontent.com/api-evangelist/customer-io/refs/heads/main/apis.yml
 apis:
   - aid: customer-io:track-api
     name: Customer.io Track API
     tags:
-      - Messaging
-      - Marketing Automation
+      - Behavioral Data
       - Customer Data
       - Event Tracking
-      - Behavioral Data
-    image: 
-      https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+      - Marketing Automation
+      - Messaging
+    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: https://track.customer.io
     humanURL: https://docs.customer.io/integrations/api/track/
     properties:
@@ -28,14 +26,13 @@ apis:
   - aid: customer-io:app-api
     name: Customer.io App API
     tags:
-      - Messaging
-      - Marketing Automation
-      - Campaigns
-      - Transactional Email
-      - Segments
       - Broadcasts
-    image: 
-      https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+      - Campaigns
+      - Marketing Automation
+      - Messaging
+      - Segments
+      - Transactional Email
+    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: https://api.customer.io
     humanURL: https://docs.customer.io/integrations/api/app/
     properties:
@@ -51,16 +48,14 @@ apis:
   - aid: customer-io:pipelines-api
     name: Customer.io Pipelines API
     tags:
-      - Messaging
+      - CDP
       - Customer Data Platform
       - Data Ingestion
       - Marketing Automation
-      - CDP
-    image: 
-      https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+      - Messaging
+    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: https://cdp.customer.io
-    humanURL: 
-      https://docs.customer.io/integrations/data-in/connections/http-api/
+    humanURL: https://docs.customer.io/integrations/data-in/connections/http-api/
     properties:
       - url: https://docs.customer.io/integrations/data-in/connections/http-api/
         type: Documentation

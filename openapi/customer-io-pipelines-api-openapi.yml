@@ -24,23 +24,6 @@ servers:
   - url: https://cdp-eu.customer.io/v1
     description: EU Production Server
 tags:
-  - name: Identify
-    description: >-
-      Identify people and set their profile attributes. The identify call
-      tells Customer.io who the current user is and assigns traits to them.
-  - name: Track
-    description: >-
-      Track events to record actions people take in your app or on your
-      website.
-  - name: Page
-    description: >-
-      Record page views from web applications.
-  - name: Screen
-    description: >-
-      Record screen views from mobile applications.
-  - name: Group
-    description: >-
-      Associate people with groups or organizations.
   - name: Alias
     description: >-
       Merge two user identities by creating an alias linking a new identity
@@ -48,6 +31,23 @@ tags:
   - name: Batch
     description: >-
       Send multiple API calls in a single request for improved performance.
+  - name: Group
+    description: >-
+      Associate people with groups or organizations.
+  - name: Identify
+    description: >-
+      Identify people and set their profile attributes. The identify call
+      tells Customer.io who the current user is and assigns traits to them.
+  - name: Page
+    description: >-
+      Record page views from web applications.
+  - name: Screen
+    description: >-
+      Record screen views from mobile applications.
+  - name: Track
+    description: >-
+      Track events to record actions people take in your app or on your
+      website.
 security:
   - basicAuth: []
 paths:

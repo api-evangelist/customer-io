@@ -24,10 +24,9 @@ servers:
   - url: https://api-eu.customer.io/v1
     description: EU Production Server
 tags:
-  - name: Transactional
+  - name: Activities
     description: >-
-      Send transactional messages such as password resets, purchase receipts,
-      and other important notifications triggered by user actions.
+      Retrieve activity logs for your workspace.
   - name: Broadcasts
     description: >-
       Trigger API-triggered broadcasts to send messages to groups of people
@@ -36,6 +35,20 @@ tags:
     description: >-
       Retrieve information about campaigns, campaign actions, and campaign
       metrics in your workspace.
+  - name: Collections
+    description: >-
+      Manage collections of data used in message personalization.
+  - name: Customers
+    description: >-
+      Look up customer profiles, search for customers, and retrieve customer
+      attributes and activity data.
+  - name: Exports
+    description: >-
+      Export customer data, deliveries, and other information from your
+      workspace.
+  - name: Messages
+    description: >-
+      Retrieve information about individual messages sent to customers.
   - name: Newsletters
     description: >-
       Retrieve information about newsletters and newsletter variants.
@@ -43,29 +56,16 @@ tags:
     description: >-
       Create and manage manual segments, and retrieve segment membership
       information.
-  - name: Customers
-    description: >-
-      Look up customer profiles, search for customers, and retrieve customer
-      attributes and activity data.
-  - name: Messages
-    description: >-
-      Retrieve information about individual messages sent to customers.
-  - name: Exports
-    description: >-
-      Export customer data, deliveries, and other information from your
-      workspace.
-  - name: Activities
-    description: >-
-      Retrieve activity logs for your workspace.
-  - name: Collections
-    description: >-
-      Manage collections of data used in message personalization.
   - name: Sender Identities
     description: >-
       Manage sender identities used for sending messages.
   - name: Snippets
     description: >-
       Manage reusable content snippets for use in messages.
+  - name: Transactional
+    description: >-
+      Send transactional messages such as password resets, purchase receipts,
+      and other important notifications triggered by user actions.
 security:
   - bearerAuth: []
 paths:
