@@ -1,0 +1,46 @@
+extends: spectral:oas
+rules:
+  customer-io-info-contact:
+    description: Customer.io API specs must declare a contact.
+    severity: warn
+    given: $.info
+    then:
+      field: contact
+      function: truthy
+  customer-io-server-https:
+    description: Customer.io API server URLs must use HTTPS.
+    severity: error
+    given: $.servers[*].url
+    then:
+      function: pattern
+      functionOptions:
+        match: '^https://'
+  customer-io-base-host:
+    description: Customer.io API base URLs must point to a customer.io host.
+    severity: error
+    given: $.servers[*].url
+    then:
+      function: pattern
+      functionOptions:
+        match: '^https://([a-z]+\.)?customer\.io'
+  customer-io-tags-required:
+    description: Every operation must declare at least one tag.
+    severity: warn
+    given: $.paths[*][get,post,put,patch,delete]
+    then:
+      field: tags
+      function: truthy
+  customer-io-operation-id-required:
+    description: Every operation must declare an operationId.
+    severity: error
+    given: $.paths[*][get,post,put,patch,delete]
+    then:
+      field: operationId
+      function: truthy
+  customer-io-security-required:
+    description: Every operation must declare security requirements.
+    severity: warn
+    given: $.paths[*][get,post,put,patch,delete]
+    then:
+      field: security
+      function: truthy

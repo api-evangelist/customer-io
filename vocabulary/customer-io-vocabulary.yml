@@ -1,0 +1,29 @@
+name: Customer.io Vocabulary
+description: >-
+  Controlled vocabulary describing the core concepts of the Customer.io APIs (Track,
+  App, and Pipelines), including people/customers, events, devices, segments, broadcasts,
+  campaigns, newsletters, transactional messages, and reporting webhooks.
+modified: '2026-04-28'
+terms:
+  - term: Customer
+    description: A person identified inside Customer.io with a stable id, traits, and timestamps.
+  - term: Event
+    description: A behavioral event tracked against a customer, with name, timestamp, and data payload.
+  - term: Device
+    description: A push-capable device (iOS or Android) registered against a customer.
+  - term: Segment
+    description: A static or dynamic group of customers used for targeting messages and campaigns.
+  - term: Campaign
+    description: A multi-step, trigger-based automated message workflow.
+  - term: Broadcast
+    description: A one-time message sent to a static or filtered audience.
+  - term: Newsletter
+    description: A scheduled email sent to a defined audience.
+  - term: TransactionalMessage
+    description: A message triggered by an application event and sent to an individual customer.
+  - term: Workspace
+    description: An isolated Customer.io environment containing customers, events, and configuration.
+  - term: ReportingWebhook
+    description: An outbound webhook that delivers message lifecycle events (delivered, opened, clicked, bounced, etc.).
+  - term: PipelinesCall
+    description: A Segment-spec data ingestion call - identify, track, page, screen, group, or alias.

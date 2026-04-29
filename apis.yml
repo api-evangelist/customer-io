@@ -69,6 +69,10 @@ apis:
       outbound data integrations and transformations, and is the focus of ongoing
       development.
 common:
+  - type: Website
+    url: https://customer.io
+  - type: Documentation
+    url: https://docs.customer.io
   - type: AsyncAPI
     url: asyncapi/customer-io-reporting-webhooks-asyncapi.yml
   - type: JSONSchema
@@ -79,7 +83,40 @@ common:
     url: json-schema/customer-io-webhook-payload-schema.json
   - type: JSON-LD
     url: json-ld/customer-io-context.jsonld
-modified: '2026-03-20'
+  - type: Vocabulary
+    url: vocabulary/customer-io-vocabulary.yml
+  - type: Rules
+    url: rules/customer-io-rules.yml
+  - type: Capabilities
+    url: capabilities/customer-io-capabilities.yml
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
+specificationVersion: '0.20'
+created: '2024-01-01'
+modified: '2026-04-28'
+name: Customer.io
+tags:
+  - Behavioral Data
+  - Broadcasts
+  - Campaigns
+  - CDP
+  - Customer Data
+  - Customer Data Platform
+  - Data Ingestion
+  - Email
+  - Event Tracking
+  - Marketing Automation
+  - Messaging
+  - Push Notifications
+  - Segments
+  - SMS
+  - Transactional Email
 description: >-
-  Learn about Customer.io's Track API to programmatically add people to your audience
-  and trigger campaigns based on customer behavior.
+  Customer.io is a customer engagement platform that combines a customer data platform,
+  marketing automation, and messaging delivery to send behavior-triggered email, push,
+  SMS, and in-app messages. Its API surface includes the Track API for sending behavioral
+  data and customer profile updates, the App API for managing workspace resources
+  and sending transactional and broadcast messages, the Pipelines API which is a
+  Segment-spec data ingestion interface, and outbound reporting webhooks that deliver
+  message lifecycle events.

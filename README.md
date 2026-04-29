@@ -67,17 +67,24 @@ The Customer.io Pipelines API is the newer data ingestion interface for getting 
 
 ## Common Properties
 
-- [Portal](https://customer.io/docs/)
-- [Documentation](https://docs.customer.io/)
 - [Website](https://customer.io/)
-- [PrivacyPolicy](https://customer.io/legal/privacy-policy/)
-- [TermsOfService](https://customer.io/legal/terms-of-service/)
+- [Documentation](https://docs.customer.io/)
+- [Privacy Policy](https://customer.io/legal/privacy-policy/)
+- [Terms of Service](https://customer.io/legal/terms-of-service/)
 - [Support](https://customer.io/contact/)
 - [Blog](https://customer.io/blog/)
 - [Login](https://fly.customer.io/login)
+- [AsyncAPI - Reporting Webhooks](asyncapi/customer-io-reporting-webhooks-asyncapi.yml)
+- [JSON Schema - Customer](json-schema/customer-io-customer-schema.json)
+- [JSON Schema - Event](json-schema/customer-io-event-schema.json)
+- [JSON Schema - Webhook Payload](json-schema/customer-io-webhook-payload-schema.json)
+- [JSON-LD Context](json-ld/customer-io-context.jsonld)
+- [Vocabulary](vocabulary/customer-io-vocabulary.yml)
+- [Rules](rules/customer-io-rules.yml)
+- [Capabilities](capabilities/customer-io-capabilities.yml)
 
 ## Maintainers
 
-**FN:** API Evangelist
+**FN:** Kin Lane
 
-**Email:** info@apievangelist.com
+**Email:** kin@apievangelist.com

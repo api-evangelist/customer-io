@@ -1,0 +1,68 @@
+name: Customer.io Capabilities
+description: >-
+  Capability profile for the Customer.io API surface across the Track API, App API,
+  and Pipelines API. Capabilities describe the major operational outcomes a developer
+  can achieve when integrating with Customer.io.
+modified: '2026-04-28'
+apis:
+  - customer-io-track-api
+  - customer-io-app-api
+  - customer-io-pipelines-api
+capabilities:
+  - id: identify-customer
+    name: Identify Customer
+    description: Create or update a customer profile with traits.
+    apis:
+      - customer-io-track-api
+      - customer-io-pipelines-api
+  - id: track-event
+    name: Track Event
+    description: Send a behavioral event tied to a customer or anonymous user.
+    apis:
+      - customer-io-track-api
+      - customer-io-pipelines-api
+  - id: manage-devices
+    name: Manage Push Devices
+    description: Register, update, and delete iOS and Android push devices for customers.
+    apis:
+      - customer-io-track-api
+  - id: page-screen-track
+    name: Page and Screen Tracking
+    description: Record page views and mobile screen views in the Segment-spec format.
+    apis:
+      - customer-io-pipelines-api
+  - id: group-alias
+    name: Group and Alias
+    description: Associate users with groups and merge identifiers across the customer record.
+    apis:
+      - customer-io-pipelines-api
+  - id: send-transactional
+    name: Send Transactional Message
+    description: Send a transactional email or SMS message to an individual customer via API.
+    apis:
+      - customer-io-app-api
+  - id: trigger-broadcast
+    name: Trigger Broadcast
+    description: Trigger a configured broadcast campaign to a segment.
+    apis:
+      - customer-io-app-api
+  - id: manage-segments
+    name: Manage Segments
+    description: Create, list, and update manual segments and their membership.
+    apis:
+      - customer-io-app-api
+  - id: export-customers
+    name: Export Customers
+    description: Export customer data, segments, and lists for offline analysis.
+    apis:
+      - customer-io-app-api
+  - id: campaign-reporting
+    name: Campaign Reporting
+    description: Retrieve performance and metrics data for campaigns and newsletters.
+    apis:
+      - customer-io-app-api
+  - id: receive-webhook-events
+    name: Receive Webhook Events
+    description: Subscribe to outbound reporting webhooks for message lifecycle events.
+    apis:
+      - customer-io-reporting-webhooks
