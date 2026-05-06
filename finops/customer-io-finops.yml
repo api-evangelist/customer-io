@@ -1,5 +1,6 @@
 specification: FinOps Framework
 specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
 alignedWith:
   framework: FinOps Foundation Framework
   frameworkUrl: https://www.finops.org/framework/
@@ -8,43 +9,37 @@ alignedWith:
   dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
 provider: Customer.io
 providerId: customer-io
-publisherName: Customer.io
-serviceCategory: API
+publisherName: Peaberry Software, Inc.
+serviceCategory: Marketing Automation
 created: '2026-05-04'
-modified: '2026-05-04'
+modified: '2026-05-05'
+reconciled: true
 tags:
-  - Behavioral Data
-  - Broadcasts
-  - Campaigns
-  - CDP
-  - Customer Data
   - Customer Data Platform
-  - Data Ingestion
-  - Email
-  - Event Tracking
   - Marketing Automation
   - Messaging
-  - Push Notifications
-  - Segments
-  - SMS
-  - Transactional Email
   - FinOps
   - Cost Management
   - FOCUS
-description: FinOps framework definition for the Customer.io API surface. Provides a FOCUS-aligned mapping
-  for cost allocation, usage measurement, and unit-economics reporting across the provider's APIs.
+description: 'FOCUS-aligned FinOps for Customer.io: tiered platform subscription with quotas on profiles
+  and monthly emails, plus per-profile, per-1K-email, and per-100K-AI-credit overages.'
+sources:
+  - https://customer.io/pricing/
+  - https://docs.customer.io/api/
 principles:
   - name: Visibility
-    description: Make API consumption costs visible to engineering, product, and finance teams in near
-      real-time.
+    description: Use the Customer.io workspace usage dashboard, billing screen, and Pipelines audit log
+      to track profile counts, sent emails, and AI credit consumption against plan quotas.
   - name: Allocation
-    description: Tag every chargeable API call with the consuming team, environment, application, and
-      feature so cost can be allocated.
+    description: Use workspaces, segments, and campaign tags to attribute messaging spend to product
+      lines, geographies, and lifecycle stages.
   - name: Optimization
-    description: Continuously evaluate request patterns, caching, batching, and tier selection to reduce
-      cost per useful unit of work.
+    description: Suppress dormant profiles to stay under the 5,000-profile Essentials cap; use Pipelines
+      / CDP to dedupe before identify; route low-value sends through cheaper channels rather than email
+      overage; right-size AI credit packs.
   - name: Accountability
-    description: Establish budget owners and chargeback or showback flows for each consuming team.
+    description: Marketing-ops owns the monthly true-up against profile and email quotas; engineering
+      owns ingestion correctness so overage is real consumption rather than duplicate identify calls.
 domains:
   - name: Understand Usage and Cost
     capabilities:
@@ -57,24 +52,17 @@ domains:
       - Planning and Estimating
       - Forecasting
       - Budgeting
-      - Benchmarking
       - Unit Economics
   - name: Optimize Usage and Cost
     capabilities:
-      - Architecting for Cloud
-      - Rate Optimization
       - Workload Optimization
-      - Cloud Sustainability
       - Licensing and SaaS
   - name: Manage the FinOps Practice
     capabilities:
-      - FinOps Practice Operations
-      - FinOps Education and Enablement
       - Invoicing and Chargeback
       - Onboarding Workloads
-      - Intersecting Disciplines
 billingModel:
-  pricingCategory: Usage-Based
+  pricingCategory: Tiered Subscription + Usage Overage
   billingFrequency: Monthly
   billingCurrency: USD
   chargeCategories:
@@ -86,41 +74,52 @@ billingModel:
   chargeFrequency: Recurring
 focusColumns:
   ServiceName: Customer.io
-  ServiceCategory: Developer Tools / API
+  ServiceCategory: Marketing Automation
   ProviderName: Customer.io
-  PublisherName: Customer.io
-  InvoiceIssuerName: Customer.io
-  PricingCategory: Usage-Based
-  PricingUnit: request
+  PublisherName: Peaberry Software, Inc.
+  InvoiceIssuerName: Peaberry Software, Inc.
+  PricingCategory: Subscription
+  PricingUnit: workspace-month
   BillingCurrency: USD
   ChargeCategory: Usage
 meters:
+  - name: platform_subscription
+    description: Monthly platform fee per workspace tied to plan tier
+    unit: month
+    aggregation: sum
+    dimensions:
+      - plan
+      - workspace
+  - name: profiles
+    description: People + objects stored in the workspace
+    unit: profile
+    aggregation: max
+    dimensions:
+      - workspace
+      - object_type
+  - name: emails_sent
+    description: Outbound email sends across campaigns, broadcasts, and transactional sends
+    unit: email
+    aggregation: sum
+    dimensions:
+      - workspace
+      - campaign
+      - channel
+  - name: ai_credits
+    description: AI Agent credits consumed
+    unit: credit
+    aggregation: sum
+    dimensions:
+      - workspace
+      - skill
   - name: api_requests
-    description: Count of billable API requests
+    description: API calls against Track / App / Pipelines (not separately billed; observed for capacity)
     unit: request
     aggregation: sum
     dimensions:
       - api
       - endpoint
-      - tier
-      - region
-      - consumer
-  - name: data_egress
-    description: Bytes returned over the network in API responses
-    unit: GB
-    aggregation: sum
-    dimensions:
-      - api
-      - region
-      - consumer
-  - name: compute_seconds
-    description: Server-side compute consumed by the request, where applicable
-    unit: second
-    aggregation: sum
-    dimensions:
-      - api
-      - endpoint
-      - tier
+      - workspace
 apis:
   - name: Customer.io Track API
     baseURL: https://track.customer.io
@@ -154,11 +153,11 @@ apis:
     serviceName: Customer.io Pipelines API
     serviceCategory: API
 unitEconomics:
-  - name: Cost per 1K Requests
-    metric: billed_cost / (api_requests / 1000)
+  - name: Cost per Profile
+    metric: billed_cost / profiles
     target: TBD
-  - name: Cost per Active Consumer
-    metric: billed_cost / active_consumers
+  - name: Cost per 1K Emails
+    metric: billed_cost / (emails_sent / 1000)
     target: TBD
 maintainers:
   - FN: Kin Lane

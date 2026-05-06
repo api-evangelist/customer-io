@@ -4,106 +4,68 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: Customer.io
 providerId: customer-io
 created: '2026-05-04'
-modified: '2026-05-04'
+modified: '2026-05-05'
+reconciled: false
 tags:
-  - Behavioral Data
-  - Broadcasts
-  - Campaigns
-  - CDP
-  - Customer Data
   - Customer Data Platform
-  - Data Ingestion
-  - Email
-  - Event Tracking
   - Marketing Automation
   - Messaging
-  - Push Notifications
-  - Segments
-  - SMS
-  - Transactional Email
   - Rate Limiting
   - Quotas
   - Throttling
-description: Machine-readable rate limit definitions for the Customer.io API surface. Captures per-tier
-  quotas, burst behavior, response signaling, and recovery semantics. Defaults are scaffold values to
-  be replaced with published provider limits.
+description: Customer.io exposes three primary APIs (Track, App, Pipelines / CDP) with per-workspace
+  rate limits. Documented limits are not currently published as fixed numeric thresholds in public docs;
+  Customer.io throttles via HTTP 429 with Retry-After. Track API is optimized for high-throughput event
+  ingestion; App and CDP have lower default budgets.
+sources:
+  - https://customer.io/pricing/
+  - https://docs.customer.io/api/
+notes: Public docs do not publish fixed RPS numbers; reach out to support for raised limits on Premium /
+  Enterprise tiers. Soft caps are workspace-scoped, not per-key.
 headers:
-  limit: X-RateLimit-Limit
-  remaining: X-RateLimit-Remaining
-  reset: X-RateLimit-Reset
   retryAfter: Retry-After
-  policy: RateLimit-Policy
 responseCodes:
   throttled: 429
   quotaExceeded: 429
   serviceUnavailable: 503
 limits:
-  - tier: free
-    name: Free Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 10
-    burst: 20
-    timeFrame: minute
+  - name: Track API (event ingestion)
+    scope: workspace
+    metric: requests_per_second
+    limit: see Customer.io API reference (high-throughput ingestion)
     applies:
       - Customer.io Track API
-      - Customer.io App API
-      - Customer.io Pipelines API
-  - tier: free
-    name: Free Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 1000
-    timeFrame: month
+  - name: App API (campaigns / broadcasts / segments)
+    scope: workspace
+    metric: requests_per_second
+    limit: see Customer.io API reference
     applies:
-      - Customer.io Track API
       - Customer.io App API
-      - Customer.io Pipelines API
-  - tier: professional
-    name: Professional Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 100
-    burst: 200
-    timeFrame: minute
+  - name: Pipelines (CDP) API
+    scope: workspace
+    metric: requests_per_second
+    limit: see Customer.io API reference
     applies:
-      - Customer.io Track API
-      - Customer.io App API
       - Customer.io Pipelines API
-  - tier: professional
-    name: Professional Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 100000
-    timeFrame: month
+  - name: Per-workspace email send budget
+    scope: workspace
+    metric: emails_per_month
+    limit: tied to plan (1M included on Essentials; custom on Premium / Enterprise)
     applies:
-      - Customer.io Track API
       - Customer.io App API
-      - Customer.io Pipelines API
-  - tier: enterprise
-    name: Enterprise Negotiated Limit
-    scope: contract
-    metric: requests_per_minute
-    limit: 1000
-    burst: 5000
-    timeFrame: minute
-    applies:
-      - Customer.io Track API
-      - Customer.io App API
-      - Customer.io Pipelines API
 policies:
   - name: Backoff Strategy
-    description: Clients should implement exponential backoff with jitter, honoring the Retry-After header
-      when present.
-  - name: Burst Handling
-    description: Short bursts above the steady-state limit are tolerated up to the documented burst ceiling
-      before throttling engages.
-  - name: Quota Reset
-    description: Monthly quotas reset at the start of each calendar month in UTC. Per-minute and per-second
-      windows reset on a sliding-window basis.
-  - name: Fair Use
-    description: Even on uncapped enterprise tiers, sustained usage that materially impacts shared infrastructure
-      may be subject to fair-use throttling.
+    description: On 429, honor the Retry-After header (seconds). Use exponential backoff with jitter on
+      additional retries.
+  - name: Bulk-friendly endpoints
+    description: Use the batch identify and batch event endpoints rather than tight loops of single calls
+      to stay within ingestion budgets.
+  - name: Plan-tied volume caps
+    description: Email volume caps are set by plan (Essentials 1M / Premium custom / Enterprise custom);
+      overage is metered, not throttled.
+  - name: Soft-vs-hard limits
+    description: Soft rate caps return 429 and recover on Retry-After; sustained over-cap traffic may
+      trigger workspace-scoped backpressure.
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
