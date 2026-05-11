@@ -89,6 +89,10 @@ common:
     url: rules/customer-io-rules.yml
   - type: Capabilities
     url: capabilities/customer-io-capabilities.yml
+  - type: Integrations
+    url: https://customer.io/integrations
+integrations:
+  - name: See all integrations See all integrations
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
