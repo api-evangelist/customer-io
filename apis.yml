@@ -81,7 +81,7 @@ common:
     url: json-schema/customer-io-event-schema.json
   - type: JSONSchema
     url: json-schema/customer-io-webhook-payload-schema.json
-  - type: JSON-LD
+  - type: JSONLD
     url: json-ld/customer-io-context.jsonld
   - type: Vocabulary
     url: vocabulary/customer-io-vocabulary.yml
