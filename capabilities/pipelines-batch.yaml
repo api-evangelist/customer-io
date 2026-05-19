@@ -1,0 +1,81 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Customer.io Pipelines API — Batch
+  description: 'Customer.io Pipelines API — Batch. 1 operations. Lead operation: Send a batch of API calls. Self-contained
+    Naftiko capability covering one Customer Io business surface.'
+  tags:
+  - Customer Io
+  - Batch
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    CUSTOMER_IO_API_KEY: CUSTOMER_IO_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: pipelines-batch
+    baseUri: https://cdp.customer.io/v1
+    description: Customer.io Pipelines API — Batch business capability. Self-contained, no shared references.
+    resources:
+    - name: batch
+      path: /batch
+      operations:
+      - name: batchcalls
+        method: POST
+        description: Send a batch of API calls
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: basic
+      username: '{{env.CUSTOMER_IO_USER}}'
+      password: '{{env.CUSTOMER_IO_PASS}}'
+  exposes:
+  - type: rest
+    namespace: pipelines-batch-rest
+    port: 8080
+    description: REST adapter for Customer.io Pipelines API — Batch. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/batch
+      name: batch
+      description: REST surface for batch.
+      operations:
+      - method: POST
+        name: batchcalls
+        description: Send a batch of API calls
+        call: pipelines-batch.batchcalls
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: pipelines-batch-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Customer.io Pipelines API — Batch. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: send-batch-api-calls
+      description: Send a batch of API calls
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: pipelines-batch.batchcalls
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

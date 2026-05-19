@@ -1,0 +1,80 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Customer.io App API — Broadcasts
+  description: 'Customer.io App API — Broadcasts. 1 operations. Lead operation: Trigger an API-triggered broadcast. Self-contained
+    Naftiko capability covering one Customer Io business surface.'
+  tags:
+  - Customer Io
+  - Broadcasts
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    CUSTOMER_IO_API_KEY: CUSTOMER_IO_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: app-broadcasts
+    baseUri: https://api.customer.io/v1
+    description: Customer.io App API — Broadcasts business capability. Self-contained, no shared references.
+    resources:
+    - name: campaigns-campaign_id-triggers
+      path: /campaigns/{campaign_id}/triggers
+      operations:
+      - name: triggerbroadcast
+        method: POST
+        description: Trigger an API-triggered broadcast
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    authentication:
+      type: bearer
+      token: '{{env.CUSTOMER_IO_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: app-broadcasts-rest
+    port: 8080
+    description: REST adapter for Customer.io App API — Broadcasts. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/campaigns/{campaign-id}/triggers
+      name: campaigns-campaign-id-triggers
+      description: REST surface for campaigns-campaign_id-triggers.
+      operations:
+      - method: POST
+        name: triggerbroadcast
+        description: Trigger an API-triggered broadcast
+        call: app-broadcasts.triggerbroadcast
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: app-broadcasts-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Customer.io App API — Broadcasts. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: trigger-api-triggered-broadcast
+      description: Trigger an API-triggered broadcast
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: app-broadcasts.triggerbroadcast
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

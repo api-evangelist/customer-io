@@ -1,0 +1,81 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Customer.io Pipelines API — Page
+  description: 'Customer.io Pipelines API — Page. 1 operations. Lead operation: Track a page view. Self-contained Naftiko
+    capability covering one Customer Io business surface.'
+  tags:
+  - Customer Io
+  - Page
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    CUSTOMER_IO_API_KEY: CUSTOMER_IO_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: pipelines-page
+    baseUri: https://cdp.customer.io/v1
+    description: Customer.io Pipelines API — Page business capability. Self-contained, no shared references.
+    resources:
+    - name: page
+      path: /page
+      operations:
+      - name: trackpageview
+        method: POST
+        description: Track a page view
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: basic
+      username: '{{env.CUSTOMER_IO_USER}}'
+      password: '{{env.CUSTOMER_IO_PASS}}'
+  exposes:
+  - type: rest
+    namespace: pipelines-page-rest
+    port: 8080
+    description: REST adapter for Customer.io Pipelines API — Page. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/page
+      name: page
+      description: REST surface for page.
+      operations:
+      - method: POST
+        name: trackpageview
+        description: Track a page view
+        call: pipelines-page.trackpageview
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: pipelines-page-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Customer.io Pipelines API — Page. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: track-page-view
+      description: Track a page view
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: pipelines-page.trackpageview
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

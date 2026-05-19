@@ -1,0 +1,81 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Customer.io Pipelines API — Identify
+  description: 'Customer.io Pipelines API — Identify. 1 operations. Lead operation: Identify a person. Self-contained Naftiko
+    capability covering one Customer Io business surface.'
+  tags:
+  - Customer Io
+  - Identify
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    CUSTOMER_IO_API_KEY: CUSTOMER_IO_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: pipelines-identify
+    baseUri: https://cdp.customer.io/v1
+    description: Customer.io Pipelines API — Identify business capability. Self-contained, no shared references.
+    resources:
+    - name: identify
+      path: /identify
+      operations:
+      - name: identifyperson
+        method: POST
+        description: Identify a person
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: basic
+      username: '{{env.CUSTOMER_IO_USER}}'
+      password: '{{env.CUSTOMER_IO_PASS}}'
+  exposes:
+  - type: rest
+    namespace: pipelines-identify-rest
+    port: 8080
+    description: REST adapter for Customer.io Pipelines API — Identify. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/identify
+      name: identify
+      description: REST surface for identify.
+      operations:
+      - method: POST
+        name: identifyperson
+        description: Identify a person
+        call: pipelines-identify.identifyperson
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: pipelines-identify-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Customer.io Pipelines API — Identify. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: identify-person
+      description: Identify a person
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: pipelines-identify.identifyperson
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

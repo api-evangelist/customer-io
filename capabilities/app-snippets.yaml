@@ -1,0 +1,154 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Customer.io App API — Snippets
+  description: 'Customer.io App API — Snippets. 3 operations. Lead operation: List snippets. Self-contained Naftiko capability
+    covering one Customer Io business surface.'
+  tags:
+  - Customer Io
+  - Snippets
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    CUSTOMER_IO_API_KEY: CUSTOMER_IO_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: app-snippets
+    baseUri: https://api.customer.io/v1
+    description: Customer.io App API — Snippets business capability. Self-contained, no shared references.
+    resources:
+    - name: snippets
+      path: /snippets
+      operations:
+      - name: listsnippets
+        method: GET
+        description: List snippets
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: snippets-snippet_name
+      path: /snippets/{snippet_name}
+      operations:
+      - name: updatesnippet
+        method: PUT
+        description: Update a snippet
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: snippet_name
+          in: path
+          type: string
+          description: The name of the snippet to create or update.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: deletesnippet
+        method: DELETE
+        description: Delete a snippet
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: snippet_name
+          in: path
+          type: string
+          description: The name of the snippet to delete.
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.CUSTOMER_IO_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: app-snippets-rest
+    port: 8080
+    description: REST adapter for Customer.io App API — Snippets. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/snippets
+      name: snippets
+      description: REST surface for snippets.
+      operations:
+      - method: GET
+        name: listsnippets
+        description: List snippets
+        call: app-snippets.listsnippets
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/snippets/{snippet-name}
+      name: snippets-snippet-name
+      description: REST surface for snippets-snippet_name.
+      operations:
+      - method: PUT
+        name: updatesnippet
+        description: Update a snippet
+        call: app-snippets.updatesnippet
+        with:
+          snippet_name: rest.snippet_name
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deletesnippet
+        description: Delete a snippet
+        call: app-snippets.deletesnippet
+        with:
+          snippet_name: rest.snippet_name
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: app-snippets-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Customer.io App API — Snippets. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: list-snippets
+      description: List snippets
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: app-snippets.listsnippets
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-snippet
+      description: Update a snippet
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: app-snippets.updatesnippet
+      with:
+        snippet_name: tools.snippet_name
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-snippet
+      description: Delete a snippet
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: app-snippets.deletesnippet
+      with:
+        snippet_name: tools.snippet_name
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,81 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Customer.io Track API — Entity
+  description: 'Customer.io Track API — Entity. 1 operations. Lead operation: Track a single entity. Self-contained Naftiko
+    capability covering one Customer Io business surface.'
+  tags:
+  - Customer Io
+  - Entity
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    CUSTOMER_IO_API_KEY: CUSTOMER_IO_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: track-entity
+    baseUri: https://track.customer.io/api/v1
+    description: Customer.io Track API — Entity business capability. Self-contained, no shared references.
+    resources:
+    - name: ..-v2-entity
+      path: ../v2/entity
+      operations:
+      - name: trackentity
+        method: POST
+        description: Track a single entity
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: basic
+      username: '{{env.CUSTOMER_IO_USER}}'
+      password: '{{env.CUSTOMER_IO_PASS}}'
+  exposes:
+  - type: rest
+    namespace: track-entity-rest
+    port: 8080
+    description: REST adapter for Customer.io Track API — Entity. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1//v2/entity
+      name: v2-entity
+      description: REST surface for ..-v2-entity.
+      operations:
+      - method: POST
+        name: trackentity
+        description: Track a single entity
+        call: track-entity.trackentity
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: track-entity-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Customer.io Track API — Entity. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: track-single-entity
+      description: Track a single entity
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: track-entity.trackentity
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

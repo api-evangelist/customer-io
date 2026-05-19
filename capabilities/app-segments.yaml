@@ -1,0 +1,169 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Customer.io App API — Segments
+  description: 'Customer.io App API — Segments. 4 operations. Lead operation: List segments. Self-contained Naftiko capability
+    covering one Customer Io business surface.'
+  tags:
+  - Customer Io
+  - Segments
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    CUSTOMER_IO_API_KEY: CUSTOMER_IO_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: app-segments
+    baseUri: https://api.customer.io/v1
+    description: Customer.io App API — Segments business capability. Self-contained, no shared references.
+    resources:
+    - name: segments
+      path: /segments
+      operations:
+      - name: listsegments
+        method: GET
+        description: List segments
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createsegment
+        method: POST
+        description: Create a manual segment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: segments-segment_id
+      path: /segments/{segment_id}
+      operations:
+      - name: getsegment
+        method: GET
+        description: Get a segment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: segments-segment_id-membership
+      path: /segments/{segment_id}/membership
+      operations:
+      - name: getsegmentmembership
+        method: GET
+        description: Get segment membership
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      token: '{{env.CUSTOMER_IO_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: app-segments-rest
+    port: 8080
+    description: REST adapter for Customer.io App API — Segments. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/segments
+      name: segments
+      description: REST surface for segments.
+      operations:
+      - method: GET
+        name: listsegments
+        description: List segments
+        call: app-segments.listsegments
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createsegment
+        description: Create a manual segment
+        call: app-segments.createsegment
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/segments/{segment-id}
+      name: segments-segment-id
+      description: REST surface for segments-segment_id.
+      operations:
+      - method: GET
+        name: getsegment
+        description: Get a segment
+        call: app-segments.getsegment
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/segments/{segment-id}/membership
+      name: segments-segment-id-membership
+      description: REST surface for segments-segment_id-membership.
+      operations:
+      - method: GET
+        name: getsegmentmembership
+        description: Get segment membership
+        call: app-segments.getsegmentmembership
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: app-segments-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Customer.io App API — Segments. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: list-segments
+      description: List segments
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: app-segments.listsegments
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-manual-segment
+      description: Create a manual segment
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: app-segments.createsegment
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-segment
+      description: Get a segment
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: app-segments.getsegment
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-segment-membership
+      description: Get segment membership
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: app-segments.getsegmentmembership
+      outputParameters:
+      - type: object
+        mapping: $.

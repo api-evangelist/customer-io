@@ -1,0 +1,134 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Customer.io App API — Newsletters
+  description: 'Customer.io App API — Newsletters. 3 operations. Lead operation: List newsletters. Self-contained Naftiko
+    capability covering one Customer Io business surface.'
+  tags:
+  - Customer Io
+  - Newsletters
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    CUSTOMER_IO_API_KEY: CUSTOMER_IO_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: app-newsletters
+    baseUri: https://api.customer.io/v1
+    description: Customer.io App API — Newsletters business capability. Self-contained, no shared references.
+    resources:
+    - name: newsletters
+      path: /newsletters
+      operations:
+      - name: listnewsletters
+        method: GET
+        description: List newsletters
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: newsletters-newsletter_id
+      path: /newsletters/{newsletter_id}
+      operations:
+      - name: getnewsletter
+        method: GET
+        description: Get a newsletter
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: newsletters-newsletter_id-metrics
+      path: /newsletters/{newsletter_id}/metrics
+      operations:
+      - name: getnewslettermetrics
+        method: GET
+        description: Get newsletter metrics
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      token: '{{env.CUSTOMER_IO_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: app-newsletters-rest
+    port: 8080
+    description: REST adapter for Customer.io App API — Newsletters. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/newsletters
+      name: newsletters
+      description: REST surface for newsletters.
+      operations:
+      - method: GET
+        name: listnewsletters
+        description: List newsletters
+        call: app-newsletters.listnewsletters
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/newsletters/{newsletter-id}
+      name: newsletters-newsletter-id
+      description: REST surface for newsletters-newsletter_id.
+      operations:
+      - method: GET
+        name: getnewsletter
+        description: Get a newsletter
+        call: app-newsletters.getnewsletter
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/newsletters/{newsletter-id}/metrics
+      name: newsletters-newsletter-id-metrics
+      description: REST surface for newsletters-newsletter_id-metrics.
+      operations:
+      - method: GET
+        name: getnewslettermetrics
+        description: Get newsletter metrics
+        call: app-newsletters.getnewslettermetrics
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: app-newsletters-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Customer.io App API — Newsletters. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: list-newsletters
+      description: List newsletters
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: app-newsletters.listnewsletters
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-newsletter
+      description: Get a newsletter
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: app-newsletters.getnewsletter
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-newsletter-metrics
+      description: Get newsletter metrics
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: app-newsletters.getnewslettermetrics
+      outputParameters:
+      - type: object
+        mapping: $.

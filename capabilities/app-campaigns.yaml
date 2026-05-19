@@ -1,0 +1,187 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Customer.io App API — Campaigns
+  description: 'Customer.io App API — Campaigns. 4 operations. Lead operation: List campaigns. Self-contained Naftiko capability
+    covering one Customer Io business surface.'
+  tags:
+  - Customer Io
+  - Campaigns
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    CUSTOMER_IO_API_KEY: CUSTOMER_IO_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: app-campaigns
+    baseUri: https://api.customer.io/v1
+    description: Customer.io App API — Campaigns business capability. Self-contained, no shared references.
+    resources:
+    - name: campaigns
+      path: /campaigns
+      operations:
+      - name: listcampaigns
+        method: GET
+        description: List campaigns
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: campaigns-campaign_id
+      path: /campaigns/{campaign_id}
+      operations:
+      - name: getcampaign
+        method: GET
+        description: Get a campaign
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: campaigns-campaign_id-actions
+      path: /campaigns/{campaign_id}/actions
+      operations:
+      - name: listcampaignactions
+        method: GET
+        description: List campaign actions
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: campaigns-campaign_id-metrics
+      path: /campaigns/{campaign_id}/metrics
+      operations:
+      - name: getcampaignmetrics
+        method: GET
+        description: Get campaign metrics
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: period
+          in: query
+          type: string
+          description: The time period for metrics aggregation.
+        - name: steps
+          in: query
+          type: integer
+          description: The number of time periods to return.
+        - name: type
+          in: query
+          type: string
+          description: The type of metric series to return.
+    authentication:
+      type: bearer
+      token: '{{env.CUSTOMER_IO_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: app-campaigns-rest
+    port: 8080
+    description: REST adapter for Customer.io App API — Campaigns. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/campaigns
+      name: campaigns
+      description: REST surface for campaigns.
+      operations:
+      - method: GET
+        name: listcampaigns
+        description: List campaigns
+        call: app-campaigns.listcampaigns
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/campaigns/{campaign-id}
+      name: campaigns-campaign-id
+      description: REST surface for campaigns-campaign_id.
+      operations:
+      - method: GET
+        name: getcampaign
+        description: Get a campaign
+        call: app-campaigns.getcampaign
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/campaigns/{campaign-id}/actions
+      name: campaigns-campaign-id-actions
+      description: REST surface for campaigns-campaign_id-actions.
+      operations:
+      - method: GET
+        name: listcampaignactions
+        description: List campaign actions
+        call: app-campaigns.listcampaignactions
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/campaigns/{campaign-id}/metrics
+      name: campaigns-campaign-id-metrics
+      description: REST surface for campaigns-campaign_id-metrics.
+      operations:
+      - method: GET
+        name: getcampaignmetrics
+        description: Get campaign metrics
+        call: app-campaigns.getcampaignmetrics
+        with:
+          period: rest.period
+          steps: rest.steps
+          type: rest.type
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: app-campaigns-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Customer.io App API — Campaigns. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: list-campaigns
+      description: List campaigns
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: app-campaigns.listcampaigns
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-campaign
+      description: Get a campaign
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: app-campaigns.getcampaign
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-campaign-actions
+      description: List campaign actions
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: app-campaigns.listcampaignactions
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-campaign-metrics
+      description: Get campaign metrics
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: app-campaigns.getcampaignmetrics
+      with:
+        period: tools.period
+        steps: tools.steps
+        type: tools.type
+      outputParameters:
+      - type: object
+        mapping: $.

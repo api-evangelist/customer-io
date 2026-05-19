@@ -1,0 +1,81 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Customer.io Pipelines API — Track
+  description: 'Customer.io Pipelines API — Track. 1 operations. Lead operation: Track an event. Self-contained Naftiko capability
+    covering one Customer Io business surface.'
+  tags:
+  - Customer Io
+  - Track
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    CUSTOMER_IO_API_KEY: CUSTOMER_IO_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: pipelines-track
+    baseUri: https://cdp.customer.io/v1
+    description: Customer.io Pipelines API — Track business capability. Self-contained, no shared references.
+    resources:
+    - name: track
+      path: /track
+      operations:
+      - name: trackevent
+        method: POST
+        description: Track an event
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: basic
+      username: '{{env.CUSTOMER_IO_USER}}'
+      password: '{{env.CUSTOMER_IO_PASS}}'
+  exposes:
+  - type: rest
+    namespace: pipelines-track-rest
+    port: 8080
+    description: REST adapter for Customer.io Pipelines API — Track. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/track
+      name: track
+      description: REST surface for track.
+      operations:
+      - method: POST
+        name: trackevent
+        description: Track an event
+        call: pipelines-track.trackevent
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: pipelines-track-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Customer.io Pipelines API — Track. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: track-event
+      description: Track an event
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: pipelines-track.trackevent
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
