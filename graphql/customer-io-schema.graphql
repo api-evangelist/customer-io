@@ -1,0 +1,928 @@
+# Customer.io Conceptual GraphQL Schema
+# Derived from the Customer.io App API, Track API, and Pipelines API.
+# This is a conceptual schema — Customer.io does not expose a native GraphQL endpoint.
+# Source: https://docs.customer.io/integrations/api/
+
+scalar DateTime
+scalar JSON
+
+# ─────────────────────────────────────────────
+# Enums
+# ─────────────────────────────────────────────
+
+enum SegmentType {
+  MANUAL
+  AUTOMATIC
+}
+
+enum AttributeType {
+  STRING
+  NUMBER
+  BOOLEAN
+  DATETIME
+  ARRAY
+}
+
+enum EventType {
+  PAGE
+  CUSTOM
+  ANONYMOUS
+  SCREEN
+}
+
+enum CampaignStatus {
+  DRAFT
+  RUNNING
+  PAUSED
+  STOPPED
+  FINISHED
+}
+
+enum TriggerType {
+  EVENT_TRIGGERED
+  SEGMENT_TRIGGERED
+  DATE_TRIGGERED
+  RECURRING
+}
+
+enum MessageType {
+  EMAIL
+  PUSH
+  SMS
+  SLACK
+  WEBHOOK
+  IN_APP
+}
+
+enum DeliveryStatus {
+  SENT
+  DELIVERED
+  OPENED
+  CLICKED
+  BOUNCED
+  FAILED
+  UNSUBSCRIBED
+  CONVERTED
+  SKIPPED
+}
+
+enum TemplateType {
+  EMAIL
+  PUSH
+  SMS
+  IN_APP
+  WEBHOOK
+  SLACK
+}
+
+enum WorkflowStepType {
+  SEND_MESSAGE
+  DELAY
+  CONDITION
+  UPDATE_ATTRIBUTE
+  ADD_TO_SEGMENT
+  REMOVE_FROM_SEGMENT
+  WEBHOOK
+}
+
+# ─────────────────────────────────────────────
+# Customer Types
+# ─────────────────────────────────────────────
+
+"""
+A customer profile tracked within Customer.io.
+"""
+type Customer {
+  id: ID!
+  identifier: CustomerIdentifier!
+  attributes: CustomerAttributes
+  segments: [CustomerSegment!]
+  devices: [Device!]
+  events: [Event!]
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+"""
+Extended customer record including segment memberships and device registrations.
+"""
+type CustomerDetails {
+  id: ID!
+  identifier: CustomerIdentifier!
+  attributes: CustomerAttributes
+  segments: [CustomerSegment!]
+  devices: [Device!]
+  events: [EventDetails!]
+  unsubscribed: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+"""
+Key-value attribute map associated with a customer profile.
+"""
+type CustomerAttributes {
+  email: String
+  name: String
+  plan: String
+  createdAt: DateTime
+  custom: JSON
+}
+
+"""
+Unique identifier used to look up or reference a customer.
+"""
+type CustomerIdentifier {
+  id: String
+  email: String
+  cioId: String
+}
+
+"""
+Association record linking a customer to a segment.
+"""
+type CustomerSegment {
+  customerId: ID!
+  segmentId: ID!
+  segment: Segment
+  addedAt: DateTime
+}
+
+"""
+A mobile or web device registered for push notifications.
+"""
+type Device {
+  id: ID!
+  customerId: ID!
+  platform: String!
+  token: String!
+  lastUsed: DateTime
+  createdAt: DateTime
+}
+
+# ─────────────────────────────────────────────
+# Segment Types
+# ─────────────────────────────────────────────
+
+"""
+A named group of customers used for targeting campaigns and broadcasts.
+"""
+type Segment {
+  id: ID!
+  name: String!
+  description: String
+  type: SegmentType!
+  customerCount: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+"""
+Extended segment record including type-specific conditions and metrics.
+"""
+type SegmentDetails {
+  id: ID!
+  name: String!
+  description: String
+  type: SegmentType!
+  conditions: [SegmentCondition!]
+  customerCount: Int
+  metrics: SegmentMetric
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+"""
+A segment populated by explicitly adding or removing individual customers.
+"""
+type ManualSegment {
+  id: ID!
+  name: String!
+  description: String
+  customerCount: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+"""
+A segment whose membership is automatically computed from conditions evaluated
+against customer attributes and event history.
+"""
+type AutomaticSegment {
+  id: ID!
+  name: String!
+  description: String
+  conditions: [SegmentCondition!]!
+  customerCount: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+"""
+A single condition clause used in automatic segment logic.
+"""
+type SegmentCondition {
+  attribute: String!
+  operator: String!
+  value: String
+  and: [SegmentCondition!]
+  or: [SegmentCondition!]
+}
+
+"""
+Aggregate counts and engagement rates for a segment.
+"""
+type SegmentMetric {
+  segmentId: ID!
+  customerCount: Int!
+  activeCustomerCount: Int
+  unsubscribedCount: Int
+  bouncedCount: Int
+}
+
+# ─────────────────────────────────────────────
+# Attribute Types
+# ─────────────────────────────────────────────
+
+"""
+A single named attribute with a typed value.
+"""
+type Attribute {
+  name: String!
+  type: AttributeType!
+  value: AttributeValue
+}
+
+"""
+A wrapper carrying the raw value of an attribute.
+"""
+type AttributeValue {
+  stringValue: String
+  numberValue: Float
+  booleanValue: Boolean
+  datetimeValue: DateTime
+  arrayValue: [String!]
+}
+
+# ─────────────────────────────────────────────
+# Event Types
+# ─────────────────────────────────────────────
+
+"""
+Base event record with timestamp and type classification.
+"""
+type Event {
+  id: ID!
+  customerId: ID
+  name: String!
+  type: EventType!
+  timestamp: DateTime!
+}
+
+"""
+Extended event record including the arbitrary data payload.
+"""
+type EventDetails {
+  id: ID!
+  customerId: ID
+  name: String!
+  type: EventType!
+  data: EventData
+  timestamp: DateTime!
+}
+
+"""
+Key-value payload carried by an event.
+"""
+type EventData {
+  properties: JSON
+}
+
+"""
+A page view event capturing the URL and title of a page visited by a customer.
+"""
+type PageView {
+  id: ID!
+  customerId: ID
+  url: String!
+  title: String
+  referrer: String
+  timestamp: DateTime!
+}
+
+"""
+A named custom event sent via the Track API to record customer behaviour.
+"""
+type CustomEvent {
+  id: ID!
+  customerId: ID!
+  name: String!
+  data: EventData
+  timestamp: DateTime!
+}
+
+"""
+An event that is not associated with a known customer identity at the time of
+recording; may be retrospectively associated via identity resolution.
+"""
+type AnonymousEvent {
+  id: ID!
+  anonymousId: String!
+  name: String!
+  data: EventData
+  timestamp: DateTime!
+}
+
+# ─────────────────────────────────────────────
+# Campaign Types
+# ─────────────────────────────────────────────
+
+"""
+A messaging campaign definition targeting a segment or trigger condition.
+"""
+type Campaign {
+  id: ID!
+  name: String!
+  status: CampaignStatus!
+  triggerType: TriggerType!
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+"""
+Extended campaign record including trigger, schedule, template, and metrics.
+"""
+type CampaignDetails {
+  id: ID!
+  name: String!
+  description: String
+  status: CampaignStatus!
+  triggerType: TriggerType!
+  segment: Segment
+  schedule: MessageSchedule
+  template: Template
+  metrics: CampaignMetric
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+"""
+Timing configuration for a campaign or broadcast send.
+"""
+type MessageSchedule {
+  sendAt: DateTime
+  timezone: String
+  frequency: String
+  startAt: DateTime
+  endAt: DateTime
+}
+
+"""
+Aggregate delivery and engagement statistics for a campaign.
+"""
+type CampaignMetric {
+  campaignId: ID!
+  sent: Int!
+  delivered: Int!
+  opened: Int!
+  clicked: Int!
+  bounced: Int!
+  unsubscribed: Int!
+  converted: Int!
+  failed: Int!
+  openRate: Float
+  clickRate: Float
+  conversionRate: Float
+}
+
+# ─────────────────────────────────────────────
+# Message Types
+# ─────────────────────────────────────────────
+
+"""
+Base message record with channel type and delivery status.
+"""
+type Message {
+  id: ID!
+  type: MessageType!
+  status: DeliveryStatus!
+  customerId: ID
+  campaignId: ID
+  sentAt: DateTime
+  updatedAt: DateTime
+}
+
+"""
+A message delivered via the email channel.
+"""
+type EmailMessage {
+  id: ID!
+  to: String!
+  from: String
+  subject: String!
+  body: String
+  status: DeliveryStatus!
+  customerId: ID
+  campaignId: ID
+  content: MessageContent
+  sentAt: DateTime
+  deliveredAt: DateTime
+  openedAt: DateTime
+  clickedAt: DateTime
+}
+
+"""
+A message delivered as a push notification to a registered device.
+"""
+type PushMessage {
+  id: ID!
+  deviceId: ID!
+  customerId: ID
+  title: String
+  body: String!
+  data: JSON
+  status: DeliveryStatus!
+  campaignId: ID
+  content: MessageContent
+  sentAt: DateTime
+}
+
+"""
+A message delivered via SMS.
+"""
+type SMSMessage {
+  id: ID!
+  to: String!
+  body: String!
+  status: DeliveryStatus!
+  customerId: ID
+  campaignId: ID
+  content: MessageContent
+  sentAt: DateTime
+  deliveredAt: DateTime
+}
+
+"""
+A message delivered to a Slack channel or workspace.
+"""
+type SlackMessage {
+  id: ID!
+  channel: String!
+  text: String!
+  status: DeliveryStatus!
+  customerId: ID
+  campaignId: ID
+  content: MessageContent
+  sentAt: DateTime
+}
+
+"""
+An outbound webhook call treated as a message delivery.
+"""
+type WebhookMessage {
+  id: ID!
+  url: String!
+  method: String!
+  headers: JSON
+  body: JSON
+  status: DeliveryStatus!
+  customerId: ID
+  campaignId: ID
+  sentAt: DateTime
+  responseCode: Int
+}
+
+"""
+A message displayed within a mobile or web application.
+"""
+type InAppMessage {
+  id: ID!
+  customerId: ID!
+  title: String
+  body: String!
+  actionUrl: String
+  status: DeliveryStatus!
+  campaignId: ID
+  content: MessageContent
+  displayedAt: DateTime
+  dismissedAt: DateTime
+}
+
+"""
+Rendered body and subject of a delivered message.
+"""
+type MessageContent {
+  subject: String
+  body: String!
+  preheader: String
+  fromName: String
+  fromEmail: String
+}
+
+"""
+Reference to the template used to render a message.
+"""
+type MessageTemplate {
+  templateId: ID!
+  name: String!
+  type: TemplateType!
+  version: Int
+}
+
+# ─────────────────────────────────────────────
+# Template Types
+# ─────────────────────────────────────────────
+
+"""
+A reusable message template that can be associated with campaigns and
+transactional sends.
+"""
+type Template {
+  id: ID!
+  name: String!
+  type: TemplateType!
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+"""
+Extended template record with full content, type, and version history.
+"""
+type TemplateDetails {
+  id: ID!
+  name: String!
+  description: String
+  type: TemplateType!
+  subject: String
+  body: String
+  preheader: String
+  fromName: String
+  fromEmail: String
+  version: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+# ─────────────────────────────────────────────
+# Delivery Types
+# ─────────────────────────────────────────────
+
+"""
+Paginated list of delivery records for a campaign, broadcast, or customer.
+"""
+type Deliveries {
+  nodes: [Message!]!
+  totalCount: Int!
+  nextCursor: String
+}
+
+"""
+A lifecycle event emitted during message delivery (e.g. sent, opened, clicked).
+"""
+type DeliveryEvent {
+  id: ID!
+  messageId: ID!
+  customerId: ID
+  type: DeliveryStatus!
+  timestamp: DateTime!
+  metadata: JSON
+}
+
+"""
+Delivery event recording that a customer opened a message.
+"""
+type OpenEvent {
+  id: ID!
+  messageId: ID!
+  customerId: ID
+  userAgent: String
+  ip: String
+  timestamp: DateTime!
+}
+
+"""
+Delivery event recording that a customer clicked a link within a message.
+"""
+type ClickEvent {
+  id: ID!
+  messageId: ID!
+  customerId: ID
+  link: String!
+  userAgent: String
+  ip: String
+  timestamp: DateTime!
+}
+
+"""
+Delivery event recording that a customer completed a conversion goal.
+"""
+type ConvertEvent {
+  id: ID!
+  messageId: ID!
+  customerId: ID
+  goalName: String
+  revenue: Float
+  timestamp: DateTime!
+}
+
+# ─────────────────────────────────────────────
+# Broadcast Types
+# ─────────────────────────────────────────────
+
+"""
+A one-time send of a message to a segment or explicit list of customers.
+"""
+type Broadcast {
+  id: ID!
+  name: String!
+  status: CampaignStatus!
+  segmentId: ID
+  schedule: MessageSchedule
+  createdAt: DateTime
+}
+
+"""
+Extended broadcast record including template, schedule, and delivery metrics.
+"""
+type BroadcastDetails {
+  id: ID!
+  name: String!
+  status: CampaignStatus!
+  segment: Segment
+  template: Template
+  schedule: MessageSchedule
+  metrics: CampaignMetric
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+"""
+A broadcast newsletter campaign sent to opted-in subscribers.
+"""
+type NewsletterCampaign {
+  id: ID!
+  name: String!
+  subject: String!
+  status: CampaignStatus!
+  segment: Segment
+  template: Template
+  schedule: MessageSchedule
+  metrics: CampaignMetric
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+# ─────────────────────────────────────────────
+# Transactional Types
+# ─────────────────────────────────────────────
+
+"""
+A programmatically triggered message sent directly to a specific customer
+outside of any campaign or broadcast context.
+"""
+type TransactionalMessage {
+  id: ID!
+  to: CustomerIdentifier!
+  messageType: MessageType!
+  templateId: ID
+  content: MessageContent
+  data: JSON
+  status: DeliveryStatus!
+  sentAt: DateTime
+  deliveredAt: DateTime
+}
+
+# ─────────────────────────────────────────────
+# Automation / Workflow Types
+# ─────────────────────────────────────────────
+
+"""
+A multi-step automation sequence triggered by an event, segment entry, or date.
+"""
+type AutomationWorkflow {
+  id: ID!
+  name: String!
+  status: CampaignStatus!
+  trigger: WorkflowTrigger!
+  steps: [WorkflowStep!]!
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+"""
+The entry condition that starts an automation workflow.
+"""
+type WorkflowTrigger {
+  type: TriggerType!
+  eventName: String
+  segmentId: ID
+  scheduledAt: DateTime
+}
+
+"""
+A single action step within an automation workflow.
+"""
+type WorkflowStep {
+  id: ID!
+  workflowId: ID!
+  type: WorkflowStepType!
+  order: Int!
+  messageType: MessageType
+  templateId: ID
+  delay: WorkflowDelay
+  condition: WorkflowCondition
+  metadata: JSON
+}
+
+"""
+A timed wait step that pauses workflow execution for a defined duration.
+"""
+type WorkflowDelay {
+  duration: Int!
+  unit: String!
+}
+
+"""
+A branch condition evaluated within a workflow to route customers down
+different paths based on attributes or event history.
+"""
+type WorkflowCondition {
+  attribute: String
+  operator: String!
+  value: String
+  trueBranchStepId: ID
+  falseBranchStepId: ID
+}
+
+# ─────────────────────────────────────────────
+# Metric Types
+# ─────────────────────────────────────────────
+
+"""
+A generic named metric with a numeric value and optional dimensions.
+"""
+type Metric {
+  name: String!
+  value: Float!
+  dimensions: JSON
+  recordedAt: DateTime
+}
+
+# ─────────────────────────────────────────────
+# Auth Types
+# ─────────────────────────────────────────────
+
+"""
+An API key used to authenticate against Customer.io REST APIs.
+"""
+type APIKey {
+  id: ID!
+  name: String!
+  prefix: String!
+  scopes: [String!]
+  createdAt: DateTime
+  lastUsedAt: DateTime
+}
+
+"""
+A short-lived bearer token issued for authenticated API sessions.
+"""
+type Token {
+  value: String!
+  expiresAt: DateTime
+}
+
+# ─────────────────────────────────────────────
+# Webhook Types
+# ─────────────────────────────────────────────
+
+"""
+A registered outbound webhook endpoint that receives reporting events from
+Customer.io when message lifecycle events occur.
+"""
+type Webhook {
+  id: ID!
+  url: String!
+  events: [String!]!
+  disabled: Boolean!
+  secret: String
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+# ─────────────────────────────────────────────
+# Input Types
+# ─────────────────────────────────────────────
+
+input CustomerIdentifierInput {
+  id: String
+  email: String
+  cioId: String
+}
+
+input CustomerAttributesInput {
+  email: String
+  name: String
+  plan: String
+  createdAt: DateTime
+  custom: JSON
+}
+
+input SegmentConditionInput {
+  attribute: String!
+  operator: String!
+  value: String
+  and: [SegmentConditionInput!]
+  or: [SegmentConditionInput!]
+}
+
+input MessageScheduleInput {
+  sendAt: DateTime
+  timezone: String
+  frequency: String
+  startAt: DateTime
+  endAt: DateTime
+}
+
+input WorkflowTriggerInput {
+  type: TriggerType!
+  eventName: String
+  segmentId: ID
+  scheduledAt: DateTime
+}
+
+input WorkflowDelayInput {
+  duration: Int!
+  unit: String!
+}
+
+input TransactionalMessageInput {
+  to: CustomerIdentifierInput!
+  messageType: MessageType!
+  templateId: ID
+  subject: String
+  body: String
+  data: JSON
+}
+
+# ─────────────────────────────────────────────
+# Root Types
+# ─────────────────────────────────────────────
+
+type Query {
+  customer(identifier: CustomerIdentifierInput!): CustomerDetails
+  customers(segmentId: ID, limit: Int, cursor: String): [Customer!]!
+
+  segment(id: ID!): SegmentDetails
+  segments(type: SegmentType, limit: Int, cursor: String): [Segment!]!
+
+  campaign(id: ID!): CampaignDetails
+  campaigns(status: CampaignStatus, limit: Int, cursor: String): [Campaign!]!
+
+  broadcast(id: ID!): BroadcastDetails
+  broadcasts(status: CampaignStatus, limit: Int, cursor: String): [Broadcast!]!
+
+  template(id: ID!): TemplateDetails
+  templates(type: TemplateType, limit: Int, cursor: String): [Template!]!
+
+  deliveries(customerId: ID, campaignId: ID, limit: Int, cursor: String): Deliveries!
+
+  automationWorkflow(id: ID!): AutomationWorkflow
+  automationWorkflows(status: CampaignStatus, limit: Int, cursor: String): [AutomationWorkflow!]!
+
+  apiKeys: [APIKey!]!
+  webhooks: [Webhook!]!
+
+  campaignMetrics(campaignId: ID!, start: DateTime, end: DateTime): CampaignMetric
+  segmentMetrics(segmentId: ID!): SegmentMetric
+}
+
+type Mutation {
+  identifyCustomer(identifier: CustomerIdentifierInput!, attributes: CustomerAttributesInput): Customer!
+  deleteCustomer(identifier: CustomerIdentifierInput!): Boolean!
+  addCustomerToSegment(customerId: ID!, segmentId: ID!): CustomerSegment!
+  removeCustomerFromSegment(customerId: ID!, segmentId: ID!): Boolean!
+
+  trackEvent(customerId: ID, anonymousId: String, name: String!, data: JSON): Event!
+  trackPageView(customerId: ID, url: String!, title: String, referrer: String): PageView!
+
+  createManualSegment(name: String!, description: String): ManualSegment!
+  createAutomaticSegment(name: String!, description: String, conditions: [SegmentConditionInput!]!): AutomaticSegment!
+  updateSegment(id: ID!, name: String, description: String): Segment!
+  deleteSegment(id: ID!): Boolean!
+
+  sendTransactionalMessage(input: TransactionalMessageInput!): TransactionalMessage!
+
+  triggerBroadcast(broadcastId: ID!, data: JSON): BroadcastDetails!
+
+  createTemplate(name: String!, type: TemplateType!, subject: String, body: String!): Template!
+  updateTemplate(id: ID!, name: String, subject: String, body: String): Template!
+  deleteTemplate(id: ID!): Boolean!
+
+  createWebhook(url: String!, events: [String!]!, secret: String): Webhook!
+  updateWebhook(id: ID!, url: String, events: [String!], disabled: Boolean): Webhook!
+  deleteWebhook(id: ID!): Boolean!
+
+  createAPIKey(name: String!, scopes: [String!]): APIKey!
+  deleteAPIKey(id: ID!): Boolean!
+}
