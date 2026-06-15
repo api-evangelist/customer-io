@@ -1,0 +1,1945 @@
+{
+  "item": [
+    {
+      "id": "133c069a-5577-4468-bbe1-d0914319eaff",
+      "name": "Batch",
+      "description": {
+        "content": "Track API v2 batch endpoint for sending multiple entity operations in a single request.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "56fa3a09-c2e3-4e6b-84b7-416938b67af6",
+          "name": "Batch entity operations",
+          "request": {
+            "name": "Batch entity operations",
+            "description": {
+              "content": "Sends multiple entity operations in a single request. Each item in the batch array represents an individual entity operation for a person, object, or delivery. You can mix types in a single request. The request must be smaller than 500KB.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "..",
+                "v2",
+                "batch"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"batch\": [\n    {\n      \"type\": \"<string>\",\n      \"action\": \"<string>\",\n      \"identifiers\": {\n        \"key_0\": 358.9831422721068,\n        \"key_1\": false\n      },\n      \"attributes\": {\n        \"key_0\": 5821,\n        \"key_1\": 9362.861950731616,\n        \"key_2\": \"string\"\n      },\n      \"name\": \"<string>\",\n      \"data\": {\n        \"key_0\": \"string\",\n        \"key_1\": true\n      }\n    },\n    {\n      \"type\": \"<string>\",\n      \"action\": \"<string>\",\n      \"identifiers\": {\n        \"key_0\": 1031\n      },\n      \"attributes\": {\n        \"key_0\": 3854\n      },\n      \"name\": \"<string>\",\n      \"data\": {\n        \"key_0\": 219\n      }\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f7dc6cc0-d9ad-435d-bec6-c858189eda4b",
+              "name": "Batch processed successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "..",
+                    "v2",
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"batch\": [\n    {\n      \"type\": \"person\",\n      \"action\": \"delete_device\",\n      \"identifiers\": {\n        \"key_0\": 4665.995805189088,\n        \"key_1\": 8474\n      },\n      \"attributes\": {\n        \"key_0\": false\n      },\n      \"name\": \"string\",\n      \"data\": {\n        \"key_0\": 6139.9000597036165\n      }\n    },\n    {\n      \"type\": \"delivery\",\n      \"action\": \"delete_device\",\n      \"identifiers\": {\n        \"key_0\": true\n      },\n      \"attributes\": {\n        \"key_0\": \"string\",\n        \"key_1\": 7072.312984990289\n      },\n      \"name\": \"string\",\n      \"data\": {\n        \"key_0\": false,\n        \"key_1\": \"string\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "abb31fd0-7fbd-41ed-94fb-0f9ae35f31b4",
+              "name": "Bad request. Invalid payload structure or exceeds size limit.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "..",
+                    "v2",
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"batch\": [\n    {\n      \"type\": \"person\",\n      \"action\": \"delete_device\",\n      \"identifiers\": {\n        \"key_0\": 4665.995805189088,\n        \"key_1\": 8474\n      },\n      \"attributes\": {\n        \"key_0\": false\n      },\n      \"name\": \"string\",\n      \"data\": {\n        \"key_0\": 6139.9000597036165\n      }\n    },\n    {\n      \"type\": \"delivery\",\n      \"action\": \"delete_device\",\n      \"identifiers\": {\n        \"key_0\": true\n      },\n      \"attributes\": {\n        \"key_0\": \"string\",\n        \"key_1\": 7072.312984990289\n      },\n      \"name\": \"string\",\n      \"data\": {\n        \"key_0\": false,\n        \"key_1\": \"string\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "cf98ec8b-475b-4ef7-b02d-f3d3bea16eda",
+              "name": "Unauthorized. Invalid Site ID or API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "..",
+                    "v2",
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"batch\": [\n    {\n      \"type\": \"person\",\n      \"action\": \"delete_device\",\n      \"identifiers\": {\n        \"key_0\": 4665.995805189088,\n        \"key_1\": 8474\n      },\n      \"attributes\": {\n        \"key_0\": false\n      },\n      \"name\": \"string\",\n      \"data\": {\n        \"key_0\": 6139.9000597036165\n      }\n    },\n    {\n      \"type\": \"delivery\",\n      \"action\": \"delete_device\",\n      \"identifiers\": {\n        \"key_0\": true\n      },\n      \"attributes\": {\n        \"key_0\": \"string\",\n        \"key_1\": 7072.312984990289\n      },\n      \"name\": \"string\",\n      \"data\": {\n        \"key_0\": false,\n        \"key_1\": \"string\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "9abbfe51-feb3-4492-a540-c2899ce56bae",
+      "name": "Customers",
+      "description": {
+        "content": "Manage customer profiles by creating, updating, and deleting people in your Customer.io workspace.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "38b1d1fe-4f1a-4547-b2b7-9c3ad5aeb40f",
+          "name": "Identify a customer",
+          "request": {
+            "name": "Identify a customer",
+            "description": {
+              "content": "Creates or updates a customer profile in Customer.io. If the customer does not exist, a new profile is created. If the customer already exists, the profile is updated with the provided attributes. The identifier can be an id or email address depending on your workspace configuration.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                ":identifier"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "identifier",
+                  "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"<email>\",\n  \"created_at\": \"<integer>\",\n  \"anonymous_id\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "46a47a47-bb7d-42bb-9675-e958c7b7a7b8",
+              "name": "Customer identified successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"<email>\",\n  \"created_at\": \"<integer>\",\n  \"anonymous_id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "6bc17b52-ec1a-43d4-bfcf-4abc56e02403",
+              "name": "Unauthorized. Invalid Site ID or API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"<email>\",\n  \"created_at\": \"<integer>\",\n  \"anonymous_id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "81684715-81b7-4c2c-99f5-262a9978549b",
+          "name": "Delete a customer",
+          "request": {
+            "name": "Delete a customer",
+            "description": {
+              "content": "Deletes a customer profile from Customer.io. This removes the person and their associated data from your workspace. This action cannot be undone.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                ":identifier"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "identifier",
+                  "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "4c6de5f2-f0d5-4ec7-8830-1e0c1b2bdc32",
+              "name": "Customer deleted successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c6cfed08-112e-4644-aa38-fd4fb41dbdbe",
+              "name": "Unauthorized. Invalid Site ID or API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "6cfb3808-158e-4570-a7f8-41d23b4c19ec",
+              "name": "Customer not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "dd42657d-e03e-4c46-8392-c37932818ab9",
+          "name": "Suppress a customer",
+          "request": {
+            "name": "Suppress a customer",
+            "description": {
+              "content": "Suppresses a customer profile, preventing Customer.io from sending messages to the person. The customer is deleted and their identifier is added to a suppression list so they cannot be re-added.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                ":identifier",
+                "suppress"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "identifier",
+                  "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                }
+              ]
+            },
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "b1aa6736-5109-4d8c-b83f-df109543ba76",
+              "name": "Customer suppressed successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "suppress"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0421dbd1-3152-451c-ace1-c3f02857070e",
+              "name": "Unauthorized. Invalid Site ID or API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "suppress"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "166af41e-b830-449d-866c-ba9498636098",
+          "name": "Unsuppress a customer",
+          "request": {
+            "name": "Unsuppress a customer",
+            "description": {
+              "content": "Removes a customer from the suppression list, allowing them to be re-added to your workspace and receive messages again.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                ":identifier",
+                "unsuppress"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "identifier",
+                  "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                }
+              ]
+            },
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d8145855-447d-4e23-84fa-4bf555e9caa4",
+              "name": "Customer unsuppressed successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "unsuppress"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "6d34bfbd-6e31-412c-98b2-1627a695b05d",
+              "name": "Unauthorized. Invalid Site ID or API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "unsuppress"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "5102bc01-8c24-46a2-87c4-9db38a2fea3f",
+      "name": "Devices",
+      "description": {
+        "content": "Manage push notification devices associated with customer profiles.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "5f37b846-fc59-401d-a15a-784e64983fbc",
+          "name": "Add a customer device",
+          "request": {
+            "name": "Add a customer device",
+            "description": {
+              "content": "Adds or updates a device associated with a customer for push notifications. The device token and platform are required. This endpoint is used to register mobile devices so Customer.io can send push notifications to the customer.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                ":identifier",
+                "devices"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "identifier",
+                  "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"device\": {\n    \"id\": \"<string>\",\n    \"platform\": \"<string>\",\n    \"last_used\": \"<integer>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "df90536b-d8fa-409c-8411-ddc2fa321a68",
+              "name": "Device added or updated successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "devices"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"device\": {\n    \"id\": \"<string>\",\n    \"platform\": \"<string>\",\n    \"last_used\": \"<integer>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "eba14a34-99f5-4e78-b70f-2851f15a85c7",
+              "name": "Unauthorized. Invalid Site ID or API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "devices"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"device\": {\n    \"id\": \"<string>\",\n    \"platform\": \"<string>\",\n    \"last_used\": \"<integer>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "5eea58d4-e1aa-4bd2-85e9-bc29500c4574",
+          "name": "Delete a customer device",
+          "request": {
+            "name": "Delete a customer device",
+            "description": {
+              "content": "Removes a device from a customer profile. The customer will no longer receive push notifications on this device.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                ":identifier",
+                "devices",
+                ":device_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "identifier",
+                  "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "device_id",
+                  "description": "(Required) The unique identifier for the device to remove."
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9293d0bb-05e8-4d69-9900-1b92179ff8b9",
+              "name": "Device deleted successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "devices",
+                    ":device_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "device_id",
+                      "description": "(Required) The unique identifier for the device to remove."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "5f1f2cec-00fd-4e06-b63e-4f233fe0f80d",
+              "name": "Unauthorized. Invalid Site ID or API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "devices",
+                    ":device_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "device_id",
+                      "description": "(Required) The unique identifier for the device to remove."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "5f092452-1129-4d55-830d-50de98ad979a",
+              "name": "Device not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "devices",
+                    ":device_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "device_id",
+                      "description": "(Required) The unique identifier for the device to remove."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "f781211c-1b3f-4da8-8b02-c84a0d2492bc",
+      "name": "Entity",
+      "description": {
+        "content": "Track API v2 entity endpoint for creating and managing people and objects using a unified request format.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "01d32547-857c-4558-a972-eb5aa868efe4",
+          "name": "Track a single entity",
+          "request": {
+            "name": "Track a single entity",
+            "description": {
+              "content": "The v2 entity endpoint provides a unified way to create, update, and track events for people and objects. The request body specifies the entity type, action, identifiers, and attributes or event data. This endpoint determines what to do based on the type and action in the payload.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "..",
+                "v2",
+                "entity"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"<string>\",\n  \"action\": \"<string>\",\n  \"identifiers\": {\n    \"key_0\": 5131\n  },\n  \"attributes\": {\n    \"key_0\": false,\n    \"key_1\": 4244.621037700435,\n    \"key_2\": 5492.055270898931\n  },\n  \"name\": \"<string>\",\n  \"data\": {\n    \"key_0\": 5749.763541659063,\n    \"key_1\": 883,\n    \"key_2\": \"string\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "cc82dd18-bdc8-48e1-82a8-9966f4027a1a",
+              "name": "Entity operation completed successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "..",
+                    "v2",
+                    "entity"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"action\": \"<string>\",\n  \"identifiers\": {\n    \"key_0\": 7184.611968371465,\n    \"key_1\": false\n  },\n  \"attributes\": {\n    \"key_0\": 7576.600581579492,\n    \"key_1\": \"string\"\n  },\n  \"name\": \"<string>\",\n  \"data\": {\n    \"key_0\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d7a946a4-1dba-46e0-a957-915af3258ef4",
+              "name": "Bad request. Invalid payload structure.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "..",
+                    "v2",
+                    "entity"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"action\": \"<string>\",\n  \"identifiers\": {\n    \"key_0\": 7184.611968371465,\n    \"key_1\": false\n  },\n  \"attributes\": {\n    \"key_0\": 7576.600581579492,\n    \"key_1\": \"string\"\n  },\n  \"name\": \"<string>\",\n  \"data\": {\n    \"key_0\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "bd828ad9-1252-4218-a97d-70141d828908",
+              "name": "Unauthorized. Invalid Site ID or API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "..",
+                    "v2",
+                    "entity"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"action\": \"<string>\",\n  \"identifiers\": {\n    \"key_0\": 7184.611968371465,\n    \"key_1\": false\n  },\n  \"attributes\": {\n    \"key_0\": 7576.600581579492,\n    \"key_1\": \"string\"\n  },\n  \"name\": \"<string>\",\n  \"data\": {\n    \"key_0\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "cecc2e9f-2aad-4989-b81b-f18697b62711",
+      "name": "Events",
+      "description": {
+        "content": "Track customer events and anonymous events to record behavioral data and trigger messaging workflows.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "1672f787-d956-4b8d-9d68-0c61e7cabc1c",
+          "name": "Track a customer event",
+          "request": {
+            "name": "Track a customer event",
+            "description": {
+              "content": "Records an event associated with a specific customer. Events are used to trigger campaigns, track user behavior, and segment your audience. The event name is required and custom data can be passed in the data object.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                ":identifier",
+                "events"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "identifier",
+                  "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"data\": {\n    \"key_0\": 1291\n  },\n  \"type\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "021462ba-7854-4af9-81aa-f0b151acfb72",
+              "name": "Event tracked successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"data\": {\n    \"key_0\": \"string\"\n  },\n  \"type\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "5ff05b86-c2c1-47fe-a8bb-7e84a6e5be5c",
+              "name": "Unauthorized. Invalid Site ID or API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"data\": {\n    \"key_0\": \"string\"\n  },\n  \"type\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "00a0d290-3cab-4bfa-8f4d-1c434585b4a4",
+          "name": "Track an anonymous event",
+          "request": {
+            "name": "Track an anonymous event",
+            "description": {
+              "content": "Records an event that is not associated with a known customer profile. Anonymous events can be merged with a customer profile later when the person is identified, if event merging is enabled in your workspace. Anonymous events recorded within the last 30 days can be associated with a person when their anonymous_id matches.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "events"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"anonymous_id\": \"<string>\",\n  \"data\": {\n    \"key_0\": 2544,\n    \"key_1\": \"string\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "fe37b427-1bda-4171-a599-9fd634141dc3",
+              "name": "Anonymous event tracked successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"anonymous_id\": \"<string>\",\n  \"data\": {\n    \"key_0\": 7687\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "fe207559-f3f0-4454-9f53-f7c0ae08ad76",
+              "name": "Unauthorized. Invalid Site ID or API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"anonymous_id\": \"<string>\",\n  \"data\": {\n    \"key_0\": 7687\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "2476fdd0-4cbc-4a01-b909-9041911cbc85",
+      "name": "Merge",
+      "description": {
+        "content": "Merge two customer profiles into a single profile.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "00f4b570-f6c0-44dc-84fa-09d4874ab8e9",
+          "name": "Merge customer profiles",
+          "request": {
+            "name": "Merge customer profiles",
+            "description": {
+              "content": "Merges two customer profiles into one. The primary profile is kept and the secondary profile is deleted. Events, attributes, and devices from the secondary profile are merged into the primary profile.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "merge"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"primary\": {\n    \"id\": \"<string>\"\n  },\n  \"secondary\": {\n    \"id\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "70d64cb7-cecd-4b43-a316-fc468d1ddc7d",
+              "name": "Customers merged successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "merge"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"primary\": {\n    \"id\": \"<string>\"\n  },\n  \"secondary\": {\n    \"id\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "e5da5854-86b2-464f-ad82-261dda298165",
+              "name": "Unauthorized. Invalid Site ID or API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "merge"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"primary\": {\n    \"id\": \"<string>\"\n  },\n  \"secondary\": {\n    \"id\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://track.customer.io/api/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "username",
+        "value": "{{basicAuthUsername}}"
+      },
+      {
+        "key": "password",
+        "value": "{{basicAuthPassword}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "1f88786b-749e-4eab-92b5-bd2058aa305c",
+    "name": "Customer.io Track API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Customer.io Track API allows developers to send behavioral data and customer profile information into Customer.io. It provides endpoints for identifying customers, tracking events, managing devices for push notifications, and sending anonymous events. The API uses basic authentication with a Site ID and API key, and accepts JSON request bodies. It is commonly used to build custom integrations that feed customer activity data into Customer.io for use in messaging campaigns and automation workflows.\n\nContact Support:\n Name: Customer.io Support",
+      "type": "text/plain"
+    }
+  }
+}

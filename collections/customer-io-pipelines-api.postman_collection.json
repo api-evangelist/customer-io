@@ -1,0 +1,1406 @@
+{
+  "item": [
+    {
+      "id": "7ca22dd1-49f2-49b9-8f1d-d1384d3af4f3",
+      "name": "Alias",
+      "description": {
+        "content": "Merge two user identities by creating an alias linking a new identity to an existing one.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "748b0f3a-b812-4ce6-a07d-36ad798cdff8",
+          "name": "Alias a person",
+          "request": {
+            "name": "Alias a person",
+            "description": {
+              "content": "Creates an alias linking a new identity to an existing one. This merges two user identities so all future events from either identity are associated with the same person. Requires a previousId and a userId.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "alias"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"previousId\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"context\": {\n    \"ip\": \"<string>\",\n    \"locale\": \"<string>\",\n    \"timezone\": \"<string>\",\n    \"userAgent\": \"<string>\",\n    \"library\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"device\": {\n      \"id\": \"<string>\",\n      \"manufacturer\": \"<string>\",\n      \"model\": \"<string>\",\n      \"type\": \"<string>\"\n    },\n    \"os\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"page\": {\n      \"url\": \"<uri>\",\n      \"title\": \"<string>\",\n      \"referrer\": \"<uri>\",\n      \"path\": \"<string>\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "d76c1aa1-d622-42a8-a68f-c61fafd4877c",
+              "name": "Alias created successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alias"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"previousId\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"http://lZlTNVcDHBZdKqtAcKHniEYVnYW.fqUvFiH1T3LY5aQaz,-3j-g1UJ-0f.-Q\",\n      \"title\": \"string\",\n      \"referrer\": \"http://kOykJModB.yrrlhVsA0mmdshEuPHspoT+ck3Q\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "43576d2d-1b73-4a02-ac9a-a55aca04cb3c",
+              "name": "Bad request. Missing previousId.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alias"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"previousId\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"http://lZlTNVcDHBZdKqtAcKHniEYVnYW.fqUvFiH1T3LY5aQaz,-3j-g1UJ-0f.-Q\",\n      \"title\": \"string\",\n      \"referrer\": \"http://kOykJModB.yrrlhVsA0mmdshEuPHspoT+ck3Q\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7b85d552-e5a2-42fd-b4e4-5b50a89bdd93",
+              "name": "Unauthorized. Invalid CDP API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "alias"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"previousId\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"http://lZlTNVcDHBZdKqtAcKHniEYVnYW.fqUvFiH1T3LY5aQaz,-3j-g1UJ-0f.-Q\",\n      \"title\": \"string\",\n      \"referrer\": \"http://kOykJModB.yrrlhVsA0mmdshEuPHspoT+ck3Q\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "122b8e23-41a4-48e4-8627-ae88539b9d30",
+      "name": "Batch",
+      "description": {
+        "content": "Send multiple API calls in a single request for improved performance.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ebdc2ad1-e0f8-4d0b-a433-35a5c51c10c9",
+          "name": "Send a batch of API calls",
+          "request": {
+            "name": "Send a batch of API calls",
+            "description": {
+              "content": "Sends multiple API calls in a single HTTP request. Each item in the batch array is a standard identify, track, page, screen, group, or alias call. The batch request must be smaller than 1MB.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "batch"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"batch\": [\n    {\n      \"type\": \"<string>\"\n    },\n    {\n      \"type\": \"<string>\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "0933126a-df3c-4c6e-9eff-58f75488c69c",
+              "name": "Batch processed successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"batch\": [\n    {\n      \"type\": \"<string>\"\n    },\n    {\n      \"type\": \"<string>\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "caf2baf6-2fe1-48b8-a5ed-ffadfbe226e9",
+              "name": "Bad request. Invalid payload or exceeds size limit.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"batch\": [\n    {\n      \"type\": \"<string>\"\n    },\n    {\n      \"type\": \"<string>\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "2c4647a4-50e1-4752-b9c4-3179a331abc1",
+              "name": "Unauthorized. Invalid CDP API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"batch\": [\n    {\n      \"type\": \"<string>\"\n    },\n    {\n      \"type\": \"<string>\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "7c77f400-41b3-4d6a-85fc-7962643e529e",
+      "name": "Group",
+      "description": {
+        "content": "Associate people with groups or organizations.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "0fa8aa77-fe25-4d31-92b2-2ce9e95253e8",
+          "name": "Associate a person with a group",
+          "request": {
+            "name": "Associate a person with a group",
+            "description": {
+              "content": "Associates a person with a group or organization. Requires a groupId and at least one of userId or anonymousId. Group traits set attributes on the group.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "group"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"groupId\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"traits\": {\n    \"name\": \"<string>\",\n    \"industry\": \"<string>\",\n    \"plan\": \"<string>\",\n    \"key_0\": 7847,\n    \"key_1\": true\n  },\n  \"context\": {\n    \"ip\": \"<string>\",\n    \"locale\": \"<string>\",\n    \"timezone\": \"<string>\",\n    \"userAgent\": \"<string>\",\n    \"library\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"device\": {\n      \"id\": \"<string>\",\n      \"manufacturer\": \"<string>\",\n      \"model\": \"<string>\",\n      \"type\": \"<string>\"\n    },\n    \"os\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"page\": {\n      \"url\": \"<uri>\",\n      \"title\": \"<string>\",\n      \"referrer\": \"<uri>\",\n      \"path\": \"<string>\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c10891a5-a656-45e4-96c8-9b3e18173108",
+              "name": "Person grouped successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "group"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"groupId\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"traits\": {\n    \"name\": \"<string>\",\n    \"industry\": \"<string>\",\n    \"plan\": \"<string>\",\n    \"key_0\": 2419,\n    \"key_1\": 2636,\n    \"key_2\": \"string\",\n    \"key_3\": \"string\"\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"http://WVJmQvKyjMgbGYAlFSJihV.ngkmKuQrbXkVqZQZxoUaE.Eu9ZSmqwUcTPzi0eNJvksmE.U9WgYYtjv3UsiODDNiQqTcKU2o\",\n      \"title\": \"string\",\n      \"referrer\": \"http://bNoQVLwLAkOWSXWebRZVovZ.dbUy1obOeXODGMFTWgaHsaG,OjiukQM3FHKTchMYQU2UsgZVst,8fyE3YSAElzP,EeG9k8sTitLN\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "51934b13-a9e0-4fda-927b-2096152abf65",
+              "name": "Bad request. Missing groupId.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "group"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"groupId\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"traits\": {\n    \"name\": \"<string>\",\n    \"industry\": \"<string>\",\n    \"plan\": \"<string>\",\n    \"key_0\": 2419,\n    \"key_1\": 2636,\n    \"key_2\": \"string\",\n    \"key_3\": \"string\"\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"http://WVJmQvKyjMgbGYAlFSJihV.ngkmKuQrbXkVqZQZxoUaE.Eu9ZSmqwUcTPzi0eNJvksmE.U9WgYYtjv3UsiODDNiQqTcKU2o\",\n      \"title\": \"string\",\n      \"referrer\": \"http://bNoQVLwLAkOWSXWebRZVovZ.dbUy1obOeXODGMFTWgaHsaG,OjiukQM3FHKTchMYQU2UsgZVst,8fyE3YSAElzP,EeG9k8sTitLN\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "33dccd9b-3685-4ceb-b61e-b1e1aacab8df",
+              "name": "Unauthorized. Invalid CDP API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "group"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"groupId\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"traits\": {\n    \"name\": \"<string>\",\n    \"industry\": \"<string>\",\n    \"plan\": \"<string>\",\n    \"key_0\": 2419,\n    \"key_1\": 2636,\n    \"key_2\": \"string\",\n    \"key_3\": \"string\"\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"http://WVJmQvKyjMgbGYAlFSJihV.ngkmKuQrbXkVqZQZxoUaE.Eu9ZSmqwUcTPzi0eNJvksmE.U9WgYYtjv3UsiODDNiQqTcKU2o\",\n      \"title\": \"string\",\n      \"referrer\": \"http://bNoQVLwLAkOWSXWebRZVovZ.dbUy1obOeXODGMFTWgaHsaG,OjiukQM3FHKTchMYQU2UsgZVst,8fyE3YSAElzP,EeG9k8sTitLN\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "30e5994c-bf5c-4ec7-9270-0a6e62db1b42",
+      "name": "Identify",
+      "description": {
+        "content": "Identify people and set their profile attributes. The identify call tells Customer.io who the current user is and assigns traits to them.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "e6a73c26-a64b-459a-81ae-be462a58d19e",
+          "name": "Identify a person",
+          "request": {
+            "name": "Identify a person",
+            "description": {
+              "content": "Identifies a person and sets their profile attributes. Use this call when a user creates an account, logs in, or updates their profile. Requires at least one of userId or anonymousId. Traits are saved as profile attributes.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "identify"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"traits\": {\n    \"email\": \"<email>\",\n    \"name\": \"<string>\",\n    \"first_name\": \"<string>\",\n    \"last_name\": \"<string>\",\n    \"phone\": \"<string>\",\n    \"created_at\": \"<dateTime>\"\n  },\n  \"context\": {\n    \"ip\": \"<string>\",\n    \"locale\": \"<string>\",\n    \"timezone\": \"<string>\",\n    \"userAgent\": \"<string>\",\n    \"library\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"device\": {\n      \"id\": \"<string>\",\n      \"manufacturer\": \"<string>\",\n      \"model\": \"<string>\",\n      \"type\": \"<string>\"\n    },\n    \"os\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"page\": {\n      \"url\": \"<uri>\",\n      \"title\": \"<string>\",\n      \"referrer\": \"<uri>\",\n      \"path\": \"<string>\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c037efaa-dd6e-46ac-95d3-d2d61bdef82e",
+              "name": "Person identified successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "identify"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"traits\": {\n    \"email\": \"<email>\",\n    \"name\": \"<string>\",\n    \"first_name\": \"<string>\",\n    \"last_name\": \"<string>\",\n    \"phone\": \"<string>\",\n    \"created_at\": \"<dateTime>\"\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"http://ynkWgXEGJmrpK.ymmOeOjTyH4r5KVBzg-\",\n      \"title\": \"string\",\n      \"referrer\": \"http://EscYnP.glypzJ5u2wAo0Jk\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ad1a019f-b674-4fcb-ae51-619eae9a7731",
+              "name": "Bad request. Missing required fields.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "identify"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"traits\": {\n    \"email\": \"<email>\",\n    \"name\": \"<string>\",\n    \"first_name\": \"<string>\",\n    \"last_name\": \"<string>\",\n    \"phone\": \"<string>\",\n    \"created_at\": \"<dateTime>\"\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"http://ynkWgXEGJmrpK.ymmOeOjTyH4r5KVBzg-\",\n      \"title\": \"string\",\n      \"referrer\": \"http://EscYnP.glypzJ5u2wAo0Jk\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0229cc42-7b50-40d1-90a2-27a454840642",
+              "name": "Unauthorized. Invalid CDP API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "identify"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"traits\": {\n    \"email\": \"<email>\",\n    \"name\": \"<string>\",\n    \"first_name\": \"<string>\",\n    \"last_name\": \"<string>\",\n    \"phone\": \"<string>\",\n    \"created_at\": \"<dateTime>\"\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"http://ynkWgXEGJmrpK.ymmOeOjTyH4r5KVBzg-\",\n      \"title\": \"string\",\n      \"referrer\": \"http://EscYnP.glypzJ5u2wAo0Jk\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "e9551389-ff9b-4398-8477-c697925a66d7",
+      "name": "Page",
+      "description": {
+        "content": "Record page views from web applications.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "70650da6-6ab8-4733-8d2c-85fdd0279fed",
+          "name": "Track a page view",
+          "request": {
+            "name": "Track a page view",
+            "description": {
+              "content": "Records a page view event from a web application. Use this when a user views a page on your website. Requires at least one of userId or anonymousId.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "page"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"properties\": {\n    \"url\": \"<uri>\",\n    \"title\": \"<string>\",\n    \"referrer\": \"<uri>\",\n    \"path\": \"<string>\"\n  },\n  \"context\": {\n    \"ip\": \"<string>\",\n    \"locale\": \"<string>\",\n    \"timezone\": \"<string>\",\n    \"userAgent\": \"<string>\",\n    \"library\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"device\": {\n      \"id\": \"<string>\",\n      \"manufacturer\": \"<string>\",\n      \"model\": \"<string>\",\n      \"type\": \"<string>\"\n    },\n    \"os\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"page\": {\n      \"url\": \"<uri>\",\n      \"title\": \"<string>\",\n      \"referrer\": \"<uri>\",\n      \"path\": \"<string>\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "4655b7e4-d270-42ad-937c-21795e7582db",
+              "name": "Page view tracked successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "page"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"properties\": {\n    \"url\": \"<uri>\",\n    \"title\": \"<string>\",\n    \"referrer\": \"<uri>\",\n    \"path\": \"<string>\"\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"https://hduyuYUBtEwQBwrTRHbMhKtG.lud98wpo5BBOoGq2hVITviqW2GdB.cLasLNZbVJ8XvPxQE8ZolVYWH-q042qELBGZjVT9Rwk+3\",\n      \"title\": \"string\",\n      \"referrer\": \"https://KxkL.gyVCEgW6AqSwY\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c9ac4db3-adb9-4609-aa4c-bb33846bdff4",
+              "name": "Bad request. Missing required fields.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "page"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"properties\": {\n    \"url\": \"<uri>\",\n    \"title\": \"<string>\",\n    \"referrer\": \"<uri>\",\n    \"path\": \"<string>\"\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"https://hduyuYUBtEwQBwrTRHbMhKtG.lud98wpo5BBOoGq2hVITviqW2GdB.cLasLNZbVJ8XvPxQE8ZolVYWH-q042qELBGZjVT9Rwk+3\",\n      \"title\": \"string\",\n      \"referrer\": \"https://KxkL.gyVCEgW6AqSwY\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "45962145-3aea-4e29-92ed-75b3f0101319",
+              "name": "Unauthorized. Invalid CDP API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "page"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"properties\": {\n    \"url\": \"<uri>\",\n    \"title\": \"<string>\",\n    \"referrer\": \"<uri>\",\n    \"path\": \"<string>\"\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"https://hduyuYUBtEwQBwrTRHbMhKtG.lud98wpo5BBOoGq2hVITviqW2GdB.cLasLNZbVJ8XvPxQE8ZolVYWH-q042qELBGZjVT9Rwk+3\",\n      \"title\": \"string\",\n      \"referrer\": \"https://KxkL.gyVCEgW6AqSwY\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "cb729317-b30d-4223-9037-b8b19f0ec2ca",
+      "name": "Screen",
+      "description": {
+        "content": "Record screen views from mobile applications.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "2aea7ca0-8256-4e23-8c69-d810c9976527",
+          "name": "Track a screen view",
+          "request": {
+            "name": "Track a screen view",
+            "description": {
+              "content": "Records a screen view event from a mobile application. Use this when a user views a screen in your mobile app. Requires at least one of userId or anonymousId.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "screen"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"properties\": {\n    \"key_0\": 2119.401885629658,\n    \"key_1\": true\n  },\n  \"context\": {\n    \"ip\": \"<string>\",\n    \"locale\": \"<string>\",\n    \"timezone\": \"<string>\",\n    \"userAgent\": \"<string>\",\n    \"library\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"device\": {\n      \"id\": \"<string>\",\n      \"manufacturer\": \"<string>\",\n      \"model\": \"<string>\",\n      \"type\": \"<string>\"\n    },\n    \"os\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"page\": {\n      \"url\": \"<uri>\",\n      \"title\": \"<string>\",\n      \"referrer\": \"<uri>\",\n      \"path\": \"<string>\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "44b59a7c-bf33-4924-a3db-1bd2b2cbed96",
+              "name": "Screen view tracked successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "screen"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"properties\": {\n    \"key_0\": 7757,\n    \"key_1\": true,\n    \"key_2\": false,\n    \"key_3\": 9357\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"https://jlSZDTQYiMeQJXhlozOC.uhYyG.o9iAt+iYjXRRWg-QkvIOHuZXQSqUuuE9oygJMWp82IBfbZNFL9GX6\",\n      \"title\": \"string\",\n      \"referrer\": \"http://UkMCDSpdeppneKy.lknrdFLKFghlVC7wp2dTM,Rn-5\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "36fcd2ba-5a25-4e13-8723-97a59c117c1b",
+              "name": "Bad request. Missing required fields.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "screen"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"properties\": {\n    \"key_0\": 7757,\n    \"key_1\": true,\n    \"key_2\": false,\n    \"key_3\": 9357\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"https://jlSZDTQYiMeQJXhlozOC.uhYyG.o9iAt+iYjXRRWg-QkvIOHuZXQSqUuuE9oygJMWp82IBfbZNFL9GX6\",\n      \"title\": \"string\",\n      \"referrer\": \"http://UkMCDSpdeppneKy.lknrdFLKFghlVC7wp2dTM,Rn-5\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "6749679f-6113-43b7-80af-91a4bc22eeb5",
+              "name": "Unauthorized. Invalid CDP API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "screen"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"properties\": {\n    \"key_0\": 7757,\n    \"key_1\": true,\n    \"key_2\": false,\n    \"key_3\": 9357\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"https://jlSZDTQYiMeQJXhlozOC.uhYyG.o9iAt+iYjXRRWg-QkvIOHuZXQSqUuuE9oygJMWp82IBfbZNFL9GX6\",\n      \"title\": \"string\",\n      \"referrer\": \"http://UkMCDSpdeppneKy.lknrdFLKFghlVC7wp2dTM,Rn-5\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "e0cf5565-38dd-41b8-8d94-3bc080d6bd4b",
+      "name": "Track",
+      "description": {
+        "content": "Track events to record actions people take in your app or on your website.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "15513596-7e4e-4b99-a384-93d05d824a91",
+          "name": "Track an event",
+          "request": {
+            "name": "Track an event",
+            "description": {
+              "content": "Records an event that a person performed. Every track call requires an event name and at least one of userId or anonymousId. Event properties provide additional context about the action.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "track"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"event\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"properties\": {\n    \"key_0\": true,\n    \"key_1\": 3424.826402140255,\n    \"key_2\": 1226.5090586485917\n  },\n  \"context\": {\n    \"ip\": \"<string>\",\n    \"locale\": \"<string>\",\n    \"timezone\": \"<string>\",\n    \"userAgent\": \"<string>\",\n    \"library\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"device\": {\n      \"id\": \"<string>\",\n      \"manufacturer\": \"<string>\",\n      \"model\": \"<string>\",\n      \"type\": \"<string>\"\n    },\n    \"os\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"page\": {\n      \"url\": \"<uri>\",\n      \"title\": \"<string>\",\n      \"referrer\": \"<uri>\",\n      \"path\": \"<string>\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "3aec2d4f-ddf5-46af-8db4-4bae475f6e65",
+              "name": "Event tracked successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "track"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"event\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"properties\": {\n    \"key_0\": 6201.8177155337025,\n    \"key_1\": \"string\",\n    \"key_2\": true\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"https://vNIxYdvvEFItsrgfrprFEbMWXG.rmjP5LFGCGikk+EV.Egpa9mOiXrr\",\n      \"title\": \"string\",\n      \"referrer\": \"http://JMzfkh.tmhfHKh8X7ebdEbFSBdw8c5\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3b55f5c9-ce1b-4c29-931e-c9ac4c6aa8fa",
+              "name": "Bad request. Missing event name or identifiers.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "track"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"event\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"properties\": {\n    \"key_0\": 6201.8177155337025,\n    \"key_1\": \"string\",\n    \"key_2\": true\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"https://vNIxYdvvEFItsrgfrprFEbMWXG.rmjP5LFGCGikk+EV.Egpa9mOiXrr\",\n      \"title\": \"string\",\n      \"referrer\": \"http://JMzfkh.tmhfHKh8X7ebdEbFSBdw8c5\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "aad6b2cf-6e29-442b-9d5f-2ecf67681b33",
+              "name": "Unauthorized. Invalid CDP API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "track"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"event\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"properties\": {\n    \"key_0\": 6201.8177155337025,\n    \"key_1\": \"string\",\n    \"key_2\": true\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"https://vNIxYdvvEFItsrgfrprFEbMWXG.rmjP5LFGCGikk+EV.Egpa9mOiXrr\",\n      \"title\": \"string\",\n      \"referrer\": \"http://JMzfkh.tmhfHKh8X7ebdEbFSBdw8c5\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://cdp.customer.io/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "username",
+        "value": "{{basicAuthUsername}}"
+      },
+      {
+        "key": "password",
+        "value": "{{basicAuthPassword}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "050f6dd6-0e1a-4e46-985b-acf716febb9f",
+    "name": "Customer.io Pipelines API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Customer.io Pipelines API is the newer data ingestion interface for getting customer and event data into Customer.io. It follows the Segment spec and supports identify, track, page, screen, group, and alias calls. Customer.io recommends the Pipelines API for new integrations because it is easier to use, supports outbound data integrations and transformations, and is the focus of ongoing development. It uses a CDP API key for authentication and provides a modern alternative to the legacy Track API.\n\nContact Support:\n Name: Customer.io Support",
+      "type": "text/plain"
+    }
+  }
+}

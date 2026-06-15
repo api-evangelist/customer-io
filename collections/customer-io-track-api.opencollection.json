@@ -1,0 +1,276 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Customer.io Track API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Customers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Identify a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://track.customer.io/api/v1/customers/:identifier",
+            "params": [
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates or updates a customer profile in Customer.io. If the customer does not exist, a new profile is created. If the customer already exists, the profile is updated with the provided attributes. The identifier can be an id or email address depending on your workspace configuration."
+        },
+        {
+          "info": {
+            "name": "Delete a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://track.customer.io/api/v1/customers/:identifier",
+            "params": [
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+              }
+            ]
+          },
+          "docs": "Deletes a customer profile from Customer.io. This removes the person and their associated data from your workspace. This action cannot be undone."
+        },
+        {
+          "info": {
+            "name": "Suppress a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://track.customer.io/api/v1/customers/:identifier/suppress",
+            "params": [
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+              }
+            ]
+          },
+          "docs": "Suppresses a customer profile, preventing Customer.io from sending messages to the person. The customer is deleted and their identifier is added to a suppression list so they cannot be re-added."
+        },
+        {
+          "info": {
+            "name": "Unsuppress a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://track.customer.io/api/v1/customers/:identifier/unsuppress",
+            "params": [
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+              }
+            ]
+          },
+          "docs": "Removes a customer from the suppression list, allowing them to be re-added to your workspace and receive messages again."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Events",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Track a customer event",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://track.customer.io/api/v1/customers/:identifier/events",
+            "params": [
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Records an event associated with a specific customer. Events are used to trigger campaigns, track user behavior, and segment your audience. The event name is required and custom data can be passed in the data object."
+        },
+        {
+          "info": {
+            "name": "Track an anonymous event",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://track.customer.io/api/v1/events",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Records an event that is not associated with a known customer profile. Anonymous events can be merged with a customer profile later when the person is identified, if event merging is enabled in your workspace. Anonymous events recorded within the last 30 days can be associated with a person when their anonymous_id matches."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Devices",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Add a customer device",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://track.customer.io/api/v1/customers/:identifier/devices",
+            "params": [
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Adds or updates a device associated with a customer for push notifications. The device token and platform are required. This endpoint is used to register mobile devices so Customer.io can send push notifications to the customer."
+        },
+        {
+          "info": {
+            "name": "Delete a customer device",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://track.customer.io/api/v1/customers/:identifier/devices/:device_id",
+            "params": [
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+              },
+              {
+                "name": "device_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the device to remove."
+              }
+            ]
+          },
+          "docs": "Removes a device from a customer profile. The customer will no longer receive push notifications on this device."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Merge",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Merge customer profiles",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://track.customer.io/api/v1/merge",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Merges two customer profiles into one. The primary profile is kept and the secondary profile is deleted. Events, attributes, and devices from the secondary profile are merged into the primary profile."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Entity",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Track a single entity",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://track.customer.io/api/v1../v2/entity",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "The v2 entity endpoint provides a unified way to create, update, and track events for people and objects. The request body specifies the entity type, action, identifiers, and attributes or event data. This endpoint determines what to do based on the type and action in the payload."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Batch",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Batch entity operations",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://track.customer.io/api/v1../v2/batch",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sends multiple entity operations in a single request. Each item in the batch array represents an individual entity operation for a person, object, or delivery. You can mix types in a single request. The request must be smaller than 500KB."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

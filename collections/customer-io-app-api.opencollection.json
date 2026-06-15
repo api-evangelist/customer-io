@@ -1,0 +1,722 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Customer.io App API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Transactional",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Send a transactional email",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.customer.io/v1/send/email",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sends a transactional email message to a specific customer. You can compose the entire message in the request body or use a transactional message template. Transactional messages are triggered by user actions such as password resets, purchase confirmations, and account notifications. Rate limited to 100 requests per second."
+        },
+        {
+          "info": {
+            "name": "Send a transactional push notification",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.customer.io/v1/send/push",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sends a transactional push notification to a specific customer. The customer must have at least one registered device to receive the notification."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Broadcasts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Trigger an API-triggered broadcast",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.customer.io/v1/campaigns/:campaign_id/triggers",
+            "params": [
+              {
+                "name": "campaign_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the campaign."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Triggers an API-triggered broadcast campaign. You can specify a segment, list of customer IDs, or a data payload to include with the broadcast. Rate limited to 1 request per 10 seconds."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Campaigns",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List campaigns",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/campaigns"
+          },
+          "docs": "Returns a list of campaigns in your workspace. You can filter by campaign type and status."
+        },
+        {
+          "info": {
+            "name": "Get a campaign",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/campaigns/:campaign_id",
+            "params": [
+              {
+                "name": "campaign_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the campaign."
+              }
+            ]
+          },
+          "docs": "Returns detailed information about a specific campaign including its actions, status, and metrics."
+        },
+        {
+          "info": {
+            "name": "List campaign actions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/campaigns/:campaign_id/actions",
+            "params": [
+              {
+                "name": "campaign_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the campaign."
+              }
+            ]
+          },
+          "docs": "Returns a list of actions (workflow steps) for a specific campaign."
+        },
+        {
+          "info": {
+            "name": "Get campaign metrics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/campaigns/:campaign_id/metrics",
+            "params": [
+              {
+                "name": "campaign_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the campaign."
+              },
+              {
+                "name": "period",
+                "value": "",
+                "type": "query",
+                "description": "The time period for metrics aggregation."
+              },
+              {
+                "name": "steps",
+                "value": "",
+                "type": "query",
+                "description": "The number of time periods to return."
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "The type of metric series to return."
+              }
+            ]
+          },
+          "docs": "Returns metrics for a specific campaign including message delivery statistics, open rates, and click rates."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Newsletters",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List newsletters",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/newsletters"
+          },
+          "docs": "Returns a list of newsletters in your workspace."
+        },
+        {
+          "info": {
+            "name": "Get a newsletter",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/newsletters/:newsletter_id",
+            "params": [
+              {
+                "name": "newsletter_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the newsletter."
+              }
+            ]
+          },
+          "docs": "Returns detailed information about a specific newsletter."
+        },
+        {
+          "info": {
+            "name": "Get newsletter metrics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/newsletters/:newsletter_id/metrics",
+            "params": [
+              {
+                "name": "newsletter_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the newsletter."
+              }
+            ]
+          },
+          "docs": "Returns metrics for a specific newsletter including delivery statistics and engagement data."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Segments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List segments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/segments"
+          },
+          "docs": "Returns a list of segments in your workspace."
+        },
+        {
+          "info": {
+            "name": "Create a manual segment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.customer.io/v1/segments",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new manual segment. Manual segments allow you to group customers by explicitly adding or removing them rather than using automatic filter criteria."
+        },
+        {
+          "info": {
+            "name": "Get a segment",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/segments/:segment_id",
+            "params": [
+              {
+                "name": "segment_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the segment."
+              }
+            ]
+          },
+          "docs": "Returns detailed information about a specific segment including its type and customer count."
+        },
+        {
+          "info": {
+            "name": "Get segment membership",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/segments/:segment_id/membership",
+            "params": [
+              {
+                "name": "segment_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the segment."
+              }
+            ]
+          },
+          "docs": "Returns customer identifiers that are members of a specific segment."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Customers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Search customers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/customers",
+            "params": [
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Filter criteria for searching customers."
+              }
+            ]
+          },
+          "docs": "Searches for customers in your workspace using complex filter criteria. Returns matching customer profiles with their attributes."
+        },
+        {
+          "info": {
+            "name": "Get customer attributes",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/customers/:identifier/attributes",
+            "params": [
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the customer. Can be an id, email, or cio_id depending on your workspace configuration."
+              }
+            ]
+          },
+          "docs": "Returns the attributes for a specific customer profile."
+        },
+        {
+          "info": {
+            "name": "Get customer segments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/customers/:identifier/segments",
+            "params": [
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the customer. Can be an id, email, or cio_id depending on your workspace configuration."
+              }
+            ]
+          },
+          "docs": "Returns the segments that a specific customer belongs to."
+        },
+        {
+          "info": {
+            "name": "Get customer activities",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/customers/:identifier/activities",
+            "params": [
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the customer. Can be an id, email, or cio_id depending on your workspace configuration."
+              }
+            ]
+          },
+          "docs": "Returns a list of activities for a specific customer, including messages sent, events tracked, and other interactions."
+        },
+        {
+          "info": {
+            "name": "Get customer messages",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/customers/:identifier/messages",
+            "params": [
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the customer. Can be an id, email, or cio_id depending on your workspace configuration."
+              }
+            ]
+          },
+          "docs": "Returns a list of messages sent to a specific customer."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Messages",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get a message",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/messages/:message_id",
+            "params": [
+              {
+                "name": "message_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the message."
+              }
+            ]
+          },
+          "docs": "Returns detailed information about a specific message that was sent, including delivery status and engagement metrics."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Exports",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Export customers",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.customer.io/v1/exports/customers",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Initiates an export of customer data from your workspace. The export runs asynchronously and you receive a download link when complete."
+        },
+        {
+          "info": {
+            "name": "Export deliveries",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.customer.io/v1/exports/deliveries",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Initiates an export of message delivery data from your workspace."
+        },
+        {
+          "info": {
+            "name": "Get an export",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/exports/:export_id",
+            "params": [
+              {
+                "name": "export_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the export."
+              }
+            ]
+          },
+          "docs": "Returns the status and download link for a previously initiated export."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Activities",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List activities",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/activities",
+            "params": [
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Filter activities by type."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Filter activities by name."
+              }
+            ]
+          },
+          "docs": "Returns a list of recent activities in your workspace, including messages sent, customer events, and system events."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Collections",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List collections",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/api/collections"
+          },
+          "docs": "Returns a list of data collections in your workspace. Collections are used for personalizing messages with external data."
+        },
+        {
+          "info": {
+            "name": "Create a collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.customer.io/v1/api/collections",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new data collection in your workspace."
+        },
+        {
+          "info": {
+            "name": "Get a collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/api/collections/:collection_id",
+            "params": [
+              {
+                "name": "collection_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the collection."
+              }
+            ]
+          },
+          "docs": "Returns detailed information about a specific collection."
+        },
+        {
+          "info": {
+            "name": "Update a collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.customer.io/v1/api/collections/:collection_id",
+            "params": [
+              {
+                "name": "collection_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the collection."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the contents or configuration of a data collection."
+        },
+        {
+          "info": {
+            "name": "Delete a collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.customer.io/v1/api/collections/:collection_id",
+            "params": [
+              {
+                "name": "collection_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the collection."
+              }
+            ]
+          },
+          "docs": "Deletes a data collection from your workspace."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Sender Identities",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List sender identities",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/sender_identities"
+          },
+          "docs": "Returns a list of sender identities configured for sending messages from your workspace."
+        },
+        {
+          "info": {
+            "name": "Get a sender identity",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/sender_identities/:sender_id",
+            "params": [
+              {
+                "name": "sender_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the sender identity."
+              }
+            ]
+          },
+          "docs": "Returns detailed information about a specific sender identity."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Snippets",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List snippets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/snippets"
+          },
+          "docs": "Returns a list of reusable content snippets in your workspace."
+        },
+        {
+          "info": {
+            "name": "Update a snippet",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.customer.io/v1/snippets/:snippet_name",
+            "params": [
+              {
+                "name": "snippet_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the snippet to create or update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates or updates a reusable content snippet."
+        },
+        {
+          "info": {
+            "name": "Delete a snippet",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.customer.io/v1/snippets/:snippet_name",
+            "params": [
+              {
+                "name": "snippet_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the snippet to delete."
+              }
+            ]
+          },
+          "docs": "Deletes a content snippet from your workspace."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

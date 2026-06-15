@@ -1,0 +1,178 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Customer.io Pipelines API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Identify",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Identify a person",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cdp.customer.io/v1/identify",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Identifies a person and sets their profile attributes. Use this call when a user creates an account, logs in, or updates their profile. Requires at least one of userId or anonymousId. Traits are saved as profile attributes."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Track",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Track an event",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cdp.customer.io/v1/track",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Records an event that a person performed. Every track call requires an event name and at least one of userId or anonymousId. Event properties provide additional context about the action."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Page",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Track a page view",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cdp.customer.io/v1/page",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Records a page view event from a web application. Use this when a user views a page on your website. Requires at least one of userId or anonymousId."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Screen",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Track a screen view",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cdp.customer.io/v1/screen",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Records a screen view event from a mobile application. Use this when a user views a screen in your mobile app. Requires at least one of userId or anonymousId."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Group",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Associate a person with a group",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cdp.customer.io/v1/group",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Associates a person with a group or organization. Requires a groupId and at least one of userId or anonymousId. Group traits set attributes on the group."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Alias",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Alias a person",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cdp.customer.io/v1/alias",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates an alias linking a new identity to an existing one. This merges two user identities so all future events from either identity are associated with the same person. Requires a previousId and a userId."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Batch",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Send a batch of API calls",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cdp.customer.io/v1/batch",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sends multiple API calls in a single HTTP request. Each item in the batch array is a standard identify, track, page, screen, group, or alias call. The batch request must be smaller than 1MB."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
