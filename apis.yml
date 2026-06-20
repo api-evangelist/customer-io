@@ -9,7 +9,7 @@ apis:
   - Event Tracking
   - Marketing Automation
   - Messaging
-  image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
   baseURL: https://track.customer.io
   humanURL: https://docs.customer.io/integrations/api/track/
   properties:
@@ -33,7 +33,7 @@ apis:
   - Messaging
   - Segments
   - Transactional Email
-  image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
   baseURL: https://api.customer.io
   humanURL: https://docs.customer.io/integrations/api/app/
   properties:
@@ -53,7 +53,7 @@ apis:
   - Data Ingestion
   - Marketing Automation
   - Messaging
-  image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
   baseURL: https://cdp.customer.io
   humanURL: https://docs.customer.io/integrations/data-in/connections/http-api/
   properties:
