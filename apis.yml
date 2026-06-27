@@ -94,7 +94,7 @@ common:
   url: capabilities/customer-io-capabilities.yml
 - type: Integrations
   url: https://customer.io/integrations
-- type: LLMsTxt
+- type: LlmsText
   url: https://docs.customer.io/llms.txt
 integrations:
 - name: See all integrations See all integrations
