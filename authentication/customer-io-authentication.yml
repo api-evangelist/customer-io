@@ -1,0 +1,22 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/customer-io-app-api-openapi.yml, openapi/customer-io-pipelines-api-openapi.yml,
+  openapi/customer-io-track-api-openapi.yml
+summary:
+  types:
+  - http
+schemes:
+- name: bearerAuth
+  type: http
+  scheme: bearer
+  description: Bearer token authentication using your App API key. Pass the key in the Authorization
+    header as Bearer {app_api_key}.
+  sources:
+  - openapi/customer-io-app-api-openapi.yml
+- name: basicAuth
+  type: http
+  scheme: basic
+  description: Basic authentication using your CDP API key as the username with a blank password.
+  sources:
+  - openapi/customer-io-pipelines-api-openapi.yml
+  - openapi/customer-io-track-api-openapi.yml
