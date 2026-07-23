@@ -1,0 +1,100 @@
+openapi: 3.1.0
+info:
+  title: Customer.io App Activities Sender Identities API
+  description: The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.
+  version: 1.0.0
+  contact:
+    name: Customer.io Support
+    url: https://customer.io/contact
+  termsOfService: https://customer.io/legal/terms-of-service
+servers:
+- url: https://api.customer.io/v1
+  description: US Production Server
+- url: https://api-eu.customer.io/v1
+  description: EU Production Server
+security:
+- bearerAuth: []
+tags:
+- name: Sender Identities
+  description: Manage sender identities used for sending messages.
+paths:
+  /sender_identities:
+    get:
+      operationId: listSenderIdentities
+      summary: List sender identities
+      description: Returns a list of sender identities configured for sending messages from your workspace.
+      tags:
+      - Sender Identities
+      responses:
+        '200':
+          description: A list of sender identities.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sender_identities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SenderIdentity'
+        '401':
+          description: Unauthorized. Invalid App API key.
+  /sender_identities/{sender_id}:
+    get:
+      operationId: getSenderIdentity
+      summary: Get a sender identity
+      description: Returns detailed information about a specific sender identity.
+      tags:
+      - Sender Identities
+      parameters:
+      - $ref: '#/components/parameters/SenderId'
+      responses:
+        '200':
+          description: Sender identity details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SenderIdentity'
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Sender identity not found.
+components:
+  schemas:
+    SenderIdentity:
+      type: object
+      description: A sender identity for sending messages.
+      properties:
+        id:
+          type: integer
+          description: The unique sender identity identifier.
+        name:
+          type: string
+          description: The sender display name.
+        address:
+          type: string
+          format: email
+          description: The sender email address.
+        reply_to:
+          type: string
+          format: email
+          description: The reply-to email address.
+        verified:
+          type: boolean
+          description: Whether the sender identity has been verified.
+  parameters:
+    SenderId:
+      name: sender_id
+      in: path
+      required: true
+      description: The unique identifier for the sender identity.
+      schema:
+        type: integer
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token authentication using your App API key. Pass the key in the Authorization header as Bearer {app_api_key}.
+externalDocs:
+  description: App API Documentation
+  url: https://docs.customer.io/integrations/api/app/

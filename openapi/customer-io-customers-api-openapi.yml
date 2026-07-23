@@ -1,0 +1,357 @@
+openapi: 3.1.0
+info:
+  title: Customer.io App Activities Customers API
+  description: The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.
+  version: 1.0.0
+  contact:
+    name: Customer.io Support
+    url: https://customer.io/contact
+  termsOfService: https://customer.io/legal/terms-of-service
+servers:
+- url: https://api.customer.io/v1
+  description: US Production Server
+- url: https://api-eu.customer.io/v1
+  description: EU Production Server
+security:
+- bearerAuth: []
+tags:
+- name: Customers
+  description: Look up customer profiles, search for customers, and retrieve customer attributes and activity data.
+paths:
+  /customers:
+    get:
+      operationId: searchCustomers
+      summary: Search customers
+      description: Searches for customers in your workspace using complex filter criteria. Returns matching customer profiles with their attributes.
+      tags:
+      - Customers
+      parameters:
+      - name: filter
+        in: query
+        description: Filter criteria for searching customers.
+        schema:
+          type: object
+      responses:
+        '200':
+          description: Matching customers.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  identifiers:
+                    type: array
+                    items:
+                      type: object
+                  next:
+                    type: string
+                    description: Pagination cursor for the next page of results.
+        '401':
+          description: Unauthorized. Invalid App API key.
+  /customers/{identifier}/attributes:
+    get:
+      operationId: getCustomerAttributes
+      summary: Get customer attributes
+      description: Returns the attributes for a specific customer profile.
+      tags:
+      - Customers
+      parameters:
+      - $ref: '#/components/parameters/CustomerIdentifier'
+      responses:
+        '200':
+          description: Customer attributes.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customer:
+                    $ref: '#/components/schemas/Customer'
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Customer not found.
+  /customers/{identifier}/segments:
+    get:
+      operationId: getCustomerSegments
+      summary: Get customer segments
+      description: Returns the segments that a specific customer belongs to.
+      tags:
+      - Customers
+      parameters:
+      - $ref: '#/components/parameters/CustomerIdentifier'
+      responses:
+        '200':
+          description: Customer segments.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  segments:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Segment'
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Customer not found.
+  /customers/{identifier}/activities:
+    get:
+      operationId: getCustomerActivities
+      summary: Get customer activities
+      description: Returns a list of activities for a specific customer, including messages sent, events tracked, and other interactions.
+      tags:
+      - Customers
+      parameters:
+      - $ref: '#/components/parameters/CustomerIdentifier'
+      responses:
+        '200':
+          description: Customer activity list.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  activities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Activity'
+                  next:
+                    type: string
+                    description: Pagination cursor for the next page of results.
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Customer not found.
+  /customers/{identifier}/messages:
+    get:
+      operationId: getCustomerMessages
+      summary: Get customer messages
+      description: Returns a list of messages sent to a specific customer.
+      tags:
+      - Customers
+      parameters:
+      - $ref: '#/components/parameters/CustomerIdentifier'
+      responses:
+        '200':
+          description: Customer messages.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  messages:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Message'
+                  next:
+                    type: string
+                    description: Pagination cursor for the next page of results.
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Customer not found.
+  /customers/{identifier}:
+    put:
+      operationId: identifyCustomer
+      summary: Identify a customer
+      description: Creates or updates a customer profile in Customer.io. If the customer does not exist, a new profile is created. If the customer already exists, the profile is updated with the provided attributes. The identifier can be an id or email address depending on your workspace configuration.
+      tags:
+      - Customers
+      parameters:
+      - $ref: '#/components/parameters/CustomerIdentifier_2'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerAttributes'
+      responses:
+        '200':
+          description: Customer identified successfully.
+        '401':
+          description: Unauthorized. Invalid Site ID or API key.
+    delete:
+      operationId: deleteCustomer
+      summary: Delete a customer
+      description: Deletes a customer profile from Customer.io. This removes the person and their associated data from your workspace. This action cannot be undone.
+      tags:
+      - Customers
+      parameters:
+      - $ref: '#/components/parameters/CustomerIdentifier_2'
+      responses:
+        '200':
+          description: Customer deleted successfully.
+        '401':
+          description: Unauthorized. Invalid Site ID or API key.
+        '404':
+          description: Customer not found.
+  /customers/{identifier}/suppress:
+    post:
+      operationId: suppressCustomer
+      summary: Suppress a customer
+      description: Suppresses a customer profile, preventing Customer.io from sending messages to the person. The customer is deleted and their identifier is added to a suppression list so they cannot be re-added.
+      tags:
+      - Customers
+      parameters:
+      - $ref: '#/components/parameters/CustomerIdentifier_2'
+      responses:
+        '200':
+          description: Customer suppressed successfully.
+        '401':
+          description: Unauthorized. Invalid Site ID or API key.
+  /customers/{identifier}/unsuppress:
+    post:
+      operationId: unsuppressCustomer
+      summary: Unsuppress a customer
+      description: Removes a customer from the suppression list, allowing them to be re-added to your workspace and receive messages again.
+      tags:
+      - Customers
+      parameters:
+      - $ref: '#/components/parameters/CustomerIdentifier_2'
+      responses:
+        '200':
+          description: Customer unsuppressed successfully.
+        '401':
+          description: Unauthorized. Invalid Site ID or API key.
+components:
+  schemas:
+    Message:
+      type: object
+      description: A message that was sent to a customer.
+      properties:
+        id:
+          type: string
+          description: The unique message identifier.
+        type:
+          type: string
+          description: The message type (email, push, sms, webhook, in-app).
+        subject:
+          type: string
+          description: The message subject line.
+        customer_id:
+          type: string
+          description: The recipient customer identifier.
+        campaign_id:
+          type: integer
+          description: The associated campaign identifier.
+        created:
+          type: integer
+          description: UNIX timestamp of when the message was created.
+        metrics:
+          type: object
+          description: Message delivery and engagement metrics.
+          properties:
+            sent:
+              type: integer
+              description: UNIX timestamp of when the message was sent.
+            delivered:
+              type: integer
+              description: UNIX timestamp of when the message was delivered.
+            opened:
+              type: integer
+              description: UNIX timestamp of when the message was opened.
+            clicked:
+              type: integer
+              description: UNIX timestamp of when a link was clicked.
+            bounced:
+              type: integer
+              description: UNIX timestamp of when the message bounced.
+    Segment:
+      type: object
+      description: A customer segment in Customer.io.
+      properties:
+        id:
+          type: integer
+          description: The unique segment identifier.
+        name:
+          type: string
+          description: The segment name.
+        description:
+          type: string
+          description: A description of the segment.
+        type:
+          type: string
+          description: The segment type (manual or data-driven).
+          enum:
+          - manual
+          - data_driven
+        state:
+          type: string
+          description: The current state of the segment.
+    CustomerAttributes:
+      type: object
+      description: An object containing customer attributes to set or update. Any key-value pairs included will be saved as attributes on the customer profile.
+      properties:
+        email:
+          type: string
+          format: email
+          description: The customer email address.
+        created_at:
+          type: integer
+          description: A UNIX timestamp representing when the customer was created.
+        anonymous_id:
+          type: string
+          description: An anonymous identifier to associate with this customer for merging anonymous events.
+      additionalProperties: true
+    Activity:
+      type: object
+      description: An activity record representing an action in your workspace.
+      properties:
+        id:
+          type: string
+          description: The unique activity identifier.
+        type:
+          type: string
+          description: The activity type.
+        name:
+          type: string
+          description: The activity name.
+        timestamp:
+          type: integer
+          description: UNIX timestamp of when the activity occurred.
+        delivery_id:
+          type: string
+          description: The associated delivery identifier if applicable.
+    Customer:
+      type: object
+      description: A customer profile with attributes.
+      properties:
+        id:
+          type: string
+          description: The customer identifier.
+        email:
+          type: string
+          format: email
+          description: The customer email address.
+        created_at:
+          type: integer
+          description: UNIX timestamp of when the customer was created.
+        attributes:
+          type: object
+          description: Custom attributes on the customer profile.
+          additionalProperties: true
+  parameters:
+    CustomerIdentifier_2:
+      name: identifier
+      in: path
+      required: true
+      description: The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration.
+      schema:
+        type: string
+    CustomerIdentifier:
+      name: identifier
+      in: path
+      required: true
+      description: The unique identifier for the customer. Can be an id, email, or cio_id depending on your workspace configuration.
+      schema:
+        type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token authentication using your App API key. Pass the key in the Authorization header as Bearer {app_api_key}.
+externalDocs:
+  description: App API Documentation
+  url: https://docs.customer.io/integrations/api/app/

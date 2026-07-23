@@ -1,0 +1,199 @@
+openapi: 3.1.0
+info:
+  title: Customer.io App Activities Campaigns API
+  description: The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.
+  version: 1.0.0
+  contact:
+    name: Customer.io Support
+    url: https://customer.io/contact
+  termsOfService: https://customer.io/legal/terms-of-service
+servers:
+- url: https://api.customer.io/v1
+  description: US Production Server
+- url: https://api-eu.customer.io/v1
+  description: EU Production Server
+security:
+- bearerAuth: []
+tags:
+- name: Campaigns
+  description: Retrieve information about campaigns, campaign actions, and campaign metrics in your workspace.
+paths:
+  /campaigns:
+    get:
+      operationId: listCampaigns
+      summary: List campaigns
+      description: Returns a list of campaigns in your workspace. You can filter by campaign type and status.
+      tags:
+      - Campaigns
+      responses:
+        '200':
+          description: A list of campaigns.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  campaigns:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Campaign'
+        '401':
+          description: Unauthorized. Invalid App API key.
+  /campaigns/{campaign_id}:
+    get:
+      operationId: getCampaign
+      summary: Get a campaign
+      description: Returns detailed information about a specific campaign including its actions, status, and metrics.
+      tags:
+      - Campaigns
+      parameters:
+      - $ref: '#/components/parameters/CampaignId'
+      responses:
+        '200':
+          description: Campaign details.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  campaign:
+                    $ref: '#/components/schemas/Campaign'
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Campaign not found.
+  /campaigns/{campaign_id}/actions:
+    get:
+      operationId: listCampaignActions
+      summary: List campaign actions
+      description: Returns a list of actions (workflow steps) for a specific campaign.
+      tags:
+      - Campaigns
+      parameters:
+      - $ref: '#/components/parameters/CampaignId'
+      responses:
+        '200':
+          description: A list of campaign actions.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  actions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CampaignAction'
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Campaign not found.
+  /campaigns/{campaign_id}/metrics:
+    get:
+      operationId: getCampaignMetrics
+      summary: Get campaign metrics
+      description: Returns metrics for a specific campaign including message delivery statistics, open rates, and click rates.
+      tags:
+      - Campaigns
+      parameters:
+      - $ref: '#/components/parameters/CampaignId'
+      - name: period
+        in: query
+        description: The time period for metrics aggregation.
+        schema:
+          type: string
+          enum:
+          - hours
+          - days
+          - weeks
+          - months
+      - name: steps
+        in: query
+        description: The number of time periods to return.
+        schema:
+          type: integer
+      - name: type
+        in: query
+        description: The type of metric series to return.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Campaign metrics.
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Campaign not found.
+components:
+  parameters:
+    CampaignId:
+      name: campaign_id
+      in: path
+      required: true
+      description: The unique identifier for the campaign.
+      schema:
+        type: integer
+  schemas:
+    CampaignAction:
+      type: object
+      description: An action (workflow step) within a campaign.
+      properties:
+        id:
+          type: integer
+          description: The unique action identifier.
+        campaign_id:
+          type: integer
+          description: The parent campaign identifier.
+        type:
+          type: string
+          description: The action type (e.g., email, webhook, push).
+        name:
+          type: string
+          description: The action name.
+        sending:
+          type: boolean
+          description: Whether the action is currently sending.
+        created:
+          type: integer
+          description: UNIX timestamp of when the action was created.
+        updated:
+          type: integer
+          description: UNIX timestamp of when the action was last updated.
+    Campaign:
+      type: object
+      description: A messaging campaign in Customer.io.
+      properties:
+        id:
+          type: integer
+          description: The unique campaign identifier.
+        name:
+          type: string
+          description: The campaign name.
+        type:
+          type: string
+          description: The campaign type.
+        active:
+          type: boolean
+          description: Whether the campaign is currently active.
+        created:
+          type: integer
+          description: UNIX timestamp of when the campaign was created.
+        updated:
+          type: integer
+          description: UNIX timestamp of when the campaign was last updated.
+        tags:
+          type: array
+          items:
+            type: string
+          description: Tags associated with the campaign.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token authentication using your App API key. Pass the key in the Authorization header as Bearer {app_api_key}.
+externalDocs:
+  description: App API Documentation
+  url: https://docs.customer.io/integrations/api/app/

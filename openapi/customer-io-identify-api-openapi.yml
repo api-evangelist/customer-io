@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  title: Customer.io App Activities Track API
+  title: Customer.io App Activities Identify API
   description: The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.
   version: 1.0.0
   contact:
@@ -15,36 +15,34 @@ servers:
 security:
 - bearerAuth: []
 tags:
-- name: Track
-  description: Track events to record actions people take in your app or on your website.
+- name: Identify
+  description: Identify people and set their profile attributes. The identify call tells Customer.io who the current user is and assigns traits to them.
 paths:
-  /track:
+  /identify:
     post:
-      operationId: trackEvent
-      summary: Track an event
-      description: Records an event that a person performed. Every track call requires an event name and at least one of userId or anonymousId. Event properties provide additional context about the action.
+      operationId: identifyPerson
+      summary: Identify a person
+      description: Identifies a person and sets their profile attributes. Use this call when a user creates an account, logs in, or updates their profile. Requires at least one of userId or anonymousId. Traits are saved as profile attributes.
       tags:
-      - Track
+      - Identify
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TrackRequest'
+              $ref: '#/components/schemas/IdentifyRequest'
       responses:
         '200':
-          description: Event tracked successfully.
+          description: Person identified successfully.
         '400':
-          description: Bad request. Missing event name or identifiers.
+          description: Bad request. Missing required fields.
         '401':
           description: Unauthorized. Invalid CDP API key.
 components:
   schemas:
-    TrackRequest:
+    IdentifyRequest:
       type: object
-      required:
-      - event
-      description: A track call that records an event.
+      description: An identify call that assigns traits to a person.
       properties:
         userId:
           type: string
@@ -52,19 +50,37 @@ components:
         anonymousId:
           type: string
           description: An anonymous identifier for the user.
-        event:
-          type: string
-          description: The name of the event to track.
-        properties:
+        traits:
           type: object
-          description: Additional properties associated with the event.
+          description: Attributes to set on the person profile. Common traits include email, name, and plan.
           additionalProperties: true
+          properties:
+            email:
+              type: string
+              format: email
+              description: The person email address.
+            name:
+              type: string
+              description: The person full name.
+            first_name:
+              type: string
+              description: The person first name.
+            last_name:
+              type: string
+              description: The person last name.
+            phone:
+              type: string
+              description: The person phone number.
+            created_at:
+              type: string
+              format: date-time
+              description: When the person account was created.
         context:
           $ref: '#/components/schemas/Context'
         timestamp:
           type: string
           format: date-time
-          description: ISO 8601 timestamp of when the event occurred.
+          description: ISO 8601 timestamp of when the identify call was made.
         messageId:
           type: string
           description: A unique identifier for this message for deduplication.

@@ -1,0 +1,135 @@
+openapi: 3.1.0
+info:
+  title: Customer.io App Activities Exports API
+  description: The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.
+  version: 1.0.0
+  contact:
+    name: Customer.io Support
+    url: https://customer.io/contact
+  termsOfService: https://customer.io/legal/terms-of-service
+servers:
+- url: https://api.customer.io/v1
+  description: US Production Server
+- url: https://api-eu.customer.io/v1
+  description: EU Production Server
+security:
+- bearerAuth: []
+tags:
+- name: Exports
+  description: Export customer data, deliveries, and other information from your workspace.
+paths:
+  /exports/customers:
+    post:
+      operationId: exportCustomers
+      summary: Export customers
+      description: Initiates an export of customer data from your workspace. The export runs asynchronously and you receive a download link when complete.
+      tags:
+      - Exports
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportRequest'
+      responses:
+        '200':
+          description: Export initiated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportResponse'
+        '401':
+          description: Unauthorized. Invalid App API key.
+  /exports/deliveries:
+    post:
+      operationId: exportDeliveries
+      summary: Export deliveries
+      description: Initiates an export of message delivery data from your workspace.
+      tags:
+      - Exports
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportRequest'
+      responses:
+        '200':
+          description: Export initiated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportResponse'
+        '401':
+          description: Unauthorized. Invalid App API key.
+  /exports/{export_id}:
+    get:
+      operationId: getExport
+      summary: Get an export
+      description: Returns the status and download link for a previously initiated export.
+      tags:
+      - Exports
+      parameters:
+      - $ref: '#/components/parameters/ExportId'
+      responses:
+        '200':
+          description: Export details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportResponse'
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Export not found.
+components:
+  schemas:
+    ExportResponse:
+      type: object
+      description: The response from initiating or checking an export.
+      properties:
+        id:
+          type: integer
+          description: The unique export identifier.
+        status:
+          type: string
+          description: The export status.
+          enum:
+          - pending
+          - running
+          - completed
+          - failed
+        download_url:
+          type: string
+          format: uri
+          description: The URL to download the exported data. Available when status is completed.
+    ExportRequest:
+      type: object
+      description: A request to export data from your workspace.
+      properties:
+        filters:
+          type: object
+          description: Filter criteria for the export.
+          additionalProperties: true
+        start:
+          type: integer
+          description: UNIX timestamp for the export start date.
+        end:
+          type: integer
+          description: UNIX timestamp for the export end date.
+  parameters:
+    ExportId:
+      name: export_id
+      in: path
+      required: true
+      description: The unique identifier for the export.
+      schema:
+        type: integer
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token authentication using your App API key. Pass the key in the Authorization header as Bearer {app_api_key}.
+externalDocs:
+  description: App API Documentation
+  url: https://docs.customer.io/integrations/api/app/

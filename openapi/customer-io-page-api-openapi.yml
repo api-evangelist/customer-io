@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  title: Customer.io App Activities Track API
+  title: Customer.io App Activities Page API
   description: The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.
   version: 1.0.0
   contact:
@@ -15,36 +15,34 @@ servers:
 security:
 - bearerAuth: []
 tags:
-- name: Track
-  description: Track events to record actions people take in your app or on your website.
+- name: Page
+  description: Record page views from web applications.
 paths:
-  /track:
+  /page:
     post:
-      operationId: trackEvent
-      summary: Track an event
-      description: Records an event that a person performed. Every track call requires an event name and at least one of userId or anonymousId. Event properties provide additional context about the action.
+      operationId: trackPageView
+      summary: Track a page view
+      description: Records a page view event from a web application. Use this when a user views a page on your website. Requires at least one of userId or anonymousId.
       tags:
-      - Track
+      - Page
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TrackRequest'
+              $ref: '#/components/schemas/PageRequest'
       responses:
         '200':
-          description: Event tracked successfully.
+          description: Page view tracked successfully.
         '400':
-          description: Bad request. Missing event name or identifiers.
+          description: Bad request. Missing required fields.
         '401':
           description: Unauthorized. Invalid CDP API key.
 components:
   schemas:
-    TrackRequest:
+    PageRequest:
       type: object
-      required:
-      - event
-      description: A track call that records an event.
+      description: A page call that records a page view.
       properties:
         userId:
           type: string
@@ -52,19 +50,34 @@ components:
         anonymousId:
           type: string
           description: An anonymous identifier for the user.
-        event:
+        name:
           type: string
-          description: The name of the event to track.
+          description: The name of the page viewed.
         properties:
           type: object
-          description: Additional properties associated with the event.
+          description: Properties of the page such as URL, title, and referrer.
           additionalProperties: true
+          properties:
+            url:
+              type: string
+              format: uri
+              description: The full URL of the page.
+            title:
+              type: string
+              description: The page title.
+            referrer:
+              type: string
+              format: uri
+              description: The referrer URL.
+            path:
+              type: string
+              description: The URL path.
         context:
           $ref: '#/components/schemas/Context'
         timestamp:
           type: string
           format: date-time
-          description: ISO 8601 timestamp of when the event occurred.
+          description: ISO 8601 timestamp of when the page view occurred.
         messageId:
           type: string
           description: A unique identifier for this message for deduplication.

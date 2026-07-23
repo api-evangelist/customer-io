@@ -1,0 +1,111 @@
+openapi: 3.1.0
+info:
+  title: Customer.io App Activities Events API
+  description: The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.
+  version: 1.0.0
+  contact:
+    name: Customer.io Support
+    url: https://customer.io/contact
+  termsOfService: https://customer.io/legal/terms-of-service
+servers:
+- url: https://api.customer.io/v1
+  description: US Production Server
+- url: https://api-eu.customer.io/v1
+  description: EU Production Server
+security:
+- bearerAuth: []
+tags:
+- name: Events
+  description: Track customer events and anonymous events to record behavioral data and trigger messaging workflows.
+paths:
+  /customers/{identifier}/events:
+    post:
+      operationId: trackCustomerEvent
+      summary: Track a customer event
+      description: Records an event associated with a specific customer. Events are used to trigger campaigns, track user behavior, and segment your audience. The event name is required and custom data can be passed in the data object.
+      tags:
+      - Events
+      parameters:
+      - $ref: '#/components/parameters/CustomerIdentifier'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerEvent'
+      responses:
+        '200':
+          description: Event tracked successfully.
+        '401':
+          description: Unauthorized. Invalid Site ID or API key.
+  /events:
+    post:
+      operationId: trackAnonymousEvent
+      summary: Track an anonymous event
+      description: Records an event that is not associated with a known customer profile. Anonymous events can be merged with a customer profile later when the person is identified, if event merging is enabled in your workspace. Anonymous events recorded within the last 30 days can be associated with a person when their anonymous_id matches.
+      tags:
+      - Events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnonymousEvent'
+      responses:
+        '200':
+          description: Anonymous event tracked successfully.
+        '401':
+          description: Unauthorized. Invalid Site ID or API key.
+components:
+  schemas:
+    CustomerEvent:
+      type: object
+      required:
+      - name
+      description: An event to track for a specific customer.
+      properties:
+        name:
+          type: string
+          description: The name of the event to track.
+        data:
+          type: object
+          description: Custom data associated with the event. Any key-value pairs included will be available for use in campaigns and segments.
+          additionalProperties: true
+        type:
+          type: string
+          description: The event type. Use page for page view events.
+          enum:
+          - page
+    AnonymousEvent:
+      type: object
+      required:
+      - name
+      - anonymous_id
+      description: An event not associated with a known customer profile.
+      properties:
+        name:
+          type: string
+          description: The name of the event to track.
+        anonymous_id:
+          type: string
+          description: A unique anonymous identifier for the person who performed the event. This can be used later to merge the event with a known customer profile.
+        data:
+          type: object
+          description: Custom data associated with the event.
+          additionalProperties: true
+  parameters:
+    CustomerIdentifier:
+      name: identifier
+      in: path
+      required: true
+      description: The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration.
+      schema:
+        type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token authentication using your App API key. Pass the key in the Authorization header as Bearer {app_api_key}.
+externalDocs:
+  description: App API Documentation
+  url: https://docs.customer.io/integrations/api/app/

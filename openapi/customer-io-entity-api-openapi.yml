@@ -1,0 +1,93 @@
+openapi: 3.1.0
+info:
+  title: Customer.io App Activities Entity API
+  description: The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.
+  version: 1.0.0
+  contact:
+    name: Customer.io Support
+    url: https://customer.io/contact
+  termsOfService: https://customer.io/legal/terms-of-service
+servers:
+- url: https://api.customer.io/v1
+  description: US Production Server
+- url: https://api-eu.customer.io/v1
+  description: EU Production Server
+security:
+- bearerAuth: []
+tags:
+- name: Entity
+  description: Track API v2 entity endpoint for creating and managing people and objects using a unified request format.
+paths:
+  ../v2/entity:
+    post:
+      operationId: trackEntity
+      summary: Track a single entity
+      description: The v2 entity endpoint provides a unified way to create, update, and track events for people and objects. The request body specifies the entity type, action, identifiers, and attributes or event data. This endpoint determines what to do based on the type and action in the payload.
+      tags:
+      - Entity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntityRequest'
+      responses:
+        '200':
+          description: Entity operation completed successfully.
+        '400':
+          description: Bad request. Invalid payload structure.
+        '401':
+          description: Unauthorized. Invalid Site ID or API key.
+components:
+  schemas:
+    EntityRequest:
+      type: object
+      required:
+      - type
+      - action
+      - identifiers
+      description: A v2 entity operation request. The type and action determine what operation is performed.
+      properties:
+        type:
+          type: string
+          description: The entity type.
+          enum:
+          - person
+          - object
+          - delivery
+        action:
+          type: string
+          description: The action to perform on the entity.
+          enum:
+          - identify
+          - delete
+          - suppress
+          - unsuppress
+          - event
+          - add_device
+          - delete_device
+          - delete_relationship
+          - merge
+        identifiers:
+          type: object
+          description: The identifiers used to locate or create the entity. For people this includes id, email, or cio_id. For objects this includes object_type_id and object_id.
+          additionalProperties: true
+        attributes:
+          type: object
+          description: Attributes to set on the entity. Used with identify actions.
+          additionalProperties: true
+        name:
+          type: string
+          description: The event name. Required when action is event.
+        data:
+          type: object
+          description: Custom data for events.
+          additionalProperties: true
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token authentication using your App API key. Pass the key in the Authorization header as Bearer {app_api_key}.
+externalDocs:
+  description: App API Documentation
+  url: https://docs.customer.io/integrations/api/app/

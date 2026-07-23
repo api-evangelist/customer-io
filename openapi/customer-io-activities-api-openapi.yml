@@ -1,0 +1,84 @@
+openapi: 3.1.0
+info:
+  title: Customer.io App Activities API
+  description: The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.
+  version: 1.0.0
+  contact:
+    name: Customer.io Support
+    url: https://customer.io/contact
+  termsOfService: https://customer.io/legal/terms-of-service
+servers:
+- url: https://api.customer.io/v1
+  description: US Production Server
+- url: https://api-eu.customer.io/v1
+  description: EU Production Server
+security:
+- bearerAuth: []
+tags:
+- name: Activities
+  description: Retrieve activity logs for your workspace.
+paths:
+  /activities:
+    get:
+      operationId: listActivities
+      summary: List activities
+      description: Returns a list of recent activities in your workspace, including messages sent, customer events, and system events.
+      tags:
+      - Activities
+      parameters:
+      - name: type
+        in: query
+        description: Filter activities by type.
+        schema:
+          type: string
+      - name: name
+        in: query
+        description: Filter activities by name.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A list of activities.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  activities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Activity'
+                  next:
+                    type: string
+                    description: Pagination cursor for the next page of results.
+        '401':
+          description: Unauthorized. Invalid App API key.
+components:
+  schemas:
+    Activity:
+      type: object
+      description: An activity record representing an action in your workspace.
+      properties:
+        id:
+          type: string
+          description: The unique activity identifier.
+        type:
+          type: string
+          description: The activity type.
+        name:
+          type: string
+          description: The activity name.
+        timestamp:
+          type: integer
+          description: UNIX timestamp of when the activity occurred.
+        delivery_id:
+          type: string
+          description: The associated delivery identifier if applicable.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token authentication using your App API key. Pass the key in the Authorization header as Bearer {app_api_key}.
+externalDocs:
+  description: App API Documentation
+  url: https://docs.customer.io/integrations/api/app/

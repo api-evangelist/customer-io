@@ -1,0 +1,153 @@
+openapi: 3.1.0
+info:
+  title: Customer.io App Activities Batch API
+  description: The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.
+  version: 1.0.0
+  contact:
+    name: Customer.io Support
+    url: https://customer.io/contact
+  termsOfService: https://customer.io/legal/terms-of-service
+servers:
+- url: https://api.customer.io/v1
+  description: US Production Server
+- url: https://api-eu.customer.io/v1
+  description: EU Production Server
+security:
+- bearerAuth: []
+tags:
+- name: Batch
+  description: Send multiple API calls in a single request for improved performance.
+paths:
+  /batch:
+    post:
+      operationId: batchCalls
+      summary: Send a batch of API calls
+      description: Sends multiple API calls in a single HTTP request. Each item in the batch array is a standard identify, track, page, screen, group, or alias call. The batch request must be smaller than 1MB.
+      tags:
+      - Batch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchRequest'
+      responses:
+        '200':
+          description: Batch processed successfully.
+        '400':
+          description: Bad request. Invalid payload or exceeds size limit.
+        '401':
+          description: Unauthorized. Invalid CDP API key.
+  ../v2/batch:
+    post:
+      operationId: trackBatch
+      summary: Batch entity operations
+      description: Sends multiple entity operations in a single request. Each item in the batch array represents an individual entity operation for a person, object, or delivery. You can mix types in a single request. The request must be smaller than 500KB.
+      tags:
+      - Batch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchRequest_2'
+      responses:
+        '200':
+          description: Batch processed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request. Invalid payload structure or exceeds size limit.
+        '401':
+          description: Unauthorized. Invalid Site ID or API key.
+components:
+  schemas:
+    BatchRequest_2:
+      type: object
+      required:
+      - batch
+      description: A batch of entity operations. The request must be smaller than 500KB.
+      properties:
+        batch:
+          type: array
+          description: An array of entity operations. Each item represents an individual operation for a person, object, or delivery.
+          items:
+            $ref: '#/components/schemas/EntityRequest'
+    EntityRequest:
+      type: object
+      required:
+      - type
+      - action
+      - identifiers
+      description: A v2 entity operation request. The type and action determine what operation is performed.
+      properties:
+        type:
+          type: string
+          description: The entity type.
+          enum:
+          - person
+          - object
+          - delivery
+        action:
+          type: string
+          description: The action to perform on the entity.
+          enum:
+          - identify
+          - delete
+          - suppress
+          - unsuppress
+          - event
+          - add_device
+          - delete_device
+          - delete_relationship
+          - merge
+        identifiers:
+          type: object
+          description: The identifiers used to locate or create the entity. For people this includes id, email, or cio_id. For objects this includes object_type_id and object_id.
+          additionalProperties: true
+        attributes:
+          type: object
+          description: Attributes to set on the entity. Used with identify actions.
+          additionalProperties: true
+        name:
+          type: string
+          description: The event name. Required when action is event.
+        data:
+          type: object
+          description: Custom data for events.
+          additionalProperties: true
+    BatchRequest:
+      type: object
+      required:
+      - batch
+      description: A batch of API calls. The request must be smaller than 1MB. Individual calls in the batch are limited to 64KB each.
+      properties:
+        batch:
+          type: array
+          description: An array of API calls. Each item should include a type field indicating the call type (identify, track, page, screen, group, or alias) along with the standard fields for that call type.
+          items:
+            type: object
+            required:
+            - type
+            properties:
+              type:
+                type: string
+                description: The type of API call.
+                enum:
+                - identify
+                - track
+                - page
+                - screen
+                - group
+                - alias
+            additionalProperties: true
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token authentication using your App API key. Pass the key in the Authorization header as Bearer {app_api_key}.
+externalDocs:
+  description: App API Documentation
+  url: https://docs.customer.io/integrations/api/app/

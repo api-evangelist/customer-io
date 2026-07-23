@@ -1,0 +1,203 @@
+openapi: 3.1.0
+info:
+  title: Customer.io App Activities Transactional API
+  description: The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.
+  version: 1.0.0
+  contact:
+    name: Customer.io Support
+    url: https://customer.io/contact
+  termsOfService: https://customer.io/legal/terms-of-service
+servers:
+- url: https://api.customer.io/v1
+  description: US Production Server
+- url: https://api-eu.customer.io/v1
+  description: EU Production Server
+security:
+- bearerAuth: []
+tags:
+- name: Transactional
+  description: Send transactional messages such as password resets, purchase receipts, and other important notifications triggered by user actions.
+paths:
+  /send/email:
+    post:
+      operationId: sendTransactionalEmail
+      summary: Send a transactional email
+      description: Sends a transactional email message to a specific customer. You can compose the entire message in the request body or use a transactional message template. Transactional messages are triggered by user actions such as password resets, purchase confirmations, and account notifications. Rate limited to 100 requests per second.
+      tags:
+      - Transactional
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionalEmailRequest'
+      responses:
+        '200':
+          description: Transactional email sent successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionalEmailResponse'
+        '400':
+          description: Bad request. Invalid request body.
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '429':
+          description: Rate limit exceeded.
+  /send/push:
+    post:
+      operationId: sendTransactionalPush
+      summary: Send a transactional push notification
+      description: Sends a transactional push notification to a specific customer. The customer must have at least one registered device to receive the notification.
+      tags:
+      - Transactional
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionalPushRequest'
+      responses:
+        '200':
+          description: Transactional push sent successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionalMessageResponse'
+        '400':
+          description: Bad request. Invalid request body.
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '429':
+          description: Rate limit exceeded.
+components:
+  schemas:
+    TransactionalMessageResponse:
+      type: object
+      description: The response from sending a transactional message.
+      properties:
+        delivery_id:
+          type: string
+          description: The unique identifier for this delivery.
+        queued_at:
+          type: integer
+          description: A UNIX timestamp of when the message was queued.
+    TransactionalEmailResponse:
+      type: object
+      description: The response from sending a transactional email.
+      properties:
+        delivery_id:
+          type: string
+          description: The unique identifier for this delivery.
+        queued_at:
+          type: integer
+          description: A UNIX timestamp of when the message was queued for sending.
+    TransactionalPushRequest:
+      type: object
+      required:
+      - transactional_message_id
+      - identifiers
+      description: A request to send a transactional push notification.
+      properties:
+        transactional_message_id:
+          type: string
+          description: The identifier for the transactional push template.
+        identifiers:
+          type: object
+          description: Identifiers for the customer receiving the notification.
+          properties:
+            id:
+              type: string
+              description: The customer id.
+            email:
+              type: string
+              format: email
+              description: The customer email address.
+            cio_id:
+              type: string
+              description: The Customer.io internal identifier.
+        message_data:
+          type: object
+          description: Custom data to use in notification personalization.
+          additionalProperties: true
+        send_to_unsubscribed:
+          type: boolean
+          description: If true, sends the notification even if the customer has unsubscribed.
+        title:
+          type: string
+          description: The push notification title. Overrides the template title.
+        message:
+          type: string
+          description: The push notification message body.
+        custom_data:
+          type: object
+          description: Custom key-value pairs sent with the push notification payload.
+          additionalProperties: true
+    TransactionalEmailRequest:
+      type: object
+      required:
+      - transactional_message_id
+      - to
+      - identifiers
+      description: A request to send a transactional email. You can use a pre-built template or compose the message inline.
+      properties:
+        transactional_message_id:
+          type: string
+          description: The identifier for the transactional message template to use.
+        to:
+          type: string
+          format: email
+          description: The email address to send the message to.
+        identifiers:
+          type: object
+          description: Identifiers for the customer receiving the message.
+          properties:
+            id:
+              type: string
+              description: The customer id.
+            email:
+              type: string
+              format: email
+              description: The customer email address.
+            cio_id:
+              type: string
+              description: The Customer.io internal identifier.
+        from:
+          type: string
+          description: The sender email address. Overrides the template default.
+        reply_to:
+          type: string
+          description: The reply-to email address.
+        bcc:
+          type: string
+          description: BCC email address.
+        subject:
+          type: string
+          description: The email subject line. Overrides the template subject.
+        body:
+          type: string
+          description: The HTML email body. Overrides the template body.
+        plaintext_body:
+          type: string
+          description: The plaintext email body.
+        message_data:
+          type: object
+          description: Custom data to use in message personalization.
+          additionalProperties: true
+        disable_message_retention:
+          type: boolean
+          description: If true, Customer.io does not retain the message body after delivery.
+        send_to_unsubscribed:
+          type: boolean
+          description: If true, sends the message even if the customer has unsubscribed from marketing messages.
+        queue_draft:
+          type: boolean
+          description: If true, holds the message as a draft for review.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token authentication using your App API key. Pass the key in the Authorization header as Bearer {app_api_key}.
+externalDocs:
+  description: App API Documentation
+  url: https://docs.customer.io/integrations/api/app/

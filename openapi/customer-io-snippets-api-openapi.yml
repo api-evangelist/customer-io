@@ -1,0 +1,118 @@
+openapi: 3.1.0
+info:
+  title: Customer.io App Activities Snippets API
+  description: The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.
+  version: 1.0.0
+  contact:
+    name: Customer.io Support
+    url: https://customer.io/contact
+  termsOfService: https://customer.io/legal/terms-of-service
+servers:
+- url: https://api.customer.io/v1
+  description: US Production Server
+- url: https://api-eu.customer.io/v1
+  description: EU Production Server
+security:
+- bearerAuth: []
+tags:
+- name: Snippets
+  description: Manage reusable content snippets for use in messages.
+paths:
+  /snippets:
+    get:
+      operationId: listSnippets
+      summary: List snippets
+      description: Returns a list of reusable content snippets in your workspace.
+      tags:
+      - Snippets
+      responses:
+        '200':
+          description: A list of snippets.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  snippets:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Snippet'
+        '401':
+          description: Unauthorized. Invalid App API key.
+  /snippets/{snippet_name}:
+    put:
+      operationId: updateSnippet
+      summary: Update a snippet
+      description: Creates or updates a reusable content snippet.
+      tags:
+      - Snippets
+      parameters:
+      - name: snippet_name
+        in: path
+        required: true
+        description: The name of the snippet to create or update.
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SnippetRequest'
+      responses:
+        '200':
+          description: Snippet updated successfully.
+        '401':
+          description: Unauthorized. Invalid App API key.
+    delete:
+      operationId: deleteSnippet
+      summary: Delete a snippet
+      description: Deletes a content snippet from your workspace.
+      tags:
+      - Snippets
+      parameters:
+      - name: snippet_name
+        in: path
+        required: true
+        description: The name of the snippet to delete.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Snippet deleted successfully.
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Snippet not found.
+components:
+  schemas:
+    Snippet:
+      type: object
+      description: A reusable content snippet.
+      properties:
+        name:
+          type: string
+          description: The snippet name used to reference it in templates.
+        value:
+          type: string
+          description: The snippet content.
+        updated_at:
+          type: integer
+          description: UNIX timestamp of when the snippet was last updated.
+    SnippetRequest:
+      type: object
+      required:
+      - value
+      description: A request to create or update a content snippet.
+      properties:
+        value:
+          type: string
+          description: The snippet content.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token authentication using your App API key. Pass the key in the Authorization header as Bearer {app_api_key}.
+externalDocs:
+  description: App API Documentation
+  url: https://docs.customer.io/integrations/api/app/

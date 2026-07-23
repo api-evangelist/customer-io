@@ -1,0 +1,107 @@
+openapi: 3.1.0
+info:
+  title: Customer.io App Activities Devices API
+  description: The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.
+  version: 1.0.0
+  contact:
+    name: Customer.io Support
+    url: https://customer.io/contact
+  termsOfService: https://customer.io/legal/terms-of-service
+servers:
+- url: https://api.customer.io/v1
+  description: US Production Server
+- url: https://api-eu.customer.io/v1
+  description: EU Production Server
+security:
+- bearerAuth: []
+tags:
+- name: Devices
+  description: Manage push notification devices associated with customer profiles.
+paths:
+  /customers/{identifier}/devices:
+    put:
+      operationId: addCustomerDevice
+      summary: Add a customer device
+      description: Adds or updates a device associated with a customer for push notifications. The device token and platform are required. This endpoint is used to register mobile devices so Customer.io can send push notifications to the customer.
+      tags:
+      - Devices
+      parameters:
+      - $ref: '#/components/parameters/CustomerIdentifier'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceRequest'
+      responses:
+        '200':
+          description: Device added or updated successfully.
+        '401':
+          description: Unauthorized. Invalid Site ID or API key.
+  /customers/{identifier}/devices/{device_id}:
+    delete:
+      operationId: deleteCustomerDevice
+      summary: Delete a customer device
+      description: Removes a device from a customer profile. The customer will no longer receive push notifications on this device.
+      tags:
+      - Devices
+      parameters:
+      - $ref: '#/components/parameters/CustomerIdentifier'
+      - $ref: '#/components/parameters/DeviceId'
+      responses:
+        '200':
+          description: Device deleted successfully.
+        '401':
+          description: Unauthorized. Invalid Site ID or API key.
+        '404':
+          description: Device not found.
+components:
+  schemas:
+    DeviceRequest:
+      type: object
+      required:
+      - device
+      description: A request to add or update a device for push notifications.
+      properties:
+        device:
+          type: object
+          required:
+          - id
+          - platform
+          description: The device details.
+          properties:
+            id:
+              type: string
+              description: The unique device token.
+            platform:
+              type: string
+              description: The device platform.
+              enum:
+              - ios
+              - android
+            last_used:
+              type: integer
+              description: A UNIX timestamp of when the device was last used.
+  parameters:
+    DeviceId:
+      name: device_id
+      in: path
+      required: true
+      description: The unique identifier for the device to remove.
+      schema:
+        type: string
+    CustomerIdentifier:
+      name: identifier
+      in: path
+      required: true
+      description: The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration.
+      schema:
+        type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token authentication using your App API key. Pass the key in the Authorization header as Bearer {app_api_key}.
+externalDocs:
+  description: App API Documentation
+  url: https://docs.customer.io/integrations/api/app/

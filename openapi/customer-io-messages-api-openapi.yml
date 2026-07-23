@@ -1,0 +1,99 @@
+openapi: 3.1.0
+info:
+  title: Customer.io App Activities Messages API
+  description: The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.
+  version: 1.0.0
+  contact:
+    name: Customer.io Support
+    url: https://customer.io/contact
+  termsOfService: https://customer.io/legal/terms-of-service
+servers:
+- url: https://api.customer.io/v1
+  description: US Production Server
+- url: https://api-eu.customer.io/v1
+  description: EU Production Server
+security:
+- bearerAuth: []
+tags:
+- name: Messages
+  description: Retrieve information about individual messages sent to customers.
+paths:
+  /messages/{message_id}:
+    get:
+      operationId: getMessage
+      summary: Get a message
+      description: Returns detailed information about a specific message that was sent, including delivery status and engagement metrics.
+      tags:
+      - Messages
+      parameters:
+      - $ref: '#/components/parameters/MessageId'
+      responses:
+        '200':
+          description: Message details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Message not found.
+components:
+  schemas:
+    Message:
+      type: object
+      description: A message that was sent to a customer.
+      properties:
+        id:
+          type: string
+          description: The unique message identifier.
+        type:
+          type: string
+          description: The message type (email, push, sms, webhook, in-app).
+        subject:
+          type: string
+          description: The message subject line.
+        customer_id:
+          type: string
+          description: The recipient customer identifier.
+        campaign_id:
+          type: integer
+          description: The associated campaign identifier.
+        created:
+          type: integer
+          description: UNIX timestamp of when the message was created.
+        metrics:
+          type: object
+          description: Message delivery and engagement metrics.
+          properties:
+            sent:
+              type: integer
+              description: UNIX timestamp of when the message was sent.
+            delivered:
+              type: integer
+              description: UNIX timestamp of when the message was delivered.
+            opened:
+              type: integer
+              description: UNIX timestamp of when the message was opened.
+            clicked:
+              type: integer
+              description: UNIX timestamp of when a link was clicked.
+            bounced:
+              type: integer
+              description: UNIX timestamp of when the message bounced.
+  parameters:
+    MessageId:
+      name: message_id
+      in: path
+      required: true
+      description: The unique identifier for the message.
+      schema:
+        type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token authentication using your App API key. Pass the key in the Authorization header as Bearer {app_api_key}.
+externalDocs:
+  description: App API Documentation
+  url: https://docs.customer.io/integrations/api/app/

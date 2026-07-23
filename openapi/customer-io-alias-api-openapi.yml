@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  title: Customer.io App Activities Track API
+  title: Customer.io App Activities Alias API
   description: The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.
   version: 1.0.0
   contact:
@@ -15,56 +15,50 @@ servers:
 security:
 - bearerAuth: []
 tags:
-- name: Track
-  description: Track events to record actions people take in your app or on your website.
+- name: Alias
+  description: Merge two user identities by creating an alias linking a new identity to an existing one.
 paths:
-  /track:
+  /alias:
     post:
-      operationId: trackEvent
-      summary: Track an event
-      description: Records an event that a person performed. Every track call requires an event name and at least one of userId or anonymousId. Event properties provide additional context about the action.
+      operationId: aliasPerson
+      summary: Alias a person
+      description: Creates an alias linking a new identity to an existing one. This merges two user identities so all future events from either identity are associated with the same person. Requires a previousId and a userId.
       tags:
-      - Track
+      - Alias
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TrackRequest'
+              $ref: '#/components/schemas/AliasRequest'
       responses:
         '200':
-          description: Event tracked successfully.
+          description: Alias created successfully.
         '400':
-          description: Bad request. Missing event name or identifiers.
+          description: Bad request. Missing previousId.
         '401':
           description: Unauthorized. Invalid CDP API key.
 components:
   schemas:
-    TrackRequest:
+    AliasRequest:
       type: object
       required:
-      - event
-      description: A track call that records an event.
+      - previousId
+      - userId
+      description: An alias call that links two user identities.
       properties:
         userId:
           type: string
-          description: The unique user identifier in your system.
-        anonymousId:
+          description: The new user identifier.
+        previousId:
           type: string
-          description: An anonymous identifier for the user.
-        event:
-          type: string
-          description: The name of the event to track.
-        properties:
-          type: object
-          description: Additional properties associated with the event.
-          additionalProperties: true
+          description: The previous user identifier to merge with the new one.
         context:
           $ref: '#/components/schemas/Context'
         timestamp:
           type: string
           format: date-time
-          description: ISO 8601 timestamp of when the event occurred.
+          description: ISO 8601 timestamp of when the alias was created.
         messageId:
           type: string
           description: A unique identifier for this message for deduplication.

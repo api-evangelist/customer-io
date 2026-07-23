@@ -1,0 +1,73 @@
+openapi: 3.1.0
+info:
+  title: Customer.io App Activities Merge API
+  description: The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.
+  version: 1.0.0
+  contact:
+    name: Customer.io Support
+    url: https://customer.io/contact
+  termsOfService: https://customer.io/legal/terms-of-service
+servers:
+- url: https://api.customer.io/v1
+  description: US Production Server
+- url: https://api-eu.customer.io/v1
+  description: EU Production Server
+security:
+- bearerAuth: []
+tags:
+- name: Merge
+  description: Merge two customer profiles into a single profile.
+paths:
+  /merge:
+    post:
+      operationId: mergeCustomers
+      summary: Merge customer profiles
+      description: Merges two customer profiles into one. The primary profile is kept and the secondary profile is deleted. Events, attributes, and devices from the secondary profile are merged into the primary profile.
+      tags:
+      - Merge
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MergeRequest'
+      responses:
+        '200':
+          description: Customers merged successfully.
+        '401':
+          description: Unauthorized. Invalid Site ID or API key.
+components:
+  schemas:
+    MergeRequest:
+      type: object
+      required:
+      - primary
+      - secondary
+      description: A request to merge two customer profiles. The primary profile is kept and the secondary profile is deleted.
+      properties:
+        primary:
+          type: object
+          required:
+          - id
+          description: The primary customer profile to keep.
+          properties:
+            id:
+              type: string
+              description: The identifier of the primary customer.
+        secondary:
+          type: object
+          required:
+          - id
+          description: The secondary customer profile to merge and delete.
+          properties:
+            id:
+              type: string
+              description: The identifier of the secondary customer.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token authentication using your App API key. Pass the key in the Authorization header as Bearer {app_api_key}.
+externalDocs:
+  description: App API Documentation
+  url: https://docs.customer.io/integrations/api/app/

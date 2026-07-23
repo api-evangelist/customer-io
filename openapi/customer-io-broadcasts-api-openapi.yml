@@ -1,0 +1,91 @@
+openapi: 3.1.0
+info:
+  title: Customer.io App Activities Broadcasts API
+  description: The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.
+  version: 1.0.0
+  contact:
+    name: Customer.io Support
+    url: https://customer.io/contact
+  termsOfService: https://customer.io/legal/terms-of-service
+servers:
+- url: https://api.customer.io/v1
+  description: US Production Server
+- url: https://api-eu.customer.io/v1
+  description: EU Production Server
+security:
+- bearerAuth: []
+tags:
+- name: Broadcasts
+  description: Trigger API-triggered broadcasts to send messages to groups of people based on segments or filters.
+paths:
+  /campaigns/{campaign_id}/triggers:
+    post:
+      operationId: triggerBroadcast
+      summary: Trigger an API-triggered broadcast
+      description: Triggers an API-triggered broadcast campaign. You can specify a segment, list of customer IDs, or a data payload to include with the broadcast. Rate limited to 1 request per 10 seconds.
+      tags:
+      - Broadcasts
+      parameters:
+      - $ref: '#/components/parameters/CampaignId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BroadcastTriggerRequest'
+      responses:
+        '200':
+          description: Broadcast triggered successfully.
+        '400':
+          description: Bad request. Invalid request body.
+        '401':
+          description: Unauthorized. Invalid App API key.
+        '404':
+          description: Campaign not found.
+        '429':
+          description: Rate limit exceeded.
+components:
+  parameters:
+    CampaignId:
+      name: campaign_id
+      in: path
+      required: true
+      description: The unique identifier for the campaign.
+      schema:
+        type: integer
+  schemas:
+    BroadcastTriggerRequest:
+      type: object
+      description: A request to trigger an API-triggered broadcast.
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
+          description: An array of customer identifiers to send the broadcast to.
+        emails:
+          type: array
+          items:
+            type: string
+            format: email
+          description: An array of email addresses to send the broadcast to.
+        per_user_data:
+          type: array
+          items:
+            type: object
+          description: Per-customer data for personalization.
+        data:
+          type: object
+          description: Shared data available in the broadcast template.
+          additionalProperties: true
+        id_ignore_missing:
+          type: boolean
+          description: If true, ignores IDs that do not match existing customers.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token authentication using your App API key. Pass the key in the Authorization header as Bearer {app_api_key}.
+externalDocs:
+  description: App API Documentation
+  url: https://docs.customer.io/integrations/api/app/
