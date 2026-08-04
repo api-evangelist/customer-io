@@ -1,164 +1,109 @@
 specification: FinOps Framework
 specificationVersion: '1.0'
 schema: https://www.finops.org/framework/
+provider: Customer.io
+providerId: customer-io
+created: '2026-06-20'
+modified: '2026-06-20'
+reconciled: true
+tags:
+- Customer Messaging
+- Marketing Automation
+- Email
+- CDP
+- Transactional
+- FinOps
+- Cost Management
+- FOCUS
+description: >-
+  FinOps view of Customer.io spend. Customer.io bills a platform subscription
+  (Essentials or Premium) priced on the number of profiles in the workspace,
+  with bundled email volume and overage rates for additional profiles
+  ($0.009/profile), additional emails ($0.12 per 1,000), and AI credits ($10
+  per 100K). The cost drivers are profile count, message volume across
+  email/sms/push/in-app, and AI Agent credit consumption rather than per-API-call
+  metering.
+notes: >-
+  Overage rates and bundled volumes are subject to change; verify against the
+  Customer.io pricing page during reconciliation.
+sources:
+- https://customer.io/pricing
+- https://docs.customer.io
+- https://focus.finops.org/focus-specification/v1-3/
 alignedWith:
   framework: FinOps Foundation Framework
   frameworkUrl: https://www.finops.org/framework/
   dataSpec: FOCUS
   dataSpecVersion: '1.3'
   dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
-provider: Customer.io
-providerId: customer-io
-publisherName: Peaberry Software, Inc.
-serviceCategory: Marketing Automation
-created: '2026-05-04'
-modified: '2026-05-05'
-reconciled: true
-tags:
-  - Customer Data Platform
-  - Marketing Automation
-  - Messaging
-  - FinOps
-  - Cost Management
-  - FOCUS
-description: 'FOCUS-aligned FinOps for Customer.io: tiered platform subscription with quotas on profiles
-  and monthly emails, plus per-profile, per-1K-email, and per-100K-AI-credit overages.'
-sources:
-  - https://customer.io/pricing/
-  - https://docs.customer.io/api/
-principles:
-  - name: Visibility
-    description: Use the Customer.io workspace usage dashboard, billing screen, and Pipelines audit log
-      to track profile counts, sent emails, and AI credit consumption against plan quotas.
-  - name: Allocation
-    description: Use workspaces, segments, and campaign tags to attribute messaging spend to product
-      lines, geographies, and lifecycle stages.
-  - name: Optimization
-    description: Suppress dormant profiles to stay under the 5,000-profile Essentials cap; use Pipelines
-      / CDP to dedupe before identify; route low-value sends through cheaper channels rather than email
-      overage; right-size AI credit packs.
-  - name: Accountability
-    description: Marketing-ops owns the monthly true-up against profile and email quotas; engineering
-      owns ingestion correctness so overage is real consumption rather than duplicate identify calls.
-domains:
-  - name: Understand Usage and Cost
-    capabilities:
-      - Data Ingestion
-      - Allocation
-      - Reporting and Analytics
-      - Anomaly Management
-  - name: Quantify Business Value
-    capabilities:
-      - Planning and Estimating
-      - Forecasting
-      - Budgeting
-      - Unit Economics
-  - name: Optimize Usage and Cost
-    capabilities:
-      - Workload Optimization
-      - Licensing and SaaS
-  - name: Manage the FinOps Practice
-    capabilities:
-      - Invoicing and Chargeback
-      - Onboarding Workloads
+publisherName: Customer.io
+serviceCategory: Marketing and Customer Engagement
 billingModel:
-  pricingCategory: Tiered Subscription + Usage Overage
+  pricingCategory: Subscription-Based
   billingFrequency: Monthly
   billingCurrency: USD
   chargeCategories:
-    - Usage
-    - Purchase
-    - Tax
-    - Credit
-    - Adjustment
-  chargeFrequency: Recurring
+  - Usage
+  - Purchase
+  - Adjustment
 focusColumns:
   ServiceName: Customer.io
-  ServiceCategory: Marketing Automation
+  ServiceCategory: Marketing and Customer Engagement
   ProviderName: Customer.io
-  PublisherName: Peaberry Software, Inc.
-  InvoiceIssuerName: Peaberry Software, Inc.
-  PricingCategory: Subscription
-  PricingUnit: workspace-month
+  PublisherName: Customer.io
+  InvoiceIssuerName: Customer.io
   BillingCurrency: USD
   ChargeCategory: Usage
+  PricingCategory: Subscription-Based
 meters:
-  - name: platform_subscription
-    description: Monthly platform fee per workspace tied to plan tier
-    unit: month
-    aggregation: sum
-    dimensions:
-      - plan
-      - workspace
-  - name: profiles
-    description: People + objects stored in the workspace
-    unit: profile
-    aggregation: max
-    dimensions:
-      - workspace
-      - object_type
-  - name: emails_sent
-    description: Outbound email sends across campaigns, broadcasts, and transactional sends
-    unit: email
-    aggregation: sum
-    dimensions:
-      - workspace
-      - campaign
-      - channel
-  - name: ai_credits
-    description: AI Agent credits consumed
-    unit: credit
-    aggregation: sum
-    dimensions:
-      - workspace
-      - skill
-  - name: api_requests
-    description: API calls against Track / App / Pipelines (not separately billed; observed for capacity)
-    unit: request
-    aggregation: sum
-    dimensions:
-      - api
-      - endpoint
-      - workspace
-apis:
-  - name: Customer.io Track API
-    baseURL: https://track.customer.io
-    tags:
-      - Behavioral Data
-      - Customer Data
-      - Event Tracking
-      - Marketing Automation
-      - Messaging
-    serviceName: Customer.io Track API
-    serviceCategory: API
-  - name: Customer.io App API
-    baseURL: https://api.customer.io
-    tags:
-      - Broadcasts
-      - Campaigns
-      - Marketing Automation
-      - Messaging
-      - Segments
-      - Transactional Email
-    serviceName: Customer.io App API
-    serviceCategory: API
-  - name: Customer.io Pipelines API
-    baseURL: https://cdp.customer.io
-    tags:
-      - CDP
-      - Customer Data Platform
-      - Data Ingestion
-      - Marketing Automation
-      - Messaging
-    serviceName: Customer.io Pipelines API
-    serviceCategory: API
-unitEconomics:
-  - name: Cost per Profile
-    metric: billed_cost / profiles
-    target: TBD
-  - name: Cost per 1K Emails
-    metric: billed_cost / (emails_sent / 1000)
-    target: TBD
+- name: profiles
+  description: People plus objects stored in the workspace; the primary subscription sizing metric.
+  unit: profiles
+  aggregation: max
+  dimensions:
+  - workspace
+  - plan
+- name: email_volume
+  description: Emails sent per month; bundled in plan with $0.12 per 1,000 overage.
+  unit: emails
+  aggregation: sum
+  dimensions:
+  - workspace
+  - campaign
+- name: message_volume
+  description: Non-email messages sent (SMS, push, in-app); billed per provider/channel terms.
+  unit: messages
+  aggregation: sum
+  dimensions:
+  - workspace
+  - channel
+- name: ai_credits
+  description: AI Agent credit consumption, billed at $10 per 100K credits.
+  unit: credits
+  aggregation: sum
+  dimensions:
+  - workspace
+- name: overage_profiles
+  description: Profiles above the plan allotment, billed at $0.009 per profile.
+  unit: profiles
+  aggregation: sum
+  dimensions:
+  - workspace
+principles:
+- name: Visibility
+  description: Track profile count and message volume against plan allotments to anticipate overage.
+- name: Allocation
+  description: Tag campaigns and workspaces to attribute message and profile spend to teams.
+- name: Optimization
+  description: Suppress and delete stale profiles to control the profile-based subscription cost; batch and segment sends; reserve AI credits for high-value workflows.
+- name: Accountability
+  description: Assign workspace owners and review monthly profile, email, and AI-credit spend against budget.
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
+- FN: Kin Lane
+  email: kin@apievangelist.com
+
+x-ported-from: customerio
+x-ported: '2026-08-04'
+x-ported-note: >-
+  Carried over from the retired duplicate `customerio` during the
+  duplicate-provider merge. Content unchanged; provider identity repointed.

@@ -3,69 +3,79 @@ specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
 provider: Customer.io
 providerId: customer-io
-created: '2026-05-04'
-modified: '2026-05-05'
-reconciled: false
+created: '2026-06-20'
+modified: '2026-06-20'
+reconciled: true
 tags:
-  - Customer Data Platform
-  - Marketing Automation
-  - Messaging
-  - Rate Limiting
-  - Quotas
-  - Throttling
-description: Customer.io exposes three primary APIs (Track, App, Pipelines / CDP) with per-workspace
-  rate limits. Documented limits are not currently published as fixed numeric thresholds in public docs;
-  Customer.io throttles via HTTP 429 with Retry-After. Track API is optimized for high-throughput event
-  ingestion; App and CDP have lower default budgets.
+- Customer Messaging
+- Marketing Automation
+- Email
+- CDP
+- Transactional
+- Rate Limiting
+- Quotas
+- Throttling
+description: >-
+  Customer.io applies per-endpoint rate limits that differ by API surface. The
+  Track (Behavioral Tracking) API has a fair-use limit of 100 requests per
+  second for both live integrations and historical backfill, applying to v1 and
+  v2. On the App API most requests are limited to 10 requests per second, with
+  API-triggered broadcasts limited to 1 request every 10 seconds and
+  transactional messages allowed up to 100 requests per second. The Pipelines /
+  CDP API enforces payload-size limits of 64 KB per single request and 1 MB per
+  batch request.
+notes: >-
+  Limits captured from Customer.io API reference documentation and are subject
+  to change; verify the current published limits during reconciliation.
+  Exceeding limits returns HTTP 429.
 sources:
-  - https://customer.io/pricing/
-  - https://docs.customer.io/api/
-notes: Public docs do not publish fixed RPS numbers; reach out to support for raised limits on Premium /
-  Enterprise tiers. Soft caps are workspace-scoped, not per-key.
-headers:
-  retryAfter: Retry-After
+- https://docs.customer.io/integrations/api/track/
+- https://docs.customer.io/integrations/api/app/
+- https://docs.customer.io/integrations/api/cdp/
 responseCodes:
   throttled: 429
-  quotaExceeded: 429
-  serviceUnavailable: 503
 limits:
-  - name: Track API (event ingestion)
-    scope: workspace
-    metric: requests_per_second
-    limit: see Customer.io API reference (high-throughput ingestion)
-    applies:
-      - Customer.io Track API
-  - name: App API (campaigns / broadcasts / segments)
-    scope: workspace
-    metric: requests_per_second
-    limit: see Customer.io API reference
-    applies:
-      - Customer.io App API
-  - name: Pipelines (CDP) API
-    scope: workspace
-    metric: requests_per_second
-    limit: see Customer.io API reference
-    applies:
-      - Customer.io Pipelines API
-  - name: Per-workspace email send budget
-    scope: workspace
-    metric: emails_per_month
-    limit: tied to plan (1M included on Essentials; custom on Premium / Enterprise)
-    applies:
-      - Customer.io App API
+- name: Track API (Behavioral Tracking)
+  scope: account
+  metric: requests
+  limit: 100/second
+  notes: Fair-use limit for live integrations and historical backfill; applies to v1 and v2.
+- name: App API (general)
+  scope: account
+  metric: requests
+  limit: 10/second
+  notes: Default limit for most App API endpoints.
+- name: App API (API-triggered broadcast)
+  scope: account
+  metric: requests
+  limit: 1 per 10 seconds
+  notes: Broadcast trigger endpoint is heavily throttled.
+- name: App API (Transactional)
+  scope: account
+  metric: requests
+  limit: 100/second
+  notes: Transactional email/push/sms/in-app send endpoints.
+- name: Pipelines API (single request)
+  scope: request
+  metric: bytes
+  limit: 64 KB
+  notes: Maximum size of a single identify/track/page/screen/group/alias call.
+- name: Pipelines API (batch request)
+  scope: request
+  metric: bytes
+  limit: 1 MB
+  notes: Maximum size of a batch request.
 policies:
-  - name: Backoff Strategy
-    description: On 429, honor the Retry-After header (seconds). Use exponential backoff with jitter on
-      additional retries.
-  - name: Bulk-friendly endpoints
-    description: Use the batch identify and batch event endpoints rather than tight loops of single calls
-      to stay within ingestion budgets.
-  - name: Plan-tied volume caps
-    description: Email volume caps are set by plan (Essentials 1M / Premium custom / Enterprise custom);
-      overage is metered, not throttled.
-  - name: Soft-vs-hard limits
-    description: Soft rate caps return 429 and recover on Retry-After; sustained over-cap traffic may
-      trigger workspace-scoped backpressure.
+- name: Per-Endpoint Limits
+  description: Limits are enforced per endpoint category rather than a single global account limit.
+- name: Backoff Strategy
+  description: Clients should implement exponential backoff with jitter and honor Retry-After on HTTP 429 responses.
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
+- FN: Kin Lane
+  email: kin@apievangelist.com
+
+x-ported-from: customerio
+x-ported: '2026-08-04'
+x-ported-note: >-
+  Carried over from the retired duplicate `customerio` during the
+  duplicate-provider merge. Content unchanged; provider identity repointed.

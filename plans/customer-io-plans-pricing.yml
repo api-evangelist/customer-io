@@ -3,233 +3,183 @@ specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
 provider: Customer.io
 providerId: customer-io
-created: '2026-05-04'
-modified: '2026-05-05'
+created: '2026-06-20'
+modified: '2026-06-20'
 reconciled: true
 tags:
-  - Customer Data Platform
-  - Marketing Automation
-  - Messaging
-  - Email
-  - Event Tracking
-description: Customer.io is tiered SaaS (Essentials, Premium, Enterprise) with quotas on profiles and
-  monthly email volume; overages bill at per-profile and per-1K-email rates. AI Agent credits are an
-  add-on. Premium and Enterprise are minimum-commitment annual plans with custom volume.
+- Customer Messaging
+- Marketing Automation
+- Email
+- CDP
+- Transactional
+- Plans
+description: >-
+  Customer.io uses platform subscription tiers (Essentials and Premium) priced
+  primarily on the number of profiles (people plus objects) in the workspace,
+  with bundled email volume and overage rates for additional profiles, emails,
+  and AI credits. The same API surface (Track, App / Transactional, Pipelines)
+  is available across paid plans; pricing is on the platform, not metered
+  per-API-call. An Enterprise tier with custom pricing covers dedicated
+  infrastructure and support.
+notes: >-
+  Prices captured from the public customer.io/pricing page and are subject to
+  change; verify the live pricing page and per-region terms during
+  reconciliation. Profile counts, bundled volumes, and overage rates can change.
 sources:
-  - https://customer.io/pricing/
+- https://customer.io/pricing
+- https://docs.customer.io
 plans:
-  - id: customer-io-essentials
-    name: Essentials
-    type: subscription
-    description: Self-serve starter tier; 5,000 profiles and 1M monthly emails included.
-    entries:
-      - label: Monthly platform fee
-        description: Starting platform fee, billed monthly
-        name: platform_monthly
-        type: subscription
-        metric: month
-        limit: -1
-        timeFrame: month
-        geo: global
-        domains:
-          - https://track.customer.io
-          - https://api.customer.io
-          - https://cdp.customer.io
-        unit: 1
-        price: '100.00'
-        userMultiplied: false
-      - label: Included profiles
-        description: People + objects covered by the included tier
-        name: profiles_included
-        type: quota
-        metric: profile
-        limit: 5000
-        timeFrame: month
-        geo: global
-        domains:
-          - https://track.customer.io
-          - https://api.customer.io
-          - https://cdp.customer.io
-        unit: 1
-        price: included
-        userMultiplied: false
-      - label: Included email volume
-        description: Monthly email sends included
-        name: emails_included
-        type: quota
-        metric: email
-        limit: 1000000
-        timeFrame: month
-        geo: global
-        domains:
-          - https://track.customer.io
-          - https://api.customer.io
-          - https://cdp.customer.io
-        unit: 1
-        price: included
-        userMultiplied: false
-      - label: Profile overage
-        description: Per-profile charge above the included quota
-        name: profile_overage
-        type: metered
-        metric: profile
-        limit: -1
-        timeFrame: month
-        geo: global
-        domains:
-          - https://track.customer.io
-          - https://api.customer.io
-          - https://cdp.customer.io
-        unit: 1
-        price: '0.009'
-        userMultiplied: false
-      - label: Email overage
-        description: Per 1,000 additional emails over the included monthly volume
-        name: email_overage
-        type: metered
-        metric: email
-        limit: -1
-        timeFrame: month
-        geo: global
-        domains:
-          - https://track.customer.io
-          - https://api.customer.io
-          - https://cdp.customer.io
-        unit: 1000
-        price: '0.12'
-        userMultiplied: false
-      - label: AI credits add-on
-        description: Per 100K AI Agent credits
-        name: ai_credits
-        type: metered
-        metric: credit
-        limit: -1
-        timeFrame: usage
-        geo: global
-        domains:
-          - https://api.customer.io
-        unit: 100000
-        price: '10.00'
-        userMultiplied: false
-    elements:
-      - name: Visual workflow builder
-      - name: AI Agent (core execution skills)
-      - name: 2 object types
-      - name: Basic data integrations
-      - name: Email and community support
-      - name: Customer.io Track API
-      - name: Customer.io App API
-      - name: Customer.io Pipelines API
-  - id: customer-io-premium
-    name: Premium
-    type: subscription
-    description: Annual contract starting at $1,000/month; custom profile and email volumes.
-    entries:
-      - label: Monthly platform fee
-        description: Starting platform fee billed yearly
-        name: platform_monthly
-        type: subscription
-        metric: month
-        limit: -1
-        timeFrame: month
-        geo: global
-        domains:
-          - https://track.customer.io
-          - https://api.customer.io
-          - https://cdp.customer.io
-        unit: 1
-        price: '1000.00'
-        userMultiplied: false
-      - label: Custom profile volume
-        description: Custom profile commitment negotiated with sales
-        name: profiles_custom
-        type: quota
-        metric: profile
-        limit: -1
-        timeFrame: month
-        geo: global
-        domains:
-          - https://track.customer.io
-          - https://api.customer.io
-          - https://cdp.customer.io
-        unit: 1
-        price: custom
-        userMultiplied: false
-      - label: Custom email volume
-        description: Custom monthly email volume
-        name: emails_custom
-        type: quota
-        metric: email
-        limit: -1
-        timeFrame: month
-        geo: global
-        domains:
-          - https://track.customer.io
-          - https://api.customer.io
-          - https://cdp.customer.io
-        unit: 1
-        price: custom
-        userMultiplied: false
-    elements:
-      - name: Everything in Essentials
-      - name: 10 object types
-      - name: Elevated AI Agent limits
-      - name: Daily routines
-      - name: Premium chat / email support
-      - name: 90-day onboarding
-      - name: HIPAA compliance
-      - name: Premium data integrations
-      - name: Customer.io Track API
-      - name: Customer.io App API
-      - name: Customer.io Pipelines API
-  - id: customer-io-enterprise
-    name: Enterprise
-    type: enterprise
-    description: Custom-priced. Best per-unit rates for highest profile and email volumes.
-    entries:
-      - label: Custom platform fee
-        description: Negotiated platform fee
-        name: platform_custom
-        type: subscription
-        metric: month
-        limit: -1
-        timeFrame: month
-        geo: global
-        domains:
-          - https://track.customer.io
-          - https://api.customer.io
-          - https://cdp.customer.io
-        unit: 1
-        price: custom
-        userMultiplied: false
-      - label: Custom profile volume
-        description: Best per-profile pricing at high volume
-        name: profiles_custom
-        type: quota
-        metric: profile
-        limit: -1
-        timeFrame: month
-        geo: global
-        domains:
-          - https://track.customer.io
-          - https://api.customer.io
-          - https://cdp.customer.io
-        unit: 1
-        price: custom
-        userMultiplied: false
-    elements:
-      - name: Everything in Premium
-      - name: Custom AI Agent execution skills
-      - name: Priority technical support
-      - name: Migration support
-      - name: Dedicated Customer Success Manager
-      - name: Dedicated hardware
-      - name: Audit logging
-      - name: Dedicated implementation specialist
-      - name: Shared Slack channel
-      - name: Customer.io Track API
-      - name: Customer.io App API
-      - name: Customer.io Pipelines API
+- id: customerio-essentials
+  name: Essentials
+  type: subscription
+  description: >-
+    Entry platform tier starting at $100/month, bundling a base profile
+    allotment and email volume with the visual workflow builder, core AI Agent
+    skills, and basic data integrations. Additional usage is billed at overage
+    rates.
+  entries:
+  - label: Base Subscription
+    name: base_subscription
+    type: flat
+    metric: subscription
+    limit: 1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: from $100/month
+    userMultiplied: false
+  - label: Included Profiles
+    name: included_profiles
+    type: included
+    metric: profiles
+    limit: 5000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: included in base
+    userMultiplied: false
+  - label: Included Email Volume
+    name: included_email
+    type: included
+    metric: emails
+    limit: 1000000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: up to 1,000,000 emails/month included
+    userMultiplied: false
+  - label: Additional Profiles
+    name: overage_profiles
+    type: usage
+    metric: profiles
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $0.009 per profile
+    userMultiplied: false
+  - label: Additional Emails
+    name: overage_email
+    type: usage
+    metric: emails
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1000
+    price: $0.12 per 1,000 emails
+    userMultiplied: false
+  - label: AI Credits
+    name: ai_credits
+    type: usage
+    metric: credits
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 100000
+    price: $10 per 100K credits
+    userMultiplied: false
+  elements:
+  - name: Track API
+  - name: App / Transactional API
+  - name: Pipelines / CDP API
+  - name: Visual Workflow Builder
+  - name: AI Agent (core skills)
+  - name: Basic Data Integrations
+- id: customerio-premium
+  name: Premium
+  type: subscription
+  description: >-
+    Higher tier starting at $1,000/month (billed yearly) with everything in
+    Essentials plus more object types, elevated AI Agent limits with custom
+    skills, Daily Routines, premium support with onboarding, HIPAA compliance,
+    and premium data integrations. Profile and email volume are custom.
+  entries:
+  - label: Base Subscription
+    name: base_subscription
+    type: flat
+    metric: subscription
+    limit: 1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: from $1,000/month (billed yearly)
+    userMultiplied: false
+  - label: Included Profiles
+    name: included_profiles
+    type: included
+    metric: profiles
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: custom volume
+    userMultiplied: false
+  - label: Included Email Volume
+    name: included_email
+    type: included
+    metric: emails
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: custom volume
+    userMultiplied: false
+  elements:
+  - name: Everything in Essentials
+  - name: 10 Object Types
+  - name: AI Agent (custom skills)
+  - name: Daily Routines
+  - name: HIPAA Compliance
+  - name: Premium Data Integrations
+  - name: Premium Support
+- id: customerio-enterprise
+  name: Enterprise
+  type: enterprise
+  description: >-
+    Custom pricing for organizations requiring dedicated infrastructure,
+    advanced security and compliance, and dedicated support. Contact Customer.io
+    sales.
+  entries:
+  - label: Enterprise Agreement
+    name: enterprise
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: contact sales
+    userMultiplied: false
+  elements:
+  - name: Dedicated Infrastructure
+  - name: Custom Volume Pricing
+  - name: Dedicated Support
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
+- FN: Kin Lane
+  email: kin@apievangelist.com
+
+x-ported-from: customerio
+x-ported: '2026-08-04'
+x-ported-note: >-
+  Carried over from the retired duplicate `customerio` during the
+  duplicate-provider merge. Content unchanged; provider identity repointed.

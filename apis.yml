@@ -358,6 +358,12 @@ apis:
   - type: Documentation
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 common:
+- type: Plans
+  url: plans/customer-io-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/customer-io-rate-limits.yml
+- type: FinOps
+  url: finops/customer-io-finops.yml
 - type: AgenticAccess
   url: agentic-access/customer-io-agentic-access.yml
 - type: TrustCenter
