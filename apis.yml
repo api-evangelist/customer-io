@@ -396,8 +396,6 @@ common:
   url: vocabulary/customer-io-vocabulary.yml
 - type: Rules
   url: rules/customer-io-rules.yml
-- type: Capabilities
-  url: capabilities/customer-io-capabilities.yml
 - type: Integrations
   url: https://customer.io/integrations
 - type: LlmsText
