@@ -42,7 +42,7 @@ apis:
   name: Customer.io Activities API
   description: Retrieve activity logs for your workspace.
   humanURL: https://docs.customer.io/integrations/api/track/
-  baseURL: https://track.customer.io
+  baseURL: https://api.customer.io
   tags:
   - Activities
   properties:
@@ -57,7 +57,7 @@ apis:
   description: >-
     Merge two user identities by creating an alias linking a new identity to an existing one.
   humanURL: https://docs.customer.io/integrations/api/track/
-  baseURL: https://track.customer.io
+  baseURL: https://cdp.customer.io/v1
   tags:
   - Alias
   properties:
@@ -86,7 +86,7 @@ apis:
   description: >-
     Trigger API-triggered broadcasts to send messages to groups of people based on segments or filters.
   humanURL: https://docs.customer.io/integrations/api/track/
-  baseURL: https://track.customer.io
+  baseURL: https://api.customer.io
   tags:
   - Broadcasts
   properties:
@@ -101,7 +101,7 @@ apis:
   description: >-
     Retrieve information about campaigns, campaign actions, and campaign metrics in your workspace.
   humanURL: https://docs.customer.io/integrations/api/track/
-  baseURL: https://track.customer.io
+  baseURL: https://api.customer.io
   tags:
   - Campaigns
   properties:
@@ -115,7 +115,7 @@ apis:
   name: Customer.io Collections API
   description: Manage collections of data used in message personalization.
   humanURL: https://docs.customer.io/integrations/api/track/
-  baseURL: https://track.customer.io
+  baseURL: https://api.customer.io
   tags:
   - Collections
   properties:
@@ -189,7 +189,7 @@ apis:
   name: Customer.io Exports API
   description: Export customer data, deliveries, and other information from your workspace.
   humanURL: https://docs.customer.io/integrations/api/track/
-  baseURL: https://track.customer.io
+  baseURL: https://api.customer.io
   tags:
   - Exports
   properties:
@@ -203,7 +203,7 @@ apis:
   name: Customer.io Group API
   description: Associate people with groups or organizations.
   humanURL: https://docs.customer.io/integrations/api/track/
-  baseURL: https://track.customer.io
+  baseURL: https://cdp.customer.io/v1
   tags:
   - Group
   properties:
@@ -219,7 +219,7 @@ apis:
     Identify people and set their profile attributes. The identify call tells Customer.io who the current
     user is and assigns traits to them.
   humanURL: https://docs.customer.io/integrations/api/track/
-  baseURL: https://track.customer.io
+  baseURL: https://cdp.customer.io/v1
   tags:
   - Identify
   properties:
@@ -247,7 +247,7 @@ apis:
   name: Customer.io Messages API
   description: Retrieve information about individual messages sent to customers.
   humanURL: https://docs.customer.io/integrations/api/track/
-  baseURL: https://track.customer.io
+  baseURL: https://api.customer.io
   tags:
   - Messages
   properties:
@@ -261,7 +261,7 @@ apis:
   name: Customer.io Newsletters API
   description: Retrieve information about newsletters and newsletter variants.
   humanURL: https://docs.customer.io/integrations/api/track/
-  baseURL: https://track.customer.io
+  baseURL: https://api.customer.io
   tags:
   - Newsletters
   properties:
@@ -275,7 +275,7 @@ apis:
   name: Customer.io Page API
   description: Record page views from web applications.
   humanURL: https://docs.customer.io/integrations/api/track/
-  baseURL: https://track.customer.io
+  baseURL: https://cdp.customer.io/v1
   tags:
   - Page
   properties:
@@ -289,7 +289,7 @@ apis:
   name: Customer.io Screen API
   description: Record screen views from mobile applications.
   humanURL: https://docs.customer.io/integrations/api/track/
-  baseURL: https://track.customer.io
+  baseURL: https://cdp.customer.io/v1
   tags:
   - Screen
   properties:
@@ -303,7 +303,7 @@ apis:
   name: Customer.io Segments API
   description: Create and manage manual segments, and retrieve segment membership information.
   humanURL: https://docs.customer.io/integrations/api/track/
-  baseURL: https://track.customer.io
+  baseURL: https://api.customer.io
   tags:
   - Segments
   properties:
@@ -317,7 +317,7 @@ apis:
   name: Customer.io Sender Identities API
   description: Manage sender identities used for sending messages.
   humanURL: https://docs.customer.io/integrations/api/track/
-  baseURL: https://track.customer.io
+  baseURL: https://api.customer.io
   tags:
   - Sender Identities
   properties:
@@ -331,7 +331,7 @@ apis:
   name: Customer.io Snippets API
   description: Manage reusable content snippets for use in messages.
   humanURL: https://docs.customer.io/integrations/api/track/
-  baseURL: https://track.customer.io
+  baseURL: https://api.customer.io
   tags:
   - Snippets
   properties:
@@ -347,7 +347,7 @@ apis:
     Send transactional messages such as password resets, purchase receipts, and other important notifications
     triggered by user actions.
   humanURL: https://docs.customer.io/integrations/api/track/
-  baseURL: https://track.customer.io
+  baseURL: https://api.customer.io
   tags:
   - Transactional
   properties:
@@ -357,6 +357,113 @@ apis:
     url: https://docs.customer.io/integrations/api/app/
   - type: Documentation
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
+- aid: customer-io:app-api
+  name: Customer.io App API
+  description: >-
+    The Customer.io App API is the workspace-management and outbound-messaging
+    surface: trigger broadcasts, send transactional email, push, SMS, in-app and
+    inbox messages, manage campaigns, newsletters, segments, snippets,
+    collections, Design Studio content and assets, read delivery metrics, and
+    export people and delivery data. This entry points at the 166-operation
+    OpenAPI 3.1.0 document Customer.io publishes itself. Authorization is a
+    bearer App API Key, with service-account tokens (sa_live_) additionally
+    accepted on the transactional send endpoints.
+  baseURL: https://api.customer.io
+  humanURL: https://docs.customer.io/integrations/api/app/
+  tags:
+  - Broadcasts
+  - Campaigns
+  - Messaging
+  - Transactional Email
+  - Newsletters
+  - Segments
+  properties:
+  - type: OpenAPI
+    url: openapi/_original/customer-io-app-api-openapi.json
+  - type: Overlay
+    url: overlays/customer-io-app-api-overlay.yaml
+  - type: Documentation
+    url: https://docs.customer.io/integrations/api/app/
+  - type: APIReference
+    url: https://docs.customer.io/integrations/api/customerio-apis/
+- aid: customer-io:pipelines-api
+  name: Customer.io Pipelines API
+  description: >-
+    The Customer.io Pipelines (CDP) API is the Segment-spec data ingestion
+    interface Customer.io recommends for new integrations — identify, track,
+    page, screen, group, alias and batch, all POST-only, with deletes and other
+    state changes expressed as semantic events rather than HTTP verbs. This
+    entry points at the OpenAPI 3.1.0 document Customer.io publishes itself.
+    Authorization is HTTP basic with the CDP API key as the username and a blank
+    password.
+  baseURL: https://cdp.customer.io/v1
+  humanURL: https://docs.customer.io/integrations/data-in/connections/http-api/
+  tags:
+  - CDP
+  - Data Ingestion
+  - Customer Data
+  - Event Tracking
+  properties:
+  - type: OpenAPI
+    url: openapi/_original/customer-io-pipelines-api-openapi.json
+  - type: Overlay
+    url: overlays/customer-io-pipelines-api-overlay.yaml
+  - type: Documentation
+    url: https://docs.customer.io/integrations/data-in/connections/http-api/
+- aid: customer-io:reporting-webhooks
+  name: Customer.io Reporting Webhooks
+  description: >-
+    Customer.io's outbound message-lifecycle event stream. Eight event families
+    — customer, email, sms, whatsapp, push, in_app, slack and webhook — each
+    carrying a metric such as drafted, sent, delivered, opened, clicked,
+    converted, bounced, spammed or failed, plus the full set of foreign keys
+    that tie the event back to the delivery, person, campaign, broadcast,
+    newsletter and journey that produced it. Requests are signed with
+    x-cio-signature, an HMAC-SHA256 of the body, and stamped with
+    x-cio-timestamp.
+  baseURL: https://api.customer.io
+  humanURL: https://docs.customer.io/integrations/api/webhooks/
+  tags:
+  - Webhooks
+  - Events
+  - Reporting
+  - Messaging
+  properties:
+  - type: OpenAPI
+    url: openapi/_original/customer-io-reporting-webhooks-openapi.json
+  - type: Webhooks
+    url: openapi/_original/customer-io-reporting-webhooks-openapi.json
+  - type: AsyncAPI
+    url: asyncapi/customer-io-reporting-webhooks-asyncapi.yml
+  - type: Overlay
+    url: overlays/customer-io-reporting-webhooks-overlay.yaml
+  - type: Documentation
+    url: https://docs.customer.io/integrations/api/webhooks/
+- aid: customer-io:mcp
+  name: Customer.io MCP
+  description: >-
+    Customer.io's first-party hosted Model Context Protocol server. It exposes
+    the full Journeys App API and CDP Data Pipelines API to any MCP client
+    through eight tools — a context primer, a schema browser, three verb-scoped
+    HTTP proxies split so reads can be approved independently of writes and
+    deletes, a two-tool skill library, and an auth-status probe. Authorization
+    is OAuth 2.1 with PKCE and dynamic client registration, bound to the
+    authorizing user's own Customer.io permissions.
+  baseURL: https://mcp.customer.io/mcp
+  humanURL: https://docs.customer.io/ai/mcp/get-started/
+  tags:
+  - MCP
+  - Agents
+  - AI
+  properties:
+  - type: MCPServer
+    url: mcp/customer-io-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/customer-io-tool-crosswalk.yml
+  - type: OAuthScopes
+    url: scopes/customer-io-scopes.yml
+  - type: Documentation
+    url: https://docs.customer.io/ai/mcp/get-started/
 common:
 - type: Plans
   url: plans/customer-io-plans-pricing.yml
@@ -400,6 +507,74 @@ common:
   url: https://customer.io/integrations
 - type: LlmsText
   url: https://docs.customer.io/llms.txt
+- type: Packages
+  url: packages/customer-io-packages.yml
+- type: SDKs
+  url: packages/customer-io-packages.yml
+- type: CLI
+  url: cli/customer-io-cli.yml
+- type: MCPServer
+  url: mcp/customer-io-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/customer-io-tool-crosswalk.yml
+- type: AgentCard
+  url: a2a/customer-io-a2a.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: WellKnown
+  url: well-known/customer-io-well-known.yml
+- type: LLMsTxt
+  url: llms/customer-io-llms.txt
+- type: OAuthScopes
+  url: scopes/customer-io-scopes.yml
+- type: Conventions
+  url: conventions/customer-io-conventions.yml
+- type: ErrorCatalog
+  url: errors/customer-io-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/customer-io-lifecycle.yml
+- type: StatusPage
+  url: https://status.customerio.com
+- type: ChangeLog
+  url: changelog/customer-io-changelog.yml
+- type: Conformance
+  url: conformance/customer-io-conformance.yml
+- type: Compliance
+  url: conformance/customer-io-conformance.yml
+- type: Security
+  url: https://customer.io/legal/reporting-vulnerability
+- type: DataModel
+  url: data-model/customer-io-data-model.yml
+- type: Sandbox
+  url: sandbox/customer-io-sandbox.yml
+- type: Webhooks
+  url: openapi/_original/customer-io-reporting-webhooks-openapi.json
+- type: Overlay
+  url: overlays/customer-io-app-api-overlay.yaml
+- type: APICatalog
+  url: well-known/customer-io-api-catalog.json
+- type: DeveloperPortal
+  url: https://docs.customer.io/integrations/api/customerio-apis/
+- type: APIReference
+  url: https://docs.customer.io/integrations/api/customerio-apis/
+- type: GettingStarted
+  url: https://docs.customer.io/get-started/
+- type: Support
+  url: https://customer.io/contact
+- type: Blog
+  url: https://customer.io/blog/
+- type: Pricing
+  url: https://customer.io/pricing
+- type: SignUp
+  url: https://fly.customer.io/signup
+- type: Login
+  url: https://fly.customer.io/login
+- type: TermsOfService
+  url: https://customer.io/legal/terms-of-service
+- type: PrivacyPolicy
+  url: https://customer.io/legal/privacy-policy
+- type: Academy
+  url: https://academy.customer.io/pages/get-started
 integrations:
 - name: See all integrations See all integrations
 maintainers:
@@ -407,7 +582,7 @@ maintainers:
   email: kin@apievangelist.com
 specificationVersion: '0.20'
 created: '2024-01-01'
-modified: '2026-05-19'
+modified: '2026-08-13'
 name: Customer.io
 tags:
 - Behavioral Data
@@ -432,3 +607,9 @@ description: Customer.io is a customer engagement platform that combines a custo
   resources and sending transactional and broadcast messages, the Pipelines API which
   is a Segment-spec data ingestion interface, and outbound reporting webhooks that
   deliver message lifecycle events.
+
+x-enrichment:
+  date: '2026-08-13'
+  status: enriched
+  artifacts_added: 33
+  pass: local-v1
