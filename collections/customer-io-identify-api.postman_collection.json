@@ -1,25 +1,25 @@
 {
   "item": [
     {
-      "id": "e0878411-fdb0-4be1-a7d1-bdd6712bad10",
-      "name": "Track",
+      "id": "cbab9352-5283-4faf-883f-07c653f19204",
+      "name": "Identify",
       "description": {
-        "content": "Track events to record actions people take in your app or on your website.",
+        "content": "Identify people and set their profile attributes. The identify call tells Customer.io who the current user is and assigns traits to them.",
         "type": "text/plain"
       },
       "item": [
         {
-          "id": "894c0f80-ab61-44cd-8a3c-a7fd6461d3ea",
-          "name": "Track an event",
+          "id": "6e19ff2b-d9db-48e1-971a-71888cf06cfc",
+          "name": "Identify a person",
           "request": {
-            "name": "Track an event",
+            "name": "Identify a person",
             "description": {
-              "content": "Records an event that a person performed. Every track call requires an event name and at least one of userId or anonymousId. Event properties provide additional context about the action.",
+              "content": "Identifies a person and sets their profile attributes. Use this call when a user creates an account, logs in, or updates their profile. Requires at least one of userId or anonymousId. Traits are saved as profile attributes.",
               "type": "text/plain"
             },
             "url": {
               "path": [
-                "track"
+                "identify"
               ],
               "host": [
                 "{{baseUrl}}"
@@ -37,7 +37,7 @@
             "auth": null,
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"event\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"properties\": {\n    \"key_0\": 8792,\n    \"key_1\": \"string\"\n  },\n  \"context\": {\n    \"ip\": \"<string>\",\n    \"locale\": \"<string>\",\n    \"timezone\": \"<string>\",\n    \"userAgent\": \"<string>\",\n    \"library\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"device\": {\n      \"id\": \"<string>\",\n      \"manufacturer\": \"<string>\",\n      \"model\": \"<string>\",\n      \"type\": \"<string>\"\n    },\n    \"os\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"page\": {\n      \"url\": \"<uri>\",\n      \"title\": \"<string>\",\n      \"referrer\": \"<uri>\",\n      \"path\": \"<string>\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+              "raw": "{\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"traits\": {\n    \"email\": \"<email>\",\n    \"name\": \"<string>\",\n    \"first_name\": \"<string>\",\n    \"last_name\": \"<string>\",\n    \"phone\": \"<string>\",\n    \"created_at\": \"<dateTime>\"\n  },\n  \"context\": {\n    \"ip\": \"<string>\",\n    \"locale\": \"<string>\",\n    \"timezone\": \"<string>\",\n    \"userAgent\": \"<string>\",\n    \"library\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"device\": {\n      \"id\": \"<string>\",\n      \"manufacturer\": \"<string>\",\n      \"model\": \"<string>\",\n      \"type\": \"<string>\"\n    },\n    \"os\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"page\": {\n      \"url\": \"<uri>\",\n      \"title\": \"<string>\",\n      \"referrer\": \"<uri>\",\n      \"path\": \"<string>\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -47,12 +47,12 @@
           },
           "response": [
             {
-              "id": "4133a412-e950-41cf-90c6-a50bfe4c1f3a",
-              "name": "Event tracked successfully.",
+              "id": "f9023a69-ebe4-40a6-9582-004269778458",
+              "name": "Person identified successfully.",
               "originalRequest": {
                 "url": {
                   "path": [
-                    "track"
+                    "identify"
                   ],
                   "host": [
                     "{{baseUrl}}"
@@ -73,7 +73,7 @@
                 "method": "POST",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"event\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"properties\": {\n    \"key_0\": 9259,\n    \"key_1\": 3361\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"https://MpzXgaINuGmZCsEcazhUF.idfmQlJclSiCkpDT+U..IMDFdrNZwQziKc0\",\n      \"title\": \"string\",\n      \"referrer\": \"https://cZSRW.mgCcgVlG2Ux9v\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "raw": "{\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"traits\": {\n    \"email\": \"<email>\",\n    \"name\": \"<string>\",\n    \"first_name\": \"<string>\",\n    \"last_name\": \"<string>\",\n    \"phone\": \"<string>\",\n    \"created_at\": \"<dateTime>\"\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"http://tOIjeYzuIpixNfbKfuzFjOf.lvreXfp12+WYa9Ye9zsharj-Oz1.xyufj.,xQI4uCgI8s9MT\",\n      \"title\": \"string\",\n      \"referrer\": \"https://sAsWwnbsyeKnQSPqOUcwhh.mai+Ou0+mYO1+tkIk9zRD6QM3TDND\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -94,12 +94,12 @@
               "_postman_previewlanguage": "text"
             },
             {
-              "id": "4f5b5d8b-49a2-4e96-b85b-62c17f6b216f",
-              "name": "Bad request. Missing event name or identifiers.",
+              "id": "e33378ab-e85b-4284-9753-2b273f9f6511",
+              "name": "Bad request. Missing required fields.",
               "originalRequest": {
                 "url": {
                   "path": [
-                    "track"
+                    "identify"
                   ],
                   "host": [
                     "{{baseUrl}}"
@@ -120,7 +120,7 @@
                 "method": "POST",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"event\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"properties\": {\n    \"key_0\": 9259,\n    \"key_1\": 3361\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"https://MpzXgaINuGmZCsEcazhUF.idfmQlJclSiCkpDT+U..IMDFdrNZwQziKc0\",\n      \"title\": \"string\",\n      \"referrer\": \"https://cZSRW.mgCcgVlG2Ux9v\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "raw": "{\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"traits\": {\n    \"email\": \"<email>\",\n    \"name\": \"<string>\",\n    \"first_name\": \"<string>\",\n    \"last_name\": \"<string>\",\n    \"phone\": \"<string>\",\n    \"created_at\": \"<dateTime>\"\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"http://tOIjeYzuIpixNfbKfuzFjOf.lvreXfp12+WYa9Ye9zsharj-Oz1.xyufj.,xQI4uCgI8s9MT\",\n      \"title\": \"string\",\n      \"referrer\": \"https://sAsWwnbsyeKnQSPqOUcwhh.mai+Ou0+mYO1+tkIk9zRD6QM3TDND\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -141,12 +141,12 @@
               "_postman_previewlanguage": "text"
             },
             {
-              "id": "9c37596c-4f8a-411c-9198-aad8e7da68a2",
+              "id": "362f890a-d294-4a25-a18c-6a2a5f2364f5",
               "name": "Unauthorized. Invalid CDP API key.",
               "originalRequest": {
                 "url": {
                   "path": [
-                    "track"
+                    "identify"
                   ],
                   "host": [
                     "{{baseUrl}}"
@@ -167,7 +167,7 @@
                 "method": "POST",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"event\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"properties\": {\n    \"key_0\": 9259,\n    \"key_1\": 3361\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"https://MpzXgaINuGmZCsEcazhUF.idfmQlJclSiCkpDT+U..IMDFdrNZwQziKc0\",\n      \"title\": \"string\",\n      \"referrer\": \"https://cZSRW.mgCcgVlG2Ux9v\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "raw": "{\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"traits\": {\n    \"email\": \"<email>\",\n    \"name\": \"<string>\",\n    \"first_name\": \"<string>\",\n    \"last_name\": \"<string>\",\n    \"phone\": \"<string>\",\n    \"created_at\": \"<dateTime>\"\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"http://tOIjeYzuIpixNfbKfuzFjOf.lvreXfp12+WYa9Ye9zsharj-Oz1.xyufj.,xQI4uCgI8s9MT\",\n      \"title\": \"string\",\n      \"referrer\": \"https://sAsWwnbsyeKnQSPqOUcwhh.mai+Ou0+mYO1+tkIk9zRD6QM3TDND\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -215,8 +215,8 @@
     ]
   },
   "info": {
-    "_postman_id": "b394fbd0-ed11-4ee1-8f7d-c706523e0dab",
-    "name": "Customer.io App Activities Track API",
+    "_postman_id": "75a16503-3386-4d54-ad10-adaa7a73b44e",
+    "name": "Customer.io App Activities Identify API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "description": {
       "content": "The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.\n\nContact Support:\n Name: Customer.io Support",

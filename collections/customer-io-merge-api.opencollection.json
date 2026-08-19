@@ -1,7 +1,7 @@
 {
   "opencollection": "1.0.0",
   "info": {
-    "name": "Customer.io App Activities Track API",
+    "name": "Customer.io App Activities Merge API",
     "version": "1.0.0"
   },
   "request": {
@@ -13,24 +13,24 @@
   "items": [
     {
       "info": {
-        "name": "Track",
+        "name": "Merge",
         "type": "folder"
       },
       "items": [
         {
           "info": {
-            "name": "Track an event",
+            "name": "Merge customer profiles",
             "type": "http"
           },
           "http": {
             "method": "POST",
-            "url": "https://api.customer.io/v1/track",
+            "url": "https://api.customer.io/v1/merge",
             "body": {
               "type": "json",
               "data": "{}"
             }
           },
-          "docs": "Records an event that a person performed. Every track call requires an event name and at least one of userId or anonymousId. Event properties provide additional context about the action."
+          "docs": "Merges two customer profiles into one. The primary profile is kept and the secondary profile is deleted. Events, attributes, and devices from the secondary profile are merged into the primary profile."
         }
       ]
     }

@@ -1,0 +1,121 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://docs.customer.io/integrations/llms.txt (per-SDK changelog and upgrade
+  guide index) and the GitHub releases API for the customerio organization
+provider: Customer.io
+providerId: customer-io
+summary:
+  api_changelog_published: false
+  sdk_changelog_published: true
+  scheme: semver (per library)
+  note: >-
+    Customer.io publishes NO dated changelog for its REST APIs. There is no
+    "API changelog", "release notes" or "what's new" page anywhere under
+    docs.customer.io/integrations/api/, and the App API, Track API and
+    Pipelines API specs all carry info.version 1.0.0 with no date. Every
+    changelog Customer.io does publish belongs to a client library. That is the
+    finding: the SDK layer is versioned in public and the API layer is not.
+api_surface:
+  changelog_url: null
+  evidence:
+  - url: https://docs.customer.io/journeys/changelog/
+    http_status: 404
+    checked: '2026-08-13'
+  - url: https://docs.customer.io/integrations/llms.txt
+    http_status: 200
+    checked: '2026-08-13'
+    finding: >-
+      17 changelog pages indexed, every one of them scoped to a mobile or web
+      SDK version line. None describes the REST API.
+  in_spec_signal: >-
+    The only in-band change signal on the API is prose inside operation
+    descriptions — the metrics operations label their period + steps query mode
+    "Version 1 (Deprecated)".
+sdk_changelogs:
+- platform: iOS
+  url: https://docs.customer.io/integrations/sdk/ios/whats-new/changelog/
+  upgrade_guides:
+  - https://docs.customer.io/integrations/sdk/ios/whats-new/4.0.0-upgrade/
+  - https://docs.customer.io/integrations/sdk/ios/whats-new/3.x-upgrade/
+  - https://docs.customer.io/integrations/sdk/ios/whats-new/2.x-upgrade/
+- platform: Android
+  url: https://docs.customer.io/integrations/sdk/android/whats-new/changelog/
+  upgrade_guides:
+  - https://docs.customer.io/integrations/sdk/android/whats-new/4.x-upgrade/
+  - https://docs.customer.io/integrations/sdk/android/whats-new/3.x-upgrade/
+- platform: React Native
+  url: https://docs.customer.io/integrations/sdk/react-native/whats-new/changelog/
+  upgrade_guides:
+  - https://docs.customer.io/integrations/sdk/react-native/whats-new/6.x-upgrade/
+  - https://docs.customer.io/integrations/sdk/react-native/whats-new/5.x-upgrade/
+- platform: Flutter
+  url: https://docs.customer.io/integrations/sdk/flutter/whats-new/changelog/
+- platform: Expo
+  url: https://docs.customer.io/integrations/sdk/expo/whats-new/changelog/
+entries:
+- component: iOS SDK
+  version: 4.7.3
+  date: '2026-08-10'
+  breaking: false
+  source: https://github.com/customerio/customerio-ios/releases/tag/4.7.3
+- component: React Native SDK
+  version: 6.6.2
+  date: '2026-08-07'
+  breaking: false
+  source: https://github.com/customerio/customerio-reactnative/releases/tag/6.6.2
+- component: Flutter SDK
+  version: 4.2.1
+  date: '2026-08-07'
+  breaking: false
+  source: https://github.com/customerio/customerio-flutter/releases/tag/4.2.1
+- component: Android SDK
+  version: 4.20.1
+  date: '2026-08-06'
+  breaking: false
+  source: https://github.com/customerio/customerio-android/releases/tag/4.20.1
+- component: Node SDK
+  version: v5.3.0
+  date: '2026-07-24'
+  breaking: false
+  source: https://github.com/customerio/customerio-node/releases/tag/v5.3.0
+  note: >-
+    Tagged on GitHub but not published to npm — registry.npmjs.org still lists
+    5.2.0 (2026-07-15) as latest as of 2026-08-13.
+- component: Python SDK
+  version: v3.2.0
+  date: '2026-07-24'
+  breaking: false
+  source: https://github.com/customerio/customerio-python/releases/tag/v3.2.0
+- component: Ruby SDK
+  version: v6.2.0
+  date: '2026-07-24'
+  breaking: false
+  source: https://github.com/customerio/customerio-ruby/releases/tag/v6.2.0
+- component: Go SDK
+  version: v3.12.0
+  date: '2026-07-24'
+  breaking: false
+  source: https://github.com/customerio/go-customerio/releases/tag/v3.12.0
+- component: CLI
+  version: v0.0.20
+  date: '2026-07-23'
+  breaking: false
+  source: https://github.com/customerio/cli/releases/tag/v0.0.20
+- component: Python SDK
+  version: v3.0.0
+  date: '2026-05-11'
+  breaking: true
+  source: https://github.com/customerio/customerio-python/releases/tag/v3.0.0
+- component: Ruby SDK
+  version: v6.0.0
+  date: '2026-05-11'
+  breaking: true
+  source: https://github.com/customerio/customerio-ruby/releases/tag/v6.0.0
+window:
+  from: '2026-04-28'
+  to: '2026-08-10'
+  note: Recent window only; not a complete history.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

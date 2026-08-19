@@ -1,0 +1,136 @@
+generated: '2026-08-13'
+method: probed
+source: >-
+  Direct unauthenticated GET of each /.well-known/ path on every Customer.io
+  host named in apis.yml baseURLs, in the published OpenAPI servers[] blocks,
+  and on the documentation and MCP hosts.
+summary:
+  hosts_probed: 6
+  paths_probed: 22
+  documents_found: 4
+  note: >-
+    Customer.io serves a real RFC 9727 api-catalog link set from its marketing
+    root, and full RFC 8414 / RFC 9728 OAuth metadata from its MCP hosts. It
+    does NOT serve a security.txt, an openid-configuration, or an ai-plugin.json
+    anywhere. customer.io answers every unknown /.well-known/ path with a 404
+    that carries the full marketing SPA (~145 KB of HTML), so a naive
+    status-only probe of that host would be misleading; the statuses below are
+    real 404s.
+probes:
+- host: customer.io
+  path: /.well-known/api-catalog
+  status: 200
+  content_type: application/linkset+json
+  file: customer-io-api-catalog.json
+  document: true
+  note: >-
+    RFC 9727 link set naming two service-doc anchors: the REST API index and the
+    MCP server documentation. This is the provider's own machine-readable
+    pointer to its API surface.
+- host: customer.io
+  path: /.well-known/security.txt
+  status: 404
+  document: false
+- host: customer.io
+  path: /security.txt
+  status: 404
+  document: false
+- host: customer.io
+  path: /.well-known/openid-configuration
+  status: 404
+  document: false
+- host: customer.io
+  path: /.well-known/oauth-authorization-server
+  status: 404
+  document: false
+- host: customer.io
+  path: /.well-known/ai-plugin.json
+  status: 404
+  document: false
+- host: customer.io
+  path: /.well-known/agent-card.json
+  status: 404
+  document: false
+- host: customer.io
+  path: /.well-known/agent.json
+  status: 404
+  document: false
+- host: docs.customer.io
+  path: /.well-known/agent-card.json
+  status: 200
+  content_type: application/json
+  file: ../a2a/customer-io-agent-card.json
+  document: true
+  note: >-
+    A2A Agent Card for the documentation surface. Saved and graded under a2a/.
+- host: docs.customer.io
+  path: /.well-known/security.txt
+  status: 404
+  document: false
+- host: mcp.customer.io
+  path: /.well-known/oauth-authorization-server
+  status: 200
+  content_type: application/json
+  file: customer-io-oauth-authorization-server.json
+  document: true
+  note: >-
+    RFC 8414 authorization server metadata for the Customer.io MCP server.
+    Advertises dynamic client registration (RFC 7591) and PKCE S256.
+- host: mcp.customer.io
+  path: /.well-known/oauth-protected-resource
+  status: 200
+  content_type: application/json
+  file: customer-io-oauth-protected-resource.json
+  document: true
+  note: >-
+    RFC 9728 protected resource metadata. Names the five MCP scopes captured in
+    scopes/customer-io-scopes.yml.
+- host: mcp.customer.io
+  path: /.well-known/oauth-protected-resource/mcp
+  status: 200
+  content_type: application/json
+  document: true
+  note: Identical body to the unsuffixed path.
+- host: mcp.customer.io
+  path: /.well-known/agent-card.json
+  status: 404
+  document: false
+- host: mcp-eu.customer.io
+  path: /.well-known/oauth-protected-resource
+  status: 200
+  content_type: application/json
+  document: true
+  note: >-
+    EU-region equivalent; resource https://mcp-eu.customer.io/mcp, same five
+    scopes. Not saved separately — differs from the US document only in host.
+- host: api.customer.io
+  path: /.well-known/security.txt
+  status: 404
+  document: false
+- host: api.customer.io
+  path: /.well-known/oauth-authorization-server
+  status: 404
+  document: false
+- host: api.customer.io
+  path: /.well-known/oauth-protected-resource
+  status: 404
+  document: false
+- host: api.customer.io
+  path: /.well-known/agent-card.json
+  status: 404
+  document: false
+- host: api.customer.io
+  path: /.well-known/agent.json
+  status: 404
+  document: false
+- host: track.customer.io
+  path: /.well-known/agent-card.json
+  status: 404
+  document: false
+- host: cdp.customer.io
+  path: /.well-known/agent-card.json
+  status: 404
+  document: false
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

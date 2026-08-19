@@ -1,25 +1,27 @@
 {
   "item": [
     {
-      "id": "e0878411-fdb0-4be1-a7d1-bdd6712bad10",
-      "name": "Track",
+      "id": "dc15697d-0a19-41ab-99f8-24926f04aacf",
+      "name": "Entity",
       "description": {
-        "content": "Track events to record actions people take in your app or on your website.",
+        "content": "Track API v2 entity endpoint for creating and managing people and objects using a unified request format.",
         "type": "text/plain"
       },
       "item": [
         {
-          "id": "894c0f80-ab61-44cd-8a3c-a7fd6461d3ea",
-          "name": "Track an event",
+          "id": "9d0ab87d-2ad7-47fd-a3bf-66d0282f9553",
+          "name": "Track a single entity",
           "request": {
-            "name": "Track an event",
+            "name": "Track a single entity",
             "description": {
-              "content": "Records an event that a person performed. Every track call requires an event name and at least one of userId or anonymousId. Event properties provide additional context about the action.",
+              "content": "The v2 entity endpoint provides a unified way to create, update, and track events for people and objects. The request body specifies the entity type, action, identifiers, and attributes or event data. This endpoint determines what to do based on the type and action in the payload.",
               "type": "text/plain"
             },
             "url": {
               "path": [
-                "track"
+                "..",
+                "v2",
+                "entity"
               ],
               "host": [
                 "{{baseUrl}}"
@@ -37,7 +39,7 @@
             "auth": null,
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"event\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"properties\": {\n    \"key_0\": 8792,\n    \"key_1\": \"string\"\n  },\n  \"context\": {\n    \"ip\": \"<string>\",\n    \"locale\": \"<string>\",\n    \"timezone\": \"<string>\",\n    \"userAgent\": \"<string>\",\n    \"library\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"device\": {\n      \"id\": \"<string>\",\n      \"manufacturer\": \"<string>\",\n      \"model\": \"<string>\",\n      \"type\": \"<string>\"\n    },\n    \"os\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"page\": {\n      \"url\": \"<uri>\",\n      \"title\": \"<string>\",\n      \"referrer\": \"<uri>\",\n      \"path\": \"<string>\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+              "raw": "{\n  \"type\": \"<string>\",\n  \"action\": \"<string>\",\n  \"identifiers\": {\n    \"key_0\": 1797.6965795777978,\n    \"key_1\": true\n  },\n  \"attributes\": {\n    \"key_0\": true\n  },\n  \"name\": \"<string>\",\n  \"data\": {\n    \"key_0\": \"string\"\n  }\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -47,12 +49,14 @@
           },
           "response": [
             {
-              "id": "4133a412-e950-41cf-90c6-a50bfe4c1f3a",
-              "name": "Event tracked successfully.",
+              "id": "64999b69-5cb1-4e1c-9c07-fae6d39109d0",
+              "name": "Entity operation completed successfully.",
               "originalRequest": {
                 "url": {
                   "path": [
-                    "track"
+                    "..",
+                    "v2",
+                    "entity"
                   ],
                   "host": [
                     "{{baseUrl}}"
@@ -73,7 +77,7 @@
                 "method": "POST",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"event\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"properties\": {\n    \"key_0\": 9259,\n    \"key_1\": 3361\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"https://MpzXgaINuGmZCsEcazhUF.idfmQlJclSiCkpDT+U..IMDFdrNZwQziKc0\",\n      \"title\": \"string\",\n      \"referrer\": \"https://cZSRW.mgCcgVlG2Ux9v\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"action\": \"<string>\",\n  \"identifiers\": {\n    \"key_0\": false,\n    \"key_1\": \"string\"\n  },\n  \"attributes\": {\n    \"key_0\": 214,\n    \"key_1\": true,\n    \"key_2\": 560.7077569367702,\n    \"key_3\": true\n  },\n  \"name\": \"<string>\",\n  \"data\": {\n    \"key_0\": false\n  }\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -94,12 +98,14 @@
               "_postman_previewlanguage": "text"
             },
             {
-              "id": "4f5b5d8b-49a2-4e96-b85b-62c17f6b216f",
-              "name": "Bad request. Missing event name or identifiers.",
+              "id": "4dc14454-0eb6-4814-bd1f-3d3bf11610a1",
+              "name": "Bad request. Invalid payload structure.",
               "originalRequest": {
                 "url": {
                   "path": [
-                    "track"
+                    "..",
+                    "v2",
+                    "entity"
                   ],
                   "host": [
                     "{{baseUrl}}"
@@ -120,7 +126,7 @@
                 "method": "POST",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"event\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"properties\": {\n    \"key_0\": 9259,\n    \"key_1\": 3361\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"https://MpzXgaINuGmZCsEcazhUF.idfmQlJclSiCkpDT+U..IMDFdrNZwQziKc0\",\n      \"title\": \"string\",\n      \"referrer\": \"https://cZSRW.mgCcgVlG2Ux9v\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"action\": \"<string>\",\n  \"identifiers\": {\n    \"key_0\": false,\n    \"key_1\": \"string\"\n  },\n  \"attributes\": {\n    \"key_0\": 214,\n    \"key_1\": true,\n    \"key_2\": 560.7077569367702,\n    \"key_3\": true\n  },\n  \"name\": \"<string>\",\n  \"data\": {\n    \"key_0\": false\n  }\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -141,12 +147,14 @@
               "_postman_previewlanguage": "text"
             },
             {
-              "id": "9c37596c-4f8a-411c-9198-aad8e7da68a2",
-              "name": "Unauthorized. Invalid CDP API key.",
+              "id": "19412097-c718-454b-bea2-65fbb6aeda45",
+              "name": "Unauthorized. Invalid Site ID or API key.",
               "originalRequest": {
                 "url": {
                   "path": [
-                    "track"
+                    "..",
+                    "v2",
+                    "entity"
                   ],
                   "host": [
                     "{{baseUrl}}"
@@ -167,7 +175,7 @@
                 "method": "POST",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"event\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"properties\": {\n    \"key_0\": 9259,\n    \"key_1\": 3361\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"https://MpzXgaINuGmZCsEcazhUF.idfmQlJclSiCkpDT+U..IMDFdrNZwQziKc0\",\n      \"title\": \"string\",\n      \"referrer\": \"https://cZSRW.mgCcgVlG2Ux9v\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"action\": \"<string>\",\n  \"identifiers\": {\n    \"key_0\": false,\n    \"key_1\": \"string\"\n  },\n  \"attributes\": {\n    \"key_0\": 214,\n    \"key_1\": true,\n    \"key_2\": 560.7077569367702,\n    \"key_3\": true\n  },\n  \"name\": \"<string>\",\n  \"data\": {\n    \"key_0\": false\n  }\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -215,8 +223,8 @@
     ]
   },
   "info": {
-    "_postman_id": "b394fbd0-ed11-4ee1-8f7d-c706523e0dab",
-    "name": "Customer.io App Activities Track API",
+    "_postman_id": "a006a866-8c7f-4d13-a30e-f227191854ff",
+    "name": "Customer.io App Activities Entity API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "description": {
       "content": "The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.\n\nContact Support:\n Name: Customer.io Support",

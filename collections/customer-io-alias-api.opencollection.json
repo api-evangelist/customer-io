@@ -1,7 +1,7 @@
 {
   "opencollection": "1.0.0",
   "info": {
-    "name": "Customer.io App Activities Track API",
+    "name": "Customer.io App Activities Alias API",
     "version": "1.0.0"
   },
   "request": {
@@ -13,24 +13,24 @@
   "items": [
     {
       "info": {
-        "name": "Track",
+        "name": "Alias",
         "type": "folder"
       },
       "items": [
         {
           "info": {
-            "name": "Track an event",
+            "name": "Alias a person",
             "type": "http"
           },
           "http": {
             "method": "POST",
-            "url": "https://api.customer.io/v1/track",
+            "url": "https://api.customer.io/v1/alias",
             "body": {
               "type": "json",
               "data": "{}"
             }
           },
-          "docs": "Records an event that a person performed. Every track call requires an event name and at least one of userId or anonymousId. Event properties provide additional context about the action."
+          "docs": "Creates an alias linking a new identity to an existing one. This merges two user identities so all future events from either identity are associated with the same person. Requires a previousId and a userId."
         }
       ]
     }

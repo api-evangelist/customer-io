@@ -1,0 +1,739 @@
+{
+  "item": [
+    {
+      "id": "c3636a62-6439-4c82-a62e-ee41b20462bf",
+      "name": "Segments",
+      "description": {
+        "content": "Create and manage manual segments, and retrieve segment membership information.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d1070dda-bfa1-468e-ab81-eb5a4c2ff083",
+          "name": "List segments",
+          "request": {
+            "name": "List segments",
+            "description": {
+              "content": "Returns a list of segments in your workspace.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "segments"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "590f33ed-2cef-4556-88e7-f80dce42a24c",
+              "name": "A list of segments.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"segments\": [\n    {\n      \"id\": 492,\n      \"name\": \"string\",\n      \"description\": \"string\",\n      \"type\": \"manual\",\n      \"state\": \"string\"\n    },\n    {\n      \"id\": 1880,\n      \"name\": \"string\",\n      \"description\": \"string\",\n      \"type\": \"data_driven\",\n      \"state\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1340cfcf-b740-4a43-b358-cd6d8d2f5901",
+              "name": "Unauthorized. Invalid App API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "dae8b9b1-f028-4014-ad01-b1eeaca13219",
+          "name": "Create a manual segment",
+          "request": {
+            "name": "Create a manual segment",
+            "description": {
+              "content": "Creates a new manual segment. Manual segments allow you to group customers by explicitly adding or removing them rather than using automatic filter criteria.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "segments"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"segment\": {\n    \"name\": \"<string>\",\n    \"description\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f32caa8b-67fa-4273-aa98-fab193af81f7",
+              "name": "Segment created successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"segment\": {\n    \"name\": \"<string>\",\n    \"description\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"segment\": {\n    \"id\": 2183,\n    \"name\": \"string\",\n    \"description\": \"string\",\n    \"type\": \"manual\",\n    \"state\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f5798b3f-9366-4e97-bfb7-e83daefeb37a",
+              "name": "Bad request. Invalid segment data.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"segment\": {\n    \"name\": \"<string>\",\n    \"description\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "8a90ee2e-62e4-4c83-850a-b3b26747ec89",
+              "name": "Unauthorized. Invalid App API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"segment\": {\n    \"name\": \"<string>\",\n    \"description\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ddbc2c69-1bf6-4af3-93d5-ea86eddb302d",
+          "name": "Get a segment",
+          "request": {
+            "name": "Get a segment",
+            "description": {
+              "content": "Returns detailed information about a specific segment including its type and customer count.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "segments",
+                ":segment_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "segment_id",
+                  "description": "(Required) The unique identifier for the segment."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "60bd9e53-44e3-478d-bda0-8765b6f9ef9c",
+              "name": "Segment details.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments",
+                    ":segment_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "segment_id",
+                      "description": "(Required) The unique identifier for the segment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"segment\": {\n    \"id\": 2183,\n    \"name\": \"string\",\n    \"description\": \"string\",\n    \"type\": \"manual\",\n    \"state\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8622bd86-1b46-411f-aaac-9c774762133a",
+              "name": "Unauthorized. Invalid App API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments",
+                    ":segment_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "segment_id",
+                      "description": "(Required) The unique identifier for the segment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "e447f228-644b-4be8-9d4a-d606f981984a",
+              "name": "Segment not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments",
+                    ":segment_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "segment_id",
+                      "description": "(Required) The unique identifier for the segment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "db3d9c4e-2949-4efc-b822-becb3f7fe095",
+          "name": "Get segment membership",
+          "request": {
+            "name": "Get segment membership",
+            "description": {
+              "content": "Returns customer identifiers that are members of a specific segment.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "segments",
+                ":segment_id",
+                "membership"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "segment_id",
+                  "description": "(Required) The unique identifier for the segment."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "05b67dcf-096b-4ebc-81d6-1341a7959081",
+              "name": "Segment membership list.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments",
+                    ":segment_id",
+                    "membership"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "segment_id",
+                      "description": "(Required) The unique identifier for the segment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"ids\": [\n    \"string\",\n    \"string\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "765614cd-8e1b-463f-b40e-0d68802a1119",
+              "name": "Unauthorized. Invalid App API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments",
+                    ":segment_id",
+                    "membership"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "segment_id",
+                      "description": "(Required) The unique identifier for the segment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "fd95c033-1be6-40d4-8f32-adb335ae4ccb",
+              "name": "Segment not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments",
+                    ":segment_id",
+                    "membership"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "segment_id",
+                      "description": "(Required) The unique identifier for the segment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.customer.io/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "a2c528fc-b8fa-452d-bfee-426b67c1733e",
+    "name": "Customer.io App Activities Segments API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.\n\nContact Support:\n Name: Customer.io Support",
+      "type": "text/plain"
+    }
+  }
+}

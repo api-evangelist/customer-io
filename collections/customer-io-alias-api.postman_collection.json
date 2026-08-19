@@ -1,25 +1,25 @@
 {
   "item": [
     {
-      "id": "e0878411-fdb0-4be1-a7d1-bdd6712bad10",
-      "name": "Track",
+      "id": "6c51f2c3-c582-48c7-9116-d585c5c2b02a",
+      "name": "Alias",
       "description": {
-        "content": "Track events to record actions people take in your app or on your website.",
+        "content": "Merge two user identities by creating an alias linking a new identity to an existing one.",
         "type": "text/plain"
       },
       "item": [
         {
-          "id": "894c0f80-ab61-44cd-8a3c-a7fd6461d3ea",
-          "name": "Track an event",
+          "id": "0df2d1cf-503d-4bf0-8c5a-a316a0635f4e",
+          "name": "Alias a person",
           "request": {
-            "name": "Track an event",
+            "name": "Alias a person",
             "description": {
-              "content": "Records an event that a person performed. Every track call requires an event name and at least one of userId or anonymousId. Event properties provide additional context about the action.",
+              "content": "Creates an alias linking a new identity to an existing one. This merges two user identities so all future events from either identity are associated with the same person. Requires a previousId and a userId.",
               "type": "text/plain"
             },
             "url": {
               "path": [
-                "track"
+                "alias"
               ],
               "host": [
                 "{{baseUrl}}"
@@ -37,7 +37,7 @@
             "auth": null,
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"event\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"properties\": {\n    \"key_0\": 8792,\n    \"key_1\": \"string\"\n  },\n  \"context\": {\n    \"ip\": \"<string>\",\n    \"locale\": \"<string>\",\n    \"timezone\": \"<string>\",\n    \"userAgent\": \"<string>\",\n    \"library\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"device\": {\n      \"id\": \"<string>\",\n      \"manufacturer\": \"<string>\",\n      \"model\": \"<string>\",\n      \"type\": \"<string>\"\n    },\n    \"os\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"page\": {\n      \"url\": \"<uri>\",\n      \"title\": \"<string>\",\n      \"referrer\": \"<uri>\",\n      \"path\": \"<string>\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+              "raw": "{\n  \"previousId\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"context\": {\n    \"ip\": \"<string>\",\n    \"locale\": \"<string>\",\n    \"timezone\": \"<string>\",\n    \"userAgent\": \"<string>\",\n    \"library\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"device\": {\n      \"id\": \"<string>\",\n      \"manufacturer\": \"<string>\",\n      \"model\": \"<string>\",\n      \"type\": \"<string>\"\n    },\n    \"os\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"page\": {\n      \"url\": \"<uri>\",\n      \"title\": \"<string>\",\n      \"referrer\": \"<uri>\",\n      \"path\": \"<string>\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -47,12 +47,12 @@
           },
           "response": [
             {
-              "id": "4133a412-e950-41cf-90c6-a50bfe4c1f3a",
-              "name": "Event tracked successfully.",
+              "id": "5881daf0-7087-4da6-ab48-6bbf6c8b23d7",
+              "name": "Alias created successfully.",
               "originalRequest": {
                 "url": {
                   "path": [
-                    "track"
+                    "alias"
                   ],
                   "host": [
                     "{{baseUrl}}"
@@ -73,7 +73,7 @@
                 "method": "POST",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"event\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"properties\": {\n    \"key_0\": 9259,\n    \"key_1\": 3361\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"https://MpzXgaINuGmZCsEcazhUF.idfmQlJclSiCkpDT+U..IMDFdrNZwQziKc0\",\n      \"title\": \"string\",\n      \"referrer\": \"https://cZSRW.mgCcgVlG2Ux9v\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "raw": "{\n  \"previousId\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"https://EMbc.gdlxXNJLgc.\",\n      \"title\": \"string\",\n      \"referrer\": \"https://pZevIGwetWcDRDNGWxJoLCZhRJBlyNjdW.dzwo9D7-sjv2MNR0sVJl-3Qscb-24RFyJClmouTuP\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -94,12 +94,12 @@
               "_postman_previewlanguage": "text"
             },
             {
-              "id": "4f5b5d8b-49a2-4e96-b85b-62c17f6b216f",
-              "name": "Bad request. Missing event name or identifiers.",
+              "id": "fcddaec5-3efa-4395-921f-8cbce276e3e5",
+              "name": "Bad request. Missing previousId.",
               "originalRequest": {
                 "url": {
                   "path": [
-                    "track"
+                    "alias"
                   ],
                   "host": [
                     "{{baseUrl}}"
@@ -120,7 +120,7 @@
                 "method": "POST",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"event\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"properties\": {\n    \"key_0\": 9259,\n    \"key_1\": 3361\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"https://MpzXgaINuGmZCsEcazhUF.idfmQlJclSiCkpDT+U..IMDFdrNZwQziKc0\",\n      \"title\": \"string\",\n      \"referrer\": \"https://cZSRW.mgCcgVlG2Ux9v\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "raw": "{\n  \"previousId\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"https://EMbc.gdlxXNJLgc.\",\n      \"title\": \"string\",\n      \"referrer\": \"https://pZevIGwetWcDRDNGWxJoLCZhRJBlyNjdW.dzwo9D7-sjv2MNR0sVJl-3Qscb-24RFyJClmouTuP\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -141,12 +141,12 @@
               "_postman_previewlanguage": "text"
             },
             {
-              "id": "9c37596c-4f8a-411c-9198-aad8e7da68a2",
+              "id": "d88a7b62-7a74-47f6-b633-1cd424e42321",
               "name": "Unauthorized. Invalid CDP API key.",
               "originalRequest": {
                 "url": {
                   "path": [
-                    "track"
+                    "alias"
                   ],
                   "host": [
                     "{{baseUrl}}"
@@ -167,7 +167,7 @@
                 "method": "POST",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"event\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"properties\": {\n    \"key_0\": 9259,\n    \"key_1\": 3361\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"https://MpzXgaINuGmZCsEcazhUF.idfmQlJclSiCkpDT+U..IMDFdrNZwQziKc0\",\n      \"title\": \"string\",\n      \"referrer\": \"https://cZSRW.mgCcgVlG2Ux9v\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "raw": "{\n  \"previousId\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"https://EMbc.gdlxXNJLgc.\",\n      \"title\": \"string\",\n      \"referrer\": \"https://pZevIGwetWcDRDNGWxJoLCZhRJBlyNjdW.dzwo9D7-sjv2MNR0sVJl-3Qscb-24RFyJClmouTuP\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -215,8 +215,8 @@
     ]
   },
   "info": {
-    "_postman_id": "b394fbd0-ed11-4ee1-8f7d-c706523e0dab",
-    "name": "Customer.io App Activities Track API",
+    "_postman_id": "14e191f8-9854-4020-b353-0aeab991f006",
+    "name": "Customer.io App Activities Alias API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "description": {
       "content": "The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.\n\nContact Support:\n Name: Customer.io Support",

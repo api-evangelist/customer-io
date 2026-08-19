@@ -1,0 +1,453 @@
+generated: '2026-08-13'
+method: derived
+source: >-
+  openapi/_original/customer-io-app-api-openapi.json (paths, path parameters and
+  the 102 component schemas),
+  openapi/_original/customer-io-track-api-openapi.json,
+  openapi/_original/customer-io-pipelines-api-openapi.json,
+  openapi/_original/customer-io-reporting-webhooks-openapi.json — read against
+  https://docs.customer.io/integrations/api/customerio-apis.md
+provider: Customer.io
+providerId: customer-io
+summary:
+  entity_count: 24
+  relationship_count: 39
+  derivation: >-
+    Entities were read from the App API path segments and their {*_id} path
+    parameters; relationships were read from the id-reference fields carried on
+    the delivery-event schemas, which are the richest join surface in the spec —
+    a single email_sent event names fifteen foreign keys at once and therefore
+    documents the whole messaging graph in one object.
+  identity_note: >-
+    A person has three interchangeable identifiers — id (your own), email, and
+    cio_id (Customer.io's internal). Most App API lookups take an `id_type`
+    query parameter naming which one you are passing. Addressing a person with
+    the wrong id_type returns 404, not an error about the id_type.
+id_conventions:
+- pattern: integer
+  applies_to:
+  - campaign_id
+  - broadcast_id
+  - newsletter_id
+  - segment_id
+  - action_id
+  - content_id
+  - sender_id
+  - collection_id
+  - export_id
+- pattern: string
+  applies_to:
+  - customer_id
+  - cio_id
+  - delivery_id
+  - message_id
+  - transactional_message_id
+  - object_id
+  - object_type_id
+- pattern: ULID
+  applies_to:
+  - event_id
+  example: 01E4C4CT6YDC7Y5M7FE1GWWPQJ
+  note: Reporting webhook event identifiers are ULIDs.
+- pattern: prefixed token
+  applies_to:
+  - service account token
+  prefix: sa_live_
+entities:
+- name: Person
+  aka:
+  - Customer
+  - Profile
+  primary_key: customer_id
+  alt_keys:
+  - id
+  - email
+  - cio_id
+  operations:
+  - getPeopleEmail
+  - getPeopleFilter
+  - getPeopleById
+  - getPersonAttributes
+  - getPersonSegments
+  - getPersonMessages
+  - getPersonActivities
+  - getPersonRelationships
+  - getPersonSubscriptionPreferences
+  - identify
+  - delete
+  - merge
+  - suppress
+  - unsuppress
+- name: Object
+  description: >-
+    A non-person entity — a company, account, or course — that people relate to.
+  primary_key: object_id
+  scoped_by: object_type_id
+  operations:
+  - getObjectTypes
+  - getObjectsFilter
+  - getObjectAttributes
+  - getObjectRelationships
+- name: ObjectType
+  primary_key: object_type_id
+  operations:
+  - getObjectTypes
+- name: Relationship
+  description: The join between a Person and an Object.
+  operations:
+  - getPersonRelationships
+  - getObjectRelationships
+  - group
+- name: Device
+  primary_key: device_id
+  belongs_to: Person
+  operations:
+  - add_device
+  - delete_device
+- name: Segment
+  primary_key: segment_id
+  operations:
+  - listSegments
+  - getSegment
+  - createManSegment
+  - deleteManSegment
+  - getSegmentMembership
+  - getSegmentCount
+  - getSegmentDependencies
+  - add_to_segment
+  - remove_from_segment
+- name: Campaign
+  aka:
+  - Automation
+  primary_key: campaign_id
+  operations:
+  - listCampaigns
+  - getCampaigns
+  - campaignMetrics
+  - campaignJourneyMetrics
+  - getCampaignMessages
+- name: CampaignAction
+  primary_key: action_id
+  belongs_to: Campaign
+  self_reference: parent_action_id
+  operations:
+  - listCampaignActions
+  - getCampaignAction
+  - updateCampaignAction
+  - campaignActionMetrics
+- name: Broadcast
+  primary_key: broadcast_id
+  operations:
+  - listBroadcasts
+  - getBroadcast
+  - broadcastMetrics
+  - broadcastActions
+  - broadcastMessages
+- name: BroadcastTrigger
+  primary_key: trigger_id
+  belongs_to: Broadcast
+  operations:
+  - triggerBroadcast
+  - listBroadcastTriggers
+  - broadcastStatus
+  - broadcastErrors
+- name: Newsletter
+  primary_key: newsletter_id
+  operations:
+  - listNewsletters
+  - createNewsletter
+  - getNewsletters
+  - deleteNewsletters
+  - sendNewsletter
+  - scheduleNewsletter
+- name: NewsletterVariant
+  primary_key: content_id
+  belongs_to: Newsletter
+  operations:
+  - listNewsletterVariants
+  - getNewsletterVariant
+  - updateNewsletterVariant
+  - getVariantMetrics
+- name: NewsletterTestGroup
+  primary_key: test_group_id
+  belongs_to: Newsletter
+  operations:
+  - getNewsletterTestGroups
+  - createNewsletterTestGroup
+- name: TransactionalMessage
+  primary_key: transactional_id
+  operations:
+  - listTransactional
+  - getTransactional
+  - listTransactionalVariants
+  - updateTransactional
+  - transactionalMetrics
+  - transactionalMessages
+- name: Delivery
+  aka:
+  - Message
+  primary_key: delivery_id
+  alt_keys:
+  - message_id
+  operations:
+  - listMessages
+  - getMessage
+  - getArchivedMessage
+  note: >-
+    The delivery is the join object of the whole platform: it points at the
+    person, the sending construct (campaign, broadcast, newsletter or
+    transactional message), the action, the content variant and the journey, and
+    it is the id replayed on every reporting webhook event.
+- name: Journey
+  primary_key: journey_id
+  description: >-
+    One person's traversal of one campaign. Referenced on every delivery event
+    but has no dedicated CRUD endpoint.
+- name: Snippet
+  primary_key: snippet_name
+  operations:
+  - listSnippets
+  - createSnippet
+  - updateSnippets
+  - deleteSnippet
+- name: Collection
+  primary_key: collection_id
+  operations:
+  - getCollections
+  - addCollection
+  - getCollection
+  - updateCollection
+  - deleteCollection
+  - getCollectionContents
+  - updateCollectionContents
+- name: SenderIdentity
+  primary_key: sender_id
+  operations:
+  - listSenders
+  - getSender
+  - getSenderUsage
+- name: DesignStudioEmail
+  primary_key: id
+  operations:
+  - listEmails
+  - createEmail
+  - getEmail
+  - updateEmail
+  - deleteEmail
+  - listEmailTranslations
+- name: Asset
+  primary_key: id
+  belongs_to: AssetFolder
+  operations:
+  - listAssets
+  - createAsset
+  - getAsset
+  - updateAsset
+  - deleteAsset
+- name: Export
+  primary_key: export_id
+  operations:
+  - listExports
+  - getExport
+  - downloadExport
+  - exportPeopleData
+  - exportDeliveriesData
+- name: ReportingWebhook
+  primary_key: webhook_id
+  operations:
+  - createWebhook
+  - listWebhooks
+  - getWebhook
+  - updateWebhook
+  - deleteWebhook
+- name: SubscriptionTopic
+  primary_key: subscription_topic_id
+  operations:
+  - getTopics
+  - getChannels
+  - getSubscriptionCenterToken
+  - getPersonSubscriptionPreferences
+- name: Workspace
+  primary_key: workspace_id
+  header: X-Workspace-Id
+  operations:
+  - listWorkspaces
+relationships:
+- from: Person
+  to: Device
+  type: has_many
+  via: customer_id
+- from: Person
+  to: Object
+  type: has_many
+  via: Relationship
+  note: Many-to-many through the relationship join; created by the /group call.
+- from: Person
+  to: Segment
+  type: has_many
+  via: getPersonSegments
+- from: Person
+  to: Delivery
+  type: has_many
+  via: customer_id
+- from: Person
+  to: SubscriptionTopic
+  type: has_many
+  via: getPersonSubscriptionPreferences
+- from: Object
+  to: ObjectType
+  type: belongs_to
+  via: object_type_id
+- from: Campaign
+  to: CampaignAction
+  type: has_many
+  via: campaign_id
+- from: CampaignAction
+  to: CampaignAction
+  type: belongs_to
+  via: parent_action_id
+- from: Campaign
+  to: Journey
+  type: has_many
+  via: campaign_id
+- from: Journey
+  to: Person
+  type: belongs_to
+  via: customer_id
+- from: Broadcast
+  to: BroadcastTrigger
+  type: has_many
+  via: broadcast_id
+- from: Broadcast
+  to: CampaignAction
+  type: has_many
+  via: broadcast_id
+  note: >-
+    Broadcast actions are addressed with the same action_id space as campaign
+    actions, and triggerBroadcast is served from /v1/campaigns/{broadcast_id}/triggers
+    — the two constructs share a backing model.
+- from: Newsletter
+  to: NewsletterVariant
+  type: has_many
+  via: newsletter_id
+- from: Newsletter
+  to: NewsletterTestGroup
+  type: has_many
+  via: newsletter_id
+- from: Newsletter
+  to: SubscriptionTopic
+  type: belongs_to
+  via: subscription_topic_id
+- from: Delivery
+  to: Person
+  type: belongs_to
+  via: customer_id
+- from: Delivery
+  to: Campaign
+  type: belongs_to
+  via: campaign_id
+- from: Delivery
+  to: CampaignAction
+  type: belongs_to
+  via: action_id
+- from: Delivery
+  to: Broadcast
+  type: belongs_to
+  via: broadcast_id
+- from: Delivery
+  to: Newsletter
+  type: belongs_to
+  via: newsletter_id
+- from: Delivery
+  to: TransactionalMessage
+  type: belongs_to
+  via: transactional_message_id
+- from: Delivery
+  to: NewsletterVariant
+  type: belongs_to
+  via: content_id
+- from: Delivery
+  to: Journey
+  type: belongs_to
+  via: journey_id
+- from: Delivery
+  to: BroadcastTrigger
+  type: belongs_to
+  via: trigger_id
+- from: Delivery
+  to: Device
+  type: belongs_to
+  via: device_id
+  note: Present on push events only.
+- from: DeliveryEvent
+  to: Delivery
+  type: belongs_to
+  via: delivery_id
+- from: DeliveryEvent
+  to: Link
+  type: belongs_to
+  via: link_id
+  note: Present on *_clicked events only.
+- from: DeliveryEvent
+  to: Event
+  type: belongs_to
+  via: trigger_event_id
+  note: >-
+    Points back at the customer event that started the journey — the causal edge
+    from behaviour to message.
+- from: DesignStudioEmail
+  to: SenderIdentity
+  type: belongs_to
+  via: from_id
+- from: DesignStudioEmail
+  to: DesignStudioFolder
+  type: belongs_to
+  via: parent_folder_id
+- from: Asset
+  to: AssetFolder
+  type: belongs_to
+  via: parent_folder_id
+- from: Segment
+  to: Campaign
+  type: has_many
+  via: getSegmentDependencies
+  note: Reverse dependency lookup — which automations use this segment.
+- from: SenderIdentity
+  to: Newsletter
+  type: has_many
+  via: getSenderUsage
+- from: Export
+  to: Person
+  type: has_many
+  via: exportPeopleData
+- from: Export
+  to: Delivery
+  type: has_many
+  via: exportDeliveriesData
+- from: Workspace
+  to: Campaign
+  type: has_many
+- from: Workspace
+  to: Person
+  type: has_many
+- from: Workspace
+  to: ReportingWebhook
+  type: has_many
+- from: Collection
+  to: CollectionContent
+  type: has_one
+  via: collection_id
+event_model:
+  description: >-
+    Reporting webhook events are the read side of the delivery graph. Eight
+    object_type families — customer, email, sms, whatsapp, push, in_app, slack,
+    webhook — each with a metric enum (drafted, attempted, sent, delivered,
+    opened, clicked, converted, bounced, dropped, spammed, failed,
+    undeliverable, unsubscribed, replied). Every event carries event_id,
+    object_type, metric, timestamp and a data object holding the foreign keys
+    above.
+  catalog: asyncapi/customer-io-reporting-webhooks-asyncapi.yml
+  spec: openapi/_original/customer-io-reporting-webhooks-openapi.json
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

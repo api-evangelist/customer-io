@@ -1,0 +1,233 @@
+{
+  "item": [
+    {
+      "id": "06f3b8f5-61e3-4c99-acbb-ac33b90f6163",
+      "name": "Messages",
+      "description": {
+        "content": "Retrieve information about individual messages sent to customers.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "1ed2e627-a14c-4a6d-9a7f-7b85deca9e22",
+          "name": "Get a message",
+          "request": {
+            "name": "Get a message",
+            "description": {
+              "content": "Returns detailed information about a specific message that was sent, including delivery status and engagement metrics.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "messages",
+                ":message_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "message_id",
+                  "description": "(Required) The unique identifier for the message."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "209551bd-bf5d-42d0-8758-0c2b57880930",
+              "name": "Message details.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "messages",
+                    ":message_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "message_id",
+                      "description": "(Required) The unique identifier for the message."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"type\": \"string\",\n  \"subject\": \"string\",\n  \"customer_id\": \"string\",\n  \"campaign_id\": 3786,\n  \"created\": 2742,\n  \"metrics\": {\n    \"sent\": 3215,\n    \"delivered\": 6491,\n    \"opened\": 1774,\n    \"clicked\": 5526,\n    \"bounced\": 1054\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "88460ce6-e65d-4df3-9e8d-3187f9bbeb00",
+              "name": "Unauthorized. Invalid App API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "messages",
+                    ":message_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "message_id",
+                      "description": "(Required) The unique identifier for the message."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "2590dc4a-1152-4532-8a91-ae99eded8e77",
+              "name": "Message not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "messages",
+                    ":message_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "message_id",
+                      "description": "(Required) The unique identifier for the message."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.customer.io/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "4f975b7b-769e-438d-932d-82d77bcbf56e",
+    "name": "Customer.io App Activities Messages API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.\n\nContact Support:\n Name: Customer.io Support",
+      "type": "text/plain"
+    }
+  }
+}

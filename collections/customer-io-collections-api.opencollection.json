@@ -1,0 +1,111 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Customer.io App Activities Collections API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Collections",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List collections",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/api/collections"
+          },
+          "docs": "Returns a list of data collections in your workspace. Collections are used for personalizing messages with external data."
+        },
+        {
+          "info": {
+            "name": "Create a collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.customer.io/v1/api/collections",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new data collection in your workspace."
+        },
+        {
+          "info": {
+            "name": "Get a collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/api/collections/:collection_id",
+            "params": [
+              {
+                "name": "collection_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the collection."
+              }
+            ]
+          },
+          "docs": "Returns detailed information about a specific collection."
+        },
+        {
+          "info": {
+            "name": "Update a collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.customer.io/v1/api/collections/:collection_id",
+            "params": [
+              {
+                "name": "collection_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the collection."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the contents or configuration of a data collection."
+        },
+        {
+          "info": {
+            "name": "Delete a collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.customer.io/v1/api/collections/:collection_id",
+            "params": [
+              {
+                "name": "collection_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the collection."
+              }
+            ]
+          },
+          "docs": "Deletes a data collection from your workspace."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

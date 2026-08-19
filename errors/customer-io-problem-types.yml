@@ -1,0 +1,172 @@
+generated: '2026-08-13'
+method: derived
+source: >-
+  openapi/_original/customer-io-app-api-openapi.json,
+  openapi/_original/customer-io-track-api-openapi.json,
+  openapi/_original/customer-io-pipelines-api-openapi.json — enriched from
+  https://docs.customer.io/integrations/api/customerio-apis.md
+provider: Customer.io
+providerId: customer-io
+format: custom
+rfc9457: false
+media_type: application/json
+summary:
+  status_codes_declared: 9
+  error_responses_declared: 393
+  note: >-
+    Customer.io does not use RFC 9457 problem+json. It ships three different
+    JSON error envelopes across the App API, and the choice of envelope is
+    per-endpoint rather than per-status, so a client cannot parse errors with a
+    single shape. The dominant envelope (89 of 116 typed error responses) is
+    {"errors":[{"detail","status"}]}.
+envelopes:
+- id: errors-array
+  usage: dominant
+  occurrences: 89
+  shape: '{"errors":[{"detail": string, "status": integer}]}'
+  description: >-
+    A list of errors that occurred while processing the request. `detail` is the
+    human-readable reason, `status` repeats the response code.
+  used_by: >-
+    Most App API 400/401/404/409 responses.
+- id: meta-error
+  usage: secondary
+  occurrences: 8
+  shape: '{"meta":{"error": string}}'
+  description: >-
+    A single error string under meta. Used by the transactional send endpoints
+    and their 403/413 responses.
+  example_detail: >-
+    Account is not authorized for transactional messaging. Contact
+    win@customer.io for support.
+- id: errors-array-with-pointer
+  usage: validation
+  occurrences: 3
+  shape: '{"errors":[{"detail": string, "status": "422", "source":{"pointer": string}}]}'
+  description: >-
+    JSON:API-style validation envelope. `source.pointer` names the offending key
+    in the request payload, e.g. /data/attributes/per_user_data.
+- id: track-errors
+  usage: track-api
+  shape: '{"errors":[{"reason": string, "field": string, "message": string}]}'
+  description: >-
+    The Track API validation envelope. `field` names the offending field and
+    `reason` classifies it.
+problem_types:
+- status: 400
+  title: Bad request
+  occurrences: 90
+  envelope: errors-array
+  meaning: >-
+    Malformed request, or an invalid identifier in the path — for example an
+    unknown broadcastID, actionID or triggerID.
+  remediation: >-
+    Validate the body against the operation schema before sending. Percent-encode
+    every value you place in a path or query parameter: Customer.io's docs call
+    out that `+`, `@`, `&` and spaces will otherwise be misread, and that a
+    lookup with an unencoded value returns 200 with empty results rather than an
+    error.
+- status: 401
+  title: Unauthorized
+  occurrences: 40
+  envelope: errors-array
+  meaning: Missing or invalid API key.
+  remediation: >-
+    Confirm you are using the right credential for the surface — App API Key
+    (bearer) for api.customer.io, site_id:api_key (basic) for
+    track.customer.io, CDP API key (basic, blank password) for
+    cdp.customer.io — and the right region. See
+    authentication/customer-io-authentication.yml.
+- status: 403
+  title: Forbidden
+  occurrences: 5
+  envelope: meta-error
+  meaning: >-
+    The workspace is not entitled to the feature — for example transactional
+    messaging, in-app messages or inbox messages — or an attachment is not in a
+    recognized format.
+  remediation: >-
+    Feature entitlement is a plan and account setting, not a token scope; it
+    cannot be fixed by re-issuing a key. Contact Customer.io. If you reach this
+    through the MCP server on every call, check whether an account admin has
+    turned the Customer.io MCP toggle off — that also returns 403 to an
+    already-authorized session.
+- status: 404
+  title: Not found
+  occurrences: 117
+  envelope: errors-array
+  meaning: The named campaign, broadcast, action, newsletter or person does not exist.
+  remediation: >-
+    Re-resolve the identifier. Note that many App API lookups take an id_type
+    query parameter (id, email or cio_id) — a 404 often means the identifier is
+    right but the id_type is wrong.
+- status: 409
+  title: Conflict
+  occurrences: 10
+  envelope: errors-array
+  meaning: >-
+    A linked resource or other constraint blocks the operation — for example an
+    email that is used by a journey cannot be deleted.
+  remediation: >-
+    Call the resource's used_by / dependency endpoint first (getSegmentDependencies,
+    getSenderUsage) and unlink before deleting.
+- status: 413
+  title: Payload too large
+  occurrences: 1
+  envelope: meta-error
+  meaning: Attachment exceeds the size limit on a transactional send.
+  remediation: Reduce the attachment size or host it and send a link.
+- status: 422
+  title: Validation error
+  occurrences: 9
+  envelope: errors-array-with-pointer
+  meaning: >-
+    The payload parsed but failed semantic validation — a missing `language`,
+    missing required content fields for the channel, or per-user data errors on
+    a broadcast trigger.
+  remediation: >-
+    Read source.pointer to find the offending key. For broadcast triggers, the
+    detail carries a trigger ID; fetch GET
+    /v1/campaigns/{broadcast_id}/triggers/{trigger_id}/errors (broadcastErrors)
+    for the per-recipient breakdown.
+  note: >-
+    The MCP server also returns 422 for unknown fields in a request body rather
+    than silently dropping them.
+- status: 429
+  title: Rate limit exceeded
+  occurrences: 116
+  envelope: none
+  meaning: >-
+    Over the published per-endpoint limit. The App API spec attaches this to 116
+    of 166 operations with the description "Your request is over the
+    10-per-second limit."
+  remediation: >-
+    Back off exponentially with jitter. Customer.io does not document
+    X-RateLimit-* or RateLimit-* response headers and none appear in any
+    published spec, so a client cannot read remaining quota — it can only
+    observe the 429. See rate-limits/customer-io-rate-limits.yml.
+- status: 500
+  title: Internal server error
+  occurrences: 3
+  envelope: none
+  meaning: >-
+    Server-side failure, including render-service failure while validating
+    Liquid in a template.
+  remediation: Retry with backoff; if it persists on a template, check the Liquid syntax.
+gaps:
+- >-
+  No RFC 9457 application/problem+json, and no stable machine-readable error
+  code or type URI anywhere in the surface — only a status integer and an
+  English `detail` string. An agent cannot branch on error identity without
+  string-matching prose.
+- >-
+  The 429 responses carry no schema and no documented headers, so the most
+  operationally important error on the platform is also the least
+  machine-readable one.
+- >-
+  Three envelopes coexist on one API. A client must special-case the
+  transactional send endpoints (meta.error) against everything else
+  (errors[].detail).
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

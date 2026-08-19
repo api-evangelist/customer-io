@@ -1,0 +1,350 @@
+{
+  "item": [
+    {
+      "id": "43db5b27-bf0e-4da2-b1db-4c594c01ab99",
+      "name": "Sender Identities",
+      "description": {
+        "content": "Manage sender identities used for sending messages.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "b3938262-1405-490c-8068-dc40596f848e",
+          "name": "List sender identities",
+          "request": {
+            "name": "List sender identities",
+            "description": {
+              "content": "Returns a list of sender identities configured for sending messages from your workspace.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "sender_identities"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9106ca4b-96f2-4d03-b209-470d3e4a0eb7",
+              "name": "A list of sender identities.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sender_identities"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"sender_identities\": [\n    {\n      \"id\": 2216,\n      \"name\": \"string\",\n      \"address\": \"Xfv3wqUuytxMiH@LXfYn.lzfl\",\n      \"reply_to\": \"fSt3gi9AijWHK@EjRqEHRISrPBMCHQk.layu\",\n      \"verified\": true\n    },\n    {\n      \"id\": 2930,\n      \"name\": \"string\",\n      \"address\": \"iC-kSHw7UTIlFt@waRYS.xzg\",\n      \"reply_to\": \"lXAbusgzIMuYsOm@NXVZRVAfLFYtFePBGbvBAvoWDrZtEmlPJ.whvi\",\n      \"verified\": true\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0860f0e9-8e89-46ac-91a8-3cba36375972",
+              "name": "Unauthorized. Invalid App API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sender_identities"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a66fcc72-ff68-453e-9a09-dcb8d83b440c",
+          "name": "Get a sender identity",
+          "request": {
+            "name": "Get a sender identity",
+            "description": {
+              "content": "Returns detailed information about a specific sender identity.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "sender_identities",
+                ":sender_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "sender_id",
+                  "description": "(Required) The unique identifier for the sender identity."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f7074b9b-8ef6-479f-8834-a2f677d70d6e",
+              "name": "Sender identity details.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sender_identities",
+                    ":sender_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "sender_id",
+                      "description": "(Required) The unique identifier for the sender identity."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 9873,\n  \"name\": \"string\",\n  \"address\": \"UH5uTfHh@smibSLIeClDXjJEe.blk\",\n  \"reply_to\": \"j5Js1t@UGRkKkTrwsQUJCKchCrWOi.jz\",\n  \"verified\": false\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0bb60596-a319-428a-be16-22c5d95e0cb8",
+              "name": "Unauthorized. Invalid App API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sender_identities",
+                    ":sender_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "sender_id",
+                      "description": "(Required) The unique identifier for the sender identity."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f6dfeb6c-c6bd-4e40-986b-0346747a4566",
+              "name": "Sender identity not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sender_identities",
+                    ":sender_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "sender_id",
+                      "description": "(Required) The unique identifier for the sender identity."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.customer.io/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "cbb373ad-ccd7-40b6-9cad-9c57c1bcb500",
+    "name": "Customer.io App Activities Sender Identities API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.\n\nContact Support:\n Name: Customer.io Support",
+      "type": "text/plain"
+    }
+  }
+}

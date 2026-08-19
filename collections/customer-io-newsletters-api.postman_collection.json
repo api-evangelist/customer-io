@@ -1,0 +1,546 @@
+{
+  "item": [
+    {
+      "id": "e1fc1335-9319-49c0-9518-04a04ad9e9c1",
+      "name": "Newsletters",
+      "description": {
+        "content": "Retrieve information about newsletters and newsletter variants.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "03c89605-1ef2-4a0b-996a-e59a0452c67a",
+          "name": "List newsletters",
+          "request": {
+            "name": "List newsletters",
+            "description": {
+              "content": "Returns a list of newsletters in your workspace.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "newsletters"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e1a293f6-6f83-45e6-af64-ce47f5922498",
+              "name": "A list of newsletters.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "newsletters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"newsletters\": [\n    {\n      \"id\": 1087,\n      \"name\": \"string\",\n      \"created\": 2164,\n      \"updated\": 373,\n      \"sent_at\": 2836,\n      \"num_recipients\": 1389,\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"id\": 5458,\n      \"name\": \"string\",\n      \"created\": 9405,\n      \"updated\": 3869,\n      \"sent_at\": 599,\n      \"num_recipients\": 9381,\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "76e8b464-068e-436d-9611-7b72e7214c4d",
+              "name": "Unauthorized. Invalid App API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "newsletters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "af109054-21c7-4670-b7f2-3d81f7700cc1",
+          "name": "Get a newsletter",
+          "request": {
+            "name": "Get a newsletter",
+            "description": {
+              "content": "Returns detailed information about a specific newsletter.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "newsletters",
+                ":newsletter_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "newsletter_id",
+                  "description": "(Required) The unique identifier for the newsletter."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "42c80b28-4254-40d6-b265-d02c28e0c0e0",
+              "name": "Newsletter details.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "newsletters",
+                    ":newsletter_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "newsletter_id",
+                      "description": "(Required) The unique identifier for the newsletter."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"newsletter\": {\n    \"id\": 5200,\n    \"name\": \"string\",\n    \"created\": 8088,\n    \"updated\": 3152,\n    \"sent_at\": 1458,\n    \"num_recipients\": 9624,\n    \"tags\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ac818f23-26a4-4884-b69f-0792dac18bb4",
+              "name": "Unauthorized. Invalid App API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "newsletters",
+                    ":newsletter_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "newsletter_id",
+                      "description": "(Required) The unique identifier for the newsletter."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "269c5ba7-840d-4e61-be03-981dbdeac823",
+              "name": "Newsletter not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "newsletters",
+                    ":newsletter_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "newsletter_id",
+                      "description": "(Required) The unique identifier for the newsletter."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c3a51c0e-5a1b-4631-8dcf-b902f2f3be79",
+          "name": "Get newsletter metrics",
+          "request": {
+            "name": "Get newsletter metrics",
+            "description": {
+              "content": "Returns metrics for a specific newsletter including delivery statistics and engagement data.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "newsletters",
+                ":newsletter_id",
+                "metrics"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "newsletter_id",
+                  "description": "(Required) The unique identifier for the newsletter."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "fe8b3995-c894-4e8b-a2d5-994593dc1bb5",
+              "name": "Newsletter metrics.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "newsletters",
+                    ":newsletter_id",
+                    "metrics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "newsletter_id",
+                      "description": "(Required) The unique identifier for the newsletter."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "db0993e4-f4a5-4518-8b27-2e5c3b2ccc5d",
+              "name": "Unauthorized. Invalid App API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "newsletters",
+                    ":newsletter_id",
+                    "metrics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "newsletter_id",
+                      "description": "(Required) The unique identifier for the newsletter."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d7f9c7a1-cea1-4dc4-a850-018709119e13",
+              "name": "Newsletter not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "newsletters",
+                    ":newsletter_id",
+                    "metrics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "newsletter_id",
+                      "description": "(Required) The unique identifier for the newsletter."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.customer.io/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "60371ae6-31a3-40d7-ba73-636e47fb1308",
+    "name": "Customer.io App Activities Newsletters API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.\n\nContact Support:\n Name: Customer.io Support",
+      "type": "text/plain"
+    }
+  }
+}

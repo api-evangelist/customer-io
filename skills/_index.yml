@@ -1,0 +1,80 @@
+generated: '2026-08-13'
+method: generated
+source: >-
+  openapi/_original/customer-io-app-api-openapi.json,
+  openapi/_original/customer-io-track-api-openapi.json,
+  openapi/_original/customer-io-pipelines-api-openapi.json,
+  openapi/_original/customer-io-reporting-webhooks-openapi.json
+provider: Customer.io
+providerId: customer-io
+description: >-
+  Packaged Agent Skills for the marquee Customer.io flows. Every operationId
+  referenced in these skills was verified against Customer.io's own published
+  OpenAPI documents; none was invented.
+skills:
+- name: customer-io-send-transactional-email
+  file: skills/customer-io-send-transactional-email.md
+  api: Customer.io App API
+  operations:
+  - listTransactional
+  - getTransactional
+  - sendEmail
+  - getMessage
+- name: customer-io-ingest-people-and-events
+  file: skills/customer-io-ingest-people-and-events.md
+  api: Customer.io Pipelines API
+  operations:
+  - identify
+  - track
+  - page
+  - screen
+  - group
+  - alias
+  - batch
+- name: customer-io-trigger-broadcast
+  file: skills/customer-io-trigger-broadcast.md
+  api: Customer.io App API
+  operations:
+  - listBroadcasts
+  - getBroadcast
+  - triggerBroadcast
+  - broadcastStatus
+  - broadcastErrors
+  - broadcastMetrics
+- name: customer-io-consume-reporting-webhooks
+  file: skills/customer-io-consume-reporting-webhooks.md
+  api: Customer.io App API + Reporting Webhooks
+  operations:
+  - createWebhook
+  - listWebhooks
+  - getWebhook
+  - updateWebhook
+  - deleteWebhook
+  - getMessage
+provider_published_skills:
+  note: >-
+    Customer.io publishes its own agent skills in two places. Neither is
+    mirrored here — they are the provider's to maintain, and the MCP-served
+    library is explicitly designed to stay current rather than be copied.
+  sources:
+  - name: Customer.io MCP skill library
+    served_by: https://mcp.customer.io/mcp
+    tools:
+    - cio_skills_list
+    - cio_skills_read
+    access: OAuth-gated; not enumerable anonymously.
+  - name: Customer.io CLI skills
+    install: cio skills install
+    note: >-
+      Writes a bootstrap skill locally; the remainder are fetched on demand.
+      Sub-skills cover account onboarding and SDK integration.
+    docs: https://docs.customer.io/ai/cli/get-started/
+  - name: customerio/ai-skills
+    url: https://github.com/customerio/ai-skills
+    license: MIT
+    contents: >-
+      One published skill as of 2026-08-13 (skills/email-accessibility/SKILL.md)
+      plus a template/SKILL.md. Last pushed 2026-07-09.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

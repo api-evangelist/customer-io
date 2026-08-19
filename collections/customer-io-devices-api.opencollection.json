@@ -1,0 +1,72 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Customer.io App Activities Devices API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Devices",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Add a customer device",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.customer.io/v1/customers/:identifier/devices",
+            "params": [
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Adds or updates a device associated with a customer for push notifications. The device token and platform are required. This endpoint is used to register mobile devices so Customer.io can send push notifications to the customer."
+        },
+        {
+          "info": {
+            "name": "Delete a customer device",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.customer.io/v1/customers/:identifier/devices/:device_id",
+            "params": [
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+              },
+              {
+                "name": "device_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the device to remove."
+              }
+            ]
+          },
+          "docs": "Removes a device from a customer profile. The customer will no longer receive push notifications on this device."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

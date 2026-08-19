@@ -1,0 +1,205 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  npm registry.npmjs.org, pypi.org, rubygems.org, proxy.golang.org,
+  repo1.maven.org, pub.dev, api.github.com/orgs/customerio, and
+  https://docs.customer.io/integrations/sdk/
+provider: Customer.io
+providerId: customer-io
+summary:
+  package_count: 14
+  official_count: 14
+  registries:
+  - npm
+  - pypi
+  - rubygems
+  - go
+  - maven
+  - pub.dev
+  - swiftpm
+  currency_note: >-
+    Every first-party library published a release within the last 60 days of the
+    2026-08-13 check. The one stale artifact is the Maven coordinate
+    io.customer.android:tracking, frozen at 3.11.2 (2024-08-19) because the
+    Android SDK moved to the io.customer.android:datapipelines coordinate at
+    4.x. That is a rename, not abandonment — datapipelines is at 4.20.1
+    (2026-08-06) — but a consumer still pinned to the old coordinate is two
+    major versions behind and gets no signal.
+packages:
+- language: javascript
+  registry: npm
+  name: '@customerio/cli'
+  official: true
+  version: 0.0.20
+  published: '2026-07-23'
+  install: npm install -g @customerio/cli
+  repository: https://github.com/customerio/cli
+  description: Agent-first CLI for Customer.io APIs.
+  role: cli
+  note: >-
+    See cli/customer-io-cli.yml. Also installable with Go — see the
+    github.com/customerio/cli entry below.
+- language: go
+  registry: go
+  name: github.com/customerio/cli
+  official: true
+  version: v0.0.20
+  published: '2026-07-23'
+  install: go install github.com/customerio/cli@latest
+  repository: https://github.com/customerio/cli
+  description: Agent-first CLI for Customer.io APIs (Go distribution).
+  role: cli
+- language: javascript
+  registry: npm
+  name: customerio-node
+  official: true
+  version: 5.2.0
+  published: '2026-07-15'
+  install: npm install customerio-node
+  repository: https://github.com/customerio/customerio-node
+  description: Node.js client for the Customer.io Track and App APIs.
+  apis:
+  - Track API
+  - App API
+  note: >-
+    GitHub tagged v5.3.0 on 2026-07-24 but registry.npmjs.org still served 5.2.0
+    as `latest` when checked on 2026-08-13 — the tag and the registry disagree
+    by one minor version.
+- language: javascript
+  registry: npm
+  name: '@customerio/cdp-analytics-node'
+  official: true
+  version: 0.5.9
+  published: '2026-07-30'
+  install: npm install @customerio/cdp-analytics-node
+  repository: https://github.com/customerio/cdp-analytics-js
+  description: Data Pipelines (CDP) analytics client for Node.js.
+  apis:
+  - Pipelines API
+- language: javascript
+  registry: npm
+  name: '@customerio/cdp-analytics-browser'
+  official: true
+  version: 0.5.9
+  published: '2026-07-30'
+  install: npm install @customerio/cdp-analytics-browser
+  repository: https://github.com/customerio/cdp-analytics-js
+  description: Data Pipelines (CDP) analytics client for browsers.
+  apis:
+  - Pipelines API
+- language: javascript
+  registry: npm
+  name: customerio-reactnative
+  official: true
+  version: 6.6.2
+  published: '2026-08-07'
+  install: npm install customerio-reactnative
+  repository: https://github.com/customerio/customerio-reactnative
+  description: >-
+    Official React Native SDK — tracking, push notifications, in-app messaging.
+- language: javascript
+  registry: npm
+  name: customerio-expo-plugin
+  official: true
+  version: 3.7.1
+  published: '2026-08-07'
+  install: npx expo install customerio-expo-plugin
+  repository: https://github.com/customerio/customerio-expo-plugin
+  description: Expo config plugin for the Customer.io React Native SDK.
+- language: python
+  registry: pypi
+  name: customerio
+  official: true
+  version: 3.2.0
+  published: '2026-07-24'
+  install: pip install customerio
+  repository: https://github.com/customerio/customerio-python
+  description: Official Python client for the Customer.io API.
+- language: ruby
+  registry: rubygems
+  name: customerio
+  official: true
+  version: 6.2.0
+  published: '2026-07-24'
+  install: gem install customerio
+  repository: https://github.com/customerio/customerio-ruby
+  description: Official Ruby client for the Customer.io event API.
+- language: go
+  registry: go
+  name: github.com/customerio/go-customerio/v3
+  official: true
+  version: v3.12.0
+  published: '2026-07-24'
+  install: go get github.com/customerio/go-customerio/v3
+  repository: https://github.com/customerio/go-customerio
+  description: Official Go client for the Customer.io API.
+- language: kotlin
+  registry: maven
+  name: io.customer.android:datapipelines
+  official: true
+  version: 4.20.1
+  published: '2026-08-06'
+  install: implementation 'io.customer.android:datapipelines:4.20.1'
+  repository: https://github.com/customerio/customerio-android
+  description: >-
+    Official Android SDK (Data Pipelines generation). Companion modules on the
+    same coordinate group include messaging-push-fcm, messaging-in-app,
+    messaging-in-app-compose, messaging-inbox and geofence.
+  note: >-
+    published date read from the customerio-android GitHub release 4.20.1; the
+    Maven metadata for this coordinate lists 4.20.1 as latest/release.
+- language: kotlin
+  registry: maven
+  name: io.customer.android:tracking
+  official: true
+  version: 3.11.2
+  published: '2024-08-19'
+  repository: https://github.com/customerio/customerio-android
+  description: Superseded Android SDK coordinate (3.x tracking generation).
+  status: superseded
+  note: >-
+    Read from repo1.maven.org maven-metadata.xml (lastUpdated 20240819211139).
+    Kept in this list precisely because it is the one stale first-party
+    artifact: it is nearly two years behind and nothing on the coordinate says
+    so. Migrate to io.customer.android:datapipelines.
+- language: swift
+  registry: swiftpm
+  name: customerio-ios
+  official: true
+  version: 4.7.3
+  published: '2026-08-10'
+  install: https://github.com/customerio/customerio-ios
+  repository: https://github.com/customerio/customerio-ios
+  description: >-
+    Official iOS SDK, distributed through Swift Package Manager and CocoaPods.
+  note: >-
+    version and published read from the GitHub release 4.7.3 — Swift Package
+    Manager resolves from the git tag and has no registry metadata endpoint to
+    query.
+- language: dart
+  registry: pub.dev
+  name: customer_io
+  official: true
+  version: 4.2.1
+  published: '2026-08-07'
+  install: flutter pub add customer_io
+  repository: https://github.com/customerio/customerio-flutter
+  description: Official Flutter plugin for Customer.io.
+absent:
+- registry: packagist
+  checked: 'https://packagist.org/packages/customerio/customerio.json'
+  status: 404
+  note: >-
+    No first-party PHP package. github.com/customerio/customerio-php exists but
+    is archived and is described by Customer.io as "Examples for using PHP to
+    access the Customer.io API", not a supported client.
+- registry: nuget
+  checked: https://api.nuget.org/v3/registration5-gz-semver2/customerio/index.json
+  status: 404
+  note: No first-party .NET client.
+- registry: crates.io
+  status: not-published
+  note: No first-party Rust client.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

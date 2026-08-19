@@ -1,7 +1,7 @@
 {
   "opencollection": "1.0.0",
   "info": {
-    "name": "Customer.io App Activities Track API",
+    "name": "Customer.io App Activities Group API",
     "version": "1.0.0"
   },
   "request": {
@@ -13,24 +13,24 @@
   "items": [
     {
       "info": {
-        "name": "Track",
+        "name": "Group",
         "type": "folder"
       },
       "items": [
         {
           "info": {
-            "name": "Track an event",
+            "name": "Associate a person with a group",
             "type": "http"
           },
           "http": {
             "method": "POST",
-            "url": "https://api.customer.io/v1/track",
+            "url": "https://api.customer.io/v1/group",
             "body": {
               "type": "json",
               "data": "{}"
             }
           },
-          "docs": "Records an event that a person performed. Every track call requires an event name and at least one of userId or anonymousId. Event properties provide additional context about the action."
+          "docs": "Associates a person with a group or organization. Requires a groupId and at least one of userId or anonymousId. Group traits set attributes on the group."
         }
       ]
     }

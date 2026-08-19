@@ -1,0 +1,179 @@
+{
+  "item": [
+    {
+      "id": "937b87fb-cf3f-4f98-b783-fbd25b6f66be",
+      "name": "Merge",
+      "description": {
+        "content": "Merge two customer profiles into a single profile.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "e3435311-b256-44dd-a825-224c6e26b29c",
+          "name": "Merge customer profiles",
+          "request": {
+            "name": "Merge customer profiles",
+            "description": {
+              "content": "Merges two customer profiles into one. The primary profile is kept and the secondary profile is deleted. Events, attributes, and devices from the secondary profile are merged into the primary profile.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "merge"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"primary\": {\n    \"id\": \"<string>\"\n  },\n  \"secondary\": {\n    \"id\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "bfd4b3dd-5d6d-43d6-b434-f4a1cf248d4a",
+              "name": "Customers merged successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "merge"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"primary\": {\n    \"id\": \"<string>\"\n  },\n  \"secondary\": {\n    \"id\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "335f699f-c22d-416b-8ba8-28186badab68",
+              "name": "Unauthorized. Invalid Site ID or API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "merge"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"primary\": {\n    \"id\": \"<string>\"\n  },\n  \"secondary\": {\n    \"id\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.customer.io/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "3d2275c2-c254-4ad7-92ed-a136f77f71b7",
+    "name": "Customer.io App Activities Merge API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.\n\nContact Support:\n Name: Customer.io Support",
+      "type": "text/plain"
+    }
+  }
+}

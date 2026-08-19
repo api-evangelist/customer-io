@@ -1,0 +1,62 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Customer.io App Activities Events API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Events",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Track a customer event",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.customer.io/v1/customers/:identifier/events",
+            "params": [
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Records an event associated with a specific customer. Events are used to trigger campaigns, track user behavior, and segment your audience. The event name is required and custom data can be passed in the data object."
+        },
+        {
+          "info": {
+            "name": "Track an anonymous event",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.customer.io/v1/events",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Records an event that is not associated with a known customer profile. Anonymous events can be merged with a customer profile later when the person is identified, if event merging is enabled in your workspace. Anonymous events recorded within the last 30 days can be associated with a person when their anonymous_id matches."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

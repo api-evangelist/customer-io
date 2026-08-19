@@ -1,0 +1,24 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://docs.customer.io/integrations/api/customerio-apis",
+      "service-doc": [
+        {
+          "href": "https://docs.customer.io/integrations/api/customerio-apis",
+          "type": "text/html",
+          "title": "Customer.io REST APIs — Track (ingest), App (messaging), Pipelines (CDP)"
+        }
+      ]
+    },
+    {
+      "anchor": "https://docs.customer.io/ai/mcp/",
+      "service-doc": [
+        {
+          "href": "https://docs.customer.io/ai/mcp/",
+          "type": "text/html",
+          "title": "Customer.io MCP Server — connect AI tools (Claude, Cursor) to a workspace"
+        }
+      ]
+    }
+  ]
+}

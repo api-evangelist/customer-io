@@ -1,0 +1,531 @@
+{
+  "item": [
+    {
+      "id": "312cad0c-308c-4194-9c02-0a70a1cc38c0",
+      "name": "Exports",
+      "description": {
+        "content": "Export customer data, deliveries, and other information from your workspace.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "1e0db13b-ac82-4dbd-befe-c2a40e0d9337",
+          "name": "Export customers",
+          "request": {
+            "name": "Export customers",
+            "description": {
+              "content": "Initiates an export of customer data from your workspace. The export runs asynchronously and you receive a download link when complete.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "exports",
+                "customers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"filters\": {\n    \"key_0\": 4190.111916912547,\n    \"key_1\": false,\n    \"key_2\": false\n  },\n  \"start\": \"<integer>\",\n  \"end\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "ab3353b7-d24b-44f4-93f2-31f5478150a3",
+              "name": "Export initiated successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "exports",
+                    "customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filters\": {\n    \"key_0\": false,\n    \"key_1\": 4044.6406230403286\n  },\n  \"start\": \"<integer>\",\n  \"end\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 3447,\n  \"status\": \"running\",\n  \"download_url\": \"https://qpmtJujrRW.atbMiW0LwrC5Up.kU9ziRfxiruRZJqI7cgo2d7MvjEOqB-f49sUPc6805liY-1SF+s\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cd1affdc-5aa5-42de-ac9c-fa9968799701",
+              "name": "Unauthorized. Invalid App API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "exports",
+                    "customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filters\": {\n    \"key_0\": false,\n    \"key_1\": 4044.6406230403286\n  },\n  \"start\": \"<integer>\",\n  \"end\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4ec1aa82-528e-4b90-904a-0d5ef9d075b0",
+          "name": "Export deliveries",
+          "request": {
+            "name": "Export deliveries",
+            "description": {
+              "content": "Initiates an export of message delivery data from your workspace.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "exports",
+                "deliveries"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"filters\": {\n    \"key_0\": 4190.111916912547,\n    \"key_1\": false,\n    \"key_2\": false\n  },\n  \"start\": \"<integer>\",\n  \"end\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "d172a58d-9190-491e-90ef-16fe34eafeab",
+              "name": "Export initiated successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "exports",
+                    "deliveries"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filters\": {\n    \"key_0\": false,\n    \"key_1\": 4044.6406230403286\n  },\n  \"start\": \"<integer>\",\n  \"end\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 3447,\n  \"status\": \"running\",\n  \"download_url\": \"https://qpmtJujrRW.atbMiW0LwrC5Up.kU9ziRfxiruRZJqI7cgo2d7MvjEOqB-f49sUPc6805liY-1SF+s\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cdfd60ad-7ad4-4dfb-bb69-364ff9c8b32d",
+              "name": "Unauthorized. Invalid App API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "exports",
+                    "deliveries"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filters\": {\n    \"key_0\": false,\n    \"key_1\": 4044.6406230403286\n  },\n  \"start\": \"<integer>\",\n  \"end\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e0b5204b-58f1-4de1-8b5e-7291c99a08c7",
+          "name": "Get an export",
+          "request": {
+            "name": "Get an export",
+            "description": {
+              "content": "Returns the status and download link for a previously initiated export.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "exports",
+                ":export_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "export_id",
+                  "description": "(Required) The unique identifier for the export."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ca990af5-bc15-4d21-ab52-9072e1bd28bf",
+              "name": "Export details.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "exports",
+                    ":export_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "export_id",
+                      "description": "(Required) The unique identifier for the export."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 3447,\n  \"status\": \"running\",\n  \"download_url\": \"https://qpmtJujrRW.atbMiW0LwrC5Up.kU9ziRfxiruRZJqI7cgo2d7MvjEOqB-f49sUPc6805liY-1SF+s\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e7b5a41d-9632-4e17-b088-dea3048f5943",
+              "name": "Unauthorized. Invalid App API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "exports",
+                    ":export_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "export_id",
+                      "description": "(Required) The unique identifier for the export."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "5572175b-9f04-4b96-b19f-b8a2d465916a",
+              "name": "Export not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "exports",
+                    ":export_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "export_id",
+                      "description": "(Required) The unique identifier for the export."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.customer.io/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "9bee5faa-9347-4916-909a-e291729bf15b",
+    "name": "Customer.io App Activities Exports API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.\n\nContact Support:\n Name: Customer.io Support",
+      "type": "text/plain"
+    }
+  }
+}

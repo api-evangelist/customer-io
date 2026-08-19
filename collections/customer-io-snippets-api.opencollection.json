@@ -1,0 +1,77 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Customer.io App Activities Snippets API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Snippets",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List snippets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/snippets"
+          },
+          "docs": "Returns a list of reusable content snippets in your workspace."
+        },
+        {
+          "info": {
+            "name": "Update a snippet",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.customer.io/v1/snippets/:snippet_name",
+            "params": [
+              {
+                "name": "snippet_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the snippet to create or update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates or updates a reusable content snippet."
+        },
+        {
+          "info": {
+            "name": "Delete a snippet",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.customer.io/v1/snippets/:snippet_name",
+            "params": [
+              {
+                "name": "snippet_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the snippet to delete."
+              }
+            ]
+          },
+          "docs": "Deletes a content snippet from your workspace."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

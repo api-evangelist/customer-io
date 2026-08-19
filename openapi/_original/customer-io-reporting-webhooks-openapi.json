@@ -1,0 +1,4498 @@
+{
+  "webhooks": {
+    "reportingWebhook": {
+      "post": {
+        "summary": "Reporting webhook format",
+        "description": "Customer.io sends events to your webhook URL in the following format. Events are generally organized by `object_type`—representing the message or Customer.io action (i.e. `email`, `sms`, etc)—and the specific `metric` pertaining to the type (i.e. `sent`, `bounced`, etc).",
+        "operationId": "reportingWebhook",
+        "security": [],
+        "parameters": [
+          {
+            "name": "x-cio-timestamp",
+            "schema": {
+              "type": "integer",
+              "format": "unix timestamp"
+            },
+            "description": "The timestamp when the request was sent.",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "x-cio-signature",
+            "in": "header",
+            "description": "A string combining your webhook signing key with the body of webhook request using an HMAC-SHA256 hash, used to help you [securely verify requests](/webhooks#securely-verifying-requests). \n",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {},
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/customer_event"
+                  },
+                  {
+                    "$ref": "#/components/schemas/email_event"
+                  },
+                  {
+                    "$ref": "#/components/schemas/push_event"
+                  },
+                  {
+                    "$ref": "#/components/schemas/in_app_event"
+                  },
+                  {
+                    "$ref": "#/components/schemas/sms_event"
+                  },
+                  {
+                    "$ref": "#/components/schemas/slack_event"
+                  },
+                  {
+                    "$ref": "#/components/schemas/webhook_event"
+                  },
+                  {
+                    "$ref": "#/components/schemas/whatsapp_event"
+                  }
+                ]
+              },
+              "examples": {
+                "customer_subscribed": {
+                  "summary": "Customer subscribed event",
+                  "value": {
+                    "metric": "subscribed",
+                    "event_id": "01E4C4CT6YDC7Y5M7FE1GWWPQJ",
+                    "object_type": "customer",
+                    "timestamp": 1613063089,
+                    "data": {
+                      "customer_id": "0200000001",
+                      "email_address": "test@example.com",
+                      "identifiers": {
+                        "id": "42",
+                        "email": "test@example.com",
+                        "cio_id": "d9c106000001"
+                      }
+                    }
+                  }
+                },
+                "email_sent": {
+                  "summary": "Email sent event",
+                  "value": {
+                    "metric": "sent",
+                    "event_id": "01E4C4CT6YDC7Y5M7FE1GWWPQJ",
+                    "object_type": "email",
+                    "timestamp": 1613063089,
+                    "data": {
+                      "action_id": 42,
+                      "broadcast_id": 9,
+                      "customer_id": "0200000001",
+                      "delivery_id": "RPILAgUBcRhIBqSfeiIwdIYJKxTY",
+                      "identifiers": {
+                        "id": "42",
+                        "email": "test@example.com",
+                        "cio_id": "d9c106000001"
+                      },
+                      "recipient": "test@example.com"
+                    }
+                  }
+                },
+                "sms_sent": {
+                  "summary": "SMS sent event",
+                  "value": {
+                    "metric": "sent",
+                    "event_id": "01E4C4CT6YDC7Y5M7FE1GWWPQJ",
+                    "object_type": "sms",
+                    "timestamp": 1613063089,
+                    "data": {
+                      "action_id": 42,
+                      "broadcast_id": 9,
+                      "customer_id": "0200000001",
+                      "delivery_id": "RPILAgUBcRhIBqSfeiIwdIYJKxTY",
+                      "identifiers": {
+                        "id": "42",
+                        "email": "test@example.com",
+                        "cio_id": "d9c106000001"
+                      },
+                      "recipient": "+15551234567"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "customer_event": {
+        "x-scalar-ignore": true,
+        "title": "Customer",
+        "description": "Events that occur when a customer subscribes or unsubscribes from your messages.",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/person_subscribed"
+          },
+          {
+            "$ref": "#/components/schemas/person_unsubscribed"
+          },
+          {
+            "$ref": "#/components/schemas/person_cio_subscription_preferences_changed"
+          }
+        ]
+      },
+      "customer_event_common": {
+        "x-scalar-ignore": true,
+        "type": "object",
+        "required": [
+          "event_id",
+          "object_type",
+          "timestamp",
+          "data"
+        ],
+        "properties": {
+          "event_id": {
+            "$ref": "#/components/schemas/event_id"
+          },
+          "object_type": {
+            "type": "string",
+            "enum": [
+              "customer",
+              "email",
+              "sms",
+              "push",
+              "in_app",
+              "slack",
+              "webhook",
+              "whatsapp"
+            ],
+            "description": "The channel that triggered the subscription change. If the subscription change wasn't triggered from a message, or we can't determine which message triggered the change, the `object_type` is `customer`.",
+            "example": "customer"
+          },
+          "timestamp": {
+            "$ref": "#/components/schemas/webhook_timestamp"
+          },
+          "data": {
+            "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+            "type": "object",
+            "required": [
+              "identifiers",
+              "customer_id",
+              "email_address"
+            ],
+            "properties": {
+              "customer_id": {
+                "$ref": "#/components/schemas/webhook_customer_id"
+              },
+              "email_address": {
+                "$ref": "#/components/schemas/email_address"
+              },
+              "identifiers": {
+                "$ref": "#/components/schemas/webhook_identifiers"
+              }
+            }
+          }
+        }
+      },
+      "person_subscribed": {
+        "title": "Customer subscribed",
+        "description": "A person subscribed to messages from you—their `unsubscribed` attribute was set to `false`.",
+        "allOf": [
+          {
+            "type": "object",
+            "required": [
+              "metric"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "subscribed"
+                ],
+                "description": "The metric recorded by the event. For `customer` events, this is whether the customer explicitly subscribed or unsubscribed."
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/customer_event_common"
+          }
+        ]
+      },
+      "person_unsubscribed": {
+        "title": "Customer unsubscribed",
+        "description": "A person unsubscribed to messages from you—their `unsubscribed` attribute was set to `true`.",
+        "allOf": [
+          {
+            "type": "object",
+            "required": [
+              "metric"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "unsubscribed"
+                ],
+                "description": "The metric recorded by the event. For `customer` events, this is whether the customer explicitly subscribed or unsubscribed."
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/customer_event_common"
+          }
+        ]
+      },
+      "person_cio_subscription_preferences_common": {
+        "x-scalar-ignore": true,
+        "oneOf": [
+          {
+            "title": "API triggered broadcast",
+            "required": [
+              "trigger_id",
+              "broadcast_id",
+              "delivery_id",
+              "action_id"
+            ],
+            "type": "object",
+            "properties": {
+              "trigger_id": {
+                "$ref": "#/components/schemas/trigger_id"
+              },
+              "customer_id": {
+                "$ref": "#/components/schemas/webhook_customer_id"
+              },
+              "delivery_id": {
+                "$ref": "#/components/schemas/delivery_id"
+              },
+              "action_id": {
+                "$ref": "#/components/schemas/action_id_webhook"
+              },
+              "broadcast_id": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/broadcast_id"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "journey_id": {
+                "$ref": "#/components/schemas/journey_id"
+              },
+              "parent_action_id": {
+                "$ref": "#/components/schemas/parent_action_id"
+              }
+            }
+          },
+          {
+            "title": "Campaign",
+            "type": "object",
+            "required": [
+              "campaign_id",
+              "delivery_id",
+              "action_id"
+            ],
+            "properties": {
+              "campaign_id": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/campaign_id"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "customer_id": {
+                "$ref": "#/components/schemas/webhook_customer_id"
+              },
+              "delivery_id": {
+                "$ref": "#/components/schemas/delivery_id"
+              },
+              "action_id": {
+                "$ref": "#/components/schemas/action_id_webhook"
+              },
+              "journey_id": {
+                "$ref": "#/components/schemas/journey_id"
+              },
+              "parent_action_id": {
+                "$ref": "#/components/schemas/parent_action_id"
+              },
+              "trigger_event_id": {
+                "$ref": "#/components/schemas/trigger_event_id"
+              }
+            }
+          },
+          {
+            "title": "Newsletter",
+            "type": "object",
+            "required": [
+              "newsletter_id",
+              "delivery_id"
+            ],
+            "properties": {
+              "customer_id": {
+                "$ref": "#/components/schemas/webhook_customer_id"
+              },
+              "delivery_id": {
+                "$ref": "#/components/schemas/delivery_id"
+              },
+              "newsletter_id": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/newsletter_id"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "content_id": {
+                "$ref": "#/components/schemas/content_id_event"
+              }
+            }
+          }
+        ]
+      },
+      "person_cio_subscription_preferences_changed": {
+        "title": "Customer changed subscription preferences",
+        "description": "A person changed their subscription preferences through our subscription center or you changed their `cio_subscription_preferences` attribute values.\n\nSome fields in the `data` object change based on whether the message that resulted in the change originated from a broadcast, campaign, or newsletter.\n",
+        "type": "object",
+        "required": [
+          "metric",
+          "event_id",
+          "data",
+          "timestamp"
+        ],
+        "properties": {
+          "metric": {
+            "type": "string",
+            "enum": [
+              "cio_subscription_preferences_changed"
+            ],
+            "description": "The event we're reporting to your webhook endpoint. In this case, a person changed their subscription preferences."
+          },
+          "event_id": {
+            "$ref": "#/components/schemas/event_id"
+          },
+          "object_type_type": {
+            "type": "string",
+            "enum": [
+              "customer",
+              "email",
+              "sms",
+              "push",
+              "in_app",
+              "slack",
+              "webhook",
+              "whatsapp"
+            ],
+            "description": "The channel that triggered the change to the person's subscription preferences. If the subscription change wasn't triggered from a message, or we can't determine which message triggered the change, the `object_type` is `customer`. Most subscription changes are triggered by `email` or are `customer` initiated.",
+            "example": "email"
+          },
+          "timestamp": {
+            "$ref": "#/components/schemas/webhook_timestamp"
+          },
+          "data": {
+            "allOf": [
+              {
+                "type": "object",
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "required": [
+                  "identifiers",
+                  "customer_id",
+                  "email_address"
+                ],
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "description": "If you enable the *Include body content and headers in all Sent events* when you set up your reporting webhook, you'll see this field. It contains the subscription preferences that a person changed in a stringified object format. The `topic_1` key refers to a topic with an ID of `1`; you can get more information about each topic from our [App API](/api/app/#operation/getTopics).",
+                    "example": "{\"topics\":{\"topic_1\":true}}"
+                  },
+                  "customer_id": {
+                    "$ref": "#/components/schemas/webhook_customer_id"
+                  },
+                  "email_address": {
+                    "$ref": "#/components/schemas/email_address"
+                  },
+                  "identifiers": {
+                    "$ref": "#/components/schemas/webhook_identifiers"
+                  }
+                }
+              },
+              {
+                "$ref": "#/components/schemas/person_cio_subscription_preferences_common"
+              }
+            ]
+          }
+        }
+      },
+      "email_event": {
+        "x-scalar-ignore": true,
+        "title": "Email",
+        "description": "Events representing an email.",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/email_drafted"
+          },
+          {
+            "$ref": "#/components/schemas/email_attempted"
+          },
+          {
+            "$ref": "#/components/schemas/email_sent"
+          },
+          {
+            "$ref": "#/components/schemas/email_delivered"
+          },
+          {
+            "$ref": "#/components/schemas/email_opened"
+          },
+          {
+            "$ref": "#/components/schemas/email_clicked"
+          },
+          {
+            "$ref": "#/components/schemas/email_converted"
+          },
+          {
+            "$ref": "#/components/schemas/email_unsubscribed"
+          },
+          {
+            "$ref": "#/components/schemas/email_bounced"
+          },
+          {
+            "$ref": "#/components/schemas/email_dropped"
+          },
+          {
+            "$ref": "#/components/schemas/email_spammed"
+          },
+          {
+            "$ref": "#/components/schemas/email_failed"
+          },
+          {
+            "$ref": "#/components/schemas/email_undeliverable"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "metric"
+        }
+      },
+      "email_event_common": {
+        "x-scalar-ignore": true,
+        "type": "object",
+        "required": [
+          "event_id",
+          "object_type",
+          "timestamp"
+        ],
+        "example": {
+          "event_id": "01HXYZ1234567890ABCDEF",
+          "object_type": "email",
+          "timestamp": 1713484800
+        },
+        "properties": {
+          "event_id": {
+            "$ref": "#/components/schemas/event_id"
+          },
+          "object_type": {
+            "type": "string",
+            "enum": [
+              "email"
+            ],
+            "description": "The event relates to an email action."
+          },
+          "timestamp": {
+            "$ref": "#/components/schemas/webhook_timestamp"
+          }
+        }
+      },
+      "email_drafted": {
+        "title": "Email drafted",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/email_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "drafted"
+                ],
+                "description": "The metric recorded by the event. For `customer` events, this is whether the customer explicitly subscribed or unsubscribed."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient",
+                      "subject"
+                    ],
+                    "properties": {
+                      "subject": {
+                        "type": "string",
+                        "description": "The subject of the email."
+                      },
+                      "recipient": {
+                        "$ref": "#/components/schemas/recipient_not_templated"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "email_attempted": {
+        "title": "Email attempted",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/email_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "attempted"
+                ],
+                "description": "An email could not be sent to the delivery provider and will be retried. The `failure_message` provides the reason for the failure."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "email_sent": {
+        "title": "Email sent",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/email_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "sent"
+                ],
+                "description": "A message was successfully sent. If you enabled the *Include body content and headers in all Sent events* option, the payload includes the `content` of your message and, for emails with custom headers, a `data.headers` object alongside `content`."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient",
+                      "subject"
+                    ],
+                    "properties": {
+                      "content": {
+                        "type": "string",
+                        "description": "The body content of your email. This key only appears if you enabled the *Include body content and headers in all Sent events* (*Body Content*) option when setting up your webhook."
+                      },
+                      "headers": {
+                        "type": "object",
+                        "description": "The headers sent with your email, as a map of header name to an array of values. This key only appears if you enabled the *Include body content and headers in all Sent events* (*Body Content*) option when setting up your webhook and the message included custom headers. This is a sibling of `content`—it is not nested inside it.",
+                        "additionalProperties": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "example": {
+                          "Customheader1": [
+                            "customvalue1"
+                          ]
+                        }
+                      },
+                      "subject": {
+                        "type": "string",
+                        "description": "The subject of the email."
+                      },
+                      "recipient": {
+                        "$ref": "#/components/schemas/recipient_not_templated"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "email_delivered": {
+        "title": "Email delivered",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/email_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "delivered"
+                ],
+                "description": "A message was successfully delivered to a recipient."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient",
+                      "subject"
+                    ],
+                    "properties": {
+                      "subject": {
+                        "type": "string",
+                        "description": "The subject of the email."
+                      },
+                      "recipient": {
+                        "$ref": "#/components/schemas/recipient_not_templated"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "email_opened": {
+        "title": "Email opened",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/email_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "opened"
+                ],
+                "description": "An email was opened."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient"
+                    ],
+                    "properties": {
+                      "subject": {
+                        "type": "string",
+                        "description": "The subject of the email."
+                      },
+                      "recipient": {
+                        "$ref": "#/components/schemas/recipient_not_templated"
+                      },
+                      "proxied": {
+                        "type": "boolean",
+                        "description": "If true, the email was fetched by a proxy to hide the user identity, IP address, etc."
+                      },
+                      "prefetched": {
+                        "type": "boolean",
+                        "description": "If true, the email was opened by Gmail, Apple Privacy Protection, or a user agent identified as a machine."
+                      },
+                      "synthetic": {
+                        "type": "boolean",
+                        "description": "If true, Customer.io inferred the open event because we tracked a click event before we registered an open event (and a link in an email can't be clicked without the email being opened). This does not necessarily mean that the open was machine-oriented. The click—and therefore, the open—could have originated from either a machine or a person."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "email_clicked": {
+        "title": "Email clicked",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/email_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "clicked"
+                ],
+                "description": "A tracked link in an email was clicked."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient",
+                      "subject",
+                      "href",
+                      "link_id"
+                    ],
+                    "properties": {
+                      "subject": {
+                        "type": "string",
+                        "description": "The subject of the email."
+                      },
+                      "recipient": {
+                        "$ref": "#/components/schemas/recipient_not_templated"
+                      },
+                      "href": {
+                        "$ref": "#/components/schemas/href"
+                      },
+                      "link_id": {
+                        "$ref": "#/components/schemas/link_id"
+                      },
+                      "machine": {
+                        "type": "boolean",
+                        "description": "If true, the click was generated by a machine."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "email_converted": {
+        "title": "Email converted",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/email_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "converted"
+                ],
+                "description": "A person matched conversion criteria attributed to an email."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient",
+                      "subject"
+                    ],
+                    "properties": {
+                      "subject": {
+                        "type": "string",
+                        "description": "The subject of the email."
+                      },
+                      "recipient": {
+                        "$ref": "#/components/schemas/recipient_not_templated"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "email_unsubscribed": {
+        "title": "Email unsubscribed",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/email_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "unsubscribed"
+                ],
+                "description": "The recipient unsubscribed based on a particular message."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient",
+                      "subject"
+                    ],
+                    "properties": {
+                      "subject": {
+                        "type": "string",
+                        "description": "The subject of the email."
+                      },
+                      "recipient": {
+                        "$ref": "#/components/schemas/recipient_not_templated"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "email_bounced": {
+        "title": "Email bounced",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/email_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "bounced"
+                ],
+                "description": "The delivery provider could not deliver an email."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient",
+                      "subject",
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "subject": {
+                        "type": "string",
+                        "description": "The subject of the email."
+                      },
+                      "recipient": {
+                        "$ref": "#/components/schemas/recipient_not_templated"
+                      },
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "email_dropped": {
+        "title": "Email dropped",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/email_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "dropped"
+                ],
+                "description": "Customer.io did not send an email because it was addressed to a person who was suppressed."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient",
+                      "subject",
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "subject": {
+                        "type": "string",
+                        "description": "The subject of the email."
+                      },
+                      "recipient": {
+                        "$ref": "#/components/schemas/recipient_not_templated"
+                      },
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "email_spammed": {
+        "title": "Email spammed",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/email_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "spammed"
+                ],
+                "description": "A recipient marked an email as spam."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient",
+                      "subject"
+                    ],
+                    "properties": {
+                      "subject": {
+                        "type": "string",
+                        "description": "The subject of the email."
+                      },
+                      "recipient": {
+                        "$ref": "#/components/schemas/recipient_not_templated"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "email_failed": {
+        "title": "Email failed",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/email_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "failed"
+                ],
+                "description": "An email couldn't be sent to the delivery provider."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient",
+                      "subject",
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "subject": {
+                        "type": "string",
+                        "description": "The subject of the email."
+                      },
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "email_undeliverable": {
+        "title": "Email undeliverable",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/email_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "undeliverable"
+                ],
+                "description": "A message was undeliverable. Undeliverable messages are messages that have either hit a message limit, come from a newsletter that was cancelled or deleted, or an environment that has delivery disabled (which is something you might do if you’re testing an integration). If you’re not using message limits, you probably won’t see this event."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient",
+                      "subject",
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "subject": {
+                        "type": "string",
+                        "description": "The subject of the email."
+                      },
+                      "recipient": {
+                        "$ref": "#/components/schemas/recipient_not_templated"
+                      },
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "push_event": {
+        "title": "Push",
+        "x-scalar-ignore": true,
+        "description": "Events representing a push notification.",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/push_drafted"
+          },
+          {
+            "$ref": "#/components/schemas/push_attempted"
+          },
+          {
+            "$ref": "#/components/schemas/push_delivered"
+          },
+          {
+            "$ref": "#/components/schemas/push_sent"
+          },
+          {
+            "$ref": "#/components/schemas/push_opened"
+          },
+          {
+            "$ref": "#/components/schemas/push_clicked"
+          },
+          {
+            "$ref": "#/components/schemas/push_converted"
+          },
+          {
+            "$ref": "#/components/schemas/push_bounced"
+          },
+          {
+            "$ref": "#/components/schemas/push_dropped"
+          },
+          {
+            "$ref": "#/components/schemas/push_failed"
+          },
+          {
+            "$ref": "#/components/schemas/push_undeliverable"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "metric"
+        }
+      },
+      "push_event_common": {
+        "x-scalar-ignore": true,
+        "type": "object",
+        "required": [
+          "event_id",
+          "object_type",
+          "timestamp"
+        ],
+        "properties": {
+          "event_id": {
+            "$ref": "#/components/schemas/event_id"
+          },
+          "object_type": {
+            "type": "string",
+            "enum": [
+              "push"
+            ],
+            "description": "The event relates to an push notification."
+          },
+          "timestamp": {
+            "$ref": "#/components/schemas/webhook_timestamp"
+          }
+        }
+      },
+      "push_drafted": {
+        "title": "Push drafted",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/push_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "attempted"
+                ],
+                "description": "A push notification was drafted."
+              },
+              "data": {
+                "$ref": "#/components/schemas/event_common_data"
+              }
+            }
+          }
+        ]
+      },
+      "push_attempted": {
+        "title": "Push attempted",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/push_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "attempted"
+                ],
+                "description": "A push notification was attempted but unsuccessful. This generally means that we'll try again."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "push_sent": {
+        "title": "Push sent",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/push_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "sent"
+                ],
+                "description": "A push notification was sent to a recipient. If you enabled the *Body Content* option with your webhook, the payload includes the `content` of your message."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipients"
+                    ],
+                    "properties": {
+                      "content": {
+                        "type": "string",
+                        "description": "The stringified payload for your push notification. This key only appears if you enabled the *Body Content* option when setting up your webhook."
+                      },
+                      "recipients": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "device_id"
+                          ],
+                          "description": "The person's devices that the push was sent to. Each object in the array represents a device.",
+                          "properties": {
+                            "device_id": {
+                              "type": "string",
+                              "description": "The device identifier/token."
+                            },
+                            "device_platform": {
+                              "type": "string",
+                              "description": "The device platform—ios or android.",
+                              "enum": [
+                                "ios",
+                                "android"
+                              ]
+                            },
+                            "failure_message": {
+                              "type": "string",
+                              "description": "If push failed for the device, we'll the list reason it failed."
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "push_delivered": {
+        "title": "Push delivered",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/push_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "delivered"
+                ],
+                "description": "A push notification was delivered to a recipient device."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipients"
+                    ],
+                    "properties": {
+                      "recipients": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "device_id"
+                          ],
+                          "description": "Describes the device the push was sent to.",
+                          "properties": {
+                            "device_id": {
+                              "type": "string",
+                              "description": "The device identifier/token."
+                            },
+                            "device_platform": {
+                              "type": "string",
+                              "description": "The device platform—ios or android.",
+                              "enum": [
+                                "ios",
+                                "android"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "push_opened": {
+        "title": "Push opened",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/push_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "opened"
+                ],
+                "description": "A device opened a push notification."
+              },
+              "data": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipients"
+                    ],
+                    "properties": {
+                      "recipients": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "device_id"
+                          ],
+                          "description": "Describes the device of the recipient who clicked/tapped the link.",
+                          "properties": {
+                            "device_id": {
+                              "type": "string",
+                              "description": "The device identifier/token."
+                            },
+                            "device_platform": {
+                              "$ref": "#/components/schemas/device_platform"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "push_clicked": {
+        "title": "Push clicked",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/push_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "clicked"
+                ],
+                "description": "A recipient tapped a link in a push notification."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipients",
+                      "href",
+                      "link_id"
+                    ],
+                    "properties": {
+                      "href": {
+                        "$ref": "#/components/schemas/href"
+                      },
+                      "link_id": {
+                        "$ref": "#/components/schemas/link_id"
+                      },
+                      "recipients": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "device_id"
+                          ],
+                          "description": "Describes the device of the recipient who tapped the link.",
+                          "properties": {
+                            "device_id": {
+                              "type": "string",
+                              "description": "The device identifier/token."
+                            },
+                            "device_platform": {
+                              "type": "string",
+                              "description": "The device platform—ios or android.",
+                              "enum": [
+                                "ios",
+                                "android"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "push_converted": {
+        "title": "Push converted",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/push_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "converted"
+                ],
+                "description": "A person matched conversion criteria attributed to a push notification."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipients"
+                    ],
+                    "properties": {
+                      "recipients": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "device_id"
+                          ],
+                          "description": "Describes the device of the recipient who tapped the link.",
+                          "properties": {
+                            "device_id": {
+                              "type": "string",
+                              "description": "The device identifier/token."
+                            },
+                            "device_platform": {
+                              "type": "string",
+                              "description": "The device platform—ios or android.",
+                              "enum": [
+                                "ios",
+                                "android"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "push_bounced": {
+        "title": "Push bounced",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/push_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "bounced"
+                ],
+                "description": "The delivery provider reported at least one invalid device token."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipients"
+                    ],
+                    "properties": {
+                      "recipients": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "device_id",
+                            "device_platform",
+                            "failure_message"
+                          ],
+                          "description": "Describes the device of the recipient who tapped the link.",
+                          "properties": {
+                            "device_id": {
+                              "type": "string",
+                              "description": "The device identifier/token."
+                            },
+                            "device_platform": {
+                              "$ref": "#/components/schemas/device_platform"
+                            },
+                            "failure_message": {
+                              "type": "string",
+                              "description": "The reason the push failed for this particular recipient."
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "push_dropped": {
+        "title": "Push dropped",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/push_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "dropped"
+                ],
+                "description": "A push notification wasn't sent because at least one device token previously bounced."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipients"
+                    ],
+                    "properties": {
+                      "recipients": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "device_id",
+                            "device_platform",
+                            "failure_message"
+                          ],
+                          "description": "Describes the device of the recipient who tapped the link.",
+                          "properties": {
+                            "device_id": {
+                              "type": "string",
+                              "description": "The device identifier/token."
+                            },
+                            "device_platform": {
+                              "$ref": "#/components/schemas/device_platform"
+                            },
+                            "failure_message": {
+                              "type": "string",
+                              "description": "The reason the push failed for this particular recipient."
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "push_failed": {
+        "title": "Push failed",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/push_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "failed"
+                ],
+                "description": "A push notification couldn't be sent to the delivery provider."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "push_undeliverable": {
+        "title": "Push undeliverable",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/push_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "undeliverable"
+                ],
+                "description": "A message was undeliverable. Undeliverable messages are messages that have either hit a message limit, come from a newsletter that was cancelled or deleted, or an environment that has delivery disabled (which is something you might do if you’re testing an integration). If you’re not using message limits, you probably won’t see this event."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sms_event": {
+        "x-scalar-ignore": true,
+        "title": "SMS",
+        "description": "Events pertaining to SMS notifications.",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/sms_drafted"
+          },
+          {
+            "$ref": "#/components/schemas/sms_attempted"
+          },
+          {
+            "$ref": "#/components/schemas/sms_sent"
+          },
+          {
+            "$ref": "#/components/schemas/sms_delivered"
+          },
+          {
+            "$ref": "#/components/schemas/sms_clicked"
+          },
+          {
+            "$ref": "#/components/schemas/sms_converted"
+          },
+          {
+            "$ref": "#/components/schemas/sms_bounced"
+          },
+          {
+            "$ref": "#/components/schemas/sms_failed"
+          },
+          {
+            "$ref": "#/components/schemas/sms_undeliverable"
+          },
+          {
+            "$ref": "#/components/schemas/sms_replied"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "metric"
+        }
+      },
+      "sms_event_common": {
+        "x-scalar-ignore": true,
+        "type": "object",
+        "required": [
+          "event_id",
+          "object_type",
+          "timestamp"
+        ],
+        "properties": {
+          "event_id": {
+            "$ref": "#/components/schemas/event_id"
+          },
+          "object_type": {
+            "type": "string",
+            "enum": [
+              "sms"
+            ],
+            "description": "The event relates to an SMS message."
+          },
+          "timestamp": {
+            "$ref": "#/components/schemas/webhook_timestamp"
+          }
+        }
+      },
+      "sms_drafted": {
+        "title": "SMS drafted",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/sms_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "drafted"
+                ],
+                "description": "An SMS notification was drafted."
+              },
+              "data": {
+                "$ref": "#/components/schemas/other_event_common_data"
+              }
+            }
+          }
+        ]
+      },
+      "sms_attempted": {
+        "title": "SMS attempted",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/sms_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "attempted"
+                ],
+                "description": "An SMS could not be sent to the delivery provider, but will retry."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sms_sent": {
+        "title": "SMS sent",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/sms_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "sent"
+                ],
+                "description": "An SMS notification was sent. If you enabled the *Body Content* option with your webhook, the payload includes the `content` of your message."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient"
+                    ],
+                    "properties": {
+                      "content": {
+                        "type": "string",
+                        "description": "The body of your message. This key only appears if you enabled the *Body Content* option when setting up your webhook."
+                      },
+                      "recipient": {
+                        "type": "string",
+                        "description": "The MSISDN (phone number) of the SMS recipient."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sms_delivered": {
+        "title": "SMS delivered",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/sms_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "delivered"
+                ],
+                "description": "An SMS notification was delivered to a recipient."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient"
+                    ],
+                    "properties": {
+                      "recipient": {
+                        "type": "string",
+                        "description": "The MSISDN (phone number) of the SMS recipient."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sms_clicked": {
+        "title": "SMS clicked",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/sms_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "clicked"
+                ],
+                "description": "A recipient tapped a link in an SMS message they received."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient",
+                      "link_id",
+                      "href"
+                    ],
+                    "properties": {
+                      "recipient": {
+                        "type": "string",
+                        "description": "The MSISDN (phone number) of the SMS recipient."
+                      },
+                      "link_id": {
+                        "$ref": "#/components/schemas/link_id"
+                      },
+                      "href": {
+                        "$ref": "#/components/schemas/href"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sms_converted": {
+        "title": "SMS converted",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/sms_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "converted"
+                ],
+                "description": "A person matched conversion criteria attributed to an SMS."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient"
+                    ],
+                    "properties": {
+                      "recipient": {
+                        "type": "string",
+                        "description": "The MSISDN (phone number) of the SMS recipient."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sms_bounced": {
+        "title": "SMS bounced",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/sms_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "bounced"
+                ],
+                "description": "The delivery provider was unable to deliver an SMS message."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient",
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      },
+                      "recipient": {
+                        "type": "string",
+                        "description": "The MSISDN (phone number) of the SMS recipient."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sms_failed": {
+        "title": "SMS failed",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/sms_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "failed"
+                ],
+                "description": "An SMS couldn't be sent to the delivery provider."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sms_undeliverable": {
+        "title": "SMS undeliverable",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/sms_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "undeliverable"
+                ],
+                "description": "A message was undeliverable. Undeliverable messages are messages that have either hit a message limit, come from a newsletter that was cancelled or deleted, or an environment that has delivery disabled (which is something you might do if you’re testing an integration). If you’re not using message limits, you probably won’t see this event."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sms_replied": {
+        "title": "SMS replied",
+        "description": "A person replied to a message you sent them. Customer.io attributes replies to the original delivery if the reply occurs within 72 hours of the original delivery. If the reply occurs outside the 72 hour window, or we can't attribute the reply to a delivery, the `delivery_id` and associated data (`campaign_id`, `action_id`, `trigger_event_id`, etc) we won't send this event.",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/sms_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "replied"
+                ],
+                "description": "A person replied to a message you sent them. Customer.io attributes replies to the original delivery if the reply occurs within 72 hours of the original delivery. If the reply occurs outside the 72 hour window, or we can't attribute the reply to a delivery, the `delivery_id` and associated data (`campaign_id`, `action_id`, `trigger_event_id`, etc) we won't send this event."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "inbound_event_id",
+                      "to",
+                      "recipient"
+                    ],
+                    "properties": {
+                      "inbound_event_id": {
+                        "type": "string",
+                        "description": "The unique identifier for the inbound event."
+                      },
+                      "to": {
+                        "type": "string",
+                        "description": "The phone number the person replied to. (The `sender` of the original message.)"
+                      },
+                      "recipient": {
+                        "type": "string",
+                        "description": "The phone number the person who sent the inbound message."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "whatsapp_event": {
+        "x-scalar-ignore": true,
+        "title": "WhatsApp",
+        "description": "Events pertaining to WhatsApp messages.",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/whatsapp_drafted"
+          },
+          {
+            "$ref": "#/components/schemas/whatsapp_attempted"
+          },
+          {
+            "$ref": "#/components/schemas/whatsapp_sent"
+          },
+          {
+            "$ref": "#/components/schemas/whatsapp_delivered"
+          },
+          {
+            "$ref": "#/components/schemas/whatsapp_opened"
+          },
+          {
+            "$ref": "#/components/schemas/whatsapp_clicked"
+          },
+          {
+            "$ref": "#/components/schemas/whatsapp_converted"
+          },
+          {
+            "$ref": "#/components/schemas/whatsapp_bounced"
+          },
+          {
+            "$ref": "#/components/schemas/whatsapp_dropped"
+          },
+          {
+            "$ref": "#/components/schemas/whatsapp_failed"
+          },
+          {
+            "$ref": "#/components/schemas/whatsapp_undeliverable"
+          },
+          {
+            "$ref": "#/components/schemas/whatsapp_replied"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "metric"
+        }
+      },
+      "whatsapp_event_common": {
+        "x-scalar-ignore": true,
+        "type": "object",
+        "required": [
+          "event_id",
+          "object_type",
+          "timestamp"
+        ],
+        "properties": {
+          "event_id": {
+            "$ref": "#/components/schemas/event_id"
+          },
+          "object_type": {
+            "type": "string",
+            "enum": [
+              "whatsapp"
+            ],
+            "description": "The event relates to a WhatsApp message."
+          },
+          "timestamp": {
+            "$ref": "#/components/schemas/webhook_timestamp"
+          }
+        }
+      },
+      "whatsapp_drafted": {
+        "title": "WhatsApp drafted",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/whatsapp_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "drafted"
+                ],
+                "description": "A WhatsApp message was drafted."
+              },
+              "data": {
+                "$ref": "#/components/schemas/other_event_common_data"
+              }
+            }
+          }
+        ]
+      },
+      "whatsapp_attempted": {
+        "title": "WhatsApp attempted",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/whatsapp_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "attempted"
+                ],
+                "description": "A WhatsApp message could not be sent to the delivery provider, but will retry."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "whatsapp_sent": {
+        "title": "WhatsApp sent",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/whatsapp_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "sent"
+                ],
+                "description": "A WhatsApp message was sent. If you enabled the *Body Content* option with your webhook, the payload includes the `content` of your message."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient"
+                    ],
+                    "properties": {
+                      "content": {
+                        "type": "string",
+                        "description": "The body of your message. This key only appears if you enabled the *Body Content* option when setting up your webhook."
+                      },
+                      "recipient": {
+                        "type": "string",
+                        "description": "The phone number of the WhatsApp recipient."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "whatsapp_delivered": {
+        "title": "WhatsApp delivered",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/whatsapp_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "delivered"
+                ],
+                "description": "A WhatsApp message was delivered to a recipient."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient"
+                    ],
+                    "properties": {
+                      "recipient": {
+                        "type": "string",
+                        "description": "The phone number of the WhatsApp recipient."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "whatsapp_opened": {
+        "title": "WhatsApp opened",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/whatsapp_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "opened"
+                ],
+                "description": "A WhatsApp message was read by the recipient."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient"
+                    ],
+                    "properties": {
+                      "recipient": {
+                        "type": "string",
+                        "description": "The phone number of the WhatsApp recipient."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "whatsapp_clicked": {
+        "title": "WhatsApp clicked",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/whatsapp_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "clicked"
+                ],
+                "description": "A recipient tapped a link in a WhatsApp message they received."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient",
+                      "link_id",
+                      "href"
+                    ],
+                    "properties": {
+                      "recipient": {
+                        "type": "string",
+                        "description": "The phone number of the WhatsApp recipient."
+                      },
+                      "link_id": {
+                        "$ref": "#/components/schemas/link_id"
+                      },
+                      "href": {
+                        "$ref": "#/components/schemas/href"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "whatsapp_converted": {
+        "title": "WhatsApp converted",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/whatsapp_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "converted"
+                ],
+                "description": "A person matched conversion criteria attributed to a WhatsApp message."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient"
+                    ],
+                    "properties": {
+                      "recipient": {
+                        "type": "string",
+                        "description": "The phone number of the WhatsApp recipient."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "whatsapp_bounced": {
+        "title": "WhatsApp bounced",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/whatsapp_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "bounced"
+                ],
+                "description": "The delivery provider was unable to deliver a WhatsApp message."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient",
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      },
+                      "recipient": {
+                        "type": "string",
+                        "description": "The phone number of the WhatsApp recipient."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "whatsapp_dropped": {
+        "title": "WhatsApp dropped",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/whatsapp_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "dropped"
+                ],
+                "description": "Customer.io did not send a WhatsApp message because the recipient was suppressed."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient",
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      },
+                      "recipient": {
+                        "type": "string",
+                        "description": "The phone number of the WhatsApp recipient."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "whatsapp_failed": {
+        "title": "WhatsApp failed",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/whatsapp_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "failed"
+                ],
+                "description": "A WhatsApp message couldn't be sent to the delivery provider."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "whatsapp_undeliverable": {
+        "title": "WhatsApp undeliverable",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/whatsapp_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "undeliverable"
+                ],
+                "description": "A message was undeliverable. Undeliverable messages are messages that have either hit a message limit, come from a newsletter that was cancelled or deleted, or an environment that has delivery disabled (which is something you might do if you're testing an integration). If you're not using message limits, you probably won't see this event."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "whatsapp_replied": {
+        "title": "WhatsApp replied",
+        "description": "A person replied to a WhatsApp message you sent them. Customer.io attributes replies to the original delivery if the reply occurs within 72 hours of the original delivery. If the reply occurs outside the 72 hour window, or we can't attribute the reply to a delivery, we won't send this event.",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/whatsapp_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "replied"
+                ],
+                "description": "A person replied to a WhatsApp message you sent them. Customer.io attributes replies to the original delivery if the reply occurs within 72 hours of the original delivery. If the reply occurs outside the 72 hour window, or we can't attribute the reply to a delivery, we won't send this event."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "inbound_event_id",
+                      "to",
+                      "recipient"
+                    ],
+                    "properties": {
+                      "inbound_event_id": {
+                        "type": "string",
+                        "description": "The unique identifier for the inbound event."
+                      },
+                      "to": {
+                        "type": "string",
+                        "description": "The phone number the person replied to. (The `sender` of the original message.)"
+                      },
+                      "recipient": {
+                        "type": "string",
+                        "description": "The phone number of the person who sent the inbound message."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "slack_event": {
+        "x-scalar-ignore": true,
+        "title": "Slack",
+        "description": "Events pertaining to Slack messages.",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/slack_drafted"
+          },
+          {
+            "$ref": "#/components/schemas/slack_attempted"
+          },
+          {
+            "$ref": "#/components/schemas/slack_sent"
+          },
+          {
+            "$ref": "#/components/schemas/slack_clicked"
+          },
+          {
+            "$ref": "#/components/schemas/slack_failed"
+          },
+          {
+            "$ref": "#/components/schemas/slack_undeliverable"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "metric"
+        }
+      },
+      "slack_event_common": {
+        "x-scalar-ignore": true,
+        "type": "object",
+        "required": [
+          "event_id",
+          "object_type",
+          "timestamp"
+        ],
+        "properties": {
+          "event_id": {
+            "$ref": "#/components/schemas/event_id"
+          },
+          "object_type": {
+            "type": "string",
+            "enum": [
+              "slack"
+            ],
+            "description": "The event relates to a Slack message."
+          },
+          "timestamp": {
+            "$ref": "#/components/schemas/webhook_timestamp"
+          }
+        }
+      },
+      "slack_drafted": {
+        "title": "Slack drafted",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/slack_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "drafted"
+                ],
+                "description": "A slack message was drafted."
+              },
+              "data": {
+                "$ref": "#/components/schemas/other_event_common_data"
+              }
+            }
+          }
+        ]
+      },
+      "slack_attempted": {
+        "title": "Slack attempted",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/slack_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "attempted"
+                ],
+                "description": "A slack message failed and will be retried."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "slack_sent": {
+        "title": "Slack sent",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/slack_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "sent"
+                ],
+                "description": "A slack message was sent. If you enabled the *Body Content* option with your webhook, the payload includes the `content` of your message."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient"
+                    ],
+                    "properties": {
+                      "content": {
+                        "type": "string",
+                        "description": "The of your slack message. This key only appears if you enabled the *Body Content* option when setting up your webhook."
+                      },
+                      "recipient": {
+                        "type": "string",
+                        "description": "The channel or person that received the message, i.e. `#general`."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "slack_clicked": {
+        "title": "Slack clicked",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/slack_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "clicked"
+                ],
+                "description": "A person clicked a tracked link in a Slack message."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient",
+                      "href",
+                      "link_id"
+                    ],
+                    "properties": {
+                      "recipient": {
+                        "type": "string",
+                        "description": "The channel or person that received the message, i.e. `#general`."
+                      },
+                      "href": {
+                        "$ref": "#/components/schemas/href"
+                      },
+                      "link_id": {
+                        "$ref": "#/components/schemas/link_id"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "slack_failed": {
+        "title": "Slack failed",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/slack_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "failed"
+                ],
+                "description": "A slack message failed."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "slack_undeliverable": {
+        "title": "Slack undeliverable",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/slack_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "undeliverable"
+                ],
+                "description": "A message was undeliverable. Undeliverable messages are messages that have either hit a message limit, come from a newsletter that was cancelled or deleted, or an environment that has delivery disabled (which is something you might do if you’re testing an integration). If you’re not using message limits, you probably won’t see this event."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "webhook_event": {
+        "x-scalar-ignore": true,
+        "title": "Webhook",
+        "description": "Events pertaining to webhooks.",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/webhook_drafted"
+          },
+          {
+            "$ref": "#/components/schemas/webhook_attempted"
+          },
+          {
+            "$ref": "#/components/schemas/webhook_sent"
+          },
+          {
+            "$ref": "#/components/schemas/webhook_clicked"
+          },
+          {
+            "$ref": "#/components/schemas/webhook_failed"
+          },
+          {
+            "$ref": "#/components/schemas/webhook_undeliverable"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "metric"
+        }
+      },
+      "webhook_event_common": {
+        "x-scalar-ignore": true,
+        "type": "object",
+        "required": [
+          "event_id",
+          "object_type",
+          "timestamp"
+        ],
+        "properties": {
+          "event_id": {
+            "$ref": "#/components/schemas/event_id"
+          },
+          "object_type": {
+            "type": "string",
+            "enum": [
+              "webhook"
+            ],
+            "description": "The event relates to a webhook."
+          },
+          "timestamp": {
+            "$ref": "#/components/schemas/webhook_timestamp"
+          }
+        }
+      },
+      "webhook_drafted": {
+        "title": "Webhook drafted",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/webhook_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "drafted"
+                ],
+                "description": "A webhook draft was created."
+              },
+              "data": {
+                "$ref": "#/components/schemas/other_event_common_data"
+              }
+            }
+          }
+        ]
+      },
+      "webhook_attempted": {
+        "title": "Webhook attempted",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/webhook_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "attempted"
+                ],
+                "description": "A webhook failed to send, but will be retried."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "webhook_sent": {
+        "title": "Webhook sent",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/webhook_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "sent"
+                ],
+                "description": "A webhook was sent from Customer.io. If you enabled the *Body Content* option with your webhook, the payload includes the `content` of your webhook."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient"
+                    ],
+                    "properties": {
+                      "content": {
+                        "type": "string",
+                        "description": "The stringified payload sent to your webhook address. This key only appears if you enabled the *Body Content* option when setting up your webhook."
+                      },
+                      "recipient": {
+                        "type": "string",
+                        "description": "The URL the webhook was sent to."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "webhook_clicked": {
+        "title": "Webhook clicked",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/webhook_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "clicked"
+                ],
+                "description": "The webhook recipient opened a tracked link in the webhook payload."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient",
+                      "link_id",
+                      "href"
+                    ],
+                    "properties": {
+                      "recipient": {
+                        "type": "string",
+                        "description": "The URL the webhook was sent to."
+                      },
+                      "href": {
+                        "$ref": "#/components/schemas/href"
+                      },
+                      "link_id": {
+                        "$ref": "#/components/schemas/link_id"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "webhook_failed": {
+        "title": "Webhook failed",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/webhook_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "failed"
+                ],
+                "description": "A webhook failed to send."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "webhook_undeliverable": {
+        "title": "Webhook undeliverable",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/webhook_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "undeliverable"
+                ],
+                "description": "A webhook/message was undeliverable. Undeliverable messages are messages that have either hit a message limit, come from a newsletter that was cancelled or deleted, or an environment that has delivery disabled (which is something you might do if you’re testing an integration). If you’re not using message limits, you probably won’t see this event."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "in_app_event": {
+        "x-scalar-ignore": true,
+        "title": "In-App Messages",
+        "description": "Events pertaining to in-app messages.",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/in_app_drafted"
+          },
+          {
+            "$ref": "#/components/schemas/in_app_attempted"
+          },
+          {
+            "$ref": "#/components/schemas/in_app_sent"
+          },
+          {
+            "$ref": "#/components/schemas/in_app_opened"
+          },
+          {
+            "$ref": "#/components/schemas/in_app_clicked"
+          },
+          {
+            "$ref": "#/components/schemas/in_app_converted"
+          },
+          {
+            "$ref": "#/components/schemas/in_app_failed"
+          },
+          {
+            "$ref": "#/components/schemas/in_app_undeliverable"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "metric"
+        }
+      },
+      "in_app_event_common": {
+        "x-scalar-ignore": true,
+        "type": "object",
+        "required": [
+          "event_id",
+          "object_type",
+          "timestamp"
+        ],
+        "properties": {
+          "event_id": {
+            "$ref": "#/components/schemas/event_id"
+          },
+          "object_type": {
+            "type": "string",
+            "enum": [
+              "in_app"
+            ],
+            "description": "The event relates to an in-app message."
+          },
+          "timestamp": {
+            "$ref": "#/components/schemas/webhook_timestamp"
+          }
+        }
+      },
+      "in_app_drafted": {
+        "title": "In-app drafted",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/in_app_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "drafted"
+                ],
+                "description": "An in-app message draft was created."
+              },
+              "data": {
+                "$ref": "#/components/schemas/other_event_common_data"
+              }
+            }
+          }
+        ]
+      },
+      "in_app_attempted": {
+        "title": "In-app attempted",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/in_app_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "attempted"
+                ],
+                "description": "An in-app message failed to send, but will be retried."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "in_app_sent": {
+        "title": "In-app sent",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/in_app_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "sent"
+                ],
+                "description": "An in-app message was sent from Customer.io. Because in-app messages are only delivered when a person's app is open, there may be a significant delay between when a message is sent and when it's \"opened\". If you enabled the *Body Content* option with your webhook, the payload includes the `content` of your message."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient"
+                    ],
+                    "properties": {
+                      "content": {
+                        "type": "string",
+                        "description": "The body of your message. This key only appears if you enabled the *Body Content* option when setting up your webhook."
+                      },
+                      "recipient": {
+                        "type": "string",
+                        "description": "The ID or email address of the person the message was sent to. This identifier is determined by the settings in your message and the value you use to identify your app's users."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "in_app_opened": {
+        "title": "In-app opened",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/in_app_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "opened"
+                ],
+                "description": "A device opened an in-app message. Because messages appear automatically when a person opens your app (to the right page if using page rules), \"opened\" is essentially an \"impression\"—a person saw your message."
+              },
+              "data": {
+                "$ref": "#/components/schemas/other_event_common_data"
+              }
+            }
+          }
+        ]
+      },
+      "in_app_clicked": {
+        "title": "In-app clicked",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/in_app_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "clicked"
+                ],
+                "description": "The in-app message recipient clicked/tapped a component in a message with **Track Clicks** enabled. The *Track Clicks* setting is enabled by default for in-app messages. The payload includes a `tracked_response` key containing the *Action Name* of the component the person clicked/tapped. [Learn more about tracked responses and action names](/journeys/channels/in-app/metrics/#tracked-responses)."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient",
+                      "link_id",
+                      "href"
+                    ],
+                    "properties": {
+                      "tracked_response": {
+                        "type": "string",
+                        "description": "The *Action Name* of the action a person clicked/tapped in the message. [Learn more about tracked responses and action names](/journeys/channels/in-app/metrics/#tracked-responses)."
+                      },
+                      "recipient": {
+                        "type": "string",
+                        "description": "The ID or email address of the person the message was sent to. This identifier is determined by the settings in your message and the value you use to identify your app's users."
+                      },
+                      "href": {
+                        "$ref": "#/components/schemas/href"
+                      },
+                      "link_id": {
+                        "$ref": "#/components/schemas/link_id"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "in_app_converted": {
+        "title": "In-app converted",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/in_app_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "converted"
+                ],
+                "description": "A person matched conversion criteria attributed to an in-app notification."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "recipient"
+                    ],
+                    "properties": {
+                      "recipient": {
+                        "type": "string",
+                        "description": "The ID or email address of the person the message was sent to. This identifier is determined by the settings in your message and the value you use to identify your app's users."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "in_app_failed": {
+        "title": "In-app failed",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/in_app_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "failed"
+                ],
+                "description": "An in-app message failed to send."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "in_app_undeliverable": {
+        "title": "In-app undeliverable",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/in_app_event_common"
+          },
+          {
+            "type": "object",
+            "required": [
+              "metric",
+              "data"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "undeliverable"
+                ],
+                "description": "A message was undeliverable. Undeliverable messages are messages that have either hit a message limit, come from a newsletter that was cancelled or deleted, or an environment that has delivery disabled (which is something you might do if you’re testing an integration). If you’re not using message limits, you probably won’t see this event."
+              },
+              "data": {
+                "description": "Contains information about the event, specific to the `object_type` and `metric`.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/other_event_common_data"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "failure_message"
+                    ],
+                    "properties": {
+                      "failure_message": {
+                        "$ref": "#/components/schemas/failure_message"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "event_common_data": {
+        "x-scalar-ignore": true,
+        "example": {
+          "customer_id": "user-123",
+          "delivery_id": "RPIyMTM6OjEyMzQ=",
+          "action_id": 42,
+          "campaign_id": 7,
+          "journey_id": 15,
+          "identifiers": {
+            "id": "user-123"
+          }
+        },
+        "oneOf": [
+          {
+            "title": "API triggered broadcast",
+            "required": [
+              "trigger_id",
+              "broadcast_id",
+              "delivery_id",
+              "action_id",
+              "identifiers"
+            ],
+            "type": "object",
+            "properties": {
+              "trigger_id": {
+                "$ref": "#/components/schemas/trigger_id"
+              },
+              "customer_id": {
+                "$ref": "#/components/schemas/webhook_customer_id"
+              },
+              "delivery_id": {
+                "$ref": "#/components/schemas/delivery_id"
+              },
+              "action_id": {
+                "$ref": "#/components/schemas/action_id_webhook"
+              },
+              "broadcast_id": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/broadcast_id"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "journey_id": {
+                "$ref": "#/components/schemas/journey_id"
+              },
+              "parent_action_id": {
+                "$ref": "#/components/schemas/parent_action_id"
+              },
+              "identifiers": {
+                "$ref": "#/components/schemas/webhook_identifiers"
+              }
+            }
+          },
+          {
+            "title": "Campaign",
+            "type": "object",
+            "required": [
+              "campaign_id",
+              "delivery_id",
+              "action_id",
+              "identifiers"
+            ],
+            "properties": {
+              "campaign_id": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/campaign_id"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "customer_id": {
+                "$ref": "#/components/schemas/webhook_customer_id"
+              },
+              "delivery_id": {
+                "$ref": "#/components/schemas/delivery_id"
+              },
+              "action_id": {
+                "$ref": "#/components/schemas/action_id_webhook"
+              },
+              "journey_id": {
+                "$ref": "#/components/schemas/journey_id"
+              },
+              "identifiers": {
+                "$ref": "#/components/schemas/webhook_identifiers"
+              },
+              "parent_action_id": {
+                "$ref": "#/components/schemas/parent_action_id"
+              },
+              "trigger_event_id": {
+                "$ref": "#/components/schemas/trigger_event_id"
+              }
+            }
+          },
+          {
+            "title": "Newsletter",
+            "type": "object",
+            "required": [
+              "newsletter_id",
+              "delivery_id",
+              "identifiers"
+            ],
+            "properties": {
+              "customer_id": {
+                "$ref": "#/components/schemas/webhook_customer_id"
+              },
+              "delivery_id": {
+                "$ref": "#/components/schemas/delivery_id"
+              },
+              "newsletter_id": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/newsletter_id"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "content_id": {
+                "$ref": "#/components/schemas/content_id_event"
+              },
+              "identifiers": {
+                "$ref": "#/components/schemas/webhook_identifiers"
+              }
+            }
+          },
+          {
+            "title": "Transactional message",
+            "type": "object",
+            "required": [
+              "transactional_message_id",
+              "delivery_id",
+              "identifiers"
+            ],
+            "properties": {
+              "customer_id": {
+                "$ref": "#/components/schemas/webhook_customer_id"
+              },
+              "delivery_id": {
+                "$ref": "#/components/schemas/delivery_id"
+              },
+              "identifiers": {
+                "$ref": "#/components/schemas/webhook_identifiers"
+              },
+              "transactional_message_id": {
+                "description": "The transactional message template you used for your message."
+              }
+            }
+          }
+        ]
+      },
+      "other_event_common_data": {
+        "x-scalar-ignore": true,
+        "example": {
+          "customer_id": "user-123",
+          "delivery_id": "RPIyMTM6OjEyMzQ=",
+          "action_id": 42,
+          "campaign_id": 7,
+          "journey_id": 15,
+          "identifiers": {
+            "id": "user-123"
+          }
+        },
+        "oneOf": [
+          {
+            "title": "API triggered broadcast",
+            "required": [
+              "trigger_id",
+              "broadcast_id",
+              "delivery_id",
+              "action_id",
+              "identifiers"
+            ],
+            "type": "object",
+            "properties": {
+              "trigger_id": {
+                "$ref": "#/components/schemas/trigger_id"
+              },
+              "customer_id": {
+                "$ref": "#/components/schemas/webhook_customer_id"
+              },
+              "delivery_id": {
+                "$ref": "#/components/schemas/delivery_id"
+              },
+              "action_id": {
+                "$ref": "#/components/schemas/action_id_webhook"
+              },
+              "broadcast_id": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/broadcast_id"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "journey_id": {
+                "$ref": "#/components/schemas/journey_id"
+              },
+              "parent_action_id": {
+                "$ref": "#/components/schemas/parent_action_id"
+              },
+              "identifiers": {
+                "$ref": "#/components/schemas/webhook_identifiers"
+              }
+            }
+          },
+          {
+            "title": "Campaign",
+            "type": "object",
+            "required": [
+              "campaign_id",
+              "delivery_id",
+              "action_id",
+              "identifiers"
+            ],
+            "properties": {
+              "campaign_id": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/campaign_id"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "customer_id": {
+                "$ref": "#/components/schemas/webhook_customer_id"
+              },
+              "delivery_id": {
+                "$ref": "#/components/schemas/delivery_id"
+              },
+              "action_id": {
+                "$ref": "#/components/schemas/action_id_webhook"
+              },
+              "journey_id": {
+                "$ref": "#/components/schemas/journey_id"
+              },
+              "identifiers": {
+                "$ref": "#/components/schemas/webhook_identifiers"
+              },
+              "parent_action_id": {
+                "$ref": "#/components/schemas/parent_action_id"
+              },
+              "trigger_event_id": {
+                "$ref": "#/components/schemas/trigger_event_id"
+              }
+            }
+          },
+          {
+            "title": "Newsletter",
+            "type": "object",
+            "required": [
+              "newsletter_id",
+              "delivery_id",
+              "identifiers"
+            ],
+            "properties": {
+              "customer_id": {
+                "$ref": "#/components/schemas/webhook_customer_id"
+              },
+              "delivery_id": {
+                "$ref": "#/components/schemas/delivery_id"
+              },
+              "newsletter_id": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/newsletter_id"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "content_id": {
+                "$ref": "#/components/schemas/content_id_event"
+              },
+              "identifiers": {
+                "$ref": "#/components/schemas/webhook_identifiers"
+              }
+            }
+          }
+        ]
+      },
+      "action_id_webhook": {
+        "x-scalar-ignore": true,
+        "description": "The identifier for an action.",
+        "type": "integer",
+        "readOnly": true,
+        "example": 96
+      },
+      "event_id": {
+        "x-scalar-ignore": true,
+        "type": "string",
+        "description": "The unique ID of the reporting webhook event being sent.",
+        "example": "01E4C4CT6YDC7Y5M7FE1GWWPQJ"
+      },
+      "webhook_timestamp": {
+        "x-scalar-ignore": true,
+        "type": "integer",
+        "format": "unix timestamp",
+        "description": "The unix timestamp when the event occurred.",
+        "example": 1613063089
+      },
+      "failure_message": {
+        "x-scalar-ignore": true,
+        "type": "string",
+        "description": "Indicates the reason that an attempted message failed.",
+        "example": "Something went wrong!"
+      },
+      "link_id": {
+        "x-scalar-ignore": true,
+        "type": "integer",
+        "description": "The identifier for the tracked link that a person clicked or tapped.",
+        "example": 1
+      },
+      "href": {
+        "x-scalar-ignore": true,
+        "type": "string",
+        "description": "The URL of the link that a person clicked.",
+        "example": "https://docs.customer.io"
+      },
+      "device_platform": {
+        "x-scalar-ignore": true,
+        "type": "string",
+        "enum": [
+          "android",
+          "ios"
+        ],
+        "description": "The device's operating system.",
+        "example": "ios"
+      },
+      "content_id_event": {
+        "x-scalar-ignore": true,
+        "description": "The identifier for a newsletter variant.",
+        "type": "integer",
+        "example": 3
+      },
+      "journey_id": {
+        "x-scalar-ignore": true,
+        "type": "string",
+        "description": "The ID for the path a person went through in a Campaign or API Triggered Broadcast workflow.",
+        "example": "01GW20GXAAXBKZD8J96M8FNV3R"
+      },
+      "trigger_id": {
+        "x-scalar-ignore": true,
+        "type": "integer",
+        "description": "The trigger ID returned by the [Trigger Broadcast API](/api/#operation/triggerBroadcast).",
+        "example": 1
+      },
+      "trigger_event_id": {
+        "x-scalar-ignore": true,
+        "type": [
+          "string",
+          "null"
+        ],
+        "description": "The ID of an event that triggered a campaign or action.",
+        "example": "21E4C3CT6YDC7Y4N7FE1GWWABC"
+      },
+      "webhook_customer_id": {
+        "x-scalar-ignore": true,
+        "type": "string",
+        "deprecated": true,
+        "description": "The ID of the person the webhook event occurred to. Blank if the person in question has been deleted.\n\nWhile webhooks may still contain this property, you should rely on the newer `identifiers` object wherever possible.\n",
+        "example": "42"
+      },
+      "webhook_identifiers": {
+        "x-scalar-ignore": true,
+        "type": "object",
+        "description": "The person the event represents. This object contains all of the identifiers available to people in your workspace, even if they aren't set. If your workspace supports multiple identifiers (email and ID), this object contains `id`, `email` (either of which can be null), and `cio_id`. \n\nOtherwise, if your workspace only supports ID, this object just contains the `id` of the person the event represents.\n",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/customer_id"
+          },
+          "email": {
+            "$ref": "#/components/schemas/email_address"
+          },
+          "cio_id": {
+            "type": "string",
+            "description": "The canonical identifier for a person, present only if your workspace supports multiple identifiers (email and ID). This value exists to keep a record of a person in your workspace across changes to their other identifiers.",
+            "example": "d9c106000001"
+          }
+        }
+      },
+      "delivery_id": {
+        "x-scalar-ignore": true,
+        "type": "string",
+        "description": "The instance of a message sent to a person.",
+        "example": "ZAIAAVTJVG0QcCok0-0ZKj6yiQ=="
+      },
+      "customer_id": {
+        "x-scalar-ignore": true,
+        "type": [
+          "string",
+          "null"
+        ],
+        "description": "The ID of a customer profile, analogous to a \"person\" in the UI. If your workspace supports multiple identifiers (email and ID), this value can be null.",
+        "example": "42"
+      },
+      "email_address": {
+        "x-scalar-ignore": true,
+        "type": [
+          "string",
+          "null"
+        ],
+        "description": "The email address of the customer.",
+        "example": "test@example.com"
+      },
+      "broadcast_id": {
+        "x-scalar-ignore": true,
+        "type": "integer",
+        "description": "The identifier for a broadcast.",
+        "example": 2
+      },
+      "campaign_id": {
+        "x-scalar-ignore": true,
+        "description": "The identifier for a campaign.",
+        "type": "integer",
+        "example": 5
+      },
+      "recipient_not_templated": {
+        "x-scalar-ignore": true,
+        "description": "The recipient address for an action.",
+        "type": "string",
+        "example": "test@example.com"
+      },
+      "newsletter_id": {
+        "x-scalar-ignore": true,
+        "description": "The identifier for a newsletter.",
+        "type": "integer",
+        "example": 10
+      },
+      "parent_action_id": {
+        "x-scalar-ignore": true,
+        "type": "integer",
+        "description": "The ID of the parent action, if the action occurred within a campaign and has a parent (like a randomized split, etc).",
+        "example": 1,
+        "readOnly": true
+      }
+    },
+    "securitySchemes": {
+      "Bearer-Auth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "The App API uses a bearer authentication scheme.\n\nYou can generate a bearer token, known as an **App API Key**, with a defined scope in [your account settings](https://fly.customer.io/settings/api_credentials?keyType=app). [Learn more about bearer authorization in Customer.io](/accounts/settings/managing-credentials).\n"
+      }
+    }
+  },
+  "openapi": "3.1.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Reporting webhooks",
+    "description": "Customer.io lets you subscribe to reporting webhooks. This page details the events that we report back to your webhook URL.\n\nSet up webhooks to inform an external service about Customer.io events. Webhooks can notify you immediately when customer attributes change or when people open your messages.\n\n  # Set up webhooks\n  1. [Log in](https://fly.customer.io/login) and go to *Data & Integrations* > *Integrations*.\n\n  1. Find and select **Reporting Webhooks**.\n\n  1. Click **Add Reporting Webhook**.\n\n  1. Enter the **Webhook Endpoint**—the URL where you want to receive events. The URL can be either HTTP or HTTPs, but we recommended HTTPS to protect customer information.\n\n  1. Select the events you want to receive.\n\n  1. (Optional) Select the **Send Frequency** and **Body Content** options.\n      * **Send Frequency:** This determines whether you receive events the first time they happen or every time they happen.\n      * **Body Content:** Enable this to include message body content in all of the \"Sent\" events we send to you.\n\n  1. Click **Save and Enable Webhook**.\n\n  # Timeouts and failures\n\n  We have a 4 second timeout for calls to your webhook endpoint. If we don't get a successful (2xx) response during those 4 seconds, we retry the webhook over a period of seven days with an exponential backoff. We backlog subsequent webhook calls and won't continue processing them until the timed-out webhook call returns a successful response or the seven day retry period expires.\n\n  If your webhook server responds with any of the following status codes, we'll wait for one hour before we retry the failed call. As with timeouts, we use the same exponential backoff for retries and we'll backlog subsequent webhook calls until the failed call returns a successful response.\n\n  * Error codes: `400`, `401`, `402`, `403`, `404`, `405`, `410`, `429`, `500`, `502`, `521`.\n  * Error responses: `EOF`, `server misbehaving`, `connect: connection refused`, `read: connection reset by peer`, `tls: failed to verify certificate: x509:`\n\n  If you have issues with your webhook server and you want to temporarily block our servers, you can look up the current set of IP addresses we use [via this API endpoint](/api/app/#operation/getCioAllowlist).\n\n  # Securely verifying requests\n\n  For security purposes, every email webhook is delivered with an `X-CIO-Signature` header. This signature is generated by combining your webhook signing key with the body of webhook request using a standard HMAC-SHA256 hash. You can find the signing key on the Email Activity Webhook integration page in your account settings. (This is the same page where you enter your webhook endpoint.)\n\n  To validate a signed request, first you'll need to retrieve the `X-CIO-Timestamp` header sent with the webhook request, and the body of the request. Combine the version number, timestamp and body delimited by colons to form a string in the form `v0:<timestamp>:<body>` (the version number is always `v0`). Using HMAC-SHA256, hash the string using your webhook signing secret as the hash key. Compare this value to the value of the `X-CIO-Signature` header sent with the request to confirm that the request originated with Customer.io.\n"
+  },
+  "tags": [
+    {
+      "name": "Customer Events",
+      "x-scalar-ignore": true,
+      "description": "Customer events occur when a a person changes their subscription settings—their `unsubscribed` or `cio_subscription_preferences` attributes change. These changes happen without a reference to a message—like when a customer changes a subscription preference in their account information.\n\n## Customer subscribed\nA person subscribed to messages from you—their `unsubscribed` attribute was set to `false`.\n<SchemaDefinition schemaRef=\"#/components/schemas/person_subscribed\" />\n\n## Customer Unsubscribed\nA person unsubscribed to messages from you—their `unsubscribed` attribute was set to `true`.\n<SchemaDefinition schemaRef=\"#/components/schemas/person_unsubscribed\" />\n\n## Customer subscription preferences changed\nA person changed their subscription preferences—either through our subscription center, or you changed their `cio_subscription_preferences` attribute values. [Learn more about the subscription center](/journeys/channels/subscriptions/center/).\n<SchemaDefinition schemaRef=\"#/components/schemas/person_cio_subscription_preferences_changed\" />\n"
+    },
+    {
+      "name": "Email Events",
+      "x-scalar-ignore": true,
+      "description": "Events that occur during the lifecycle of an email delivery. Some events are reported by the delivery provider.\n\n## Email Drafted\nAn email draft was created.\n<SchemaDefinition schemaRef=\"#/components/schemas/email_drafted\" />\n\n## Email Attempted\n\nAn email could not be sent to the email provider. This metric indicates that we will retry to send the email.\n<SchemaDefinition schemaRef=\"#/components/schemas/email_attempted\" />\n\n## Email Sent\nA message was successfully sent.\n<SchemaDefinition schemaRef=\"#/components/schemas/email_sent\" />\n\n## Email Delivered\nA message was successfully delivered to a recipient.\n<SchemaDefinition schemaRef=\"#/components/schemas/email_delivered\" />\n\n## Email Opened\nAn email was opened.\n<SchemaDefinition schemaRef=\"#/components/schemas/email_opened\" />\n\n## Email Clicked\nA tracked link in an email was clicked.\n<SchemaDefinition schemaRef=\"#/components/schemas/email_clicked\" />\n\n## Email Converted\nA person matched conversion criteria attributed to an email.\n<SchemaDefinition schemaRef=\"#/components/schemas/email_converted\" />\n\n## Email Unsubscribed\nThe recipient unsubscribed based on a particular message.\n<SchemaDefinition schemaRef=\"#/components/schemas/email_unsubscribed\" />\n\n## Email Bounced\nThe delivery provider could not deliver an email.\n<SchemaDefinition schemaRef=\"#/components/schemas/email_bounced\" />\n\n## Email Suppressed\nCustomer.io did not send an email because it was addressed to a person who was suppressed. The metric `dropped` indicates a suppressed email event.\n<SchemaDefinition schemaRef=\"#/components/schemas/email_dropped\" />\n\n## Email Spammed\nA recipient marked an email as spam.\n<SchemaDefinition schemaRef=\"#/components/schemas/email_spammed\" />\n\n## Email Failed\nAn email couldn't be sent to the delivery provider.\n<SchemaDefinition schemaRef=\"#/components/schemas/email_failed\" />\n\n## Email Undeliverable\n\nA message was undeliverable. Undeliverable messages are messages that have:\n* Hit a message limit\n* Come from a newsletter that was cancelled or deleted\n* Are sent from an environment that has delivery disabled (which is something you might do if you're testing an integration).\n\nIf you're not using message limits, you probably won't see this event.\n<SchemaDefinition schemaRef=\"#/components/schemas/email_undeliverable\" />\n"
+    },
+    {
+      "name": "SMS Events",
+      "x-scalar-ignore": true,
+      "description": "Events that occur during the lifecycle of an SMS delivery. Some events are reported by the delivery provider.\n## SMS Drafted\nAn SMS notification was drafted.\n<SchemaDefinition schemaRef=\"#/components/schemas/sms_drafted\" />\n\n## SMS Attempted\nAn SMS could not be sent to the delivery provider, but will retry.\n<SchemaDefinition schemaRef=\"#/components/schemas/sms_attempted\" />\n\n## SMS Sent\nAn SMS notification was sent.\n<SchemaDefinition schemaRef=\"#/components/schemas/sms_sent\" />\n\n## SMS Delivered\nAn SMS notification was delivered to a recipient.\n<SchemaDefinition schemaRef=\"#/components/schemas/sms_delivered\" />\n\n## SMS Clicked\nA recipient tapped a link in an SMS message they received.\n<SchemaDefinition schemaRef=\"#/components/schemas/sms_clicked\" />\n\n## SMS Converted\nA person matched conversion criteria attributed to an SMS.\n<SchemaDefinition schemaRef=\"#/components/schemas/sms_converted\" />\n\n## SMS Bounced\nThe delivery provider was unable to deliver an SMS message.\n<SchemaDefinition schemaRef=\"#/components/schemas/sms_bounced\" />\n\n## SMS Failed\nAn SMS couldn't be sent to the delivery provider.\n<SchemaDefinition schemaRef=\"#/components/schemas/sms_failed\" />\n\n## SMS Undeliverable\n\nA message was undeliverable. Undeliverable messages are messages that have:\n* Hit a message limit\n* Come from a newsletter that was cancelled or deleted\n* Are sent from an environment that has delivery disabled (which is something you might do if you're testing an integration).\n\nIf you're not using message limits, you probably won't see this event.\n<SchemaDefinition schemaRef=\"#/components/schemas/sms_undeliverable\" />\n"
+    },
+    {
+      "name": "WhatsApp Events",
+      "x-scalar-ignore": true,
+      "description": "Events that occur during the lifecycle of a native WhatsApp message delivery. Some events are reported by the delivery provider. These events use the `whatsapp` object type and apply to native WhatsApp messages. WhatsApp messages sent through Twilio report under the `sms` object type instead.\n## WhatsApp Drafted\nA WhatsApp message was drafted.\n<SchemaDefinition schemaRef=\"#/components/schemas/whatsapp_drafted\" />\n\n## WhatsApp Attempted\nA WhatsApp message could not be sent to the delivery provider, but will retry.\n<SchemaDefinition schemaRef=\"#/components/schemas/whatsapp_attempted\" />\n\n## WhatsApp Sent\nA WhatsApp message was sent.\n<SchemaDefinition schemaRef=\"#/components/schemas/whatsapp_sent\" />\n\n## WhatsApp Delivered\nA WhatsApp message was delivered to a recipient.\n<SchemaDefinition schemaRef=\"#/components/schemas/whatsapp_delivered\" />\n\n## WhatsApp Opened\nA WhatsApp message was read by the recipient. WhatsApp reports this event using read receipts, so you won't receive it if the recipient disabled read receipts.\n<SchemaDefinition schemaRef=\"#/components/schemas/whatsapp_opened\" />\n\n## WhatsApp Clicked\nA recipient tapped a link in a WhatsApp message they received.\n<SchemaDefinition schemaRef=\"#/components/schemas/whatsapp_clicked\" />\n\n## WhatsApp Converted\nA person matched conversion criteria attributed to a WhatsApp message.\n<SchemaDefinition schemaRef=\"#/components/schemas/whatsapp_converted\" />\n\n## WhatsApp Bounced\nThe delivery provider was unable to deliver a WhatsApp message.\n<SchemaDefinition schemaRef=\"#/components/schemas/whatsapp_bounced\" />\n\n## WhatsApp Suppressed\nCustomer.io did not send a WhatsApp message because the recipient was suppressed. The metric `dropped` indicates a suppressed WhatsApp event.\n<SchemaDefinition schemaRef=\"#/components/schemas/whatsapp_dropped\" />\n\n## WhatsApp Failed\nA WhatsApp message couldn't be sent to the delivery provider.\n<SchemaDefinition schemaRef=\"#/components/schemas/whatsapp_failed\" />\n\n## WhatsApp Undeliverable\n\nA message was undeliverable. Undeliverable messages are messages that have:\n* Hit a message limit\n* Come from a newsletter that was cancelled or deleted\n* Are sent from an environment that has delivery disabled (which is something you might do if you're testing an integration).\n\nIf you're not using message limits, you probably won't see this event.\n<SchemaDefinition schemaRef=\"#/components/schemas/whatsapp_undeliverable\" />\n\n## WhatsApp Replied\nA person replied to a WhatsApp message you sent them.\n<SchemaDefinition schemaRef=\"#/components/schemas/whatsapp_replied\" />\n"
+    },
+    {
+      "name": "Push Notification Events",
+      "x-scalar-ignore": true,
+      "description": "Events that occur during the lifecycle of an push notification delivery.\n## Push Drafted\nA push notification was drafted.\n<SchemaDefinition schemaRef=\"#/components/schemas/push_drafted\" />\n\n## Push Attempted\nA push notification was attempted but unsuccessful. This generally means that we'll try again.\n<SchemaDefinition schemaRef=\"#/components/schemas/push_attempted\" />\n\n## Push Sent\nA push notification was sent to a recipient.\n<SchemaDefinition schemaRef=\"#/components/schemas/push_sent\" />\n\n## Push Delivered\nA push notification was delivered to a recipient.\n<SchemaDefinition schemaRef=\"#/components/schemas/push_delivered\" />\n\n## Push Opened\nA device opened a push notification.\n<SchemaDefinition schemaRef=\"#/components/schemas/push_opened\" />\n\n## Push Clicked\nA recipient tapped a link in a push notification.\n<SchemaDefinition schemaRef=\"#/components/schemas/push_clicked\" />\n\n## Push Converted\nA person matched conversion criteria attributed to a push notification.\n<SchemaDefinition schemaRef=\"#/components/schemas/push_converted\" />\n\n## Push Bounced\nThe delivery provider reported at least one invalid device token.\n<SchemaDefinition schemaRef=\"#/components/schemas/push_bounced\" />\n\n## Push Dropped\nA push notification wasn't sent because at least one device token previously bounced.\n<SchemaDefinition schemaRef=\"#/components/schemas/push_dropped\" />\n\n## Push Failed\nA push notification couldn't be sent to the delivery provider.\n<SchemaDefinition schemaRef=\"#/components/schemas/push_failed\" />\n\n## Push Undeliverable\n\nA message was undeliverable. Undeliverable messages are messages that have:\n* Hit a message limit\n* Come from a newsletter that was cancelled or deleted\n* Are sent from an environment that has delivery disabled (which is something you might do if you're testing an integration).\n\nIf you're not using message limits, you probably won't see this event.\n<SchemaDefinition schemaRef=\"#/components/schemas/push_undeliverable\" />\n"
+    },
+    {
+      "name": "In-App Message Events",
+      "x-scalar-ignore": true,
+      "description": "Events that occur during the lifecycle of an in-app message.\n## In-App Drafted\nA in-app notification was drafted.\n<SchemaDefinition schemaRef=\"#/components/schemas/in_app_drafted\" />\n\n## In-App Attempted\nA in-app notification was attempted but unsuccessful. This generally means that we'll try again.\n<SchemaDefinition schemaRef=\"#/components/schemas/in_app_attempted\" />\n\n## In-App Sent\nA in-app notification was sent to a recipient.\n<SchemaDefinition schemaRef=\"#/components/schemas/in_app_sent\" />\n\n## In-App Opened\nA device opened a in-app notification.\n<SchemaDefinition schemaRef=\"#/components/schemas/in_app_opened\" />\n\n## In-App Clicked\nA recipient tapped a link in a in-app notification.\n<SchemaDefinition schemaRef=\"#/components/schemas/in_app_clicked\" />\n\n## In-App Converted\nA person matched conversion criteria attributed to a in-app notification.\n<SchemaDefinition schemaRef=\"#/components/schemas/in_app_converted\" />\n\n## In-App Failed\nA in-app notification couldn't be sent to the delivery provider.\n<SchemaDefinition schemaRef=\"#/components/schemas/in_app_failed\" />\n\n## In-App Undeliverable\n\nA message was undeliverable. Undeliverable messages are messages that have:\n* Hit a message limit\n* Come from a newsletter that was cancelled or deleted\n* Are sent from an environment that has delivery disabled (which is something you might do if you're testing an integration).\n\nIf you're not using message limits, you probably won't see this event.\n<SchemaDefinition schemaRef=\"#/components/schemas/in_app_undeliverable\" />\n"
+    },
+    {
+      "name": "Slack Events",
+      "x-scalar-ignore": true,
+      "description": "Events generated from a slack message delivery.\n## Slack Drafted\nA slack message was drafted.\n<SchemaDefinition schemaRef=\"#/components/schemas/slack_drafted\" />\n\n## Slack Attempted\nA slack message could not be sent and will be retried.\n<SchemaDefinition schemaRef=\"#/components/schemas/slack_attempted\" />\n\n## Slack Sent\nA slack message was sent.\n<SchemaDefinition schemaRef=\"#/components/schemas/slack_sent\" />\n\n## Slack Clicked\nA person clicked a tracked link in a Slack message.\n<SchemaDefinition schemaRef=\"#/components/schemas/slack_clicked\" />\n\n## Slack Failed\nA slack message failed.\n<SchemaDefinition schemaRef=\"#/components/schemas/slack_failed\" />\n\n## Slack Undeliverable\n\nA message was undeliverable. Undeliverable messages are messages that have:\n* Hit a message limit\n* Come from a newsletter that was cancelled or deleted\n* Are sent from an environment that has delivery disabled (which is something you might do if you're testing an integration).\n\nIf you're not using message limits, you probably won't see this event.\n<SchemaDefinition schemaRef=\"#/components/schemas/slack_undeliverable\" />\n"
+    }
+  ]
+}

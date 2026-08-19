@@ -1,0 +1,186 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://docs.customer.io/integrations/api/customerio-apis.md,
+  https://docs.customer.io/ai/cli/reference.md, and the published specs at
+  openapi/_original/*.json
+provider: Customer.io
+providerId: customer-io
+description: >-
+  Cross-cutting runtime semantics for the Customer.io API surface: what an agent
+  or SDK has to know that is not expressed operation by operation.
+auth:
+  style: per-surface
+  summary: >-
+    Four non-interchangeable credentials across four hosts. Bearer App API Key
+    on api.customer.io, basic site_id:api_key on track.customer.io, basic
+    cdp_key: on cdp.customer.io, OAuth 2.1 on mcp.customer.io.
+  detail: authentication/customer-io-authentication.yml
+  region_header: null
+  workspace_header:
+    name: X-Workspace-Id
+    required_when: >-
+      Using a service-account token (sa_live_) against a transactional send
+      endpoint. Service-account tokens work across workspaces, so the target
+      must be named explicitly.
+idempotency:
+  supported: false
+  header: null
+  evidence: >-
+    No Idempotency-Key header, no idempotency_key body field, and no occurrence
+    of the string "idempoten" anywhere in the App, Track or Pipelines specs, nor
+    on the API overview documentation.
+  practical_guidance: >-
+    Retrying a send is NOT safe. POST /v1/send/email and its siblings will
+    deliver twice. The nearest available guard is the per-message
+    delivery_id returned in the response — record it and reconcile before
+    retrying — plus the dry-run preview offered by the CLI (--dry-run) and by
+    the MCP write tools, which validates a request without executing it.
+  natural_idempotency:
+  - operation: identify
+    note: >-
+      Track and Pipelines identify calls are upserts keyed on the identifier, so
+      repeating one converges rather than duplicating.
+pagination:
+  styles:
+  - name: page-and-limit
+    surface: App API
+    params:
+    - page
+    - limit
+    - offset
+    note: >-
+      `limit` appears on 24 operations, `page` on 5, `offset` on 1 — coverage is
+      uneven, and several list operations declare no pagination parameter at
+      all.
+  - name: cursor
+    surface: App API (person and activity lookups)
+    response_field: next
+    note: >-
+      Several list responses return a `next` cursor string alongside the
+      collection.
+  client_support: >-
+    The CLI implements auto-pagination with --page-all, emitting NDJSON — one
+    JSON object per line. The MCP read tool advertises pagination support.
+  consistency: inconsistent
+filtering:
+  time_windows:
+  - start / end
+  - start_ts / end_ts
+  - created_after / created_before
+  - updated_after / updated_before
+  note: >-
+    Four different time-window parameter conventions coexist across the App API.
+    Metrics operations additionally take `period` (hours/days/weeks/months) and
+    `steps`, a v1 style the spec marks Deprecated in favour of `start`/`end` +
+    `resolution`.
+  identifier_selection:
+    param: id_type
+    values:
+    - id
+    - email
+    - cio_id
+    note: >-
+      Appears on 12 operations. A person can be addressed by any of three
+      identifiers, and the wrong id_type reads as a 404 rather than an error.
+  post_as_read: >-
+    Three read operations are POSTs carrying a filter body — getPeopleFilter
+    (POST /v1/customers), getPeopleById (POST /v1/customers/attributes) and
+    getObjectsFilter (POST /v1/objects). This matters for agents: on the MCP
+    server they route through cio_write_api, so a connection holding only the
+    read scope cannot run a filtered person search.
+url_encoding:
+  required: true
+  rule: >-
+    Values placed in URL paths or query parameters must be percent-encoded. `+`,
+    `@`, `&` and spaces have special meaning and will silently mismatch.
+  failure_mode: >-
+    Customer.io returns 200 with an empty result set for an unencoded value that
+    matches nobody — never an error. This is the single most likely silent bug
+    in a hand-rolled integration.
+  source: https://docs.customer.io/integrations/api/customerio-apis.md
+semantic_events:
+  applies_to: Pipelines API
+  description: >-
+    The Pipelines API exposes only POST. Deletes and other state changes are
+    expressed as `track` events with a reserved `name` — "Delete Person",
+    "Suppress Person" and similar. Downstream-integration semantics (Add to
+    Cart, Purchase, Update Customer) follow the same pattern.
+  implication: >-
+    An agent reasoning about the Pipelines API from HTTP verbs alone will
+    conclude it cannot delete. The capability is in the event vocabulary, not
+    the method.
+  source: https://docs.customer.io/integrations/api/cdp/#section/Semantic-events
+metadata:
+  message_data:
+    description: >-
+      Transactional sends carry an arbitrary `message_data` object used for
+      Liquid personalization. It is free-form (additionalProperties true).
+  attributes:
+    description: >-
+      Person and object attributes are schemaless key-value pairs. Attribute and
+      event metadata can be described to the workspace through
+      updateAttributeMetadata and updateEventMetadata (the Data Index tag).
+request_tracing:
+  request_id_header: null
+  note: >-
+    No request-id or correlation header is documented or declared in any spec.
+    For message-level tracing the platform returns a `delivery_id` on send and
+    replays it on every reporting webhook event, which is the de facto
+    correlation key for messaging work.
+versioning:
+  style: path
+  detail: >-
+    /v1 across the App and Pipelines APIs; the Track API carries both /api/v1
+    and /api/v2 paths in one document, with v2 introducing the unified
+    /api/v2/entity and /api/v2/batch shapes.
+  metrics_versioning: >-
+    Campaign and broadcast metrics operations version their own query contract
+    in place — a "Version 1 (Deprecated)" mode using period + steps and a
+    current mode using start/end + resolution — rather than by path.
+  detail_file: lifecycle/customer-io-lifecycle.yml
+error_envelope:
+  rfc9457: false
+  dominant_shape: '{"errors":[{"detail","status"}]}'
+  variants: 3
+  detail_file: errors/customer-io-problem-types.yml
+rate_limit_signaling:
+  status: 429
+  headers: []
+  retry_after: false
+  note: >-
+    Limits are published per endpoint category in the documentation but are not
+    signalled at runtime — no X-RateLimit-*, no RateLimit-*, no Retry-After in
+    any spec or doc page. A client learns its remaining budget only by being
+    rejected.
+  detail_file: rate-limits/customer-io-rate-limits.yml
+regions:
+  model: separate hosts per region
+  us:
+  - https://api.customer.io
+  - https://track.customer.io
+  - https://cdp.customer.io/v1
+  - https://mcp.customer.io/mcp
+  eu:
+  - https://api-eu.customer.io
+  - https://track-eu.customer.io
+  - https://cdp-eu.customer.io/v1
+  - https://mcp-eu.customer.io/mcp
+  discovery: >-
+    GET https://track.customer.io/api/v1/accounts/region (operationId getRegion)
+    reports which region a workspace lives in. Credentials do not cross regions.
+localization:
+  header: Accept-Language
+  path_param: language
+  note: >-
+    Content objects (emails, newsletters, campaign actions) carry per-language
+    translations addressed by a `language` path segment; 15 operations take it.
+cross_links:
+  errors: errors/customer-io-problem-types.yml
+  lifecycle: lifecycle/customer-io-lifecycle.yml
+  authentication: authentication/customer-io-authentication.yml
+  rate_limits: rate-limits/customer-io-rate-limits.yml
+  scopes: scopes/customer-io-scopes.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

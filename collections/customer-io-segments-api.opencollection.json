@@ -1,0 +1,88 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Customer.io App Activities Segments API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Segments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List segments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/segments"
+          },
+          "docs": "Returns a list of segments in your workspace."
+        },
+        {
+          "info": {
+            "name": "Create a manual segment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.customer.io/v1/segments",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new manual segment. Manual segments allow you to group customers by explicitly adding or removing them rather than using automatic filter criteria."
+        },
+        {
+          "info": {
+            "name": "Get a segment",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/segments/:segment_id",
+            "params": [
+              {
+                "name": "segment_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the segment."
+              }
+            ]
+          },
+          "docs": "Returns detailed information about a specific segment including its type and customer count."
+        },
+        {
+          "info": {
+            "name": "Get segment membership",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/segments/:segment_id/membership",
+            "params": [
+              {
+                "name": "segment_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the segment."
+              }
+            ]
+          },
+          "docs": "Returns customer identifiers that are members of a specific segment."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

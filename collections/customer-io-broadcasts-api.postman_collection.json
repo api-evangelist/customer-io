@@ -1,0 +1,380 @@
+{
+  "item": [
+    {
+      "id": "51210dd9-624d-4151-b4d2-fd3671ea35f2",
+      "name": "Broadcasts",
+      "description": {
+        "content": "Trigger API-triggered broadcasts to send messages to groups of people based on segments or filters.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "4c6a8fd6-1f44-4989-9bcc-fef404cbfe1d",
+          "name": "Trigger an API-triggered broadcast",
+          "request": {
+            "name": "Trigger an API-triggered broadcast",
+            "description": {
+              "content": "Triggers an API-triggered broadcast campaign. You can specify a segment, list of customer IDs, or a data payload to include with the broadcast. Rate limited to 1 request per 10 seconds.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "campaigns",
+                ":campaign_id",
+                "triggers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "campaign_id",
+                  "description": "(Required) The unique identifier for the campaign."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"emails\": [\n    \"<email>\",\n    \"<email>\"\n  ],\n  \"per_user_data\": [\n    \"<object>\",\n    \"<object>\"\n  ],\n  \"data\": {\n    \"key_0\": true,\n    \"key_1\": \"string\",\n    \"key_2\": 6995.4186417958035\n  },\n  \"id_ignore_missing\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "ce3f65d7-c627-49c8-88e4-5d5de9ea43c0",
+              "name": "Broadcast triggered successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "campaigns",
+                    ":campaign_id",
+                    "triggers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "campaign_id",
+                      "description": "(Required) The unique identifier for the campaign."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"emails\": [\n    \"<email>\",\n    \"<email>\"\n  ],\n  \"per_user_data\": [\n    \"<object>\",\n    \"<object>\"\n  ],\n  \"data\": {\n    \"key_0\": 2387,\n    \"key_1\": \"string\"\n  },\n  \"id_ignore_missing\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "e3442a0f-50bd-4a81-aa72-f75833dd216c",
+              "name": "Bad request. Invalid request body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "campaigns",
+                    ":campaign_id",
+                    "triggers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "campaign_id",
+                      "description": "(Required) The unique identifier for the campaign."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"emails\": [\n    \"<email>\",\n    \"<email>\"\n  ],\n  \"per_user_data\": [\n    \"<object>\",\n    \"<object>\"\n  ],\n  \"data\": {\n    \"key_0\": 2387,\n    \"key_1\": \"string\"\n  },\n  \"id_ignore_missing\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "325cfddc-57e1-4cbd-bd64-a38500c276cd",
+              "name": "Unauthorized. Invalid App API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "campaigns",
+                    ":campaign_id",
+                    "triggers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "campaign_id",
+                      "description": "(Required) The unique identifier for the campaign."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"emails\": [\n    \"<email>\",\n    \"<email>\"\n  ],\n  \"per_user_data\": [\n    \"<object>\",\n    \"<object>\"\n  ],\n  \"data\": {\n    \"key_0\": 2387,\n    \"key_1\": \"string\"\n  },\n  \"id_ignore_missing\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "bad52d47-4ca1-48f2-8e4b-610961b83004",
+              "name": "Campaign not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "campaigns",
+                    ":campaign_id",
+                    "triggers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "campaign_id",
+                      "description": "(Required) The unique identifier for the campaign."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"emails\": [\n    \"<email>\",\n    \"<email>\"\n  ],\n  \"per_user_data\": [\n    \"<object>\",\n    \"<object>\"\n  ],\n  \"data\": {\n    \"key_0\": 2387,\n    \"key_1\": \"string\"\n  },\n  \"id_ignore_missing\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "85864be8-deed-4435-bf78-c400cdde7be1",
+              "name": "Rate limit exceeded.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "campaigns",
+                    ":campaign_id",
+                    "triggers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "campaign_id",
+                      "description": "(Required) The unique identifier for the campaign."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"emails\": [\n    \"<email>\",\n    \"<email>\"\n  ],\n  \"per_user_data\": [\n    \"<object>\",\n    \"<object>\"\n  ],\n  \"data\": {\n    \"key_0\": 2387,\n    \"key_1\": \"string\"\n  },\n  \"id_ignore_missing\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.customer.io/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "1a02a47c-e607-491f-bffd-7dbb675cc95d",
+    "name": "Customer.io App Activities Broadcasts API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.\n\nContact Support:\n Name: Customer.io Support",
+      "type": "text/plain"
+    }
+  }
+}

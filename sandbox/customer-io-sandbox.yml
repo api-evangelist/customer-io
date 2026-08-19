@@ -1,0 +1,121 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://docs.customer.io/accounts/billing/builder-plan.md,
+  https://docs.customer.io/ai/cli/reference.md,
+  https://docs.customer.io/ai/mcp/get-started.md,
+  https://customer.io/legal/reporting-vulnerability
+provider: Customer.io
+providerId: customer-io
+summary:
+  dedicated_sandbox: false
+  model: >-
+    Customer.io ships no test-mode API keys and no separate sandbox host. There
+    is no test/live key prefix pair, no test card equivalent, and no time
+    simulation. What it offers instead is a free tier you can build against, a
+    verified-recipient allowlist that keeps sends from escaping, request
+    previews that validate without executing, and read-only credentials.
+  note: >-
+    This is a messaging platform, not a payments API — there is nothing to
+    simulate, but there is a great deal to avoid sending by mistake, and the
+    controls below are all aimed at that.
+free_build_environment:
+  name: Builder plan
+  url: https://docs.customer.io/accounts/billing/builder-plan/
+  cost_to_build: 0
+  cost_to_go_live: $10 minimum funding, then $0.40 per 1,000 messages
+  description: >-
+    Not a trial and not a subscription — a pay-as-you-go plan with no monthly
+    fee. Set up and test for free; add funds only when you want to send to real
+    customers. Customer.io positions it explicitly for AI-native builders
+    driving the platform through the CLI or MCP server.
+  restrictions:
+  - >-
+    Email may only be sent to up to 10 verified recipients until the account is
+    funded — the platform's built-in blast guard.
+  - Up to 2 sending domains per workspace.
+  - >-
+    Transactional messages and one-time broadcasts only; behavioural automations
+    require Essentials or higher.
+verified_recipients:
+  mechanism: verified recipient allowlist
+  limit: 10
+  applies_to: Builder plan, before funding
+  purpose: >-
+    Prevents an unfunded or in-development workspace from delivering to anyone
+    who has not been explicitly verified.
+dry_run:
+- surface: CLI
+  flag: --dry-run
+  behaviour: >-
+    Resolves the URL, method and body and validates them locally without
+    executing the request. A request that fails --dry-run has a problem the CLI
+    can see without touching the API — a missing path parameter, a malformed
+    body.
+  source: https://docs.customer.io/ai/cli/reference.md
+- surface: MCP
+  applies_to:
+  - cio_read_api
+  - cio_write_api
+  - cio_delete_api
+  behaviour: >-
+    All three verb tools support dry-run previews, so an agent can show a human
+    exactly what it is about to do before it does it.
+  source: https://docs.customer.io/ai/mcp/get-started.md
+read_only_credentials:
+- type: User service account token
+  control: >-
+    A user service-account token can be marked Read-only at creation time, which
+    permanently restricts it to GET requests. The restriction cannot be lifted
+    later.
+  create_at: https://fly.customer.io/settings/api_credentials?keyType=service_accounts
+- type: MCP OAuth scope
+  control: >-
+    A connection defaults to the `read` scope alone. Write, live-write and
+    configure are separate opt-ins approved during the OAuth flow, and two of
+    them additionally require an account-admin toggle.
+  detail: scopes/customer-io-scopes.yml
+live_data_guards:
+- name: Allow MCP to edit live data
+  default: off
+  effect: >-
+    While off, an MCP connection cannot delete profiles or edit automations and
+    segments that are currently in use. New drafts can still be created.
+- name: Allow MCP to access sensitive data
+  default: off
+  effect: >-
+    While off, profile attributes classified as sensitive are withheld from
+    every MCP connection regardless of the requesting user's role.
+- name: Customer.io MCP master toggle
+  default: off
+  effect: >-
+    Checked on every call. Turning it off stops MCP requests immediately with
+    403 without revoking OAuth tokens.
+security_testing:
+  program: https://customer.io/legal/reporting-vulnerability
+  published_test_workspace:
+    purpose: >-
+      Customer.io publishes a capture-the-flag workspace configured exclusively
+      for security testing and high-severity proofs of concept.
+    workspace_id: '82491'
+    admin_user: ctf@customer.io
+    note: >-
+      Values are quoted from Customer.io's own public vulnerability-disclosure
+      page. The Site ID published alongside them is deliberately NOT recorded
+      here — it is a credential-shaped value and belongs on the provider's page,
+      not in this catalog.
+  in_scope_hosts:
+  - fly.customer.io
+  - track.customer.io
+  signup_convention: >-
+    Researchers must put "Security Testing" in the Company Name at signup, e.g.
+    "Acme - Security Testing".
+not_offered:
+- test_mode_api_keys
+- test/live key prefix pair
+- separate sandbox host
+- test clocks or time simulation
+- seeded fixture data
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

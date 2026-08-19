@@ -1,25 +1,25 @@
 {
   "item": [
     {
-      "id": "e0878411-fdb0-4be1-a7d1-bdd6712bad10",
-      "name": "Track",
+      "id": "71aa93c2-f371-493e-8082-c1e01b1f71ea",
+      "name": "Screen",
       "description": {
-        "content": "Track events to record actions people take in your app or on your website.",
+        "content": "Record screen views from mobile applications.",
         "type": "text/plain"
       },
       "item": [
         {
-          "id": "894c0f80-ab61-44cd-8a3c-a7fd6461d3ea",
-          "name": "Track an event",
+          "id": "47e1b17e-abeb-4b66-a549-7b6ada509546",
+          "name": "Track a screen view",
           "request": {
-            "name": "Track an event",
+            "name": "Track a screen view",
             "description": {
-              "content": "Records an event that a person performed. Every track call requires an event name and at least one of userId or anonymousId. Event properties provide additional context about the action.",
+              "content": "Records a screen view event from a mobile application. Use this when a user views a screen in your mobile app. Requires at least one of userId or anonymousId.",
               "type": "text/plain"
             },
             "url": {
               "path": [
-                "track"
+                "screen"
               ],
               "host": [
                 "{{baseUrl}}"
@@ -37,7 +37,7 @@
             "auth": null,
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"event\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"properties\": {\n    \"key_0\": 8792,\n    \"key_1\": \"string\"\n  },\n  \"context\": {\n    \"ip\": \"<string>\",\n    \"locale\": \"<string>\",\n    \"timezone\": \"<string>\",\n    \"userAgent\": \"<string>\",\n    \"library\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"device\": {\n      \"id\": \"<string>\",\n      \"manufacturer\": \"<string>\",\n      \"model\": \"<string>\",\n      \"type\": \"<string>\"\n    },\n    \"os\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"page\": {\n      \"url\": \"<uri>\",\n      \"title\": \"<string>\",\n      \"referrer\": \"<uri>\",\n      \"path\": \"<string>\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+              "raw": "{\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"properties\": {\n    \"key_0\": 7151\n  },\n  \"context\": {\n    \"ip\": \"<string>\",\n    \"locale\": \"<string>\",\n    \"timezone\": \"<string>\",\n    \"userAgent\": \"<string>\",\n    \"library\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"device\": {\n      \"id\": \"<string>\",\n      \"manufacturer\": \"<string>\",\n      \"model\": \"<string>\",\n      \"type\": \"<string>\"\n    },\n    \"os\": {\n      \"name\": \"<string>\",\n      \"version\": \"<string>\"\n    },\n    \"page\": {\n      \"url\": \"<uri>\",\n      \"title\": \"<string>\",\n      \"referrer\": \"<uri>\",\n      \"path\": \"<string>\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -47,12 +47,12 @@
           },
           "response": [
             {
-              "id": "4133a412-e950-41cf-90c6-a50bfe4c1f3a",
-              "name": "Event tracked successfully.",
+              "id": "4fd324c5-076c-4ebe-8973-ddebdcf31678",
+              "name": "Screen view tracked successfully.",
               "originalRequest": {
                 "url": {
                   "path": [
-                    "track"
+                    "screen"
                   ],
                   "host": [
                     "{{baseUrl}}"
@@ -73,7 +73,7 @@
                 "method": "POST",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"event\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"properties\": {\n    \"key_0\": 9259,\n    \"key_1\": 3361\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"https://MpzXgaINuGmZCsEcazhUF.idfmQlJclSiCkpDT+U..IMDFdrNZwQziKc0\",\n      \"title\": \"string\",\n      \"referrer\": \"https://cZSRW.mgCcgVlG2Ux9v\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "raw": "{\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"properties\": {\n    \"key_0\": \"string\",\n    \"key_1\": true,\n    \"key_2\": 5329.199917570767\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"http://Q.vxjUXCEUVeKKByxFsXgmNvXxs+BQc,s0lgscDJa,PItDYMgg78AM4aTrfogEL\",\n      \"title\": \"string\",\n      \"referrer\": \"http://jNGgwDBPUFZcYCtTpzDPxOamRieD.zrv.pzKXy7Qu7wGkz5hYMMQlvRW8gUvnIL9+N2G6BIklQ\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -94,12 +94,12 @@
               "_postman_previewlanguage": "text"
             },
             {
-              "id": "4f5b5d8b-49a2-4e96-b85b-62c17f6b216f",
-              "name": "Bad request. Missing event name or identifiers.",
+              "id": "e8c0763d-28a0-4911-adc1-3e1f67fec899",
+              "name": "Bad request. Missing required fields.",
               "originalRequest": {
                 "url": {
                   "path": [
-                    "track"
+                    "screen"
                   ],
                   "host": [
                     "{{baseUrl}}"
@@ -120,7 +120,7 @@
                 "method": "POST",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"event\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"properties\": {\n    \"key_0\": 9259,\n    \"key_1\": 3361\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"https://MpzXgaINuGmZCsEcazhUF.idfmQlJclSiCkpDT+U..IMDFdrNZwQziKc0\",\n      \"title\": \"string\",\n      \"referrer\": \"https://cZSRW.mgCcgVlG2Ux9v\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "raw": "{\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"properties\": {\n    \"key_0\": \"string\",\n    \"key_1\": true,\n    \"key_2\": 5329.199917570767\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"http://Q.vxjUXCEUVeKKByxFsXgmNvXxs+BQc,s0lgscDJa,PItDYMgg78AM4aTrfogEL\",\n      \"title\": \"string\",\n      \"referrer\": \"http://jNGgwDBPUFZcYCtTpzDPxOamRieD.zrv.pzKXy7Qu7wGkz5hYMMQlvRW8gUvnIL9+N2G6BIklQ\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -141,12 +141,12 @@
               "_postman_previewlanguage": "text"
             },
             {
-              "id": "9c37596c-4f8a-411c-9198-aad8e7da68a2",
+              "id": "8ee18bc4-58aa-47b9-bc11-abcb5018d1b4",
               "name": "Unauthorized. Invalid CDP API key.",
               "originalRequest": {
                 "url": {
                   "path": [
-                    "track"
+                    "screen"
                   ],
                   "host": [
                     "{{baseUrl}}"
@@ -167,7 +167,7 @@
                 "method": "POST",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"event\": \"<string>\",\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"properties\": {\n    \"key_0\": 9259,\n    \"key_1\": 3361\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"https://MpzXgaINuGmZCsEcazhUF.idfmQlJclSiCkpDT+U..IMDFdrNZwQziKc0\",\n      \"title\": \"string\",\n      \"referrer\": \"https://cZSRW.mgCcgVlG2Ux9v\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
+                  "raw": "{\n  \"userId\": \"<string>\",\n  \"anonymousId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"properties\": {\n    \"key_0\": \"string\",\n    \"key_1\": true,\n    \"key_2\": 5329.199917570767\n  },\n  \"context\": {\n    \"ip\": \"string\",\n    \"locale\": \"string\",\n    \"timezone\": \"string\",\n    \"userAgent\": \"string\",\n    \"library\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"device\": {\n      \"id\": \"string\",\n      \"manufacturer\": \"string\",\n      \"model\": \"string\",\n      \"type\": \"string\"\n    },\n    \"os\": {\n      \"name\": \"string\",\n      \"version\": \"string\"\n    },\n    \"page\": {\n      \"url\": \"http://Q.vxjUXCEUVeKKByxFsXgmNvXxs+BQc,s0lgscDJa,PItDYMgg78AM4aTrfogEL\",\n      \"title\": \"string\",\n      \"referrer\": \"http://jNGgwDBPUFZcYCtTpzDPxOamRieD.zrv.pzKXy7Qu7wGkz5hYMMQlvRW8gUvnIL9+N2G6BIklQ\",\n      \"path\": \"string\"\n    }\n  },\n  \"timestamp\": \"<dateTime>\",\n  \"messageId\": \"<string>\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -215,8 +215,8 @@
     ]
   },
   "info": {
-    "_postman_id": "b394fbd0-ed11-4ee1-8f7d-c706523e0dab",
-    "name": "Customer.io App Activities Track API",
+    "_postman_id": "13cceaa1-32e0-4219-94ff-b437ad29ce8f",
+    "name": "Customer.io App Activities Screen API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "description": {
       "content": "The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.\n\nContact Support:\n Name: Customer.io Support",

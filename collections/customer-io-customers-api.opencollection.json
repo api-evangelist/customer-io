@@ -1,0 +1,199 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Customer.io App Activities Customers API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Customers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Search customers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/customers",
+            "params": [
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Filter criteria for searching customers."
+              }
+            ]
+          },
+          "docs": "Searches for customers in your workspace using complex filter criteria. Returns matching customer profiles with their attributes."
+        },
+        {
+          "info": {
+            "name": "Get customer attributes",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/customers/:identifier/attributes",
+            "params": [
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the customer. Can be an id, email, or cio_id depending on your workspace configuration."
+              }
+            ]
+          },
+          "docs": "Returns the attributes for a specific customer profile."
+        },
+        {
+          "info": {
+            "name": "Get customer segments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/customers/:identifier/segments",
+            "params": [
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the customer. Can be an id, email, or cio_id depending on your workspace configuration."
+              }
+            ]
+          },
+          "docs": "Returns the segments that a specific customer belongs to."
+        },
+        {
+          "info": {
+            "name": "Get customer activities",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/customers/:identifier/activities",
+            "params": [
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the customer. Can be an id, email, or cio_id depending on your workspace configuration."
+              }
+            ]
+          },
+          "docs": "Returns a list of activities for a specific customer, including messages sent, events tracked, and other interactions."
+        },
+        {
+          "info": {
+            "name": "Get customer messages",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/customers/:identifier/messages",
+            "params": [
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the customer. Can be an id, email, or cio_id depending on your workspace configuration."
+              }
+            ]
+          },
+          "docs": "Returns a list of messages sent to a specific customer."
+        },
+        {
+          "info": {
+            "name": "Identify a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.customer.io/v1/customers/:identifier",
+            "params": [
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates or updates a customer profile in Customer.io. If the customer does not exist, a new profile is created. If the customer already exists, the profile is updated with the provided attributes. The identifier can be an id or email address depending on your workspace configuration."
+        },
+        {
+          "info": {
+            "name": "Delete a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.customer.io/v1/customers/:identifier",
+            "params": [
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+              }
+            ]
+          },
+          "docs": "Deletes a customer profile from Customer.io. This removes the person and their associated data from your workspace. This action cannot be undone."
+        },
+        {
+          "info": {
+            "name": "Suppress a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.customer.io/v1/customers/:identifier/suppress",
+            "params": [
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+              }
+            ]
+          },
+          "docs": "Suppresses a customer profile, preventing Customer.io from sending messages to the person. The customer is deleted and their identifier is added to a suppression list so they cannot be re-added."
+        },
+        {
+          "info": {
+            "name": "Unsuppress a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.customer.io/v1/customers/:identifier/unsuppress",
+            "params": [
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+              }
+            ]
+          },
+          "docs": "Removes a customer from the suppression list, allowing them to be re-added to your workspace and receive messages again."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

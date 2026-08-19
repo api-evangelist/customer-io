@@ -1,0 +1,49 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Customer.io App Activities API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Activities",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List activities",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/activities",
+            "params": [
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Filter activities by type."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Filter activities by name."
+              }
+            ]
+          },
+          "docs": "Returns a list of recent activities in your workspace, including messages sent, customer events, and system events."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

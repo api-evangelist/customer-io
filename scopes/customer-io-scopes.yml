@@ -1,0 +1,84 @@
+generated: '2026-08-13'
+method: searched
+source: https://docs.customer.io/ai/mcp/get-started.md
+docs: https://docs.customer.io/ai/mcp/get-started/#permission-scopes-for-mcp-users
+probe:
+  url: https://mcp.customer.io/.well-known/oauth-protected-resource
+  http_status: 200
+  fetched: '2026-08-13'
+  scopes_supported:
+  - configure
+  - read
+  - read:sensitive
+  - write
+  - write:live
+provider: Customer.io
+providerId: customer-io
+applies_to:
+  api: Customer.io MCP
+  endpoint: https://mcp.customer.io/mcp
+  authorization_server: https://mcp.customer.io
+  note: >-
+    These scopes govern the OAuth 2.1 authorization of the MCP server only. The
+    REST APIs do not use OAuth — the App API takes a bearer App API Key whose
+    permissions are set in the Customer.io UI, and the Track and Pipelines APIs
+    take basic auth. See authentication/customer-io-authentication.yml.
+summary:
+  scope_count: 5
+  default_scope: read
+  model: >-
+    Additive and independent. A connection starts with `read` and requests
+    additional scopes at authorization time, which the user approves or denies.
+    write, write:live and configure are independent of one another — an agent
+    that must both edit content and send messages has to request `write` AND
+    `write:live`.
+  ceiling: >-
+    A connection can never exceed the permissions of the human who authorized
+    it. Two of the five scopes are also gated by an account-level admin toggle,
+    so an individual user cannot grant them alone.
+scopes:
+- name: read
+  required: true
+  default: true
+  description: >-
+    Read automations, segments, profiles, content and delivery metrics —
+    excluding data classified as sensitive. This is the default scope on every
+    connection.
+- name: read:sensitive
+  required: false
+  description: >-
+    Read profile attributes classified as sensitive (PII).
+  preconditions:
+  - >-
+    Account admin has enabled "Allow MCP to access sensitive data" in AI
+    settings.
+  - The user holds the Sensitive Data View permission on their role.
+- name: write
+  required: false
+  description: >-
+    Create, edit and delete drafts: automations, segments, one-time sends,
+    templates, profiles and other content.
+- name: write:live
+  required: false
+  description: >-
+    Send messages, manage subscriptions and suppressions, and enable
+    subscription centers. Does not include editing content.
+  preconditions:
+  - Account admin has enabled "Allow MCP to edit live data" in AI settings.
+- name: configure
+  required: false
+  description: >-
+    Configure integrations, webhooks, channel settings and other workspace
+    settings. Does not include editing content or sending messages.
+enforcement:
+- >-
+  Customer.io checks the account-level "Customer.io MCP" toggle on every call.
+  If an admin disables it, an already-authorized session receives 403 on every
+  tool without its OAuth token being revoked; re-enabling restores access to the
+  same sessions.
+- >-
+  Scope approval happens in the browser during the OAuth authorization_code +
+  PKCE flow, not in client configuration.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

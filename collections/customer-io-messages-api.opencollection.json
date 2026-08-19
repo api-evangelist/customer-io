@@ -1,0 +1,43 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Customer.io App Activities Messages API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Messages",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get a message",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/messages/:message_id",
+            "params": [
+              {
+                "name": "message_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the message."
+              }
+            ]
+          },
+          "docs": "Returns detailed information about a specific message that was sent, including delivery status and engagement metrics."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

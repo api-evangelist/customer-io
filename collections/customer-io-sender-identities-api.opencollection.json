@@ -1,0 +1,54 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Customer.io App Activities Sender Identities API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Sender Identities",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List sender identities",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/sender_identities"
+          },
+          "docs": "Returns a list of sender identities configured for sending messages from your workspace."
+        },
+        {
+          "info": {
+            "name": "Get a sender identity",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/sender_identities/:sender_id",
+            "params": [
+              {
+                "name": "sender_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the sender identity."
+              }
+            ]
+          },
+          "docs": "Returns detailed information about a specific sender identity."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

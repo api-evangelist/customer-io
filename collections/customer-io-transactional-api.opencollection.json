@@ -1,0 +1,54 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Customer.io App Activities Transactional API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Transactional",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Send a transactional email",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.customer.io/v1/send/email",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sends a transactional email message to a specific customer. You can compose the entire message in the request body or use a transactional message template. Transactional messages are triggered by user actions such as password resets, purchase confirmations, and account notifications. Rate limited to 100 requests per second."
+        },
+        {
+          "info": {
+            "name": "Send a transactional push notification",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.customer.io/v1/send/push",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sends a transactional push notification to a specific customer. The customer must have at least one registered device to receive the notification."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

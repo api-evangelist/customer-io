@@ -3,8 +3,14 @@ specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
 provider: Customer.io
 providerId: customer-io
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://docs.customer.io/integrations/api/customerio-apis.md and the 429
+  response descriptions in https://docs.customer.io/files/journeys-app.json
+limit_count: 6
 created: '2026-06-20'
-modified: '2026-06-20'
+modified: '2026-08-13'
 reconciled: true
 tags:
 - Customer Messaging
@@ -34,6 +40,21 @@ sources:
 - https://docs.customer.io/integrations/api/cdp/
 responseCodes:
   throttled: 429
+headers:
+  published: false
+  request: []
+  response: []
+  retry_after: false
+  evidence: >-
+    Checked 2026-08-13 against all four published OpenAPI documents and the API
+    overview documentation. No X-RateLimit-*, no RateLimit-*, no Retry-After —
+    the 429 responses in journeys-app.json carry no schema and no headers block
+    at all, on 116 of 166 operations. A client cannot read its remaining budget
+    or a recommended wait; it can only observe rejection and back off blind.
+  impact: >-
+    This is the single largest runtime-semantics gap in the Customer.io surface.
+    The limits are published as prose in the docs but are invisible at runtime,
+    which is exactly backwards for an agent.
 limits:
 - name: Track API (Behavioral Tracking)
   scope: account

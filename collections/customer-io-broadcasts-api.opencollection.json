@@ -1,0 +1,47 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Customer.io App Activities Broadcasts API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Broadcasts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Trigger an API-triggered broadcast",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.customer.io/v1/campaigns/:campaign_id/triggers",
+            "params": [
+              {
+                "name": "campaign_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the campaign."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Triggers an API-triggered broadcast campaign. You can specify a segment, list of customer IDs, or a data payload to include with the broadcast. Rate limited to 1 request per 10 seconds."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

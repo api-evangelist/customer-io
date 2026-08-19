@@ -1,0 +1,73 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Customer.io App Activities Newsletters API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Newsletters",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List newsletters",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/newsletters"
+          },
+          "docs": "Returns a list of newsletters in your workspace."
+        },
+        {
+          "info": {
+            "name": "Get a newsletter",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/newsletters/:newsletter_id",
+            "params": [
+              {
+                "name": "newsletter_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the newsletter."
+              }
+            ]
+          },
+          "docs": "Returns detailed information about a specific newsletter."
+        },
+        {
+          "info": {
+            "name": "Get newsletter metrics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/newsletters/:newsletter_id/metrics",
+            "params": [
+              {
+                "name": "newsletter_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the newsletter."
+              }
+            ]
+          },
+          "docs": "Returns metrics for a specific newsletter including delivery statistics and engagement data."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

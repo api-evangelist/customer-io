@@ -1,0 +1,252 @@
+generated: '2026-08-13'
+method: derived
+source: >-
+  openapi/_original/customer-io-app-api-openapi.json,
+  openapi/_original/customer-io-track-api-openapi.json,
+  openapi/_original/customer-io-pipelines-api-openapi.json,
+  mcp/customer-io-mcp.yml (tool list transcribed from
+  https://docs.customer.io/ai/mcp/get-started.md)
+provider: Customer.io
+providerId: customer-io
+summary: >-
+  Customer.io's MCP server does NOT expose one tool per API operation. It
+  exposes a verb-scoped HTTP proxy — three tools split by HTTP method
+  (cio_read_api / cio_write_api / cio_delete_api) plus a schema-discovery tool
+  (cio_schema) that the agent calls first to learn the operation it wants. The
+  crosswalk below is therefore a many-to-one binding: each proxy tool covers
+  every operation of its verb across the App, Track and Pipelines specs. This is
+  a deliberate design — it keeps the tool list small enough to stay in an
+  agent's context while still reaching 191 operations, and it lets an MCP client
+  approve reads independently of writes.
+surfaces:
+  openapi:
+  - name: App API
+    file: openapi/_original/customer-io-app-api-openapi.json
+    server: https://api.customer.io
+    operations: 166
+    gated: false
+  - name: Track API
+    file: openapi/_original/customer-io-track-api-openapi.json
+    server: https://track.customer.io
+    operations: 18
+    gated: false
+  - name: Pipelines API
+    file: openapi/_original/customer-io-pipelines-api-openapi.json
+    server: https://cdp.customer.io/v1
+    operations: 7
+    gated: false
+  graphql: null
+  mcp:
+    url: https://mcp.customer.io/mcp
+    gated: true
+    gate: >-
+      tools/list returns HTTP 401 {"message":"Authorization required"}; the live
+      inputSchema of each tool requires an authorized OAuth session.
+crosswalk:
+- tool: cio_read_api
+  category: read
+  binding: verb-scoped-proxy
+  confidence: high
+  rest_verb: GET
+  rest_operation_count: 99
+  rest:
+  - listCampaigns
+  - getCampaigns
+  - campaignMetrics
+  - listCampaignActions
+  - listBroadcasts
+  - getBroadcast
+  - broadcastMetrics
+  - listMessages
+  - getMessage
+  - listNewsletters
+  - getNewsletters
+  - getNewsletterMetrics
+  - listSegments
+  - getSegment
+  - getSegmentMembership
+  - getSegmentCount
+  - getPeopleEmail
+  - getPersonAttributes
+  - getPersonSegments
+  - getPersonMessages
+  - getPersonActivities
+  - listActivities
+  - listExports
+  - getExport
+  - downloadExport
+  - listTransactional
+  - getTransactional
+  - transactionalMetrics
+  - listSenders
+  - getSender
+  - listSnippets
+  - getCollections
+  - getCollection
+  - getCollectionContents
+  - listWebhooks
+  - getWebhook
+  - getObjectTypes
+  - getObjectRelationships
+  - getObjectAttributes
+  - listWorkspaces
+  - getRegion
+  note: >-
+    Truncated to the 41 highest-traffic GET operationIds; the tool proxies all
+    99 GET operations across the three specs. Parameters are inherited from the
+    OpenAPI operation the agent selects via cio_schema, not from a
+    tool-specific schema.
+- tool: cio_write_api
+  category: write
+  binding: verb-scoped-proxy
+  confidence: high
+  rest_verb: POST, PUT, PATCH
+  rest_operation_count: 76
+  rest:
+  - sendEmail
+  - sendPush
+  - sendSMS
+  - sendInApp
+  - sendInboxMessage
+  - triggerBroadcast
+  - sendNewsletter
+  - scheduleNewsletter
+  - startLiveNotification
+  - updateLiveNotification
+  - endLiveNotification
+  - createManSegment
+  - createNewsletter
+  - createSnippet
+  - updateSnippets
+  - addCollection
+  - updateCollection
+  - updateCollectionContents
+  - createWebhook
+  - updateWebhook
+  - exportPeopleData
+  - exportDeliveriesData
+  - import
+  - createEmail
+  - updateEmail
+  - createFolder
+  - updateFolder
+  - createComponent
+  - updateComponent
+  - createAsset
+  - updateAsset
+  - getPeopleFilter
+  - getPeopleById
+  - getObjectsFilter
+  - updateAttributeMetadata
+  - updateEventMetadata
+  - postSuppression
+  - updateCampaignAction
+  - updateBroadcastAction
+  - updateTransactional
+  - updatePersonOptouts
+  - identify
+  - track
+  - trackAnonymous
+  - merge
+  - suppress
+  - unsuppress
+  - add_device
+  - add_to_segment
+  - remove_from_segment
+  - entity
+  - batch
+  - page
+  - screen
+  - group
+  - alias
+  - submitForm
+  - metrics
+  - pushMetrics
+  note: >-
+    59 of the 76 write operationIds are listed; the tool proxies all 54 POST
+    and 22 PUT operations (the specs declare no PATCH). Note that several
+    Customer.io "read" operations are POSTs with a filter body (getPeopleFilter,
+    getPeopleById, getObjectsFilter) and therefore land on the WRITE tool — an
+    agent granted only the read scope cannot run a filtered person search.
+- tool: cio_delete_api
+  category: write
+  binding: verb-scoped-proxy
+  confidence: high
+  rest_verb: DELETE
+  rest_operation_count: 16
+  rest:
+  - deleteManSegment
+  - deleteNewsletters
+  - deleteSnippet
+  - deleteCollection
+  - deleteWebhook
+  - deleteEmail
+  - deleteEmailTranslation
+  - deleteFolder
+  - deleteComponent
+  - deleteAsset
+  - deleteAssetFolder
+  - deleteSuppression
+  - deleteNewsletterLanguageVariant
+  - deleteNewsletterTestLanguageVariant
+  - delete
+  - delete_device
+  confidence_note: >-
+    Two of these (delete, delete_device) are Track API operations; the rest are
+    App API. The Pipelines API ships no DELETE — profile deletion there is a
+    POST /track with the semantic event name "Delete Person".
+- tool: cio_schema
+  category: discovery
+  binding: meta
+  confidence: high
+  rest: []
+  note: >-
+    Introspects the OpenAPI surface itself. Its output is the parameter and body
+    schema of a chosen operation — the tool is how a Customer.io MCP client
+    obtains the inputSchema that a conventional per-operation MCP server would
+    have inlined in tools/list.
+mcp_only:
+- tool: cio_prime
+  reason: >-
+    Loads Customer.io's AI-ready API reference into the agent's context. No REST
+    operation backs it; it is a context-priming document served by the MCP
+    server.
+- tool: cio_skills_list
+  reason: >-
+    Lists Customer.io-maintained agent skills. Served by the MCP server, not by
+    the public REST API.
+- tool: cio_skills_read
+  reason: >-
+    Returns the body of one agent skill. Served by the MCP server, not by the
+    public REST API.
+- tool: cio_auth_status
+  reason: >-
+    Reports the OAuth session state and reachable workspaces. The nearest REST
+    analogue, GET /v1/workspaces (listWorkspaces), returns workspaces but not
+    session or scope state.
+rest_only:
+- operation: unsubscribe
+  spec: track
+  reason: >-
+    POST /unsubscribe/{delivery_id} is an unauthenticated recipient-facing
+    endpoint; it is not part of the authorized workspace surface the MCP proxy
+    reaches.
+- operation: reportingWebhook
+  spec: webhooks
+  reason: >-
+    An inbound webhook Customer.io sends to YOUR endpoint, not a callable
+    operation. See asyncapi/.
+coverage:
+  rest_operations_total: 191
+  rest_operations_reachable_via_mcp: 190
+  mcp_tools_total: 8
+  mcp_tools_bound_to_rest: 4
+  mcp_only_tools: 4
+  binding_style: verb-scoped-proxy
+  note: >-
+    Reachability is high because the proxy is generic, but discoverability is
+    the cost: nothing in tools/list names a Customer.io resource, so an agent
+    that skips cio_prime and cio_schema has no way to learn what exists.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

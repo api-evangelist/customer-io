@@ -1,0 +1,52 @@
+generated: '2026-08-13'
+method: generated
+source: openapi/_original/customer-io-app-api-openapi.json
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Customer.io App API
+  version: 1.0.0
+extends: openapi/_original/customer-io-app-api-openapi.json
+x-provenance:
+  base_document_published_by: Customer.io
+  base_document_url: https://docs.customer.io/files/journeys-app.json
+  base_document_harvested: '2026-08-13'
+  note: >-
+    The base document is Customer.io's own published OpenAPI, saved verbatim.
+    This overlay carries only API Evangelist additions and never mutates it.
+actions:
+- target: $.info
+  description: >-
+    Attach the contact, terms and licence facts Customer.io publishes on its
+    website but omits from the specification's info block.
+  update:
+    contact:
+      name: Customer.io Support
+      url: https://customer.io/contact
+    termsOfService: https://customer.io/legal/terms-of-service
+    license:
+      name: Proprietary
+      url: https://customer.io/legal/terms-of-service
+- target: $
+  description: Add the externalDocs link to the human reference for this surface.
+  update:
+    externalDocs:
+      description: App API reference
+      url: https://docs.customer.io/integrations/api/app/
+- target: $.info
+  description: >-
+    Record where this document came from and what API Evangelist artifacts read
+    it, so a consumer of the enhanced spec can trace every derivation.
+  update:
+    x-apievangelist:
+      provider: customer-io
+      surface_summary: >-
+        Broadcasts, transactional sends, content management and data retrieval. Bearer App API Key.
+      harvested_from: https://docs.customer.io/files/journeys-app.json
+      derived_artifacts:
+      - authentication/customer-io-authentication.yml
+      - conventions/customer-io-conventions.yml
+      - errors/customer-io-problem-types.yml
+      - data-model/customer-io-data-model.yml
+      - lifecycle/customer-io-lifecycle.yml
+      - conformance/customer-io-conformance.yml
+      - mcp/customer-io-tool-crosswalk.yml

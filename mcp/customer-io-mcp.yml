@@ -1,0 +1,151 @@
+generated: '2026-08-13'
+method: searched
+source: https://docs.customer.io/ai/mcp/get-started.md
+provider: Customer.io
+providerId: customer-io
+name: Customer.io MCP
+status: production
+description: >-
+  Customer.io operates a first-party, hosted Model Context Protocol server that
+  exposes the full Journeys App API and the CDP Data Pipelines API to any MCP
+  client. It is a remote HTTP endpoint an agent POSTs to — no local install —
+  authorized with OAuth 2.1 (dynamic client registration, PKCE S256) against
+  the user's own Customer.io login, so a connection can never exceed the
+  permissions of the human who created it.
+deployment:
+  mode: remote
+  endpoint: https://mcp.customer.io/mcp
+  endpoints:
+  - region: US
+    url: https://mcp.customer.io/mcp
+  - region: EU
+    url: https://mcp-eu.customer.io/mcp
+  auth: oauth
+  verified: probed
+docs: https://docs.customer.io/ai/mcp/get-started/
+client_guides:
+- client: ChatGPT
+  url: https://docs.customer.io/ai/mcp/chatgpt/
+- client: Claude
+  url: https://docs.customer.io/ai/mcp/claude/
+- client: Cursor and other IDEs
+  url: https://docs.customer.io/ai/mcp/ide/
+authorization:
+  protocol: OAuth 2.1
+  authorization_server: https://mcp.customer.io
+  authorization_endpoint: https://mcp.customer.io/oauth2/authorize
+  token_endpoint: https://mcp.customer.io/oauth2/token
+  registration_endpoint: https://mcp.customer.io/oauth2/register
+  revocation_endpoint: https://mcp.customer.io/oauth2/revoke
+  grant_types:
+  - authorization_code
+  - refresh_token
+  code_challenge_methods:
+  - S256
+  - plain
+  dynamic_client_registration: true
+  bearer_methods:
+  - header
+  scopes: scopes/customer-io-scopes.yml
+  metadata:
+  - well-known/customer-io-oauth-authorization-server.json
+  - well-known/customer-io-oauth-protected-resource.json
+x-evidence:
+  tools_list_probe:
+    fetched: '2026-08-13'
+    url: https://mcp.customer.io/mcp
+    method: POST
+    body: '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+    http_status: 401
+    response: '{"message":"Authorization required"}'
+    note: >-
+      The live tool manifest is auth-gated, so the inputSchema of each tool
+      could not be introspected anonymously. The tool names and descriptions
+      below are transcribed from Customer.io's own published documentation, not
+      inferred. Input schemas require an authorized session.
+  oauth_metadata_probe:
+    fetched: '2026-08-13'
+    url: https://mcp.customer.io/.well-known/oauth-protected-resource
+    http_status: 200
+tools_source: https://docs.customer.io/ai/mcp/get-started.md
+tools_schema_state: gated
+tools:
+- name: cio_prime
+  category: discovery
+  description: >-
+    Loads the AI-ready reference for the Customer.io API. The client is expected
+    to call this at the start of a task.
+- name: cio_schema
+  category: discovery
+  description: >-
+    Discovers API endpoints — list resources, find endpoints, and inspect
+    parameters before making calls.
+- name: cio_read_api
+  category: read
+  description: >-
+    Makes authenticated GET requests. Listing, reading, and inspecting
+    resources. Supports filtering, pagination, and dry-run previews.
+- name: cio_write_api
+  category: write
+  description: >-
+    Makes authenticated POST, PUT, and PATCH requests, for creating and editing
+    resources. Supports dry-run previews.
+- name: cio_delete_api
+  category: write
+  description: >-
+    Makes authenticated DELETE requests, for removing resources. Supports
+    dry-run previews.
+- name: cio_skills_list
+  category: skills
+  description: >-
+    Lists the available agent skills — task-specific instructions for multi-step
+    operations such as creating automations.
+- name: cio_skills_read
+  category: skills
+  description: >-
+    Reads the full content of a specific skill so the AI tool can follow the
+    step-by-step workflow.
+- name: cio_auth_status
+  category: auth
+  description: >-
+    Shows the current authentication state, including which workspaces the token
+    can access.
+design_notes:
+- >-
+  The API surface is deliberately split into three verb-scoped tools —
+  cio_read_api (GET), cio_write_api (POST/PUT/PATCH), cio_delete_api (DELETE) —
+  so clients that support per-tool permissions can auto-approve reads while
+  gating writes and deletes.
+- >-
+  Requests carrying unknown body fields return 422 rather than silently
+  dropping them.
+- Tool errors are returned as structured JSON, not plain text.
+- >-
+  The server ships its own skill library, fetched on demand through
+  cio_skills_list / cio_skills_read, so the tool list stays small while the
+  workflow knowledge stays current.
+account_controls:
+- >-
+  An account admin must enable Customer.io MCP under Settings > AI before any
+  user can connect. The toggle is checked on every call, so disabling it returns
+  403 to already-authorized sessions without revoking their tokens.
+- >-
+  "Allow MCP to edit live data" is off by default; without it a connection
+  cannot delete profiles or edit in-use automations and segments.
+- >-
+  "Allow MCP to access sensitive data" is off by default; without it the
+  read:sensitive scope is unavailable and PII attributes are withheld.
+- >-
+  Each user authorizes with their own login and manages their own sessions;
+  admins cannot view or revoke another user's MCP session.
+alternative_surface:
+  name: Customer.io CLI
+  reason: >-
+    Customer.io's own documentation recommends the CLI over MCP for
+    terminal-based agents, because it gives the agent direct command-line access
+    to the full API surface with no MCP setup.
+  artifact: cli/customer-io-cli.yml
+crosswalk: mcp/customer-io-tool-crosswalk.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

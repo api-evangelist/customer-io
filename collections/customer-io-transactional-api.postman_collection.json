@@ -1,0 +1,531 @@
+{
+  "item": [
+    {
+      "id": "1cdd10d5-d767-42b9-a601-37f2bdf04ba9",
+      "name": "Transactional",
+      "description": {
+        "content": "Send transactional messages such as password resets, purchase receipts, and other important notifications triggered by user actions.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d39b1356-deec-4176-8b4c-bbf8454e1ef1",
+          "name": "Send a transactional email",
+          "request": {
+            "name": "Send a transactional email",
+            "description": {
+              "content": "Sends a transactional email message to a specific customer. You can compose the entire message in the request body or use a transactional message template. Transactional messages are triggered by user actions such as password resets, purchase confirmations, and account notifications. Rate limited to 100 requests per second.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "send",
+                "email"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transactional_message_id\": \"<string>\",\n  \"to\": \"<email>\",\n  \"identifiers\": {\n    \"id\": \"<string>\",\n    \"email\": \"<email>\",\n    \"cio_id\": \"<string>\"\n  },\n  \"from\": \"<string>\",\n  \"reply_to\": \"<string>\",\n  \"bcc\": \"<string>\",\n  \"subject\": \"<string>\",\n  \"body\": \"<string>\",\n  \"plaintext_body\": \"<string>\",\n  \"message_data\": {\n    \"key_0\": 3773\n  },\n  \"disable_message_retention\": \"<boolean>\",\n  \"send_to_unsubscribed\": \"<boolean>\",\n  \"queue_draft\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f589b2db-aa8c-44e6-a405-6264ecb2cb37",
+              "name": "Transactional email sent successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "send",
+                    "email"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"transactional_message_id\": \"<string>\",\n  \"to\": \"<email>\",\n  \"identifiers\": {\n    \"id\": \"<string>\",\n    \"email\": \"<email>\",\n    \"cio_id\": \"<string>\"\n  },\n  \"from\": \"<string>\",\n  \"reply_to\": \"<string>\",\n  \"bcc\": \"<string>\",\n  \"subject\": \"<string>\",\n  \"body\": \"<string>\",\n  \"plaintext_body\": \"<string>\",\n  \"message_data\": {\n    \"key_0\": 1978,\n    \"key_1\": \"string\",\n    \"key_2\": false\n  },\n  \"disable_message_retention\": \"<boolean>\",\n  \"send_to_unsubscribed\": \"<boolean>\",\n  \"queue_draft\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"delivery_id\": \"string\",\n  \"queued_at\": 9249\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c67e0348-e7be-4bd6-bf65-851c5f6fb8b7",
+              "name": "Bad request. Invalid request body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "send",
+                    "email"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"transactional_message_id\": \"<string>\",\n  \"to\": \"<email>\",\n  \"identifiers\": {\n    \"id\": \"<string>\",\n    \"email\": \"<email>\",\n    \"cio_id\": \"<string>\"\n  },\n  \"from\": \"<string>\",\n  \"reply_to\": \"<string>\",\n  \"bcc\": \"<string>\",\n  \"subject\": \"<string>\",\n  \"body\": \"<string>\",\n  \"plaintext_body\": \"<string>\",\n  \"message_data\": {\n    \"key_0\": 1978,\n    \"key_1\": \"string\",\n    \"key_2\": false\n  },\n  \"disable_message_retention\": \"<boolean>\",\n  \"send_to_unsubscribed\": \"<boolean>\",\n  \"queue_draft\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "eee3d584-48cf-42f1-9157-5bb5c56fbe68",
+              "name": "Unauthorized. Invalid App API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "send",
+                    "email"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"transactional_message_id\": \"<string>\",\n  \"to\": \"<email>\",\n  \"identifiers\": {\n    \"id\": \"<string>\",\n    \"email\": \"<email>\",\n    \"cio_id\": \"<string>\"\n  },\n  \"from\": \"<string>\",\n  \"reply_to\": \"<string>\",\n  \"bcc\": \"<string>\",\n  \"subject\": \"<string>\",\n  \"body\": \"<string>\",\n  \"plaintext_body\": \"<string>\",\n  \"message_data\": {\n    \"key_0\": 1978,\n    \"key_1\": \"string\",\n    \"key_2\": false\n  },\n  \"disable_message_retention\": \"<boolean>\",\n  \"send_to_unsubscribed\": \"<boolean>\",\n  \"queue_draft\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "6628f0ef-054f-49b9-90b4-9cabb79b885f",
+              "name": "Rate limit exceeded.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "send",
+                    "email"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"transactional_message_id\": \"<string>\",\n  \"to\": \"<email>\",\n  \"identifiers\": {\n    \"id\": \"<string>\",\n    \"email\": \"<email>\",\n    \"cio_id\": \"<string>\"\n  },\n  \"from\": \"<string>\",\n  \"reply_to\": \"<string>\",\n  \"bcc\": \"<string>\",\n  \"subject\": \"<string>\",\n  \"body\": \"<string>\",\n  \"plaintext_body\": \"<string>\",\n  \"message_data\": {\n    \"key_0\": 1978,\n    \"key_1\": \"string\",\n    \"key_2\": false\n  },\n  \"disable_message_retention\": \"<boolean>\",\n  \"send_to_unsubscribed\": \"<boolean>\",\n  \"queue_draft\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "343e2a73-49fb-4aeb-b763-4d1feb8702de",
+          "name": "Send a transactional push notification",
+          "request": {
+            "name": "Send a transactional push notification",
+            "description": {
+              "content": "Sends a transactional push notification to a specific customer. The customer must have at least one registered device to receive the notification.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "send",
+                "push"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transactional_message_id\": \"<string>\",\n  \"identifiers\": {\n    \"id\": \"<string>\",\n    \"email\": \"<email>\",\n    \"cio_id\": \"<string>\"\n  },\n  \"message_data\": {\n    \"key_0\": 1891.8118531568518,\n    \"key_1\": true\n  },\n  \"send_to_unsubscribed\": \"<boolean>\",\n  \"title\": \"<string>\",\n  \"message\": \"<string>\",\n  \"custom_data\": {\n    \"key_0\": 2459.6827530292962,\n    \"key_1\": 7903.142399054199,\n    \"key_2\": false\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "6090c72d-2ae4-45dd-a0cb-4726196c408c",
+              "name": "Transactional push sent successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "send",
+                    "push"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"transactional_message_id\": \"<string>\",\n  \"identifiers\": {\n    \"id\": \"<string>\",\n    \"email\": \"<email>\",\n    \"cio_id\": \"<string>\"\n  },\n  \"message_data\": {\n    \"key_0\": \"string\",\n    \"key_1\": \"string\",\n    \"key_2\": \"string\",\n    \"key_3\": 5114.865507576157\n  },\n  \"send_to_unsubscribed\": \"<boolean>\",\n  \"title\": \"<string>\",\n  \"message\": \"<string>\",\n  \"custom_data\": {\n    \"key_0\": false,\n    \"key_1\": true\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"delivery_id\": \"string\",\n  \"queued_at\": 7146\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dfc31156-5bbb-46c1-b778-9ed1c4413600",
+              "name": "Bad request. Invalid request body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "send",
+                    "push"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"transactional_message_id\": \"<string>\",\n  \"identifiers\": {\n    \"id\": \"<string>\",\n    \"email\": \"<email>\",\n    \"cio_id\": \"<string>\"\n  },\n  \"message_data\": {\n    \"key_0\": \"string\",\n    \"key_1\": \"string\",\n    \"key_2\": \"string\",\n    \"key_3\": 5114.865507576157\n  },\n  \"send_to_unsubscribed\": \"<boolean>\",\n  \"title\": \"<string>\",\n  \"message\": \"<string>\",\n  \"custom_data\": {\n    \"key_0\": false,\n    \"key_1\": true\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ad9b9774-b88f-4bd0-9af2-54c32d46bff6",
+              "name": "Unauthorized. Invalid App API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "send",
+                    "push"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"transactional_message_id\": \"<string>\",\n  \"identifiers\": {\n    \"id\": \"<string>\",\n    \"email\": \"<email>\",\n    \"cio_id\": \"<string>\"\n  },\n  \"message_data\": {\n    \"key_0\": \"string\",\n    \"key_1\": \"string\",\n    \"key_2\": \"string\",\n    \"key_3\": 5114.865507576157\n  },\n  \"send_to_unsubscribed\": \"<boolean>\",\n  \"title\": \"<string>\",\n  \"message\": \"<string>\",\n  \"custom_data\": {\n    \"key_0\": false,\n    \"key_1\": true\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0e712bdd-c11d-47a3-a059-9811af416deb",
+              "name": "Rate limit exceeded.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "send",
+                    "push"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"transactional_message_id\": \"<string>\",\n  \"identifiers\": {\n    \"id\": \"<string>\",\n    \"email\": \"<email>\",\n    \"cio_id\": \"<string>\"\n  },\n  \"message_data\": {\n    \"key_0\": \"string\",\n    \"key_1\": \"string\",\n    \"key_2\": \"string\",\n    \"key_3\": 5114.865507576157\n  },\n  \"send_to_unsubscribed\": \"<boolean>\",\n  \"title\": \"<string>\",\n  \"message\": \"<string>\",\n  \"custom_data\": {\n    \"key_0\": false,\n    \"key_1\": true\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.customer.io/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "45aba3d6-cd36-4547-82ad-0d2807741ddd",
+    "name": "Customer.io App Activities Transactional API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.\n\nContact Support:\n Name: Customer.io Support",
+      "type": "text/plain"
+    }
+  }
+}

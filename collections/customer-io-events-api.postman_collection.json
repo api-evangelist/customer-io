@@ -1,0 +1,347 @@
+{
+  "item": [
+    {
+      "id": "c919adce-dedf-4c20-831b-74170007976a",
+      "name": "Events",
+      "description": {
+        "content": "Track customer events and anonymous events to record behavioral data and trigger messaging workflows.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "41722709-02f6-4624-bd91-25afa5c8efb3",
+          "name": "Track a customer event",
+          "request": {
+            "name": "Track a customer event",
+            "description": {
+              "content": "Records an event associated with a specific customer. Events are used to trigger campaigns, track user behavior, and segment your audience. The event name is required and custom data can be passed in the data object.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                ":identifier",
+                "events"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "identifier",
+                  "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"data\": {\n    \"key_0\": 5157.597949929463,\n    \"key_1\": \"string\"\n  },\n  \"type\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "816f74e9-c662-4a12-be51-458ffb922aaf",
+              "name": "Event tracked successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"data\": {\n    \"key_0\": true,\n    \"key_1\": 6827.010431199888,\n    \"key_2\": \"string\"\n  },\n  \"type\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "63ab4abc-a0ca-4087-8076-e6eaa5afc43c",
+              "name": "Unauthorized. Invalid Site ID or API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"data\": {\n    \"key_0\": true,\n    \"key_1\": 6827.010431199888,\n    \"key_2\": \"string\"\n  },\n  \"type\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6221f1f6-e3a5-49bb-87fc-ba800a389f6a",
+          "name": "Track an anonymous event",
+          "request": {
+            "name": "Track an anonymous event",
+            "description": {
+              "content": "Records an event that is not associated with a known customer profile. Anonymous events can be merged with a customer profile later when the person is identified, if event merging is enabled in your workspace. Anonymous events recorded within the last 30 days can be associated with a person when their anonymous_id matches.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "events"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"anonymous_id\": \"<string>\",\n  \"data\": {\n    \"key_0\": \"string\",\n    \"key_1\": 6304.022041651809,\n    \"key_2\": true,\n    \"key_3\": false\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "745fd800-d17f-4989-9db3-1c7ddfc1eb53",
+              "name": "Anonymous event tracked successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"anonymous_id\": \"<string>\",\n  \"data\": {\n    \"key_0\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "66567a02-d4c8-4f14-b9ff-7fa9f19a0192",
+              "name": "Unauthorized. Invalid Site ID or API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"anonymous_id\": \"<string>\",\n  \"data\": {\n    \"key_0\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.customer.io/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "958095ca-be2a-4d6a-8c12-a7c152f2dbff",
+    "name": "Customer.io App Activities Events API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.\n\nContact Support:\n Name: Customer.io Support",
+      "type": "text/plain"
+    }
+  }
+}

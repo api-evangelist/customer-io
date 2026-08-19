@@ -1,4 +1,4 @@
-generated: '2026-07-11'
+generated: '2026-08-13'
 method: probed
 source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
 hosts:
@@ -11,13 +11,13 @@ hosts:
 - host: docs.customer.io
   https: true
   tls_version: TLSv1.3
-  cert_expires: Aug 26 05:13:46 2026 GMT
+  cert_expires: Oct 25 04:23:41 2026 GMT
   hsts: true
   hsts_max_age: 31536000
 - host: track.customer.io
   https: true
   tls_version: TLSv1.3
-  cert_expires: Sep  4 02:31:30 2026 GMT
+  cert_expires: Oct 28 11:51:05 2026 GMT
   hsts: true
   hsts_max_age: 31536000
 domains:

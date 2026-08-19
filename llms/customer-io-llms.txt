@@ -1,0 +1,25 @@
+
+
+# Customer.io Documentation
+
+> Customer.io is a messaging automation platform for sending targeted email, transactional email, push notifications, SMS, in-app messages, and webhooks based on customer behavior and data attributes. These docs cover setup, integration, messaging, segmentation, analytics, API reference, and agent-native access through the Customer.io CLI or MCP server.
+
+Customer.io documentation is organized into the following sections. Each section has its own `llms.txt` file with detailed page listings.
+
+## Sections
+- [Get started](https://docs.customer.io/get-started/llms.txt): Get started documentation
+- [AI features](https://docs.customer.io/ai/llms.txt): Use Customer.io with AI tools, including the in-app agent, CLI, MCP server, LLM actions, and docs for agent setup.
+- [Messaging](https://docs.customer.io/messaging/llms.txt): Messaging documentation
+- [Integrations](https://docs.customer.io/integrations/llms.txt): Integrations documentation
+- [Settings & billing](https://docs.customer.io/accounts/llms.txt): Manage your account, workspaces, billing, Builder plan, team settings, permissions, and privacy controls.
+
+## Additional resources
+
+- [Builder plan](https://docs.customer.io/accounts/billing/builder-plan.md): Pay-as-you-go messaging infrastructure for early-stage builders, transactional senders, and AI-native workflows using the CLI, MCP server, or web app
+- [Customer.io CLI](https://docs.customer.io/ai/cli/get-started.md): Install the `customerio/cli` agent skill and let terminal-based coding agents sign up, authenticate, and manage Customer.io workspaces
+- [Customer.io MCP](https://docs.customer.io/ai/mcp/get-started.md): Connect chat-based AI tools like ChatGPT and Claude Desktop to Customer.io
+- [Full documentation](https://docs.customer.io/llms-full.txt): Complete text of all documentation pages in a single file
+- [Pipelines API spec](https://docs.customer.io/files/pipelines.json): OpenAPI spec for the Data Pipelines API
+- [Track API spec](https://docs.customer.io/files/journeys-track.json): OpenAPI spec for the Track API
+- [App API spec](https://docs.customer.io/files/journeys-app.json): OpenAPI spec for the App API
+- [Webhooks spec](https://docs.customer.io/files/journeys-webhooks.json): OpenAPI spec for reporting webhooks

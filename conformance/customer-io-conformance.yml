@@ -1,0 +1,165 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://customer.io/security, https://customer.io/legal/security,
+  https://app.conveyor.com/profile/customer-io,
+  https://mcp.customer.io/.well-known/oauth-authorization-server,
+  https://mcp.customer.io/.well-known/oauth-protected-resource,
+  https://customer.io/.well-known/api-catalog, and
+  openapi/_original/*.json
+provider: Customer.io
+providerId: customer-io
+summary:
+  asserted: 16
+  conforms: 9
+  does_not_conform: 7
+standards:
+- id: openapi-3.1
+  name: OpenAPI 3.1.0
+  conforms: true
+  evidence: >-
+    Four first-party OpenAPI 3.1.0 documents published from the provider's own
+    docs host and indexed in llms.txt: journeys-app.json (166 operations),
+    journeys-track.json (18), pipelines.json (7) and journeys-webhooks.json
+    (webhooks object). Every operation carries an operationId and a summary.
+  source: https://docs.customer.io/files/journeys-app.json
+- id: openapi-webhooks
+  name: OpenAPI 3.1 webhooks object
+  conforms: true
+  evidence: >-
+    journeys-webhooks.json uses the 3.1 top-level `webhooks` keyword to describe
+    the reporting webhook, with a oneOf across eight event object types and
+    worked examples for each.
+  source: https://docs.customer.io/files/journeys-webhooks.json
+- id: oauth2
+  name: OAuth 2.0 / 2.1 authorization code with PKCE
+  conforms: true
+  evidence: >-
+    The MCP server implements authorization_code + refresh_token with
+    code_challenge_methods S256 and plain, authorization/token/revocation
+    endpoints under https://mcp.customer.io/oauth2/.
+  source: https://mcp.customer.io/.well-known/oauth-authorization-server
+- id: rfc8414
+  name: OAuth 2.0 Authorization Server Metadata
+  conforms: true
+  evidence: 200 at /.well-known/oauth-authorization-server on mcp.customer.io.
+- id: rfc9728
+  name: OAuth 2.0 Protected Resource Metadata
+  conforms: true
+  evidence: >-
+    200 at /.well-known/oauth-protected-resource on both mcp.customer.io and
+    mcp-eu.customer.io, declaring resource, authorization_servers,
+    scopes_supported and bearer_methods_supported.
+- id: rfc7591
+  name: OAuth 2.0 Dynamic Client Registration
+  conforms: true
+  evidence: >-
+    registration_endpoint https://mcp.customer.io/oauth2/register advertised in
+    the authorization server metadata, which is what lets an arbitrary MCP
+    client connect without a pre-provisioned client_id.
+- id: rfc9727
+  name: 'RFC 9727: api-catalog well-known URI'
+  conforms: true
+  evidence: >-
+    200 application/linkset+json at https://customer.io/.well-known/api-catalog,
+    a two-anchor link set naming the REST API index and the MCP server docs.
+- id: mcp
+  name: Model Context Protocol
+  conforms: true
+  evidence: >-
+    First-party hosted MCP servers at https://mcp.customer.io/mcp and
+    https://mcp-eu.customer.io/mcp; POST tools/list returns HTTP 401
+    Authorization required, which is a correct authenticated-transport response
+    rather than an absence.
+- id: llmstxt
+  name: llms.txt
+  conforms: true
+  evidence: >-
+    200 at https://docs.customer.io/llms.txt with sectioned sub-indexes
+    (/get-started/llms.txt, /ai/llms.txt, /messaging/llms.txt,
+    /integrations/llms.txt, /accounts/llms.txt), a full corpus at
+    /llms-full.txt, per-page .md rendering, and direct links to all four
+    OpenAPI files. A second llms.txt is served from the marketing root at
+    https://customer.io/llms.txt.
+- id: a2a
+  name: A2A Agent Card
+  conforms: false
+  partial: true
+  evidence: >-
+    A card is served at https://docs.customer.io/.well-known/agent-card.json
+    (200, valid JSON object) but it omits the top-level protocolVersion that
+    A2A 1.0.0 requires, and expresses its endpoint through supportedInterfaces[]
+    rather than a top-level url. Graded flavored — see
+    a2a/customer-io-a2a.yml.
+- id: rfc9457
+  name: 'RFC 9457: Problem Details for HTTP APIs'
+  conforms: false
+  evidence: >-
+    No application/problem+json anywhere in the four specs. Errors use three
+    different bespoke JSON envelopes. See errors/customer-io-problem-types.yml.
+- id: idempotency
+  name: Idempotency keys (draft-ietf-httpapi-idempotency-key-header)
+  conforms: false
+  evidence: >-
+    No Idempotency-Key header and no idempotency_key field in any spec or doc
+    page. Retrying a transactional send delivers twice.
+- id: rfc8594
+  name: 'RFC 8594: Sunset HTTP Header'
+  conforms: false
+  evidence: >-
+    No Sunset or Deprecation response header in any published spec, and no
+    deprecation policy page.
+- id: ratelimit-headers
+  name: draft-ietf-httpapi-ratelimit-headers
+  conforms: false
+  evidence: >-
+    429 is returned on 116 of 166 App API operations but no RateLimit-*,
+    X-RateLimit-* or Retry-After header is declared or documented.
+- id: pagination
+  name: Consistent pagination
+  conforms: false
+  evidence: >-
+    Three coexisting styles across the App API — page + limit, offset, and a
+    `next` cursor in the response body — with several list operations declaring
+    no pagination parameter at all.
+- id: segment-spec
+  name: Segment tracking spec (identify / track / page / screen / group / alias)
+  conforms: true
+  evidence: >-
+    The Pipelines API implements the Segment spec call set verbatim —
+    /identify, /track, /page, /screen, /group, /alias, /batch — which is what
+    lets Segment-compatible client libraries target Customer.io directly.
+  source: https://docs.customer.io/files/pipelines.json
+compliance:
+  programs:
+  - name: SOC 2 Type II
+    published: true
+    source: https://customer.io/security
+  - name: ISO 27001
+    published: true
+    source: https://customer.io/security
+  - name: HIPAA
+    published: true
+    note: >-
+      HIPAA compliance is a Premium-plan feature per the pricing page, not a
+      universal platform property.
+    source: https://customer.io/security
+  - name: GDPR
+    published: true
+    note: >-
+      Supports data rectification, right to be forgotten and an audit trail; EU
+      data residency through the EU region hosts.
+    source: https://customer.io/legal/gdpr
+  - name: CCPA and US state privacy laws
+    published: true
+    source: https://customer.io/legal/ccpa
+  trust_center: https://app.conveyor.com/profile/customer-io
+  subprocessors: https://customer.io/legal/sub-processors
+  dpa: https://customer.io/legal/dpa
+  scc: https://customer.io/legal/scc
+  data_residency:
+  - US
+  - EU
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

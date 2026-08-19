@@ -1,0 +1,54 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Customer.io App Activities Batch API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Batch",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Send a batch of API calls",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.customer.io/v1/batch",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sends multiple API calls in a single HTTP request. Each item in the batch array is a standard identify, track, page, screen, group, or alias call. The batch request must be smaller than 1MB."
+        },
+        {
+          "info": {
+            "name": "Batch entity operations",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.customer.io/v1../v2/batch",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sends multiple entity operations in a single request. Each item in the batch array represents an individual entity operation for a person, object, or delivery. You can mix types in a single request. The request must be smaller than 500KB."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

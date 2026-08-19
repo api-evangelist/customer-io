@@ -1,0 +1,44 @@
+{
+  "name": "Customer.io Documentation",
+  "description": "Agent-friendly documentation for Customer.io APIs, SDKs, MCP setup, and product workflows.",
+  "supportedInterfaces": [
+    {
+      "url": "https://docs.customer.io/",
+      "protocolBinding": "HTTP+JSON",
+      "protocolVersion": "1.0"
+    }
+  ],
+  "provider": {
+    "organization": "Customer.io",
+    "url": "https://customer.io"
+  },
+  "version": "1.0.0",
+  "documentationUrl": "https://docs.customer.io/llms.txt",
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false
+  },
+  "defaultInputModes": ["text/plain", "text/markdown"],
+  "defaultOutputModes": ["text/plain", "text/markdown"],
+  "skills": [
+    {
+      "id": "search-customerio-docs",
+      "name": "Search Customer.io documentation",
+      "description": "Find Customer.io documentation pages and machine-readable API references.",
+      "tags": ["documentation", "customer.io", "api", "mcp"],
+      "examples": ["Find the App API documentation", "How do I connect Customer.io MCP?"],
+      "inputModes": ["text/plain"],
+      "outputModes": ["text/plain", "text/markdown"]
+    },
+    {
+      "id": "fetch-page-as-markdown",
+      "name": "Fetch a documentation page as Markdown",
+      "description": "Retrieve any Customer.io documentation page as clean Markdown by requesting it with an Accept: text/markdown header, or by appending .md to the page path. The /llms.txt index and /llms-full.txt corpus are also available as Markdown.",
+      "tags": ["documentation", "customer.io", "markdown", "content-negotiation"],
+      "examples": ["Fetch the Customer.io MCP setup guide as Markdown", "Get the Markdown version of this documentation page"],
+      "inputModes": ["text/plain"],
+      "outputModes": ["text/markdown"]
+    }
+  ],
+  "iconUrl": "https://docs.customer.io/images/cio-logo-no-text.svg"
+}

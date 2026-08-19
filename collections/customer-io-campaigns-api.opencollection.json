@@ -1,0 +1,110 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Customer.io App Activities Campaigns API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Campaigns",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List campaigns",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/campaigns"
+          },
+          "docs": "Returns a list of campaigns in your workspace. You can filter by campaign type and status."
+        },
+        {
+          "info": {
+            "name": "Get a campaign",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/campaigns/:campaign_id",
+            "params": [
+              {
+                "name": "campaign_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the campaign."
+              }
+            ]
+          },
+          "docs": "Returns detailed information about a specific campaign including its actions, status, and metrics."
+        },
+        {
+          "info": {
+            "name": "List campaign actions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/campaigns/:campaign_id/actions",
+            "params": [
+              {
+                "name": "campaign_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the campaign."
+              }
+            ]
+          },
+          "docs": "Returns a list of actions (workflow steps) for a specific campaign."
+        },
+        {
+          "info": {
+            "name": "Get campaign metrics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/campaigns/:campaign_id/metrics",
+            "params": [
+              {
+                "name": "campaign_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the campaign."
+              },
+              {
+                "name": "period",
+                "value": "",
+                "type": "query",
+                "description": "The time period for metrics aggregation."
+              },
+              {
+                "name": "steps",
+                "value": "",
+                "type": "query",
+                "description": "The number of time periods to return."
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "The type of metric series to return."
+              }
+            ]
+          },
+          "docs": "Returns metrics for a specific campaign including message delivery statistics, open rates, and click rates."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

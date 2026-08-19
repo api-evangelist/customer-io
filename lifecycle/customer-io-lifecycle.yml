@@ -1,0 +1,109 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://status.customerio.com, https://customer.io/legal/security,
+  https://docs.customer.io/integrations/llms.txt, and the published specs at
+  openapi/_original/*.json
+provider: Customer.io
+providerId: customer-io
+versioning:
+  scheme: path
+  current:
+    app_api: v1
+    pipelines_api: v1
+    track_api: v1 and v2 in the same document
+  detail: >-
+    The App API and the Pipelines API are both at /v1. The Track API publishes
+    /api/v1 and /api/v2 side by side in one specification: v2 adds the unified
+    POST /api/v2/entity and POST /api/v2/batch shapes while every v1 path
+    remains live and documented.
+  breaking_change_policy: not-published
+  note: >-
+    Customer.io publishes no version-negotiation header and no dated API
+    version. A consumer pins by URL path only.
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  evidence: >-
+    No Sunset or Deprecation response header appears in any of the four
+    published specifications, and no RFC 8594 deprecation policy page exists
+    anywhere under docs.customer.io or customer.io/legal. Searched
+    2026-08-13.
+  observed_deprecations:
+  - subject: Campaign and broadcast metrics query contract
+    marker: >-
+      The App API spec labels the period + steps query mode "Version 1
+      (Deprecated)" in the operation description of campaignMetrics,
+      broadcastMetrics and their action-level siblings.
+    replacement: start / end with resolution
+    sunset_date: null
+    operations:
+    - campaignMetrics
+    - campaignActionMetrics
+    - broadcastMetrics
+    - broadcastActionMetrics
+    - getNewsletterMetrics
+    - transactionalMetrics
+  - subject: Track API v1 as the recommended ingest path
+    marker: >-
+      Customer.io's API overview steers new integrations to the Pipelines API
+      and states that ongoing development is focused there. Track v1 is not
+      formally deprecated and is not scheduled for removal.
+    replacement: Pipelines API (cdp.customer.io)
+    sunset_date: null
+  - subject: 'Android SDK coordinate io.customer.android:tracking'
+    marker: >-
+      Frozen at 3.11.2 (2024-08-19) on Maven Central with no deprecation notice
+      on the coordinate itself.
+    replacement: 'io.customer.android:datapipelines'
+    sunset_date: null
+  gap: >-
+    The SDK layer has a full, per-platform breaking-change discipline —
+    versioned upgrade guides for every major (1.x->2.x, 2.x->3.x, 3.x->4.x, and
+    minor-level guides besides) across iOS, Android, React Native, Flutter and
+    Expo. The REST API layer has none of it: no changelog, no deprecation
+    policy, no sunset signalling. The gap between the two is the notable finding
+    here.
+status_page:
+  url: https://status.customerio.com
+  provider: Atlassian Statuspage
+  page_id: w4qr97njbszt
+  machine_readable: https://status.customerio.com/api/v2/summary.json
+  http_status: 200
+  checked: '2026-08-13'
+  components_include:
+  - Javascript Tracker
+  - Data Collection (track.customer.io)
+  - Drag and drop email composer
+  note: >-
+    A real Statuspage with a public JSON API — components, incidents and
+    scheduled maintenance are all machine-readable. Note the hostname is
+    status.customerio.com, not status.customer.io.
+sla:
+  published: false
+  note: >-
+    No public uptime SLA. Customer.io's security page states that service
+    outages are communicated through the status page; contractual availability
+    terms are handled in Enterprise agreements.
+support:
+  channels:
+  - https://customer.io/contact
+  - https://academy.customer.io/pages/get-started
+  - legal@customer.io (privacy and legal)
+regions:
+  us:
+  - api.customer.io
+  - track.customer.io
+  - cdp.customer.io
+  - mcp.customer.io
+  eu:
+  - api-eu.customer.io
+  - track-eu.customer.io
+  - cdp-eu.customer.io
+  - mcp-eu.customer.io
+  discovery_operation: getRegion
+changelog: changelog/customer-io-changelog.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

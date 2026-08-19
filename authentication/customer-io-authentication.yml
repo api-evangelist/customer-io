@@ -1,22 +1,141 @@
-generated: '2026-07-11'
-method: derived
-source: openapi/customer-io-app-api-openapi.yml, openapi/customer-io-pipelines-api-openapi.yml,
-  openapi/customer-io-track-api-openapi.yml
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://docs.customer.io/integrations/api/customerio-apis.md,
+  https://docs.customer.io/ai/cli/get-started.md,
+  https://docs.customer.io/ai/mcp/get-started.md and the securitySchemes of the
+  published specs at https://docs.customer.io/files/journeys-app.json,
+  /files/journeys-track.json and /files/pipelines.json
+docs: https://docs.customer.io/accounts/settings/managing-credentials/
+provider: Customer.io
+providerId: customer-io
 summary:
   types:
   - http
+  - oauth2
+  scheme_count: 5
+  note: >-
+    Customer.io runs four different credentials across four surfaces, and they
+    are not interchangeable. The App API takes a bearer App API Key; the Track
+    API takes basic auth of site_id:api_key; the Pipelines/CDP API takes basic
+    auth of the CDP API key as the username with a blank password; the CLI takes
+    a service account token (sa_live_); and the MCP server uses OAuth 2.1 tied
+    to the user's own login. Choosing the wrong one is the most common 401 on
+    this platform.
+  credentials_page: https://fly.customer.io/settings/api_credentials
 schemes:
-- name: bearerAuth
+- name: Bearer-Auth
   type: http
   scheme: bearer
-  description: Bearer token authentication using your App API key. Pass the key in the Authorization
-    header as Bearer {app_api_key}.
+  api: App API
+  base_urls:
+  - https://api.customer.io
+  - https://api-eu.customer.io
+  credential: App API Key
+  description: >-
+    Bearer authorization with an App API Key generated in account settings. Keys
+    carry a defined scope set in the UI and are workspace-scoped.
+  create_at: https://fly.customer.io/settings/api_credentials?keyType=app
   sources:
-  - openapi/customer-io-app-api-openapi.yml
-- name: basicAuth
+  - openapi/_original/customer-io-app-api-openapi.json
+- name: ServiceAccount-Auth
+  type: http
+  scheme: bearer
+  bearerFormat: sa_live_
+  api: App API (transactional send endpoints) and Customer.io CLI
+  applies_to:
+  - /v1/send/email
+  - /v1/send/push
+  - /v1/send/sms
+  - /v1/send/in_app
+  - /v1/send/inbox_message
+  credential: Service account token
+  required_header: X-Workspace-Id
+  description: >-
+    A service-account bearer token prefixed sa_live_. It works across
+    workspaces, so the target workspace must be passed as the X-Workspace-Id
+    header on every request. Customer.io's own guidance is that these are for
+    testing and one-off sends — for example driving the CLI from a coding agent
+    to verify a transactional template renders — and that production
+    integrations should use a workspace-scoped App API Key instead, because it
+    is easier to rotate and has a smaller blast radius.
+  token_types:
+  - User service account (inherits a person's role; can be made permanently
+    read-only)
+  - System service account (assigned a role; applies to every workspace)
+  create_at: https://fly.customer.io/settings/api_credentials?keyType=service_accounts
+  sources:
+  - openapi/_original/customer-io-app-api-openapi.json
+  - https://docs.customer.io/ai/cli/get-started.md
+- name: Tracking-API-Key
   type: http
   scheme: basic
-  description: Basic authentication using your CDP API key as the username with a blank password.
+  api: Track API
+  base_urls:
+  - https://track.customer.io
+  - https://track-eu.customer.io
+  credential: Site ID + API key
+  description: >-
+    HTTP basic authentication. The username is the workspace Site ID and the
+    password is the Track API key, base64-encoded as site_id:api_key.
+  create_at: https://fly.customer.io/settings/api_credentials
   sources:
-  - openapi/customer-io-pipelines-api-openapi.yml
-  - openapi/customer-io-track-api-openapi.yml
+  - openapi/_original/customer-io-track-api-openapi.json
+- name: Basic-Auth
+  type: http
+  scheme: basic
+  api: Pipelines API (CDP)
+  base_urls:
+  - https://cdp.customer.io/v1
+  - https://cdp-eu.customer.io/v1
+  credential: CDP API key
+  description: >-
+    HTTP basic authentication where the CDP API key is the username and the
+    password is left blank, base64-encoded as API_key: — the Segment-spec
+    convention.
+  sources:
+  - openapi/_original/customer-io-pipelines-api-openapi.json
+- name: MCP-OAuth
+  type: oauth2
+  flow: authorization_code
+  api: Customer.io MCP
+  base_urls:
+  - https://mcp.customer.io/mcp
+  - https://mcp-eu.customer.io/mcp
+  description: >-
+    OAuth 2.1 authorization code with PKCE. Dynamic client registration is
+    supported (RFC 7591), and the metadata is published anonymously at
+    /.well-known/oauth-authorization-server and
+    /.well-known/oauth-protected-resource. Each user authorizes with their own
+    Customer.io login, so a connection can never exceed that person's
+    permissions.
+  authorization_endpoint: https://mcp.customer.io/oauth2/authorize
+  token_endpoint: https://mcp.customer.io/oauth2/token
+  registration_endpoint: https://mcp.customer.io/oauth2/register
+  revocation_endpoint: https://mcp.customer.io/oauth2/revoke
+  code_challenge_methods:
+  - S256
+  - plain
+  scopes: scopes/customer-io-scopes.yml
+  sources:
+  - well-known/customer-io-oauth-authorization-server.json
+  - well-known/customer-io-oauth-protected-resource.json
+regions:
+  note: >-
+    Every surface is regionalised. A US credential does not work against an EU
+    host and vice versa. The Track API exposes GET /api/v1/accounts/region
+    (operationId getRegion) so a client can discover which region a workspace
+    lives in.
+  discovery_operation: getRegion
+webhook_verification:
+  header_timestamp: x-cio-timestamp
+  header_signature: x-cio-signature
+  algorithm: HMAC-SHA256
+  description: >-
+    Reporting webhooks are signed. x-cio-signature is an HMAC-SHA256 of the
+    request body keyed with the webhook signing key, and x-cio-timestamp carries
+    the send time so replays can be rejected.
+  source: openapi/_original/customer-io-reporting-webhooks-openapi.json
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

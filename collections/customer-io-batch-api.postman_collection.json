@@ -1,0 +1,427 @@
+{
+  "item": [
+    {
+      "id": "9c5d27e6-ab9f-447d-94ec-de84f69e3551",
+      "name": "Batch",
+      "description": {
+        "content": "Send multiple API calls in a single request for improved performance.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "3e0f21be-93bc-44f0-b853-f6aa016eb75f",
+          "name": "Send a batch of API calls",
+          "request": {
+            "name": "Send a batch of API calls",
+            "description": {
+              "content": "Sends multiple API calls in a single HTTP request. Each item in the batch array is a standard identify, track, page, screen, group, or alias call. The batch request must be smaller than 1MB.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "batch"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"batch\": [\n    {\n      \"type\": \"<string>\"\n    },\n    {\n      \"type\": \"<string>\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "3ce9d140-9e97-4186-88f2-d4abc383f56f",
+              "name": "Batch processed successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"batch\": [\n    {\n      \"type\": \"<string>\"\n    },\n    {\n      \"type\": \"<string>\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c338e81b-e02d-4344-ad3e-dcf153bc4358",
+              "name": "Bad request. Invalid payload or exceeds size limit.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"batch\": [\n    {\n      \"type\": \"<string>\"\n    },\n    {\n      \"type\": \"<string>\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a368a13a-51c3-469a-9eb5-2711eb31289b",
+              "name": "Unauthorized. Invalid CDP API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"batch\": [\n    {\n      \"type\": \"<string>\"\n    },\n    {\n      \"type\": \"<string>\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "55a20bd1-5045-4090-be35-d5153ec56345",
+          "name": "Batch entity operations",
+          "request": {
+            "name": "Batch entity operations",
+            "description": {
+              "content": "Sends multiple entity operations in a single request. Each item in the batch array represents an individual entity operation for a person, object, or delivery. You can mix types in a single request. The request must be smaller than 500KB.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "..",
+                "v2",
+                "batch"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"batch\": [\n    {\n      \"type\": \"<string>\",\n      \"action\": \"<string>\",\n      \"identifiers\": {\n        \"key_0\": 824.9471487828375,\n        \"key_1\": false\n      },\n      \"attributes\": {\n        \"key_0\": 3014.392357623146\n      },\n      \"name\": \"<string>\",\n      \"data\": {\n        \"key_0\": false\n      }\n    },\n    {\n      \"type\": \"<string>\",\n      \"action\": \"<string>\",\n      \"identifiers\": {\n        \"key_0\": 8391.758002844434,\n        \"key_1\": \"string\"\n      },\n      \"attributes\": {\n        \"key_0\": false\n      },\n      \"name\": \"<string>\",\n      \"data\": {\n        \"key_0\": 5106.609507229244,\n        \"key_1\": true\n      }\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "07c36356-2ea6-4ca7-a47d-998143c67b8e",
+              "name": "Batch processed successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "..",
+                    "v2",
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"batch\": [\n    {\n      \"type\": \"delivery\",\n      \"action\": \"add_device\",\n      \"identifiers\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\",\n        \"key_2\": \"string\"\n      },\n      \"attributes\": {\n        \"key_0\": 3159.67049258441,\n        \"key_1\": 2332.206775045321,\n        \"key_2\": 8803\n      },\n      \"name\": \"string\",\n      \"data\": {\n        \"key_0\": true\n      }\n    },\n    {\n      \"type\": \"delivery\",\n      \"action\": \"suppress\",\n      \"identifiers\": {\n        \"key_0\": false,\n        \"key_1\": false\n      },\n      \"attributes\": {\n        \"key_0\": 7565\n      },\n      \"name\": \"string\",\n      \"data\": {\n        \"key_0\": 2066.434392467044,\n        \"key_1\": false\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6353f7c0-3ea1-4d4a-a19d-ee13cf6b0785",
+              "name": "Bad request. Invalid payload structure or exceeds size limit.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "..",
+                    "v2",
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"batch\": [\n    {\n      \"type\": \"delivery\",\n      \"action\": \"add_device\",\n      \"identifiers\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\",\n        \"key_2\": \"string\"\n      },\n      \"attributes\": {\n        \"key_0\": 3159.67049258441,\n        \"key_1\": 2332.206775045321,\n        \"key_2\": 8803\n      },\n      \"name\": \"string\",\n      \"data\": {\n        \"key_0\": true\n      }\n    },\n    {\n      \"type\": \"delivery\",\n      \"action\": \"suppress\",\n      \"identifiers\": {\n        \"key_0\": false,\n        \"key_1\": false\n      },\n      \"attributes\": {\n        \"key_0\": 7565\n      },\n      \"name\": \"string\",\n      \"data\": {\n        \"key_0\": 2066.434392467044,\n        \"key_1\": false\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "68f0ea2a-861f-473f-83aa-019c7982e639",
+              "name": "Unauthorized. Invalid Site ID or API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "..",
+                    "v2",
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"batch\": [\n    {\n      \"type\": \"delivery\",\n      \"action\": \"add_device\",\n      \"identifiers\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\",\n        \"key_2\": \"string\"\n      },\n      \"attributes\": {\n        \"key_0\": 3159.67049258441,\n        \"key_1\": 2332.206775045321,\n        \"key_2\": 8803\n      },\n      \"name\": \"string\",\n      \"data\": {\n        \"key_0\": true\n      }\n    },\n    {\n      \"type\": \"delivery\",\n      \"action\": \"suppress\",\n      \"identifiers\": {\n        \"key_0\": false,\n        \"key_1\": false\n      },\n      \"attributes\": {\n        \"key_0\": 7565\n      },\n      \"name\": \"string\",\n      \"data\": {\n        \"key_0\": 2066.434392467044,\n        \"key_1\": false\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.customer.io/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "5a7a6c10-a82f-4699-bc94-5199072dbbb0",
+    "name": "Customer.io App Activities Batch API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.\n\nContact Support:\n Name: Customer.io Support",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,7 +1,7 @@
 {
   "opencollection": "1.0.0",
   "info": {
-    "name": "Customer.io App Activities Track API",
+    "name": "Customer.io App Activities Identify API",
     "version": "1.0.0"
   },
   "request": {
@@ -13,24 +13,24 @@
   "items": [
     {
       "info": {
-        "name": "Track",
+        "name": "Identify",
         "type": "folder"
       },
       "items": [
         {
           "info": {
-            "name": "Track an event",
+            "name": "Identify a person",
             "type": "http"
           },
           "http": {
             "method": "POST",
-            "url": "https://api.customer.io/v1/track",
+            "url": "https://api.customer.io/v1/identify",
             "body": {
               "type": "json",
               "data": "{}"
             }
           },
-          "docs": "Records an event that a person performed. Every track call requires an event name and at least one of userId or anonymousId. Event properties provide additional context about the action."
+          "docs": "Identifies a person and sets their profile attributes. Use this call when a user creates an account, logs in, or updates their profile. Requires at least one of userId or anonymousId. Traits are saved as profile attributes."
         }
       ]
     }

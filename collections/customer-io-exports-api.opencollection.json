@@ -1,0 +1,73 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Customer.io App Activities Exports API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Exports",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Export customers",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.customer.io/v1/exports/customers",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Initiates an export of customer data from your workspace. The export runs asynchronously and you receive a download link when complete."
+        },
+        {
+          "info": {
+            "name": "Export deliveries",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.customer.io/v1/exports/deliveries",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Initiates an export of message delivery data from your workspace."
+        },
+        {
+          "info": {
+            "name": "Get an export",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.customer.io/v1/exports/:export_id",
+            "params": [
+              {
+                "name": "export_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the export."
+              }
+            ]
+          },
+          "docs": "Returns the status and download link for a previously initiated export."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

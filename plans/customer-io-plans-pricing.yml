@@ -1,10 +1,16 @@
 specification: API Commons Plans
 specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://customer.io/pricing and
+  https://docs.customer.io/accounts/billing/builder-plan.md
+plan_count: 4
 provider: Customer.io
 providerId: customer-io
 created: '2026-06-20'
-modified: '2026-06-20'
+modified: '2026-08-13'
 reconciled: true
 tags:
 - Customer Messaging
@@ -29,6 +35,78 @@ sources:
 - https://customer.io/pricing
 - https://docs.customer.io
 plans:
+- id: customerio-builder
+  name: Builder
+  type: pay-as-you-go
+  currency: USD
+  source: https://docs.customer.io/accounts/billing/builder-plan/
+  description: >-
+    Pay-as-you-go messaging infrastructure with no monthly fee and no trial
+    period. Free to set up and test; you add funds starting at $10 when you are
+    ready to send to real customers. Customer.io positions it explicitly for
+    early-stage developers, mobile developers testing push, and AI-native
+    builders driving the platform through the CLI or MCP server rather than a
+    GUI. Transactional messages and one-time broadcasts only — behavioural
+    automations require Essentials.
+  entries:
+  - label: Base Subscription
+    name: base_subscription
+    type: flat
+    metric: subscription
+    limit: 0
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $0/month — no subscription
+    userMultiplied: false
+  - label: Minimum Funding
+    name: minimum_funding
+    type: prepaid
+    metric: credit
+    limit: 1
+    timeFrame: once
+    geo: global
+    unit: 1
+    price: $10 minimum to go live
+    userMultiplied: false
+  - label: Messages
+    name: messages
+    type: usage
+    metric: messages
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1000
+    price: $0.40 per 1,000 messages
+    userMultiplied: false
+  - label: Verified Recipients Before Funding
+    name: verified_recipients
+    type: included
+    metric: recipients
+    limit: 10
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: free
+    userMultiplied: false
+  - label: Sending Domains
+    name: sending_domains
+    type: included
+    metric: domains
+    limit: 2
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: included
+    userMultiplied: false
+  elements:
+  - name: App / Transactional API
+  - name: Track API
+  - name: Pipelines / CDP API
+  - name: Customer.io CLI
+  - name: Customer.io MCP
+  - name: One-time broadcasts
+  - name: API-triggered broadcasts
 - id: customerio-essentials
   name: Essentials
   type: subscription

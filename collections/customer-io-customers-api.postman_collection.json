@@ -1,0 +1,1563 @@
+{
+  "item": [
+    {
+      "id": "0128937f-1345-443c-b6f2-e170d8a230f6",
+      "name": "Customers",
+      "description": {
+        "content": "Look up customer profiles, search for customers, and retrieve customer attributes and activity data.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "59f8a7cc-e52c-482e-8987-37b49423728a",
+          "name": "Search customers",
+          "request": {
+            "name": "Search customers",
+            "description": {
+              "content": "Searches for customers in your workspace using complex filter criteria. Returns matching customer profiles with their attributes.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "45bf3842-de52-4af3-ab33-4f967dcdee65",
+              "name": "Matching customers.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"next\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "712b5f4f-562f-42f2-a325-32a2d0446aae",
+              "name": "Unauthorized. Invalid App API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a3ee3ac7-c153-4a18-81d5-c1cd3f19351f",
+          "name": "Get customer attributes",
+          "request": {
+            "name": "Get customer attributes",
+            "description": {
+              "content": "Returns the attributes for a specific customer profile.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                ":identifier",
+                "attributes"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "identifier",
+                  "description": "(Required) The unique identifier for the customer. Can be an id, email, or cio_id depending on your workspace configuration."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "33c94417-e3ec-4621-bae4-94d5d1dbd3de",
+              "name": "Customer attributes.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "attributes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. Can be an id, email, or cio_id depending on your workspace configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"customer\": {\n    \"id\": \"string\",\n    \"email\": \"JMyIy44@Ruepd.jmm\",\n    \"created_at\": 7848,\n    \"attributes\": {\n      \"key_0\": 3140,\n      \"key_1\": \"string\",\n      \"key_2\": 1204,\n      \"key_3\": 9471.437612861593\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "551b2b02-e6a8-49b9-897e-30c9ee49a751",
+              "name": "Unauthorized. Invalid App API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "attributes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. Can be an id, email, or cio_id depending on your workspace configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "153747c9-af91-4f95-925b-eec3454be4e2",
+              "name": "Customer not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "attributes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. Can be an id, email, or cio_id depending on your workspace configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "5b3fd541-c3f8-4149-950a-37f6f34e4f8f",
+          "name": "Get customer segments",
+          "request": {
+            "name": "Get customer segments",
+            "description": {
+              "content": "Returns the segments that a specific customer belongs to.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                ":identifier",
+                "segments"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "identifier",
+                  "description": "(Required) The unique identifier for the customer. Can be an id, email, or cio_id depending on your workspace configuration."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "022a77df-b7fd-474f-b287-f09e51a363cd",
+              "name": "Customer segments.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "segments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. Can be an id, email, or cio_id depending on your workspace configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"segments\": [\n    {\n      \"id\": 6022,\n      \"name\": \"string\",\n      \"description\": \"string\",\n      \"type\": \"manual\",\n      \"state\": \"string\"\n    },\n    {\n      \"id\": 1748,\n      \"name\": \"string\",\n      \"description\": \"string\",\n      \"type\": \"data_driven\",\n      \"state\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3bbf35e4-01c0-49fe-805e-c1c5bbf2edb7",
+              "name": "Unauthorized. Invalid App API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "segments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. Can be an id, email, or cio_id depending on your workspace configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ea158ff7-152f-4288-90d6-2d6237d35d91",
+              "name": "Customer not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "segments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. Can be an id, email, or cio_id depending on your workspace configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0ee16aa0-5a18-487c-93e4-d518c16e9517",
+          "name": "Get customer activities",
+          "request": {
+            "name": "Get customer activities",
+            "description": {
+              "content": "Returns a list of activities for a specific customer, including messages sent, events tracked, and other interactions.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                ":identifier",
+                "activities"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "identifier",
+                  "description": "(Required) The unique identifier for the customer. Can be an id, email, or cio_id depending on your workspace configuration."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "b4f90233-56e4-44d6-bbf9-c7f15482e4e9",
+              "name": "Customer activity list.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "activities"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. Can be an id, email, or cio_id depending on your workspace configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"activities\": [\n    {\n      \"id\": \"string\",\n      \"type\": \"string\",\n      \"name\": \"string\",\n      \"timestamp\": 3482,\n      \"delivery_id\": \"string\"\n    },\n    {\n      \"id\": \"string\",\n      \"type\": \"string\",\n      \"name\": \"string\",\n      \"timestamp\": 8876,\n      \"delivery_id\": \"string\"\n    }\n  ],\n  \"next\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d1ce6713-4b19-4785-a35b-23db065fda1d",
+              "name": "Unauthorized. Invalid App API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "activities"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. Can be an id, email, or cio_id depending on your workspace configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "abd29390-48c2-4f71-96ed-2dad548b8d79",
+              "name": "Customer not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "activities"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. Can be an id, email, or cio_id depending on your workspace configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0ccd81bd-3b63-4bd8-aca8-c00e07751353",
+          "name": "Get customer messages",
+          "request": {
+            "name": "Get customer messages",
+            "description": {
+              "content": "Returns a list of messages sent to a specific customer.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                ":identifier",
+                "messages"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "identifier",
+                  "description": "(Required) The unique identifier for the customer. Can be an id, email, or cio_id depending on your workspace configuration."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "fd91451b-faad-4185-b912-2299bc90755f",
+              "name": "Customer messages.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "messages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. Can be an id, email, or cio_id depending on your workspace configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"messages\": [\n    {\n      \"id\": \"string\",\n      \"type\": \"string\",\n      \"subject\": \"string\",\n      \"customer_id\": \"string\",\n      \"campaign_id\": 8298,\n      \"created\": 4691,\n      \"metrics\": {\n        \"sent\": 5084,\n        \"delivered\": 9273,\n        \"opened\": 9211,\n        \"clicked\": 1148,\n        \"bounced\": 4871\n      }\n    },\n    {\n      \"id\": \"string\",\n      \"type\": \"string\",\n      \"subject\": \"string\",\n      \"customer_id\": \"string\",\n      \"campaign_id\": 521,\n      \"created\": 6675,\n      \"metrics\": {\n        \"sent\": 3557,\n        \"delivered\": 3354,\n        \"opened\": 4949,\n        \"clicked\": 4957,\n        \"bounced\": 1667\n      }\n    }\n  ],\n  \"next\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d569b6e9-8a14-4fb7-b35e-f793afe8a78c",
+              "name": "Unauthorized. Invalid App API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "messages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. Can be an id, email, or cio_id depending on your workspace configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0126f16c-0029-4ddb-9764-bdff109e1524",
+              "name": "Customer not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "messages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. Can be an id, email, or cio_id depending on your workspace configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0599d9a1-1f35-4ed0-8683-8061540b1341",
+          "name": "Identify a customer",
+          "request": {
+            "name": "Identify a customer",
+            "description": {
+              "content": "Creates or updates a customer profile in Customer.io. If the customer does not exist, a new profile is created. If the customer already exists, the profile is updated with the provided attributes. The identifier can be an id or email address depending on your workspace configuration.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                ":identifier"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "identifier",
+                  "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"<email>\",\n  \"created_at\": \"<integer>\",\n  \"anonymous_id\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "9764f29c-b0d7-4742-80b4-30806b9a3ccd",
+              "name": "Customer identified successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"<email>\",\n  \"created_at\": \"<integer>\",\n  \"anonymous_id\": \"<string>\",\n  \"key_0\": \"string\",\n  \"key_1\": \"string\",\n  \"key_2\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3afa7b7e-7d91-4c5f-9ac8-a5dcf53a6531",
+              "name": "Unauthorized. Invalid Site ID or API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"<email>\",\n  \"created_at\": \"<integer>\",\n  \"anonymous_id\": \"<string>\",\n  \"key_0\": \"string\",\n  \"key_1\": \"string\",\n  \"key_2\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "abd8a867-bff5-458e-928c-9646a395cf98",
+          "name": "Delete a customer",
+          "request": {
+            "name": "Delete a customer",
+            "description": {
+              "content": "Deletes a customer profile from Customer.io. This removes the person and their associated data from your workspace. This action cannot be undone.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                ":identifier"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "identifier",
+                  "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "00fc853c-13e3-49a0-a7db-a2b4f5227f8b",
+              "name": "Customer deleted successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "e855e205-0444-490b-885d-985d85272b7f",
+              "name": "Unauthorized. Invalid Site ID or API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f5e08d15-855b-487c-98f3-98349062b3ab",
+              "name": "Customer not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4c78b1a5-7513-4a3a-86de-91d49d2dad12",
+          "name": "Suppress a customer",
+          "request": {
+            "name": "Suppress a customer",
+            "description": {
+              "content": "Suppresses a customer profile, preventing Customer.io from sending messages to the person. The customer is deleted and their identifier is added to a suppression list so they cannot be re-added.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                ":identifier",
+                "suppress"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "identifier",
+                  "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                }
+              ]
+            },
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "86750c32-d066-4adc-bfed-3f8ac8238acd",
+              "name": "Customer suppressed successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "suppress"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "9c467f09-d7a9-487e-ab17-57739da6c9d2",
+              "name": "Unauthorized. Invalid Site ID or API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "suppress"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "bb49c5c8-9ee0-4347-ac48-6d48d4a0067a",
+          "name": "Unsuppress a customer",
+          "request": {
+            "name": "Unsuppress a customer",
+            "description": {
+              "content": "Removes a customer from the suppression list, allowing them to be re-added to your workspace and receive messages again.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                ":identifier",
+                "unsuppress"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "identifier",
+                  "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                }
+              ]
+            },
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "2aa89c74-fccb-43f0-b4aa-d344fccfe554",
+              "name": "Customer unsuppressed successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "unsuppress"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "1542d005-ce66-4e27-9bb6-624c5ee0c70e",
+              "name": "Unauthorized. Invalid Site ID or API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "unsuppress"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.customer.io/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "ce633e36-59c8-431b-9713-a9d6ef59ef25",
+    "name": "Customer.io App Activities Customers API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.\n\nContact Support:\n Name: Customer.io Support",
+      "type": "text/plain"
+    }
+  }
+}

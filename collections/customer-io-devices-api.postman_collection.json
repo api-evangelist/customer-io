@@ -1,0 +1,427 @@
+{
+  "item": [
+    {
+      "id": "c9a51b04-9068-4268-9ce8-6dbd73e181d9",
+      "name": "Devices",
+      "description": {
+        "content": "Manage push notification devices associated with customer profiles.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "7af27f21-7954-4337-a8f2-e763f554d173",
+          "name": "Add a customer device",
+          "request": {
+            "name": "Add a customer device",
+            "description": {
+              "content": "Adds or updates a device associated with a customer for push notifications. The device token and platform are required. This endpoint is used to register mobile devices so Customer.io can send push notifications to the customer.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                ":identifier",
+                "devices"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "identifier",
+                  "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"device\": {\n    \"id\": \"<string>\",\n    \"platform\": \"<string>\",\n    \"last_used\": \"<integer>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "38ea21f7-0cb9-490e-b609-c5186411a6f0",
+              "name": "Device added or updated successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "devices"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"device\": {\n    \"id\": \"<string>\",\n    \"platform\": \"<string>\",\n    \"last_used\": \"<integer>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "58104d98-dd68-493e-b8ff-c7ab9ef50e7e",
+              "name": "Unauthorized. Invalid Site ID or API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "devices"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"device\": {\n    \"id\": \"<string>\",\n    \"platform\": \"<string>\",\n    \"last_used\": \"<integer>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6f0f3883-4e1e-4f83-9c91-6cf8a03abdfb",
+          "name": "Delete a customer device",
+          "request": {
+            "name": "Delete a customer device",
+            "description": {
+              "content": "Removes a device from a customer profile. The customer will no longer receive push notifications on this device.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                ":identifier",
+                "devices",
+                ":device_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "identifier",
+                  "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "device_id",
+                  "description": "(Required) The unique identifier for the device to remove."
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "18399d77-92df-4595-a0f8-209a52b42cf2",
+              "name": "Device deleted successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "devices",
+                    ":device_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "device_id",
+                      "description": "(Required) The unique identifier for the device to remove."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "de1d7937-8ca4-4099-8064-9b4049aaf506",
+              "name": "Unauthorized. Invalid Site ID or API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "devices",
+                    ":device_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "device_id",
+                      "description": "(Required) The unique identifier for the device to remove."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "cbe19f03-604f-4aa5-821a-a428625fc97b",
+              "name": "Device not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":identifier",
+                    "devices",
+                    ":device_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "identifier",
+                      "description": "(Required) The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "device_id",
+                      "description": "(Required) The unique identifier for the device to remove."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.customer.io/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "f85a971b-3896-41b7-b11f-bd8fed5bf9ba",
+    "name": "Customer.io App Activities Devices API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.\n\nContact Support:\n Name: Customer.io Support",
+      "type": "text/plain"
+    }
+  }
+}

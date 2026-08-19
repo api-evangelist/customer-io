@@ -1,0 +1,95 @@
+generated: '2026-08-13'
+method: probed
+source: https://docs.customer.io/.well-known/agent-card.json
+provider: Customer.io
+providerId: customer-io
+name: Customer.io Documentation
+description: >-
+  Customer.io serves an A2A Agent Card from its documentation host. The card
+  describes a documentation-retrieval agent surface — search the docs, and fetch
+  any page as clean Markdown via Accept: text/markdown content negotiation or by
+  appending .md to the path — not the Customer.io product API. The product API
+  agent surface is the MCP server at https://mcp.customer.io/mcp, captured in
+  mcp/customer-io-mcp.yml.
+card: a2a/customer-io-agent-card.json
+discovery:
+  path: /.well-known/agent-card.json
+  canonical: true
+  host: docs.customer.io
+x-evidence:
+  fetched: '2026-08-13'
+  url: https://docs.customer.io/.well-known/agent-card.json
+  http_status: 200
+  content_type: application/json; charset=utf-8
+  bytes: 1849
+  parses_as: json-object
+  agent_card_fields_present:
+  - name
+  - description
+  - version
+  - capabilities
+  - skills
+  - provider
+  - documentationUrl
+  - defaultInputModes
+  - defaultOutputModes
+  - supportedInterfaces
+  - iconUrl
+grade: flavored
+grade_rubric: A2A 1.0.0
+grade_detail: >-
+  Two of the three hard checks pass — capabilities is an object and skills is an
+  array — but the card omits the top-level protocolVersion, which A2A 1.0.0
+  requires on every AgentCard. It also omits the top-level url, expressing the
+  endpoint through a supportedInterfaces[] array instead. A client that reads
+  the specification literally cannot determine which protocol revision this card
+  claims, so it grades flavored rather than near-conformant.
+hard_checks:
+- check: capabilities is an object
+  pass: true
+  observed: '{"streaming": false, "pushNotifications": false}'
+- check: protocolVersion present at the top level
+  pass: false
+  observed: >-
+    absent at the top level; "protocolVersion": "1.0" appears only inside
+    supportedInterfaces[0]
+- check: skills is an array
+  pass: true
+  observed: 2 skills
+deviations:
+- field: protocolVersion
+  issue: missing at the top level
+  impact: >-
+    A consumer cannot tell which A2A revision the card targets without inferring
+    it from supportedInterfaces[0].protocolVersion.
+- field: url
+  issue: absent; replaced by supportedInterfaces[]
+  impact: >-
+    Pre-1.0 A2A clients look for a top-level url and will find no endpoint. The
+    interface is reachable at https://docs.customer.io/ per
+    supportedInterfaces[0].url.
+- field: preferredTransport
+  issue: not declared
+  impact: Optional in 1.0.0; transport is implied by protocolBinding HTTP+JSON.
+skills:
+- id: search-customerio-docs
+  name: Search Customer.io documentation
+  tags:
+  - documentation
+  - customer.io
+  - api
+  - mcp
+- id: fetch-page-as-markdown
+  name: Fetch a documentation page as Markdown
+  tags:
+  - documentation
+  - customer.io
+  - markdown
+  - content-negotiation
+related:
+  mcp: mcp/customer-io-mcp.yml
+  llms_txt: llms/customer-io-llms.txt
+  api_catalog: well-known/customer-io-api-catalog.json
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
