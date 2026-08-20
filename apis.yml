@@ -117,6 +117,8 @@ apis:
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://api.customer.io
   tags:
+  - Collection
+  tags_raw:
   - Collections
   properties:
   - type: OpenAPI
@@ -177,6 +179,8 @@ apis:
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags:
+  - Event
+  tags_raw:
   - Events
   properties:
   - type: OpenAPI
@@ -191,6 +195,8 @@ apis:
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://api.customer.io
   tags:
+  - Export
+  tags_raw:
   - Exports
   properties:
   - type: OpenAPI
@@ -249,6 +255,8 @@ apis:
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://api.customer.io
   tags:
+  - Message
+  tags_raw:
   - Messages
   properties:
   - type: OpenAPI
@@ -424,6 +432,11 @@ apis:
   baseURL: https://api.customer.io
   humanURL: https://docs.customer.io/integrations/api/webhooks/
   tags:
+  - Webhook
+  - Event
+  - Reporting
+  - Messaging
+  tags_raw:
   - Webhooks
   - Events
   - Reporting
@@ -452,6 +465,10 @@ apis:
   baseURL: https://mcp.customer.io/mcp
   humanURL: https://docs.customer.io/ai/mcp/get-started/
   tags:
+  - MCP
+  - Agents
+  - Artificial Intelligence
+  tags_raw:
   - MCP
   - Agents
   - AI
