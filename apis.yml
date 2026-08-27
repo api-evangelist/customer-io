@@ -365,103 +365,14 @@ apis:
     url: https://docs.customer.io/integrations/api/app/
   - type: Documentation
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
-- aid: customer-io:app-api
-  name: Customer.io App API
-  description: >-
-    The Customer.io App API is the workspace-management and outbound-messaging
-    surface: trigger broadcasts, send transactional email, push, SMS, in-app and
-    inbox messages, manage campaigns, newsletters, segments, snippets,
-    collections, Design Studio content and assets, read delivery metrics, and
-    export people and delivery data. This entry points at the 166-operation
-    OpenAPI 3.1.0 document Customer.io publishes itself. Authorization is a
-    bearer App API Key, with service-account tokens (sa_live_) additionally
-    accepted on the transactional send endpoints.
-  baseURL: https://api.customer.io
-  humanURL: https://docs.customer.io/integrations/api/app/
-  tags:
-  - Broadcasts
-  - Campaigns
-  - Messaging
-  - Transactional Email
-  - Newsletters
-  - Segments
-  properties:
-  - type: OpenAPI
-    url: openapi/_original/customer-io-app-api-openapi.json
-  - type: Overlay
-    url: overlays/customer-io-app-api-overlay.yaml
-  - type: Documentation
-    url: https://docs.customer.io/integrations/api/app/
-  - type: APIReference
-    url: https://docs.customer.io/integrations/api/customerio-apis/
-- aid: customer-io:pipelines-api
-  name: Customer.io Pipelines API
-  description: >-
-    The Customer.io Pipelines (CDP) API is the Segment-spec data ingestion
-    interface Customer.io recommends for new integrations — identify, track,
-    page, screen, group, alias and batch, all POST-only, with deletes and other
-    state changes expressed as semantic events rather than HTTP verbs. This
-    entry points at the OpenAPI 3.1.0 document Customer.io publishes itself.
-    Authorization is HTTP basic with the CDP API key as the username and a blank
-    password.
-  baseURL: https://cdp.customer.io/v1
-  humanURL: https://docs.customer.io/integrations/data-in/connections/http-api/
-  tags:
-  - CDP
-  - Data Ingestion
-  - Customer Data
-  - Event Tracking
-  properties:
-  - type: OpenAPI
-    url: openapi/_original/customer-io-pipelines-api-openapi.json
-  - type: Overlay
-    url: overlays/customer-io-pipelines-api-overlay.yaml
-  - type: Documentation
-    url: https://docs.customer.io/integrations/data-in/connections/http-api/
-- aid: customer-io:reporting-webhooks
-  name: Customer.io Reporting Webhooks
-  description: >-
-    Customer.io's outbound message-lifecycle event stream. Eight event families
-    — customer, email, sms, whatsapp, push, in_app, slack and webhook — each
-    carrying a metric such as drafted, sent, delivered, opened, clicked,
-    converted, bounced, spammed or failed, plus the full set of foreign keys
-    that tie the event back to the delivery, person, campaign, broadcast,
-    newsletter and journey that produced it. Requests are signed with
-    x-cio-signature, an HMAC-SHA256 of the body, and stamped with
-    x-cio-timestamp.
-  baseURL: https://api.customer.io
-  humanURL: https://docs.customer.io/integrations/api/webhooks/
-  tags:
-  - Webhook
-  - Event
-  - Reporting
-  - Messaging
-  tags_raw:
-  - Webhooks
-  - Events
-  - Reporting
-  - Messaging
-  properties:
-  - type: OpenAPI
-    url: openapi/_original/customer-io-reporting-webhooks-openapi.json
-  - type: Webhooks
-    url: openapi/_original/customer-io-reporting-webhooks-openapi.json
-  - type: AsyncAPI
-    url: asyncapi/customer-io-reporting-webhooks-asyncapi.yml
-  - type: Overlay
-    url: overlays/customer-io-reporting-webhooks-overlay.yaml
-  - type: Documentation
-    url: https://docs.customer.io/integrations/api/webhooks/
 - aid: customer-io:mcp
   name: Customer.io MCP
   description: >-
-    Customer.io's first-party hosted Model Context Protocol server. It exposes
-    the full Journeys App API and CDP Data Pipelines API to any MCP client
-    through eight tools — a context primer, a schema browser, three verb-scoped
-    HTTP proxies split so reads can be approved independently of writes and
-    deletes, a two-tool skill library, and an auth-status probe. Authorization
-    is OAuth 2.1 with PKCE and dynamic client registration, bound to the
-    authorizing user's own Customer.io permissions.
+    Customer.io's first-party hosted Model Context Protocol server. It exposes the full Journeys App API
+    and CDP Data Pipelines API to any MCP client through eight tools — a context primer, a schema browser,
+    three verb-scoped HTTP proxies split so reads can be approved independently of writes and deletes,
+    a two-tool skill library, and an auth-status probe. Authorization is OAuth 2.1 with PKCE and dynamic
+    client registration, bound to the authorizing user's own Customer.io permissions.
   baseURL: https://mcp.customer.io/mcp
   humanURL: https://docs.customer.io/ai/mcp/get-started/
   tags:
@@ -482,6 +393,10 @@ apis:
   - type: Documentation
     url: https://docs.customer.io/ai/mcp/get-started/
 common:
+- type: Overlay
+  url: overlays/customer-io-pipelines-api-overlay.yaml
+- type: Overlay
+  url: overlays/customer-io-reporting-webhooks-overlay.yaml
 - type: Plans
   url: plans/customer-io-plans-pricing.yml
 - type: RateLimits
