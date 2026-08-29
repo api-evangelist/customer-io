@@ -1,0 +1,128 @@
+slug: customer-io
+provider: Customer.io
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Telecommunications
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 11
+edges:
+- tag: Campaigns
+  spec_file: customer-io-campaigns-api-openapi.yml
+  capability_id: BC-400
+  capability_id_l1: BC-400
+  capability_name: Marketing Management
+  confidence: 0.85
+  evidence: GET /v1/campaigns listCampaigns "List campaigns"; "Get campaign metrics"; "Update a campaign
+    action"; platform is "marketing automation, and messaging delivery to send behavior-triggered email,
+    push, SMS"
+  reason: Operations manage marketing campaigns, their message actions, translations and performance metrics
+    — squarely marketing management. Ambiguous between Digital Marketing (marketing automation) and Demand
+    Generation (lifecycle marketing), so only the L1 is asserted.
+- tag: Identify
+  spec_file: customer-io-identify-api-openapi.yml
+  capability_id: BC-420.10
+  capability_id_l1: BC-420
+  capability_name: Customer Data Management
+  confidence: 0.85
+  evidence: POST /identify identify "Add and Update People"; schemas userId, anonymousId, identify
+  reason: Identity-resolution/profile upsert endpoint of the customer data platform — creates and updates
+    person records keyed on userId/anonymousId, i.e. Customer Data Management.
+- tag: Segments
+  spec_file: customer-io-segments-api-openapi.yml
+  capability_id: BC-420.20
+  capability_id_l1: BC-420
+  capability_name: Customer Segmentation Management
+  confidence: 0.85
+  evidence: POST /v1/segments  createManSegment  Create a manual segment; GET /v1/segments/{segment_id}/membership  List
+    customers in a segment
+  reason: Explicit creation, listing and membership resolution of customer segments — textbook Customer
+    Segmentation Management.
+- tag: Track Customers
+  spec_file: customer-io-track-customers-api-openapi.yml
+  capability_id: BC-420.10
+  capability_id_l1: BC-420
+  capability_name: Customer Data Management
+  confidence: 0.85
+  evidence: PUT /api/v1/customers/{identifier}  identify  Add or update a customer; POST /api/v1/merge_customers  merge  Merge
+    duplicate people
+  reason: Creates, updates, deletes, suppresses and de-duplicates customer profiles and their devices
+    — customer master/identity resolution and golden-record maintenance.
+- tag: Track Segments
+  spec_file: customer-io-track-segments-api-openapi.yml
+  capability_id: BC-420.20
+  capability_id_l1: BC-420
+  capability_name: Customer Segmentation Management
+  confidence: 0.85
+  evidence: POST /api/v1/segments/{segment_id}/add_customers  add_to_segment  Add people to a manual segment
+  reason: Adds and removes people from manual segments — direct realisation of customer segmentation management
+    in a marketing platform.
+- tag: Customers
+  spec_file: customer-io-customers-api-openapi.yml
+  capability_id: BC-420.10
+  capability_id_l1: BC-420
+  capability_name: Customer Data Management
+  confidence: 0.8
+  evidence: '"Lookup a customer''s attributes"; "Lookup a customer''s relationships"; "Search for customers";
+    "Lookup a customer''s segments"'
+  reason: Read/search surface over the customer profile store (attributes, relationships, segments, activities)
+    — the customer data platform's golden-record function, i.e. Customer Data Management.
+- tag: Alias
+  spec_file: customer-io-alias-api-openapi.yml
+  capability_id: BC-420.10
+  capability_id_l1: BC-420
+  capability_name: Customer Data Management
+  confidence: 0.75
+  evidence: POST /alias  alias  "Merge profiles"; schema alias with anonymousId/userId
+  reason: Aliasing anonymous to known identifiers to merge customer profiles is identity resolution /
+    golden-record maintenance in a CDP. Small surface (one operation) so confidence is not maximal, but
+    the semantics are unambiguous.
+- tag: track_v2
+  spec_file: customer-io-track-v2-api-openapi.yml
+  capability_id: BC-420.10
+  capability_id_l1: BC-420
+  capability_name: Customer Data Management
+  confidence: 0.75
+  evidence: 'schemas: identify_person, person_merge, person_delete, person_suppress, object_identify,
+    v2_cio_relationships, cio_subscription_preferences'
+  reason: The v2 entity/batch endpoints carry person identification, merge, delete, suppression and object
+    relationship operations — customer master data maintenance. Confidence tempered because the operations
+    themselves ('Make a single request', 'Send multiple requests') are generic transport wrappers.
+- tag: Broadcasts
+  spec_file: customer-io-broadcasts-api-openapi.yml
+  capability_id: BC-400.60
+  capability_id_l1: BC-400
+  capability_name: Digital Marketing Management
+  confidence: 0.7
+  evidence: listBroadcasts; broadcastMetrics "Get broadcast metrics"; updateBroadcastAction; getBroadcastActionLanguage
+    "Get a translation of a broadcast message"
+  reason: Managing and measuring broadcast/newsletter message sends and their variants is outbound marketing
+    automation across email/push/SMS. Sub-capability BC-400.60 (marketing automation) is the best fit,
+    though BC-400.40 demand generation is a plausible alternative, hence 0.7.
+- tag: Design Studio
+  spec_file: customer-io-design-studio-api-openapi.yml
+  capability_id: BC-400
+  capability_id_l1: BC-400
+  capability_name: Marketing Management
+  confidence: 0.7
+  evidence: POST /v1/design_studio/emails createEmail "Create an email"; "List email translations"; "List
+    folders" / "Create a folder"
+  reason: Authoring and organising email creative assets and their translations for a marketing messaging
+    platform — marketing content/creative production. Sub-capability (content marketing vs digital marketing)
+    not clearly named, so L1 only.
+- tag: Newsletters
+  spec_file: customer-io-newsletters-api-openapi.yml
+  capability_id: BC-400.60
+  capability_id_l1: BC-400
+  capability_name: Digital Marketing Management
+  confidence: 0.7
+  evidence: 'POST /v1/newsletters  createNewsletter  Create and send a newsletter; schemas: createEmailNewsletter,
+    createSmsNewsletter, createPushNewsletter'
+  reason: Creation and dispatch of email/SMS/push newsletters is core marketing-automation campaign execution,
+    i.e. digital marketing rather than any technical function.

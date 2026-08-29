@@ -791,6 +791,9 @@ apis:
   - type: Documentation
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 common:
+- type: CapabilityMap
+  url: capabilities/customer-io-capability-edges.yml
+  name: Customer.io Business Capability Map
 - type: Overlay
   url: overlays/customer-io-pipelines-api-overlay.yaml
 - type: Overlay
