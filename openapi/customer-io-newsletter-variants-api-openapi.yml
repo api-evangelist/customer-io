@@ -1,0 +1,2986 @@
+openapi: 3.2.0
+info:
+  version: 1.0.0
+  title: Customer.io App Newsletter Variants API
+  description: 'Our App API provides ways to trigger messages and retrieve information about people, campaigns, broadcasts, and more.
+
+
+    # Overview
+
+
+    The App API provides methods to send newsletters, transactional messages, and API-triggered broadcasts. You can create newsletters from scratch and update transactional messages and API-triggered broadcasts.
+
+
+    For transactional messages and API-triggered broadcasts, your payload acts as a message "trigger" and can contain `data` that you reference in your messages using liquid—`{{trigger.<data>}}`.
+
+
+    The other endpoints help you retrieve information about people, segments, campaigns, broadcasts, etc; it also lets you update campaign actions, messages, newsletter variants, etc. Aside from the [API-triggered broadcast](#triggerBroadcast) (1 per 10 seconds) and [Transactional](#sendEmail) (100 per second) endpoints, requests are limited to 10 per second.
+
+
+    # Use our Postman collection
+
+
+    We''ve generated a Postman collection to help you get started with our APIs.
+
+
+    If you fork this collection, you might want to disable the *Watch original collection* option. We automatically update our Postman collection whenever we release changes to our documentation, even if we don''t change our APIs—which happens daily! Rather than being flooded with Postman notifications, you can check out our [Release Notes](/release-notes/) for updates to our APIs.
+
+
+    **NOTE**: Postman endpoints default to our US APIs. If you''re in our European (EU) region, you''ll need to add `-eu` to the server variables (`track_api_url` and `app_api_url`).
+
+
+    [<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://god.gw.postman.com/run-collection/23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d%26entityType%3Dcollection%26workspaceId%3Db886877f-fc09-475f-84fe-6221a98f4d18#?env%5BCustomer.io%20API%20Environment%5D=W3sia2V5IjoidHJhY2tfYXBpX3VybCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiJ0cmFjay5jdXN0b21lci5pbyIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBwX2FwaV91cmwiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiYXBpLmN1c3RvbWVyLmlvIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzaXRlX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBpX2tleSIsInR5cGUiOiJzZWNyZXQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYmVhcmVyIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYnJvYWRjYXN0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaW1wb3J0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiZW1haWxfYWRkcmVzcyIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InN1cHByZXNzaW9uX3R5cGUiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjb2xsZWN0aW9uX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoic25pcHBldF9uYW1lIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoid2ViaG9va19pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InNlbmRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImV4cG9ydF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6Im1lc3NhZ2VfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzZWdtZW50X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoibmV3c2xldHRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImNvbnRlbnRfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjYW1wYWlnbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImFjdGlvbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImN1c3RvbWVyX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoidHJhbnNhY3Rpb25hbF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InRyaWdnZXJfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJmb3JtX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaWRlbnRpZmllciIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRldmljZV9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRlbGl2ZXJ5X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9XQ==)
+
+
+    # Server addresses: US and EU
+
+
+    Customer.io hosts services in the United States (US) and European Union. Select the appropriate server address for your region.
+
+
+    | Region | Server Address |
+
+    | :-- | :-- |
+
+    | US | https://api.customer.io |
+
+    | EU | https://api-eu.customer.io |
+
+
+    # Authentication
+
+
+    All requests to the Customer.io App API use an [App API Key](#App-API-Key).
+
+
+    To authenticate, provide your key as a Bearer token in a HTTP Authorization header. You can create and manage your API keys—including keys with different scopes—in [your account settings page](https://fly.customer.io/settings/api_credentials?keyType=app). Each operation on this page references the authorization header it requires.
+
+
+    # Rate Limits
+
+
+    Most endpoints on this page are limited to 10 requests per second. The exceptions are:
+
+    * The [transactional email](#operation/sendEmail) endpoint is limited to 100 requests per second.
+
+    * The [API-triggered broadcast endpoint](#operation/triggerBroadcast) is limited to 1 request every 10 seconds.
+
+
+    **Rate limits are subject to change. We may adjust these thresholds to ensure stable performance for all customers.**
+
+    '
+servers:
+- url: https://api.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+- url: https://api-eu.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+tags:
+- name: Newsletter Variants
+  description: 'A newsletter variant is a translation or an A/B test. You can create, update, or delete variants in newsletters from these endpoints. You can also create a new A/B test group.
+
+
+    If your newsletters include assets like images or PDFs, host them in your [workspace''s assets](/integrations/api/app/#tag/assets) or at another public URL, and include the URL in your message content.
+
+    '
+paths:
+  /v1/newsletters/{newsletter_id}/contents:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - name: newsletter_id
+      in: path
+      required: true
+      description: The identifier of a newsletter.
+      schema:
+        type: integer
+    get:
+      summary: List newsletter variants
+      operationId: listNewsletterVariants
+      security:
+      - Bearer-Auth: []
+      description: Returns a newsletter's content variants—these are either different languages in a multi-language newsletter or A/B tests.
+      tags:
+      - Newsletter Variants
+      responses:
+        '200':
+          description: Returns newsletter `content_id`s. Each object represents an individual variant of this newsletter.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  contents:
+                    type: array
+                    items:
+                      x-scalar-ignore: true
+                      allOf:
+                      - x-scalar-ignore: true
+                        type: object
+                        properties:
+                          id:
+                            x-scalar-ignore: true
+                            type: integer
+                            description: The identifier of a newsletter variant—a language in a multi-language newsletter or a test in an A/B test.
+                            readOnly: true
+                          newsletter_id:
+                            x-scalar-ignore: true
+                            description: The identifier for a newsletter.
+                            type: integer
+                            example: 10
+                          deduplicate_id:
+                            x-scalar-ignore: true
+                            type: string
+                            readOnly: true
+                            description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+                            example: 15:1492548073
+                          name:
+                            type: string
+                            description: The name of the variant, if it exists.
+                            readOnly: true
+                            example: newsletter variant A
+                          layout:
+                            type: string
+                            description: The layout used for the variant, if it exists.
+                            example: <html><body>{{ content }}</body></html>
+                            readOnly: true
+                          body:
+                            type: string
+                            description: The body of the variant. You cannot modify the body if you created it with our drag-and-drop editor.
+                            example: <strong>Hello from the API</strong>
+                          body_amp:
+                            x-scalar-ignore: true
+                            type: string
+                            description: AMP-enabled content for your email. If a recipient's email client doesn't support AMP, they receive your `body` content instead. Make sure you're [set up to send AMP](/journeys/channels/email/layouts/amp-for-email/) first.
+                          language:
+                            x-scalar-ignore: true
+                            type: string
+                            description: The language variant for your message. If you don't use our [localization feature](/journeys/channels/localization/getting-started), or this is the default message, this value is an empty string.
+                            example: fr
+                            readOnly: true
+                          type:
+                            x-scalar-ignore: true
+                            description: Channel type for a newsletter or newsletter content variant.
+                            type: string
+                            enum:
+                            - email
+                            - webhook
+                            - twilio
+                            - push
+                            - in_app
+                            - inbox
+                            readOnly: true
+                            example: email
+                          from:
+                            x-scalar-ignore: true
+                            type: string
+                            description: The address that the message is from, relevant if the action `type` is `email`.
+                            readOnly: true
+                            example: sentFrom@example.com
+                          from_id:
+                            x-scalar-ignore: true
+                            type: integer
+                            description: The identifier of the `from` address, commonly known as the "sender". Use [List sender identities](#tag/sender-identities/listSenders) to find valid IDs.
+                            example: 1
+                          reply_to:
+                            x-scalar-ignore: true
+                            type: string
+                            description: The address that receives replies for the message, if applicable.
+                            readOnly: true
+                            example: replyto@example.com
+                          reply_to_id:
+                            x-scalar-ignore: true
+                            type:
+                            - integer
+                            - 'null'
+                            description: The identifier for the `reply_to` address, if applicable. Use [List sender identities](#tag/sender-identities/listSenders) to find valid IDs.
+                            example: 38
+                          preprocessor:
+                            x-scalar-ignore: true
+                            type: string
+                            description: If CSS pre-processing is enabled, this key is populated with `premailer`. Note, Juice replaced Premailer as the pre-processor, but you will only see `premailer` as the value.
+                            enum:
+                            - premailer
+                            readOnly: true
+                          recipient:
+                            x-scalar-ignore: true
+                            description: The recipient address for an action.
+                            type: string
+                            example: '{{customer.email}}'
+                          subject:
+                            x-scalar-ignore: true
+                            type: string
+                            description: The subject line for an `email` action.
+                            example: Did you get that thing I sent you?
+                          cc:
+                            x-scalar-ignore: true
+                            readOnly: true
+                            description: The carbon-copy address(es) for this action.
+                            type: string
+                          bcc:
+                            x-scalar-ignore: true
+                            readOnly: true
+                            description: The blind-copy address(es) for this action.
+                            type: string
+                          fake_bcc:
+                            x-scalar-ignore: true
+                            readOnly: true
+                            type: boolean
+                            description: 'If true, rather than sending true copies to BCC addresses, Customer.io sends a copy of the message with the subject line containing the recipient address(es).
+
+                              '
+                          preheader_text:
+                            x-scalar-ignore: true
+                            type: string
+                            description: '[Also known as "preview text"](/journeys/channels/email/headers/custom-preheader-text/), this is the small block of text shown in an email inbox next to or underneath the subject line.
+
+                              '
+                      - type: object
+                        properties:
+                          headers:
+                            x-scalar-ignore: true
+                            description: A JSON string containing header objects with `name` and `value`. Names and values must be strings, with no non-ASCII characters or spaces. You can't overwrite reserved headers.
+                            type: string
+                            format: json
+                            example: '[{"name":"X-Mailgun-Tag","value":"my-cool-tag"},{"name":"X-Custom-Header","value":"custom-value"}]'
+        '404':
+          description: The newsletter you requested does not exist.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/newsletters/{newsletter_id}/contents"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/newsletters/%7Bnewsletter_id%7D/contents\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/contents")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/newsletters/%7Bnewsletter_id%7D/contents")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/contents\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+  /v1/newsletters/{newsletter_id}/contents/{content_id}:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - name: newsletter_id
+      in: path
+      required: true
+      description: The identifier of a newsletter.
+      schema:
+        type: integer
+    - name: content_id
+      in: path
+      required: true
+      description: 'The identifier of a message in a newsletter. If your newsletter has an A/B test group or includes multiple languages, each variant has its own `content_id`, separate from the `newsletter_id`.
+
+
+        Use [List variants of a newsletter](#tag/newsletter-variants/listNewsletterVariants) to find the `content_id` associated with the right variant.
+
+        '
+      schema:
+        type: integer
+    get:
+      summary: Get a newsletter variant
+      operationId: getNewsletterVariant
+      security:
+      - Bearer-Auth: []
+      description: Returns information about a specific variant of a newsletter, where a variant is either a language in a multi-language newsletter or a part of an A/B test.
+      tags:
+      - Newsletter Variants
+      responses:
+        '200':
+          description: Returns newsletter `content`.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    x-scalar-ignore: true
+                    allOf:
+                    - x-scalar-ignore: true
+                      type: object
+                      properties:
+                        id:
+                          x-scalar-ignore: true
+                          type: integer
+                          description: The identifier of a newsletter variant—a language in a multi-language newsletter or a test in an A/B test.
+                          readOnly: true
+                        newsletter_id:
+                          x-scalar-ignore: true
+                          description: The identifier for a newsletter.
+                          type: integer
+                          example: 10
+                        deduplicate_id:
+                          x-scalar-ignore: true
+                          type: string
+                          readOnly: true
+                          description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+                          example: 15:1492548073
+                        name:
+                          type: string
+                          description: The name of the variant, if it exists.
+                          readOnly: true
+                          example: newsletter variant A
+                        layout:
+                          type: string
+                          description: The layout used for the variant, if it exists.
+                          example: <html><body>{{ content }}</body></html>
+                          readOnly: true
+                        body:
+                          type: string
+                          description: The body of the variant. You cannot modify the body if you created it with our drag-and-drop editor.
+                          example: <strong>Hello from the API</strong>
+                        body_amp:
+                          x-scalar-ignore: true
+                          type: string
+                          description: AMP-enabled content for your email. If a recipient's email client doesn't support AMP, they receive your `body` content instead. Make sure you're [set up to send AMP](/journeys/channels/email/layouts/amp-for-email/) first.
+                        language:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The language variant for your message. If you don't use our [localization feature](/journeys/channels/localization/getting-started), or this is the default message, this value is an empty string.
+                          example: fr
+                          readOnly: true
+                        type:
+                          x-scalar-ignore: true
+                          description: Channel type for a newsletter or newsletter content variant.
+                          type: string
+                          enum:
+                          - email
+                          - webhook
+                          - twilio
+                          - push
+                          - in_app
+                          - inbox
+                          readOnly: true
+                          example: email
+                        from:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The address that the message is from, relevant if the action `type` is `email`.
+                          readOnly: true
+                          example: sentFrom@example.com
+                        from_id:
+                          x-scalar-ignore: true
+                          type: integer
+                          description: The identifier of the `from` address, commonly known as the "sender". Use [List sender identities](#tag/sender-identities/listSenders) to find valid IDs.
+                          example: 1
+                        reply_to:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The address that receives replies for the message, if applicable.
+                          readOnly: true
+                          example: replyto@example.com
+                        reply_to_id:
+                          x-scalar-ignore: true
+                          type:
+                          - integer
+                          - 'null'
+                          description: The identifier for the `reply_to` address, if applicable. Use [List sender identities](#tag/sender-identities/listSenders) to find valid IDs.
+                          example: 38
+                        preprocessor:
+                          x-scalar-ignore: true
+                          type: string
+                          description: If CSS pre-processing is enabled, this key is populated with `premailer`. Note, Juice replaced Premailer as the pre-processor, but you will only see `premailer` as the value.
+                          enum:
+                          - premailer
+                          readOnly: true
+                        recipient:
+                          x-scalar-ignore: true
+                          description: The recipient address for an action.
+                          type: string
+                          example: '{{customer.email}}'
+                        subject:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The subject line for an `email` action.
+                          example: Did you get that thing I sent you?
+                        cc:
+                          x-scalar-ignore: true
+                          readOnly: true
+                          description: The carbon-copy address(es) for this action.
+                          type: string
+                        bcc:
+                          x-scalar-ignore: true
+                          readOnly: true
+                          description: The blind-copy address(es) for this action.
+                          type: string
+                        fake_bcc:
+                          x-scalar-ignore: true
+                          readOnly: true
+                          type: boolean
+                          description: 'If true, rather than sending true copies to BCC addresses, Customer.io sends a copy of the message with the subject line containing the recipient address(es).
+
+                            '
+                        preheader_text:
+                          x-scalar-ignore: true
+                          type: string
+                          description: '[Also known as "preview text"](/journeys/channels/email/headers/custom-preheader-text/), this is the small block of text shown in an email inbox next to or underneath the subject line.
+
+                            '
+                    - type: object
+                      properties:
+                        headers:
+                          x-scalar-ignore: true
+                          description: A JSON string containing header objects with `name` and `value`. Names and values must be strings, with no non-ASCII characters or spaces. You can't overwrite reserved headers.
+                          type: string
+                          format: json
+                          example: '[{"name":"X-Mailgun-Tag","value":"my-cool-tag"},{"name":"X-Custom-Header","value":"custom-value"}]'
+        '404':
+          description: The newsletter or variant does not exist.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/newsletters/{newsletter_id}/contents/{content_id}"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/newsletters/%7Bnewsletter_id%7D/contents/%7Bcontent_id%7D\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/contents/%7Bcontent_id%7D")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/newsletters/%7Bnewsletter_id%7D/contents/%7Bcontent_id%7D")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/contents/%7Bcontent_id%7D\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+    put:
+      summary: Update a newsletter variant
+      operationId: updateNewsletterVariant
+      security:
+      - Bearer-Auth: []
+      description: 'Update the content of a newsletter: the default message, a test variant in an A/B test group, or a translation.
+
+
+        For an email, you can also update the envelope: from address, subject line, etc.
+
+
+        **NOTE**: You cannot manage content made with the drag-and-drop editor via API, and you cannot use this endpoint to update Design Studio emails. You can, however, [manage Design Studio content with other endpoints](#tag/design-studio).
+
+        '
+      tags:
+      - Newsletter Variants
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/updateEmailContent'
+              - $ref: '#/components/schemas/updateSmsContent'
+              - $ref: '#/components/schemas/updatePushContent'
+              - $ref: '#/components/schemas/updateWebhookContent'
+              - $ref: '#/components/schemas/updateInboxContent'
+              discriminator:
+                propertyName: type
+      responses:
+        '200':
+          description: Returns the updated newsletter variant.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    x-scalar-ignore: true
+                    allOf:
+                    - x-scalar-ignore: true
+                      type: object
+                      properties:
+                        id:
+                          x-scalar-ignore: true
+                          type: integer
+                          description: The identifier of a newsletter variant—a language in a multi-language newsletter or a test in an A/B test.
+                          readOnly: true
+                        newsletter_id:
+                          x-scalar-ignore: true
+                          description: The identifier for a newsletter.
+                          type: integer
+                          example: 10
+                        deduplicate_id:
+                          x-scalar-ignore: true
+                          type: string
+                          readOnly: true
+                          description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+                          example: 15:1492548073
+                        name:
+                          type: string
+                          description: The name of the variant, if it exists.
+                          readOnly: true
+                          example: newsletter variant A
+                        layout:
+                          type: string
+                          description: The layout used for the variant, if it exists.
+                          example: <html><body>{{ content }}</body></html>
+                          readOnly: true
+                        body:
+                          type: string
+                          description: The body of the variant. You cannot modify the body if you created it with our drag-and-drop editor.
+                          example: <strong>Hello from the API</strong>
+                        body_amp:
+                          x-scalar-ignore: true
+                          type: string
+                          description: AMP-enabled content for your email. If a recipient's email client doesn't support AMP, they receive your `body` content instead. Make sure you're [set up to send AMP](/journeys/channels/email/layouts/amp-for-email/) first.
+                        language:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The language variant for your message. If you don't use our [localization feature](/journeys/channels/localization/getting-started), or this is the default message, this value is an empty string.
+                          example: fr
+                          readOnly: true
+                        type:
+                          x-scalar-ignore: true
+                          description: Channel type for a newsletter or newsletter content variant.
+                          type: string
+                          enum:
+                          - email
+                          - webhook
+                          - twilio
+                          - push
+                          - in_app
+                          - inbox
+                          readOnly: true
+                          example: email
+                        from:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The address that the message is from, relevant if the action `type` is `email`.
+                          readOnly: true
+                          example: sentFrom@example.com
+                        from_id:
+                          x-scalar-ignore: true
+                          type: integer
+                          description: The identifier of the `from` address, commonly known as the "sender". Use [List sender identities](#tag/sender-identities/listSenders) to find valid IDs.
+                          example: 1
+                        reply_to:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The address that receives replies for the message, if applicable.
+                          readOnly: true
+                          example: replyto@example.com
+                        reply_to_id:
+                          x-scalar-ignore: true
+                          type:
+                          - integer
+                          - 'null'
+                          description: The identifier for the `reply_to` address, if applicable. Use [List sender identities](#tag/sender-identities/listSenders) to find valid IDs.
+                          example: 38
+                        preprocessor:
+                          x-scalar-ignore: true
+                          type: string
+                          description: If CSS pre-processing is enabled, this key is populated with `premailer`. Note, Juice replaced Premailer as the pre-processor, but you will only see `premailer` as the value.
+                          enum:
+                          - premailer
+                          readOnly: true
+                        recipient:
+                          x-scalar-ignore: true
+                          description: The recipient address for an action.
+                          type: string
+                          example: '{{customer.email}}'
+                        subject:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The subject line for an `email` action.
+                          example: Did you get that thing I sent you?
+                        cc:
+                          x-scalar-ignore: true
+                          readOnly: true
+                          description: The carbon-copy address(es) for this action.
+                          type: string
+                        bcc:
+                          x-scalar-ignore: true
+                          readOnly: true
+                          description: The blind-copy address(es) for this action.
+                          type: string
+                        fake_bcc:
+                          x-scalar-ignore: true
+                          readOnly: true
+                          type: boolean
+                          description: 'If true, rather than sending true copies to BCC addresses, Customer.io sends a copy of the message with the subject line containing the recipient address(es).
+
+                            '
+                        preheader_text:
+                          x-scalar-ignore: true
+                          type: string
+                          description: '[Also known as "preview text"](/journeys/channels/email/headers/custom-preheader-text/), this is the small block of text shown in an email inbox next to or underneath the subject line.
+
+                            '
+                    - type: object
+                      properties:
+                        headers:
+                          x-scalar-ignore: true
+                          description: A JSON string containing header objects with `name` and `value`. Names and values must be strings, with no non-ASCII characters or spaces. You can't overwrite reserved headers.
+                          type: string
+                          format: json
+                          example: '[{"name":"X-Mailgun-Tag","value":"my-cool-tag"},{"name":"X-Custom-Header","value":"custom-value"}]'
+        '400':
+          description: The request is malformed.
+        '404':
+          description: The newsletter or variant does not exist.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: json
+        label: JSON
+        source: '{}'
+      - lang: Shell + Curl
+        source: "curl --request PUT \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/newsletters/{newsletter_id}/contents/{content_id} \\\n  --header 'content-type: application/json' \\\n  --data '{\"body\":\"string\",\"body_amp\":\"string\",\"body_plain\":\"string\",\"subject\":\"Did you get that thing I sent you?\",\"preheader_text\":\"string\",\"from_id\":1,\"reply_to_id\":38,\"recipient\":\"string\"}'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"PUT\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/newsletters/%7Bnewsletter_id%7D/contents/%7Bcontent_id%7D\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({\n  body: 'string',\n  body_amp: 'string',\n  body_plain: 'string',\n  subject: 'Did you get that thing I sent you?',\n  preheader_text: 'string',\n  from_id: 1,\n  reply_to_id: 38,\n  recipient: 'string'\n}));\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/contents/%7Bcontent_id%7D")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Put.new(url)
+
+          request["content-type"] = ''application/json''
+
+          request.body = "{\"body\":\"string\",\"body_amp\":\"string\",\"body_plain\":\"string\",\"subject\":\"Did you get that thing I sent you?\",\"preheader_text\":\"string\",\"from_id\":1,\"reply_to_id\":38,\"recipient\":\"string\"}"
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          payload = "{\"body\":\"string\",\"body_amp\":\"string\",\"body_plain\":\"string\",\"subject\":\"Did you get that thing I sent you?\",\"preheader_text\":\"string\",\"from_id\":1,\"reply_to_id\":38,\"recipient\":\"string\"}"
+
+
+          headers = { ''content-type'': "application/json" }
+
+
+          conn.request("PUT", "/v1/newsletters/%7Bnewsletter_id%7D/contents/%7Bcontent_id%7D", payload, headers)
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/contents/%7Bcontent_id%7D\"\n\n\tpayload := strings.NewReader(\"{\\\"body\\\":\\\"string\\\",\\\"body_amp\\\":\\\"string\\\",\\\"body_plain\\\":\\\"string\\\",\\\"subject\\\":\\\"Did you get that thing I sent you?\\\",\\\"preheader_text\\\":\\\"string\\\",\\\"from_id\\\":1,\\\"reply_to_id\\\":38,\\\"recipient\\\":\\\"string\\\"}\")\n\n\treq, _ := http.NewRequest(\"PUT\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+  /v1/newsletters/{newsletter_id}/language:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - name: newsletter_id
+      in: path
+      required: true
+      description: The identifier of a newsletter.
+      schema:
+        type: integer
+    post:
+      summary: Add a translation to a newsletter
+      operationId: createNewsletterLanguageVariant
+      security:
+      - Bearer-Auth: []
+      description: 'Add a language variant to a newsletter.
+
+
+        If you omit optional fields, the values from the default template are copied over untranslated. Make sure you translate all aspects of your default template.
+
+
+        You can''t add language variants to a newsletter that has already been sent. You can''t manage emails created with the drag-and-drop editor or Design Studio via this endpoint—use [Create an email translation](#tag/design-studio/createEmailTranslation) for Design Studio emails.
+
+
+        If the newsletter has A/B tests, use [Add a translation to a newsletter test group](#operation/createNewsletterTestLanguageVariant) instead.
+
+        '
+      tags:
+      - Newsletter Variants
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              description: Add a language variant to a newsletter. The payload the endpoint accepts depends on the parent newsletter's channel type.
+              oneOf:
+              - title: Email
+                description: Add a language variant to an email newsletter. Requires `language`, `subject`, and `body`.
+                allOf:
+                - type: object
+                  required:
+                  - language
+                  properties:
+                    language:
+                      type: string
+                      description: The [language tag](/journeys/channels/localization/attribute/#supported-languages) for the new variant, e.g. `es`, `fr`, `de`.
+                      example: es
+                - type: object
+                  required:
+                  - subject
+                  - body
+                  properties:
+                    subject:
+                      type: string
+                      description: The subject line for the variant.
+                      example: ¡Hola, {{ customer.name }}!
+                    preheader_text:
+                      type: string
+                      description: The preheader text for the email variant.
+                      example: Mira nuestras últimas novedades
+                    body:
+                      type: string
+                      description: The HTML body content for the variant.
+                      example: <html><body><h1>¡Hola!</h1></body></html>
+                    body_plain:
+                      type: string
+                      description: The plaintext body content for the variant.
+                    body_amp:
+                      type: string
+                      description: The AMP HTML body content for the variant.
+              - title: SMS
+                description: Add a language variant to an SMS newsletter. Requires `language` and `body`.
+                allOf:
+                - type: object
+                  required:
+                  - language
+                  properties:
+                    language:
+                      type: string
+                      description: The [language tag](/journeys/channels/localization/attribute/#supported-languages) for the new variant, e.g. `es`, `fr`, `de`.
+                      example: es
+                - type: object
+                  required:
+                  - body
+                  properties:
+                    body:
+                      type: string
+                      description: The body content of the SMS message.
+                      example: ¡Hola {{ customer.first_name }}! Tu pedido ha sido enviado.
+              - title: Push
+                description: Add a language variant to a push notification newsletter. Requires `language` and at least one of `subject` or `body`.
+                allOf:
+                - type: object
+                  required:
+                  - language
+                  properties:
+                    language:
+                      type: string
+                      description: The [language tag](/journeys/channels/localization/attribute/#supported-languages) for the new variant, e.g. `es`, `fr`, `de`.
+                      example: es
+                - type: object
+                  properties:
+                    subject:
+                      type: string
+                      description: The title of the push notification.
+                      example: ¡Oferta por tiempo limitado!
+                    body:
+                      type: string
+                      description: The body content of the push notification.
+                      example: Obtén 30% de descuento en todo.
+              - title: Webhook
+                description: Add a language variant to a webhook newsletter. Requires `language` and `body`.
+                allOf:
+                - type: object
+                  required:
+                  - language
+                  properties:
+                    language:
+                      type: string
+                      description: The [language tag](/journeys/channels/localization/attribute/#supported-languages) for the new variant, e.g. `es`, `fr`, `de`.
+                      example: es
+                - type: object
+                  required:
+                  - body
+                  properties:
+                    body:
+                      type: string
+                      description: The body content of the webhook request.
+                      example: '{"channel":"#marketing","text":"Boletín enviado a {{ customer.email }}"}'
+              - title: Inbox message
+                description: Add a language variant to an inbox message newsletter. Requires `language` and `body_json`.
+                allOf:
+                - type: object
+                  required:
+                  - language
+                  properties:
+                    language:
+                      type: string
+                      description: The [language tag](/journeys/channels/localization/attribute/#supported-languages) for the new variant, e.g. `es`, `fr`, `de`.
+                      example: es
+                - type: object
+                  required:
+                  - body_json
+                  properties:
+                    body_json:
+                      type: string
+                      description: JSON body content for the inbox message variant. Learn more about [message settings](/journeys/channels/in-app/inbox/send-inbox/) in our docs.
+                      example: '{"topics": ["general", "updates"], "type": "notification", "expiration": {"type": "relative", "value": "30", "unit": "days"}, "properties": {"title": "Welcome!", "message": "Thanks for signing up", "link": "https://customer.io"}}'
+      responses:
+        '200':
+          description: Returns the updated newsletter, including new `content_ids`.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  newsletter:
+                    x-scalar-ignore: true
+                    type: object
+                    properties:
+                      id:
+                        x-scalar-ignore: true
+                        description: The identifier for a newsletter.
+                        type: integer
+                        example: 10
+                      deduplicate_id:
+                        x-scalar-ignore: true
+                        type: string
+                        readOnly: true
+                        description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+                        example: 15:1492548073
+                      content_ids:
+                        type: array
+                        description: A list of message variants in a newsletter, where a variant is a translation or A/B test.
+                        items:
+                          type: integer
+                      name:
+                        type: string
+                        description: The name of the newsletter. Must be 190 characters or less.
+                        readOnly: true
+                      sent_at:
+                        type: integer
+                        format: unix timestamp
+                        description: The last time the newsletter was sent.
+                      created:
+                        x-scalar-ignore: true
+                        type: integer
+                        format: unix timestamp
+                        description: The date time when the referenced ID was created.
+                        example: 1552341937
+                        readOnly: true
+                      updated:
+                        x-scalar-ignore: true
+                        type: integer
+                        format: unix timestamp
+                        description: The date time when the referenced ID was last updated.
+                        example: 1552341937
+                        readOnly: true
+                      type:
+                        x-scalar-ignore: true
+                        description: Channel type for a newsletter or newsletter content variant.
+                        type: string
+                        enum:
+                        - email
+                        - webhook
+                        - twilio
+                        - push
+                        - in_app
+                        - inbox
+                        readOnly: true
+                        example: email
+                      tags:
+                        type: array
+                        description: An array of tags associated with the newsletter.
+                        items:
+                          type: string
+                      recipient_segment_ids:
+                        description: If the recipient conditions included segments, this returns a list of those segment ids.
+                        type: array
+                        items:
+                          type: integer
+                      subscription_topic_id:
+                        type: integer
+                        description: If you enabled a [subscription center](/journeys/channels/subscriptions/center/) on your workspace, this returns the id of the subscription preference you set.
+                    example:
+                      id: 128275
+                      deduplicate_id: 128275:1484870424
+                      type: email
+                      content_ids:
+                      - 45
+                      name: Weekly Product Update
+                      sent_at: 1481653929
+                      created: 1481653919
+                      updated: 1481653929
+                      recipient_segment_ids:
+                      - 42
+                      - 99
+                      tags:
+                      - Product Updates
+                      subscription_topic_id: 5
+        '400':
+          description: 'The request is invalid. Possible reasons include: the newsletter has already been sent, the newsletter has multiple test groups ([add a translation to a test group](#tag/newsletter-variants/createNewsletterTestLanguageVariant) instead), or the newsletter uses Design Studio or drag-and-drop editors.
+
+            '
+        '404':
+          description: The newsletter does not exist.
+        '422':
+          description: 'Validation error. Possible reasons: `language` is missing, required content fields are missing for the channel type, or the language variant already exists.
+
+            '
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: json
+        label: JSON
+        source: "{\n  \"language\": \"es\",\n  \"subject\": \"¡Hola, {{ customer.name }}!\",\n  \"body\": \"<html><body><h1>¡Hola!</h1></body></html>\"\n}"
+      - lang: Shell + Curl
+        source: "curl --request POST \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/newsletters/{newsletter_id}/language \\\n  --header 'content-type: application/json' \\\n  --data '{\"language\":\"es\",\"subject\":\"¡Hola, {{ customer.name }}!\",\"preheader_text\":\"Mira nuestras últimas novedades\",\"body\":\"<html><body><h1>¡Hola!</h1></body></html>\",\"body_plain\":\"string\",\"body_amp\":\"string\"}'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"POST\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/newsletters/%7Bnewsletter_id%7D/language\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({\n  language: 'es',\n  subject: '¡Hola, {{ customer.name }}!',\n  preheader_text: 'Mira nuestras últimas novedades',\n  body: '<html><body><h1>¡Hola!</h1></body></html>',\n  body_plain: 'string',\n  body_amp: 'string'\n}));\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/language")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Post.new(url)
+
+          request["content-type"] = ''application/json''
+
+          request.body = "{\"language\":\"es\",\"subject\":\"¡Hola, {{ customer.name }}!\",\"preheader_text\":\"Mira nuestras últimas novedades\",\"body\":\"<html><body><h1>¡Hola!</h1></body></html>\",\"body_plain\":\"string\",\"body_amp\":\"string\"}"
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          payload = "{\"language\":\"es\",\"subject\":\"¡Hola, {{ customer.name }}!\",\"preheader_text\":\"Mira nuestras últimas novedades\",\"body\":\"<html><body><h1>¡Hola!</h1></body></html>\",\"body_plain\":\"string\",\"body_amp\":\"string\"}"
+
+
+          headers = { ''content-type'': "application/json" }
+
+
+          conn.request("POST", "/v1/newsletters/%7Bnewsletter_id%7D/language", payload, headers)
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/language\"\n\n\tpayload := strings.NewReader(\"{\\\"language\\\":\\\"es\\\",\\\"subject\\\":\\\"¡Hola, {{ customer.name }}!\\\",\\\"preheader_text\\\":\\\"Mira nuestras últimas novedades\\\",\\\"body\\\":\\\"<html><body><h1>¡Hola!</h1></body></html>\\\",\\\"body_plain\\\":\\\"string\\\",\\\"body_amp\\\":\\\"string\\\"}\")\n\n\treq, _ := http.NewRequest(\"POST\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+  /v1/newsletters/{newsletter_id}/language/{language}:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - name: newsletter_id
+      in: path
+      required: true
+      description: The identifier of a newsletter.
+      schema:
+        type: integer
+    - name: language
+      in: path
+      required: true
+      description: A [language tag](/journeys/channels/subscriptions/unsubscribe-faqs/#currently-supported-languages) of a language variant. If you don't provide a language (an empty string), we'll use your default language. If the language variant does not exist, we'll return an error.
+      schema:
+        type: string
+    get:
+      summary: Get a newsletter translation
+      operationId: getNewsletterVariantTranslation
+      security:
+      - Bearer-Auth: []
+      description: Returns information about a specific language variant of a newsletter. If your newsletter includes A/B tests, use [Get a translation in a newsletter test group](/api/app/#operation/getNewsletterVariantTranslationTest).
+      tags:
+      - Newsletter Variants
+      responses:
+        '200':
+          description: Returns newsletter `content` for a language variant.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    x-scalar-ignore: true
+                    allOf:
+                    - x-scalar-ignore: true
+                      type: object
+                      properties:
+                        id:
+                          x-scalar-ignore: true
+                          type: integer
+                          description: The identifier of a newsletter variant—a language in a multi-language newsletter or a test in an A/B test.
+                          readOnly: true
+                        newsletter_id:
+                          x-scalar-ignore: true
+                          description: The identifier for a newsletter.
+                          type: integer
+                          example: 10
+                        deduplicate_id:
+                          x-scalar-ignore: true
+                          type: string
+                          readOnly: true
+                          description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+                          example: 15:1492548073
+                        name:
+                          type: string
+                          description: The name of the variant, if it exists.
+                          readOnly: true
+                          example: newsletter variant A
+                        layout:
+                          type: string
+                          description: The layout used for the variant, if it exists.
+                          example: <html><body>{{ content }}</body></html>
+                          readOnly: true
+                        body:
+                          type: string
+                          description: The body of the variant. You cannot modify the body if you created it with our drag-and-drop editor.
+                          example: <strong>Hello from the API</strong>
+                        body_amp:
+                          x-scalar-ignore: true
+                          type: string
+                          description: AMP-enabled content for your email. If a recipient's email client doesn't support AMP, they receive your `body` content instead. Make sure you're [set up to send AMP](/journeys/channels/email/layouts/amp-for-email/) first.
+                        language:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The language variant for your message. If you don't use our [localization feature](/journeys/channels/localization/getting-started), or this is the default message, this value is an empty string.
+                          example: fr
+                          readOnly: true
+                        type:
+                          x-scalar-ignore: true
+                          description: Channel type for a newsletter or newsletter content variant.
+                          type: string
+                          enum:
+                          - email
+                          - webhook
+                          - twilio
+                          - push
+                          - in_app
+                          - inbox
+                          readOnly: true
+                          example: email
+                        from:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The address that the message is from, relevant if the action `type` is `email`.
+                          readOnly: true
+                          example: sentFrom@example.com
+                        from_id:
+                          x-scalar-ignore: true
+                          type: integer
+                          description: The identifier of the `from` address, commonly known as the "sender". Use [List sender identities](#tag/sender-identities/listSenders) to find valid IDs.
+                          example: 1
+                        reply_to:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The address that receives replies for the message, if applicable.
+                          readOnly: true
+                          example: replyto@example.com
+                        reply_to_id:
+                          x-scalar-ignore: true
+                          type:
+                          - integer
+                          - 'null'
+                          description: The identifier for the `reply_to` address, if applicable. Use [List sender identities](#tag/sender-identities/listSenders) to find valid IDs.
+                          example: 38
+                        preprocessor:
+                          x-scalar-ignore: true
+                          type: string
+                          description: If CSS pre-processing is enabled, this key is populated with `premailer`. Note, Juice replaced Premailer as the pre-processor, but you will only see `premailer` as the value.
+                          enum:
+                          - premailer
+                          readOnly: true
+                        recipient:
+                          x-scalar-ignore: true
+                          description: The recipient address for an action.
+                          type: string
+                          example: '{{customer.email}}'
+                        subject:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The subject line for an `email` action.
+                          example: Did you get that thing I sent you?
+                        cc:
+                          x-scalar-ignore: true
+                          readOnly: true
+                          description: The carbon-copy address(es) for this action.
+                          type: string
+                        bcc:
+                          x-scalar-ignore: true
+                          readOnly: true
+                          description: The blind-copy address(es) for this action.
+                          type: string
+                        fake_bcc:
+                          x-scalar-ignore: true
+                          readOnly: true
+                          type: boolean
+                          description: 'If true, rather than sending true copies to BCC addresses, Customer.io sends a copy of the message with the subject line containing the recipient address(es).
+
+                            '
+                        preheader_text:
+                          x-scalar-ignore: true
+                          type: string
+                          description: '[Also known as "preview text"](/journeys/channels/email/headers/custom-preheader-text/), this is the small block of text shown in an email inbox next to or underneath the subject line.
+
+                            '
+                    - type: object
+                      properties:
+                        headers:
+                          x-scalar-ignore: true
+                          description: A JSON string containing header objects with `name` and `value`. Names and values must be strings, with no non-ASCII characters or spaces. You can't overwrite reserved headers.
+                          type: string
+                          format: json
+                          example: '[{"name":"X-Mailgun-Tag","value":"my-cool-tag"},{"name":"X-Custom-Header","value":"custom-value"}]'
+        '400':
+          description: The `language` does not exist.
+        '404':
+          description: The newsletter or variant does not exist.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/newsletters/{newsletter_id}/language/{language}"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/newsletters/%7Bnewsletter_id%7D/language/%7Blanguage%7D\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/language/%7Blanguage%7D")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/newsletters/%7Bnewsletter_id%7D/language/%7Blanguage%7D")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/language/%7Blanguage%7D\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+    put:
+      summary: Update a translation of a newsletter
+      operationId: updateNewsletterVariantTranslation
+      security:
+      - Bearer-Auth: []
+      description: 'Update the translation of a newsletter variant. If your newsletter includes A/B tests, use [Update a translation in a newsletter test group](/api/app/#operation/updateNewsletterTestTranslation).
+
+
+        **NOTE**: You cannot manage content made with Design Studio with this endpoint. Use the [Design Studio APIs](#tag/design-studio) instead.
+
+        '
+      tags:
+      - Newsletter Variants
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/updateEmailContent'
+              - $ref: '#/components/schemas/updateSmsContent'
+              - $ref: '#/components/schemas/updatePushContent'
+              - $ref: '#/components/schemas/updateWebhookContent'
+              - $ref: '#/components/schemas/updateInboxContent'
+              discriminator:
+                propertyName: type
+      responses:
+        '200':
+          description: Returns the updated newsletter variant.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    x-scalar-ignore: true
+                    allOf:
+                    - x-scalar-ignore: true
+                      type: object
+                      properties:
+                        id:
+                          x-scalar-ignore: true
+                          type: integer
+                          description: The identifier of a newsletter variant—a language in a multi-language newsletter or a test in an A/B test.
+                          readOnly: true
+                        newsletter_id:
+                          x-scalar-ignore: true
+                          description: The identifier for a newsletter.
+                          type: integer
+                          example: 10
+                        deduplicate_id:
+                          x-scalar-ignore: true
+                          type: string
+                          readOnly: true
+                          description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+                          example: 15:1492548073
+                        name:
+                          type: string
+                          description: The name of the variant, if it exists.
+                          readOnly: true
+                          example: newsletter variant A
+                        layout:
+                          type: string
+                          description: The layout used for the variant, if it exists.
+                          example: <html><body>{{ content }}</body></html>
+                          readOnly: true
+                        body:
+                          type: string
+                          description: The body of the variant. You cannot modify the body if you created it with our drag-and-drop editor.
+                          example: <strong>Hello from the API</strong>
+                        body_amp:
+                          x-scalar-ignore: true
+                          type: string
+                          description: AMP-enabled content for your email. If a recipient's email client doesn't support AMP, they receive your `body` content instead. Make sure you're [set up to send AMP](/journeys/channels/email/layouts/amp-for-email/) first.
+                        language:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The language variant for your message. If you don't use our [localization feature](/journeys/channels/localization/getting-started), or this is the default message, this value is an empty string.
+                          example: fr
+                          readOnly: true
+                        type:
+                          x-scalar-ignore: true
+                          description: Channel type for a newsletter or newsletter content variant.
+                          type: string
+                          enum:
+                          - email
+                          - webhook
+                          - twilio
+                          - push
+                          - in_app
+                          - inbox
+                          readOnly: true
+                          example: email
+                        from:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The address that the message is from, relevant if the action `type` is `email`.
+                          readOnly: true
+                          example: sentFrom@example.com
+                        from_id:
+                          x-scalar-ignore: true
+                          type: integer
+                          description: The identifier of the `from` address, commonly known as the "sender". Use [List sender identities](#tag/sender-identities/listSenders) to find valid IDs.
+                          example: 1
+                        reply_to:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The address that receives replies for the message, if applicable.
+                          readOnly: true
+                          example: replyto@example.com
+                        reply_to_id:
+                          x-scalar-ignore: true
+                          type:
+                          - integer
+                          - 'null'
+                          description: The identifier for the `reply_to` address, if applicable. Use [List sender identities](#tag/sender-identities/listSenders) to find valid IDs.
+                          example: 38
+                        preprocessor:
+                          x-scalar-ignore: true
+                          type: string
+                          description: If CSS pre-processing is enabled, this key is populated with `premailer`. Note, Juice replaced Premailer as the pre-processor, but you will only see `premailer` as the value.
+                          enum:
+                          - premailer
+                          readOnly: true
+                        recipient:
+                          x-scalar-ignore: true
+                          description: The recipient address for an action.
+                          type: string
+                          example: '{{customer.email}}'
+                        subject:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The subject line for an `email` action.
+                          example: Did you get that thing I sent you?
+                        cc:
+                          x-scalar-ignore: true
+                          readOnly: true
+                          description: The carbon-copy address(es) for this action.
+                          type: string
+                        bcc:
+                          x-scalar-ignore: true
+                          readOnly: true
+                          description: The blind-copy address(es) for this action.
+                          type: string
+                        fake_bcc:
+                          x-scalar-ignore: true
+                          readOnly: true
+                          type: boolean
+                          description: 'If true, rather than sending true copies to BCC addresses, Customer.io sends a copy of the message with the subject line containing the recipient address(es).
+
+                            '
+                        preheader_text:
+                          x-scalar-ignore: true
+                          type: string
+                          description: '[Also known as "preview text"](/journeys/channels/email/headers/custom-preheader-text/), this is the small block of text shown in an email inbox next to or underneath the subject line.
+
+                            '
+                    - type: object
+                      properties:
+                        headers:
+                          x-scalar-ignore: true
+                          description: A JSON string containing header objects with `name` and `value`. Names and values must be strings, with no non-ASCII characters or spaces. You can't overwrite reserved headers.
+                          type: string
+                          format: json
+                          example: '[{"name":"X-Mailgun-Tag","value":"my-cool-tag"},{"name":"X-Custom-Header","value":"custom-value"}]'
+        '400':
+          description: The `language` does not exist.
+        '404':
+          description: The newsletter or variant does not exist.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: json
+        label: JSON
+        source: '{}'
+      - lang: Shell + Curl
+        source: "curl --request PUT \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/newsletters/{newsletter_id}/language/{language} \\\n  --header 'content-type: application/json' \\\n  --data '{\"body\":\"string\",\"body_amp\":\"string\",\"body_plain\":\"string\",\"subject\":\"Did you get that thing I sent you?\",\"preheader_text\":\"string\",\"from_id\":1,\"reply_to_id\":38,\"recipient\":\"string\"}'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"PUT\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/newsletters/%7Bnewsletter_id%7D/language/%7Blanguage%7D\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({\n  body: 'string',\n  body_amp: 'string',\n  body_plain: 'string',\n  subject: 'Did you get that thing I sent you?',\n  preheader_text: 'string',\n  from_id: 1,\n  reply_to_id: 38,\n  recipient: 'string'\n}));\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/language/%7Blanguage%7D")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Put.new(url)
+
+          request["content-type"] = ''application/json''
+
+          request.body = "{\"body\":\"string\",\"body_amp\":\"string\",\"body_plain\":\"string\",\"subject\":\"Did you get that thing I sent you?\",\"preheader_text\":\"string\",\"from_id\":1,\"reply_to_id\":38,\"recipient\":\"string\"}"
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          payload = "{\"body\":\"string\",\"body_amp\":\"string\",\"body_plain\":\"string\",\"subject\":\"Did you get that thing I sent you?\",\"preheader_text\":\"string\",\"from_id\":1,\"reply_to_id\":38,\"recipient\":\"string\"}"
+
+
+          headers = { ''content-type'': "application/json" }
+
+
+          conn.request("PUT", "/v1/newsletters/%7Bnewsletter_id%7D/language/%7Blanguage%7D", payload, headers)
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/language/%7Blanguage%7D\"\n\n\tpayload := strings.NewReader(\"{\\\"body\\\":\\\"string\\\",\\\"body_amp\\\":\\\"string\\\",\\\"body_plain\\\":\\\"string\\\",\\\"subject\\\":\\\"Did you get that thing I sent you?\\\",\\\"preheader_text\\\":\\\"string\\\",\\\"from_id\\\":1,\\\"reply_to_id\\\":38,\\\"recipient\\\":\\\"string\\\"}\")\n\n\treq, _ := http.NewRequest(\"PUT\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+    delete:
+      summary: Delete a translation of a newsletter
+      operationId: deleteNewsletterLanguageVariant
+      security:
+      - Bearer-Auth: []
+      description: 'Delete a specific language variant of a newsletter. You cannot delete the default language variant. If your newsletter has already been sent, you cannot delete language variants.
+
+
+        If your newsletter includes A/B tests, use [Delete a translation in a newsletter test group](#operation/deleteNewsletterTestLanguageVariant).
+
+        '
+      tags:
+      - Newsletter Variants
+      responses:
+        '204':
+          description: Success. No content.
+        '400':
+          description: You cannot delete the default language variant, or the newsletter has already been sent.
+        '404':
+          description: The newsletter or language variant does not exist.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request DELETE \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/newsletters/{newsletter_id}/language/{language}"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"DELETE\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/newsletters/%7Bnewsletter_id%7D/language/%7Blanguage%7D\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/language/%7Blanguage%7D")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Delete.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("DELETE", "/v1/newsletters/%7Bnewsletter_id%7D/language/%7Blanguage%7D")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/language/%7Blanguage%7D\"\n\n\treq, _ := http.NewRequest(\"DELETE\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+  /v1/newsletters/{newsletter_id}/test_groups:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - name: newsletter_id
+      in: path
+      required: true
+      description: The identifier of a newsletter.
+      schema:
+        type: integer
+    get:
+      summary: List a newsletter's A/B test groups
+      operationId: getNewsletterTestGroups
+      security:
+      - Bearer-Auth: []
+      description: Returns information about each test group in a newsletter, including content ids for each group.
+      tags:
+      - Newsletter Variants
+      responses:
+        '200':
+          description: Returns metadata for each test group in a newsletter.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  test_groups:
+                    type: array
+                    description: Each object represents one of the test groups.
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The ID of the A/B test group.
+                        name:
+                          type: string
+                          description: The name of the A/B test group.
+                        label:
+                          type: string
+                          description: The name of the variant.
+                        winner:
+                          type: boolean
+                          description: Whether this variant is the winner of the test.
+                        content_ids:
+                          description: A list of content_ids for each variant in the test group.
+                          type: array
+                          items:
+                            type: string
+                example:
+                  test_groups:
+                  - id: 0
+                    name: A
+                    label: test 1
+                    winner: false
+                    content_ids:
+                    - 25
+                    - 26
+                  - id: 2
+                    name: B
+                    label: test 2
+                    winner: false
+                    content_ids:
+                    - 27
+                    - 28
+        '404':
+          description: The newsletter or variant does not exist.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/newsletters/{newsletter_id}/test_groups"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/newsletters/%7Bnewsletter_id%7D/test_groups\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/test_groups")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/newsletters/%7Bnewsletter_id%7D/test_groups")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/test_groups\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+    post:
+      summary: Create an A/B test group for a newsletter
+      operationId: createNewsletterTestGroup
+      security:
+      - Bearer-Auth: []
+      description: 'Create a new A/B test group for a newsletter. This duplicates the existing newsletter content into a new test group, allowing you to test different versions of your message.
+
+
+        This endpoint does not require a request body. The new test group is created as a copy of the existing content.
+
+
+        You cannot add test groups to a newsletter that has already been sent.
+
+        '
+      tags:
+      - Newsletter Variants
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              description: No request body is required.
+      responses:
+        '200':
+          description: Returns the updated newsletter with the new test group's content IDs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  newsletter:
+                    x-scalar-ignore: true
+                    type: object
+                    properties:
+                      id:
+                        x-scalar-ignore: true
+                        description: The identifier for a newsletter.
+                        type: integer
+                        example: 10
+                      deduplicate_id:
+                        x-scalar-ignore: true
+                        type: string
+                        readOnly: true
+                        description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+                        example: 15:1492548073
+                      content_ids:
+                        type: array
+                        description: A list of message variants in a newsletter, where a variant is a translation or A/B test.
+                        items:
+                          type: integer
+                      name:
+                        type: string
+                        description: The name of the newsletter. Must be 190 characters or less.
+                        readOnly: true
+                      sent_at:
+                        type: integer
+                        format: unix timestamp
+                        description: The last time the newsletter was sent.
+                      created:
+                        x-scalar-ignore: true
+                        type: integer
+                        format: unix timestamp
+                        description: The date time when the referenced ID was created.
+                        example: 1552341937
+                        readOnly: true
+                      updated:
+                        x-scalar-ignore: true
+                        type: integer
+                        format: unix timestamp
+                        description: The date time when the referenced ID was last updated.
+                        example: 1552341937
+                        readOnly: true
+                      type:
+                        x-scalar-ignore: true
+                        description: Channel type for a newsletter or newsletter content variant.
+                        type: string
+                        enum:
+                        - email
+                        - webhook
+                        - twilio
+                        - push
+                        - in_app
+                        - inbox
+                        readOnly: true
+                        example: email
+                      tags:
+                        type: array
+                        description: An array of tags associated with the newsletter.
+                        items:
+                          type: string
+                      recipient_segment_ids:
+                        description: If the recipient conditions included segments, this returns a list of those segment ids.
+                        type: array
+                        items:
+                          type: integer
+                      subscription_topic_id:
+                        type: integer
+                        description: If you enabled a [subscription center](/journeys/channels/subscriptions/center/) on your workspace, this returns the id of the subscription preference you set.
+                    example:
+                      id: 128275
+                      deduplicate_id: 128275:1484870424
+                      type: email
+                      content_ids:
+                      - 45
+                      name: Weekly Product Update
+                      sent_at: 1481653929
+                      created: 1481653919
+                      updated: 1481653929
+                      recipient_segment_ids:
+                      - 42
+                      - 99
+                      tags:
+                      - Product Updates
+                      subscription_topic_id: 5
+        '400':
+          description: The newsletter has already been sent. You cannot add test groups to a sent newsletter.
+        '404':
+          description: The newsletter does not exist.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: json
+        label: JSON
+        source: '{}'
+      - lang: Shell + Curl
+        source: "curl --request POST \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/newsletters/{newsletter_id}/test_groups \\\n  --header 'content-type: application/json' \\\n  --data '{}'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"POST\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/newsletters/%7Bnewsletter_id%7D/test_groups\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({}));\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/test_groups")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Post.new(url)
+
+          request["content-type"] = ''application/json''
+
+          request.body = "{}"
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          payload = "{}"
+
+
+          headers = { ''content-type'': "application/json" }
+
+
+          conn.request("POST", "/v1/newsletters/%7Bnewsletter_id%7D/test_groups", payload, headers)
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/test_groups\"\n\n\tpayload := strings.NewReader(\"{}\")\n\n\treq, _ := http.NewRequest(\"POST\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+  /v1/newsletters/{newsletter_id}/test_group/{test_group_id}/language:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - name: newsletter_id
+      in: path
+      required: true
+      description: The identifier of a newsletter.
+      schema:
+        type: integer
+    - name: test_group_id
+      in: path
+      description: The ID of the A/B test group.
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Add a translation to a newsletter test group
+      operationId: createNewsletterTestLanguageVariant
+      security:
+      - Bearer-Auth: []
+      description: 'Add a language variant to a specific A/B test group in a newsletter. The new variant is a copy of the default template in the test group with the content you provide. The payload the endpoint accepts depends on the parent newsletter''s channel type: if the newsletter is an email, the payload will be an email variant; if the newsletter is an SMS, the payload will be an SMS variant.
+
+
+        You cannot add language variants to a newsletter that has already been sent, or to newsletters created with the drag-and-drop editor or Design Studio.
+
+        '
+      tags:
+      - Newsletter Variants
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              description: Add a language variant to a newsletter. The payload the endpoint accepts depends on the parent newsletter's channel type.
+              oneOf:
+              - title: Email
+                description: Add a language variant to an email newsletter. Requires `language`, `subject`, and `body`.
+                allOf:
+                - type: object
+                  required:
+                  - language
+                  properties:
+                    language:
+                      type: string
+                      description: The [language tag](/journeys/channels/localization/attribute/#supported-languages) for the new variant, e.g. `es`, `fr`, `de`.
+                      example: es
+                - type: object
+                  required:
+                  - subject
+                  - body
+                  properties:
+                    subject:
+                      type: string
+                      description: The subject line for the variant.
+                      example: ¡Hola, {{ customer.name }}!
+                    preheader_text:
+                      type: string
+                      description: The preheader text for the email variant.
+                      example: Mira nuestras últimas novedades
+                    body:
+                      type: string
+                      description: The HTML body content for the variant.
+                      example: <html><body><h1>¡Hola!</h1></body></html>
+                    body_plain:
+                      type: string
+                      description: The plaintext body content for the variant.
+                    body_amp:
+                      type: string
+                      description: The AMP HTML body content for the variant.
+              - title: SMS
+                description: Add a language variant to an SMS newsletter. Requires `language` and `body`.
+                allOf:
+                - type: object
+                  required:
+                  - language
+                  properties:
+                    language:
+                      type: string
+                      description: The [language tag](/journeys/channels/localization/attribute/#supported-languages) for the new variant, e.g. `es`, `fr`, `de`.
+                      example: es
+                - type: object
+                  required:
+                  - body
+                  properties:
+                    body:
+                      type: string
+                      description: The body content of the SMS message.
+                      example: ¡Hola {{ customer.first_name }}! Tu pedido ha sido enviado.
+              - title: Push
+                description: Add a language variant to a push notification newsletter. Requires `language` and at least one of `subject` or `body`.
+                allOf:
+                - type: object
+                  required:
+                  - language
+                  properties:
+                    language:
+                      type: string
+                      description: The [language tag](/journeys/channels/localization/attribute/#supported-languages) for the new variant, e.g. `es`, `fr`, `de`.
+                      example: es
+                - type: object
+                  properties:
+                    subject:
+                      type: string
+                      description: The title of the push notification.
+                      example: ¡Oferta por tiempo limitado!
+                    body:
+                      type: string
+                      description: The body content of the push notification.
+                      example: Obtén 30% de descuento en todo.
+              - title: Webhook
+                description: Add a language variant to a webhook newsletter. Requires `language` and `body`.
+                allOf:
+                - type: object
+                  required:
+                  - language
+                  properties:
+                    language:
+                      type: string
+                      description: The [language tag](/journeys/channels/localization/attribute/#supported-languages) for the new variant, e.g. `es`, `fr`, `de`.
+                      example: es
+                - type: object
+                  required:
+                  - body
+                  properties:
+                    body:
+                      type: string
+                      description: The body content of the webhook request.
+                      example: '{"channel":"#marketing","text":"Boletín enviado a {{ customer.email }}"}'
+              - title: Inbox message
+                description: Add a language variant to an inbox message newsletter. Requires `language` and `body_json`.
+                allOf:
+                - type: object
+                  required:
+                  - language
+                  properties:
+                    language:
+                      type: string
+                      description: The [language tag](/journeys/channels/localization/attribute/#supported-languages) for the new variant, e.g. `es`, `fr`, `de`.
+                      example: es
+                - type: object
+                  required:
+                  - body_json
+                  properties:
+                    body_json:
+                      type: string
+                      description: JSON body content for the inbox message variant. Learn more about [message settings](/journeys/channels/in-app/inbox/send-inbox/) in our docs.
+                      example: '{"topics": ["general", "updates"], "type": "notification", "expiration": {"type": "relative", "value": "30", "unit": "days"}, "properties": {"title": "Welcome!", "message": "Thanks for signing up", "link": "https://customer.io"}}'
+      responses:
+        '200':
+          description: Returns the updated newsletter, including new `content_ids`.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  newsletter:
+                    x-scalar-ignore: true
+                    type: object
+                    properties:
+                      id:
+                        x-scalar-ignore: true
+                        description: The identifier for a newsletter.
+                        type: integer
+                        example: 10
+                      deduplicate_id:
+                        x-scalar-ignore: true
+                        type: string
+                        readOnly: true
+                        description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+                        example: 15:1492548073
+                      content_ids:
+                        type: array
+                        description: A list of message variants in a newsletter, where a variant is a translation or A/B test.
+                        items:
+                          type: integer
+                      name:
+                        type: string
+                        description: The name of the newsletter. Must be 190 characters or less.
+                        readOnly: true
+                      sent_at:
+                        type: integer
+                        format: unix timestamp
+                        description: The last time the newsletter was sent.
+                      created:
+                        x-scalar-ignore: true
+                        type: integer
+                        format: unix timestamp
+                        description: The date time when the referenced ID was created.
+                        example: 1552341937
+                        readOnly: true
+                      updated:
+                        x-scalar-ignore: true
+                        type: integer
+                        format: unix timestamp
+                        description: The date time when the referenced ID was last updated.
+                        example: 1552341937
+                        readOnly: true
+                      type:
+                        x-scalar-ignore: true
+                        description: Channel type for a newsletter or newsletter content variant.
+                        type: string
+                        enum:
+                        - email
+                        - webhook
+                        - twilio
+                        - push
+                        - in_app
+                        - inbox
+                        readOnly: true
+                        example: email
+                      tags:
+                        type: array
+                        description: An array of tags associated with the newsletter.
+                        items:
+                          type: string
+                      recipient_segment_ids:
+                        description: If the recipient conditions included segments, this returns a list of those segment ids.
+                        type: array
+                        items:
+                          type: integer
+                      subscription_topic_id:
+                        type: integer
+                        description: If you enabled a [subscription center](/journeys/channels/subscriptions/center/) on your workspace, this returns the id of the subscription preference you set.
+                    example:
+                      id: 128275
+                      deduplicate_id: 128275:1484870424
+                      type: email
+                      content_ids:
+                      - 45
+                      name: Weekly Product Update
+                      sent_at: 1481653929
+                      created: 1481653919
+                      updated: 1481653929
+                      recipient_segment_ids:
+                      - 42
+                      - 99
+                      tags:
+                      - Product Updates
+                      subscription_topic_id: 5
+        '400':
+          description: 'The request is invalid. Possible reasons include: the newsletter has already been sent, the test group does not exist, or the newsletter uses Design Studio or drag-and-drop editor.
+
+            '
+        '404':
+          description: The newsletter does not exist.
+        '422':
+          description: 'Validation error. Possible reasons: `language` is missing, required content fields are missing for the channel type, or the language variant already exists.
+
+            '
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: json
+        label: JSON
+        source: "{\n  \"language\": \"es\",\n  \"subject\": \"¡Hola, {{ customer.name }}!\",\n  \"body\": \"<html><body><h1>¡Hola!</h1></body></html>\"\n}"
+      - lang: Shell + Curl
+        source: "curl --request POST \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/newsletters/{newsletter_id}/test_group/{test_group_id}/language \\\n  --header 'content-type: application/json' \\\n  --data '{\"language\":\"es\",\"subject\":\"¡Hola, {{ customer.name }}!\",\"preheader_text\":\"Mira nuestras últimas novedades\",\"body\":\"<html><body><h1>¡Hola!</h1></body></html>\",\"body_plain\":\"string\",\"body_amp\":\"string\"}'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"POST\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/newsletters/%7Bnewsletter_id%7D/test_group/%7Btest_group_id%7D/language\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({\n  language: 'es',\n  subject: '¡Hola, {{ customer.name }}!',\n  preheader_text: 'Mira nuestras últimas novedades',\n  body: '<html><body><h1>¡Hola!</h1></body></html>',\n  body_plain: 'string',\n  body_amp: 'string'\n}));\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/test_group/%7Btest_group_id%7D/language")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Post.new(url)
+
+          request["content-type"] = ''application/json''
+
+          request.body = "{\"language\":\"es\",\"subject\":\"¡Hola, {{ customer.name }}!\",\"preheader_text\":\"Mira nuestras últimas novedades\",\"body\":\"<html><body><h1>¡Hola!</h1></body></html>\",\"body_plain\":\"string\",\"body_amp\":\"string\"}"
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          payload = "{\"language\":\"es\",\"subject\":\"¡Hola, {{ customer.name }}!\",\"preheader_text\":\"Mira nuestras últimas novedades\",\"body\":\"<html><body><h1>¡Hola!</h1></body></html>\",\"body_plain\":\"string\",\"body_amp\":\"string\"}"
+
+
+          headers = { ''content-type'': "application/json" }
+
+
+          conn.request("POST", "/v1/newsletters/%7Bnewsletter_id%7D/test_group/%7Btest_group_id%7D/language", payload, headers)
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/test_group/%7Btest_group_id%7D/language\"\n\n\tpayload := strings.NewReader(\"{\\\"language\\\":\\\"es\\\",\\\"subject\\\":\\\"¡Hola, {{ customer.name }}!\\\",\\\"preheader_text\\\":\\\"Mira nuestras últimas novedades\\\",\\\"body\\\":\\\"<html><body><h1>¡Hola!</h1></body></html>\\\",\\\"body_plain\\\":\\\"string\\\",\\\"body_amp\\\":\\\"string\\\"}\")\n\n\treq, _ := http.NewRequest(\"POST\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+  /v1/newsletters/{newsletter_id}/test_group/{test_group_id}/language/{language}:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - name: newsletter_id
+      in: path
+      required: true
+      description: The identifier of a newsletter.
+      schema:
+        type: integer
+    - name: test_group_id
+      in: path
+      description: The ID of the A/B test group.
+      required: true
+      schema:
+        type: string
+    - name: language
+      in: path
+      required: true
+      description: A [language tag](/journeys/channels/subscriptions/unsubscribe-faqs/#currently-supported-languages) of a language variant. If you don't provide a language (an empty string), we'll use your default language. If the language variant does not exist, we'll return an error.
+      schema:
+        type: string
+    get:
+      summary: Get a translation in a newsletter test group
+      operationId: getNewsletterVariantTranslationTest
+      security:
+      - Bearer-Auth: []
+      description: Returns information about a specific language variant of a newsletter in an A/B test group. You can retrieve `test_group_ids` from [Get variants in a newsletter test group](/api/app/#operation/getNewsletterVariantTest).
+      tags:
+      - Newsletter Variants
+      responses:
+        '200':
+          description: Returns newsletter `content` for a language variant in a test group.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    x-scalar-ignore: true
+                    allOf:
+                    - x-scalar-ignore: true
+                      type: object
+                      properties:
+                        id:
+                          x-scalar-ignore: true
+                          type: integer
+                          description: The identifier of a newsletter variant—a language in a multi-language newsletter or a test in an A/B test.
+                          readOnly: true
+                        newsletter_id:
+                          x-scalar-ignore: true
+                          description: The identifier for a newsletter.
+                          type: integer
+                          example: 10
+                        deduplicate_id:
+                          x-scalar-ignore: true
+                          type: string
+                          readOnly: true
+                          description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+                          example: 15:1492548073
+                        name:
+                          type: string
+                          description: The name of the variant, if it exists.
+                          readOnly: true
+                          example: newsletter variant A
+                        layout:
+                          type: string
+                          description: The layout used for the variant, if it exists.
+                          example: <html><body>{{ content }}</body></html>
+                          readOnly: true
+                        body:
+                          type: string
+                          description: The body of the variant. You cannot modify the body if you created it with our drag-and-drop editor.
+                          example: <strong>Hello from the API</strong>
+                        body_amp:
+                          x-scalar-ignore: true
+                          type: string
+                          description: AMP-enabled content for your email. If a recipient's email client doesn't support AMP, they receive your `body` content instead. Make sure you're [set up to send AMP](/journeys/channels/email/layouts/amp-for-email/) first.
+                        language:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The language variant for your message. If you don't use our [localization feature](/journeys/channels/localization/getting-started), or this is the default message, this value is an empty string.
+                          example: fr
+                          readOnly: true
+                        type:
+                          x-scalar-ignore: true
+                          description: Channel type for a newsletter or newsletter content variant.
+                          type: string
+                          enum:
+                          - email
+                          - webhook
+                          - twilio
+                          - push
+                          - in_app
+                          - inbox
+                          readOnly: true
+                          example: email
+                        from:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The address that the message is from, relevant if the action `type` is `email`.
+                          readOnly: true
+                          example: sentFrom@example.com
+                        from_id:
+                          x-scalar-ignore: true
+                          type: integer
+                          description: The identifier of the `from` address, commonly known as the "sender". Use [List sender identities](#tag/sender-identities/listSenders) to find valid IDs.
+                          example: 1
+                        reply_to:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The address that receives replies for the message, if applicable.
+                          readOnly: true
+                          example: replyto@example.com
+                        reply_to_id:
+                          x-scalar-ignore: true
+                          type:
+                          - integer
+                          - 'null'
+                          description: The identifier for the `reply_to` address, if applicable. Use [List sender identities](#tag/sender-identities/listSenders) to find valid IDs.
+                          example: 38
+                        preprocessor:
+                          x-scalar-ignore: true
+                          type: string
+                          description: If CSS pre-processing is enabled, this key is populated with `premailer`. Note, Juice replaced Premailer as the pre-processor, but you will only see `premailer` as the value.
+                          enum:
+                          - premailer
+                          readOnly: true
+                        recipient:
+                          x-scalar-ignore: true
+                          description: The recipient address for an action.
+                          type: string
+                          example: '{{customer.email}}'
+                        subject:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The subject line for an `email` action.
+                          example: Did you get that thing I sent you?
+                        cc:
+                          x-scalar-ignore: true
+                          readOnly: true
+                          description: The carbon-copy address(es) for this action.
+                          type: string
+                        bcc:
+                          x-scalar-ignore: true
+                          readOnly: true
+                          description: The blind-copy address(es) for this action.
+                          type: string
+                        fake_bcc:
+                          x-scalar-ignore: true
+                          readOnly: true
+                          type: boolean
+                          description: 'If true, rather than sending true copies to BCC addresses, Customer.io sends a copy of the message with the subject line containing the recipient address(es).
+
+                            '
+                        preheader_text:
+                          x-scalar-ignore: true
+                          type: string
+                          description: '[Also known as "preview text"](/journeys/channels/email/headers/custom-preheader-text/), this is the small block of text shown in an email inbox next to or underneath the subject line.
+
+                            '
+                    - type: object
+                      properties:
+                        headers:
+                          x-scalar-ignore: true
+                          description: A JSON string containing header objects with `name` and `value`. Names and values must be strings, with no non-ASCII characters or spaces. You can't overwrite reserved headers.
+                          type: string
+                          format: json
+                          example: '[{"name":"X-Mailgun-Tag","value":"my-cool-tag"},{"name":"X-Custom-Header","value":"custom-value"}]'
+        '400':
+          description: The `language` does not exist.
+        '404':
+          description: The newsletter or variant does not exist.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/newsletters/{newsletter_id}/test_group/{test_group_id}/language/{language}"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/newsletters/%7Bnewsletter_id%7D/test_group/%7Btest_group_id%7D/language/%7Blanguage%7D\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/test_group/%7Btest_group_id%7D/language/%7Blanguage%7D")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/newsletters/%7Bnewsletter_id%7D/test_group/%7Btest_group_id%7D/language/%7Blanguage%7D")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/test_group/%7Btest_group_id%7D/language/%7Blanguage%7D\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+    put:
+      summary: Update a translation in a newsletter test group
+      operationId: updateNewsletterTestTranslation
+      security:
+      - Bearer-Auth: []
+      description: 'Update the translation of a newsletter variant in an A/B test. You can retrieve a list of `test_group_ids` from [Get variants in a newsletter test group](/api/app/#operation/getNewsletterVariantTest).
+
+
+        **NOTE**: You cannot manage content made with Design Studio with this endpoint. Use the [Design Studio APIs](#tag/design-studio) instead.
+
+        '
+      tags:
+      - Newsletter Variants
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/updateEmailContent'
+              - $ref: '#/components/schemas/updateSmsContent'
+              - $ref: '#/components/schemas/updatePushContent'
+              - $ref: '#/components/schemas/updateWebhookContent'
+              - $ref: '#/components/schemas/updateInboxContent'
+              discriminator:
+                propertyName: type
+      responses:
+        '200':
+          description: Returns the updated newsletter variant.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    x-scalar-ignore: true
+                    allOf:
+                    - x-scalar-ignore: true
+                      type: object
+                      properties:
+                        id:
+                          x-scalar-ignore: true
+                          type: integer
+                          description: The identifier of a newsletter variant—a language in a multi-language newsletter or a test in an A/B test.
+                          readOnly: true
+                        newsletter_id:
+                          x-scalar-ignore: true
+                          description: The identifier for a newsletter.
+                          type: integer
+                          example: 10
+                        deduplicate_id:
+                          x-scalar-ignore: true
+                          type: string
+                          readOnly: true
+                          description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+                          example: 15:1492548073
+                        name:
+                          type: string
+                          description: The name of the variant, if it exists.
+                          readOnly: true
+                          example: newsletter variant A
+                        layout:
+                          type: string
+                          description: The layout used for the variant, if it exists.
+                          example: <html><body>{{ content }}</body></html>
+                          readOnly: true
+                        body:
+                          type: string
+                          description: The body of the variant. You cannot modify the body if you created it with our drag-and-drop editor.
+                          example: <strong>Hello from the API</strong>
+                        body_amp:
+                          x-scalar-ignore: true
+                          type: string
+                          description: AMP-enabled content for your email. If a recipient's email client doesn't support AMP, they receive your `body` content instead. Make sure you're [set up to send AMP](/journeys/channels/email/layouts/amp-for-email/) first.
+                        language:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The language variant for your message. If you don't use our [localization feature](/journeys/channels/localization/getting-started), or this is the default message, this value is an empty string.
+                          example: fr
+                          readOnly: true
+                        type:
+                          x-scalar-ignore: true
+                          description: Channel type for a newsletter or newsletter content variant.
+                          type: string
+                          enum:
+                          - email
+                          - webhook
+                          - twilio
+                          - push
+                          - in_app
+                          - inbox
+                          readOnly: true
+                          example: email
+                        from:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The address that the message is from, relevant if the action `type` is `email`.
+                          readOnly: true
+                          example: sentFrom@example.com
+                        from_id:
+                          x-scalar-ignore: true
+                          type: integer
+                          description: The identifier of the `from` address, commonly known as the "sender". Use [List sender identities](#tag/sender-identities/listSenders) to find valid IDs.
+                          example: 1
+                        reply_to:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The address that receives replies for the message, if applicable.
+                          readOnly: true
+                          example: replyto@example.com
+                        reply_to_id:
+                          x-scalar-ignore: true
+                          type:
+                          - integer
+                          - 'null'
+                          description: The identifier for the `reply_to` address, if applicable. Use [List sender identities](#tag/sender-identities/listSenders) to find valid IDs.
+                          example: 38
+                        preprocessor:
+                          x-scalar-ignore: true
+                          type: string
+                          description: If CSS pre-processing is enabled, this key is populated with `premailer`. Note, Juice replaced Premailer as the pre-processor, but you will only see `premailer` as the value.
+                          enum:
+                          - premailer
+                          readOnly: true
+                        recipient:
+                          x-scalar-ignore: true
+                          description: The recipient address for an action.
+                          type: string
+                          example: '{{customer.email}}'
+                        subject:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The subject line for an `email` action.
+                          example: Did you get that thing I sent you?
+                        cc:
+                          x-scalar-ignore: true
+                          readOnly: true
+                          description: The carbon-copy address(es) for this action.
+                          type: string
+                        bcc:
+                          x-scalar-ignore: true
+                          readOnly: true
+                          description: The blind-copy address(es) for this action.
+                          type: string
+                        fake_bcc:
+                          x-scalar-ignore: true
+                          readOnly: true
+                          type: boolean
+                          description: 'If true, rather than sending true copies to BCC addresses, Customer.io sends a copy of the message with the subject line containing the recipient address(es).
+
+                            '
+                        preheader_text:
+                          x-scalar-ignore: true
+                          type: string
+                          description: '[Also known as "preview text"](/journeys/channels/email/headers/custom-preheader-text/), this is the small block of text shown in an email inbox next to or underneath the subject line.
+
+                            '
+                    - type: object
+                      properties:
+                        headers:
+                          x-scalar-ignore: true
+                          description: A JSON string containing header objects with `name` and `value`. Names and values must be strings, with no non-ASCII characters or spaces. You can't overwrite reserved headers.
+                          type: string
+                          format: json
+                          example: '[{"name":"X-Mailgun-Tag","value":"my-cool-tag"},{"name":"X-Custom-Header","value":"custom-value"}]'
+        '400':
+          description: The `language` does not exist.
+        '404':
+          description: The newsletter or variant does not exist.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: json
+        label: JSON
+        source: '{}'
+      - lang: Shell + Curl
+        source: "curl --request PUT \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/newsletters/{newsletter_id}/test_group/{test_group_id}/language/{language} \\\n  --header 'content-type: application/json' \\\n  --data '{\"body\":\"string\",\"body_amp\":\"string\",\"body_plain\":\"string\",\"subject\":\"Did you get that thing I sent you?\",\"preheader_text\":\"string\",\"from_id\":1,\"reply_to_id\":38,\"recipient\":\"string\"}'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"PUT\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/newsletters/%7Bnewsletter_id%7D/test_group/%7Btest_group_id%7D/language/%7Blanguage%7D\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({\n  body: 'string',\n  body_amp: 'string',\n  body_plain: 'string',\n  subject: 'Did you get that thing I sent you?',\n  preheader_text: 'string',\n  from_id: 1,\n  reply_to_id: 38,\n  recipient: 'string'\n}));\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/test_group/%7Btest_group_id%7D/language/%7Blanguage%7D")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Put.new(url)
+
+          request["content-type"] = ''application/json''
+
+          request.body = "{\"body\":\"string\",\"body_amp\":\"string\",\"body_plain\":\"string\",\"subject\":\"Did you get that thing I sent you?\",\"preheader_text\":\"string\",\"from_id\":1,\"reply_to_id\":38,\"recipient\":\"string\"}"
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          payload = "{\"body\":\"string\",\"body_amp\":\"string\",\"body_plain\":\"string\",\"subject\":\"Did you get that thing I sent you?\",\"preheader_text\":\"string\",\"from_id\":1,\"reply_to_id\":38,\"recipient\":\"string\"}"
+
+
+          headers = { ''content-type'': "application/json" }
+
+
+          conn.request("PUT", "/v1/newsletters/%7Bnewsletter_id%7D/test_group/%7Btest_group_id%7D/language/%7Blanguage%7D", payload, headers)
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/test_group/%7Btest_group_id%7D/language/%7Blanguage%7D\"\n\n\tpayload := strings.NewReader(\"{\\\"body\\\":\\\"string\\\",\\\"body_amp\\\":\\\"string\\\",\\\"body_plain\\\":\\\"string\\\",\\\"subject\\\":\\\"Did you get that thing I sent you?\\\",\\\"preheader_text\\\":\\\"string\\\",\\\"from_id\\\":1,\\\"reply_to_id\\\":38,\\\"recipient\\\":\\\"string\\\"}\")\n\n\treq, _ := http.NewRequest(\"PUT\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+    delete:
+      summary: Delete a translation in a newsletter test group
+      operationId: deleteNewsletterTestLanguageVariant
+      security:
+      - Bearer-Auth: []
+      description: 'Delete a specific language variant of a newsletter in an A/B test group. You cannot delete the default language variant. If your newsletter has already been sent, you cannot delete language variants.
+
+
+        You can retrieve a list of `test_group_ids` from [List A/B test groups in a newsletter](#operation/getNewsletterTestGroups).
+
+        '
+      tags:
+      - Newsletter Variants
+      responses:
+        '204':
+          description: Success. No content.
+        '400':
+          description: You cannot delete the default language variant, or the newsletter has already been sent. It may also mean the `test_group_id` does not exist.
+        '404':
+          description: The newsletter or language variant does not exist.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request DELETE \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/newsletters/{newsletter_id}/test_group/{test_group_id}/language/{language}"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"DELETE\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/newsletters/%7Bnewsletter_id%7D/test_group/%7Btest_group_id%7D/language/%7Blanguage%7D\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/test_group/%7Btest_group_id%7D/language/%7Blanguage%7D")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Delete.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("DELETE", "/v1/newsletters/%7Bnewsletter_id%7D/test_group/%7Btest_group_id%7D/language/%7Blanguage%7D")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/test_group/%7Btest_group_id%7D/language/%7Blanguage%7D\"\n\n\treq, _ := http.NewRequest(\"DELETE\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+components:
+  schemas:
+    updateEmailContent:
+      title: Email
+      description: 'Update the contents of an email newsletter variant. You can set the sender with `from_id`. If you don''t provide it, the existing sender is preserved.
+
+        '
+      allOf:
+      - type: object
+        properties:
+          type:
+            x-scalar-ignore: true
+            description: Channel type for a newsletter or newsletter content variant.
+            type: string
+            enum:
+            - email
+            - webhook
+            - twilio
+            - push
+            - in_app
+            - inbox
+            readOnly: true
+            example: email
+          deduplicate_id:
+            x-scalar-ignore: true
+            type: string
+            readOnly: true
+            description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+            example: 15:1492548073
+      - type: object
+        properties:
+          type:
+            type: string
+            enum:
+            - email
+            readOnly: true
+          body:
+            type: string
+            description: The HTML body of the email. You cannot modify the body if you created the newsletter with Design Studio or the drag-and-drop editor.
+          body_amp:
+            x-scalar-ignore: true
+            type: string
+            description: AMP-enabled content for your email. If a recipient's email client doesn't support AMP, they receive your `body` content instead. Make sure you're [set up to send AMP](/journeys/channels/email/layouts/amp-for-email/) first.
+          body_plain:
+            x-scalar-ignore: true
+            type: string
+            description: By default, your workspace generates a plaintext version of your message body for each delivery. Use this key to override the default plain text body.
+          subject:
+            x-scalar-ignore: true
+            type: string
+            description: The subject line for an `email` action.
+            example: Did you get that thing I sent you?
+          preheader_text:
+            x-scalar-ignore: true
+            type: string
+            description: '[Also known as "preview text"](/journeys/channels/email/headers/custom-preheader-text/), this is the small block of text shown in an email inbox next to or underneath the subject line.
+
+              '
+          from_id:
+            x-scalar-ignore: true
+            type: integer
+            description: The identifier of the `from` address, commonly known as the "sender". Use [List sender identities](#tag/sender-identities/listSenders) to find valid IDs.
+            example: 1
+          reply_to_id:
+            x-scalar-ignore: true
+            type:
+            - integer
+            - 'null'
+            description: The identifier for the `reply_to` address, if applicable. Use [List sender identities](#tag/sender-identities/listSenders) to find valid IDs.
+            example: 38
+          recipient:
+            type: string
+            description: The recipient address for the newsletter. By default, it's `{{customer.email}}`.
+    updateWebhookContent:
+      title: Webhook
+      description: Update the contents of a webhook newsletter variant.
+      allOf:
+      - type: object
+        properties:
+          type:
+            x-scalar-ignore: true
+            description: Channel type for a newsletter or newsletter content variant.
+            type: string
+            enum:
+            - email
+            - webhook
+            - twilio
+            - push
+            - in_app
+            - inbox
+            readOnly: true
+            example: email
+          deduplicate_id:
+            x-scalar-ignore: true
+            type: string
+            readOnly: true
+            description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+            example: 15:1492548073
+      - type: object
+        properties:
+          type:
+            type: string
+            enum:
+            - webhook
+            readOnly: true
+          body:
+            type: string
+            description: The body content of the webhook request.
+            example: '{"channel":"#marketing","text":"Newsletter sent to {{ customer.email }}"}'
+          headers:
+            x-scalar-ignore: true
+            description: Headers you want to add or update. Names and values must be strings, with no non-ASCII characters or spaces. You can't overwrite reserved headers.
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the header.
+                value:
+                  type: string
+                  description: The value of the header.
+              example:
+              - name: X-Mailgun-Tag
+                value: my-cool-tag
+    updateInboxContent:
+      title: Inbox message
+      description: Update the contents of an inbox message newsletter variant.
+      allOf:
+      - type: object
+        properties:
+          type:
+            x-scalar-ignore: true
+            description: Channel type for a newsletter or newsletter content variant.
+            type: string
+            enum:
+            - email
+            - webhook
+            - twilio
+            - push
+            - in_app
+            - inbox
+            readOnly: true
+            example: email
+          deduplicate_id:
+            x-scalar-ignore: true
+            type: string
+            readOnly: true
+            description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+            example: 15:1492548073
+      - type: object
+        properties:
+          type:
+            type: string
+            enum:
+            - inbox
+            readOnly: true
+          body_json:
+            type: string
+            description: 'JSON body content for the inbox message, as a stringified JSON object. The fields you include depend on how you [set up your inbox](/journeys/channels/in-app/inbox/setup/):
+
+              - `topics`—array, topics your audience can filter by in their inbox
+
+              - `type`—string, context that helps render the inbox message
+
+              - `properties`—object, your message info like the title, body, link, and image
+
+              - `expiration`—object; if omitted, the message expires after 30 days. Otherwise set `type` (`relative` or `absolute`), `unit` (`seconds`, `minutes`, `hours`, or `days`; relative only), and `value` (number of units, or a unix timestamp if absolute)
+
+              '
+            example: '{"topics": ["general", "updates"], "type": "notification", "expiration": {"type": "relative", "value": "30", "unit": "days"}, "properties": {"title": "Welcome!", "message": "Thanks for signing up", "link": "https://customer.io"}}'
+    updateSmsContent:
+      title: SMS
+      description: Update the contents of an SMS newsletter variant.
+      allOf:
+      - type: object
+        properties:
+          type:
+            x-scalar-ignore: true
+            description: Channel type for a newsletter or newsletter content variant.
+            type: string
+            enum:
+            - email
+            - webhook
+            - twilio
+            - push
+            - in_app
+            - inbox
+            readOnly: true
+            example: email
+          deduplicate_id:
+            x-scalar-ignore: true
+            type: string
+            readOnly: true
+            description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+            example: 15:1492548073
+      - type: object
+        properties:
+          type:
+            type: string
+            enum:
+            - twilio
+            readOnly: true
+          body:
+            type: string
+            description: The body of the SMS message.
+            example: Hi {{ customer.first_name }}, check out our latest deals!
+    updatePushContent:
+      title: Push
+      description: Update the contents of a push notification newsletter variant.
+      allOf:
+      - type: object
+        properties:
+          type:
+            x-scalar-ignore: true
+            description: Channel type for a newsletter or newsletter content variant.
+            type: string
+            enum:
+            - email
+            - webhook
+            - twilio
+            - push
+            - in_app
+            - inbox
+            readOnly: true
+            example: email
+          deduplicate_id:
+            x-scalar-ignore: true
+            type: string
+            readOnly: true
+            description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+            example: 15:1492548073
+      - type: object
+        properties:
+          type:
+            type: string
+            enum:
+            - push
+            readOnly: true
+          subject:
+            type: string
+            description: The title of the push notification.
+            example: 24-hour flash sale!
+          body:
+            type: string
+            description: The body of the push notification.
+            example: Get 30% off everything. Tap to shop now.
+  securitySchemes:
+    Bearer-Auth:
+      type: http
+      scheme: bearer
+      description: 'The App API uses a bearer authentication scheme.
+
+
+        You can generate a bearer token, known as an **App API Key**, with a defined scope in [your account settings](https://fly.customer.io/settings/api_credentials?keyType=app). [Learn more about bearer authorization in Customer.io](/accounts/settings/managing-credentials).
+
+        '
+    ServiceAccount-Auth:
+      x-scalar-ignore: true
+      type: http
+      scheme: bearer
+      bearerFormat: sa_live_
+      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
+
+
+        Service-account tokens are intended for testing and one-off sends—for example, using the Customer.io CLI with an AI agent like Claude to verify that a transactional message renders correctly before wiring it into your production backend. **For the production integration that triggers the message from your application, use an App API Key instead**: it''s workspace-scoped, easier to rotate, and has a smaller blast radius.
+
+
+        Service-account tokens are server-side credentials. Treat them like any API key—keep them in environment variables or a secret manager, and never embed them in client-side code, mobile apps, or other untrusted contexts.
+
+        '
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: API key passed as a Bearer token

@@ -1,0 +1,840 @@
+openapi: 3.2.0
+info:
+  version: 1.0.0
+  title: Customer.io App Objects API
+  description: 'Our App API provides ways to trigger messages and retrieve information about people, campaigns, broadcasts, and more.
+
+
+    # Overview
+
+
+    The App API provides methods to send newsletters, transactional messages, and API-triggered broadcasts. You can create newsletters from scratch and update transactional messages and API-triggered broadcasts.
+
+
+    For transactional messages and API-triggered broadcasts, your payload acts as a message "trigger" and can contain `data` that you reference in your messages using liquid—`{{trigger.<data>}}`.
+
+
+    The other endpoints help you retrieve information about people, segments, campaigns, broadcasts, etc; it also lets you update campaign actions, messages, newsletter variants, etc. Aside from the [API-triggered broadcast](#triggerBroadcast) (1 per 10 seconds) and [Transactional](#sendEmail) (100 per second) endpoints, requests are limited to 10 per second.
+
+
+    # Use our Postman collection
+
+
+    We''ve generated a Postman collection to help you get started with our APIs.
+
+
+    If you fork this collection, you might want to disable the *Watch original collection* option. We automatically update our Postman collection whenever we release changes to our documentation, even if we don''t change our APIs—which happens daily! Rather than being flooded with Postman notifications, you can check out our [Release Notes](/release-notes/) for updates to our APIs.
+
+
+    **NOTE**: Postman endpoints default to our US APIs. If you''re in our European (EU) region, you''ll need to add `-eu` to the server variables (`track_api_url` and `app_api_url`).
+
+
+    [<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://god.gw.postman.com/run-collection/23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d%26entityType%3Dcollection%26workspaceId%3Db886877f-fc09-475f-84fe-6221a98f4d18#?env%5BCustomer.io%20API%20Environment%5D=W3sia2V5IjoidHJhY2tfYXBpX3VybCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiJ0cmFjay5jdXN0b21lci5pbyIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBwX2FwaV91cmwiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiYXBpLmN1c3RvbWVyLmlvIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzaXRlX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBpX2tleSIsInR5cGUiOiJzZWNyZXQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYmVhcmVyIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYnJvYWRjYXN0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaW1wb3J0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiZW1haWxfYWRkcmVzcyIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InN1cHByZXNzaW9uX3R5cGUiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjb2xsZWN0aW9uX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoic25pcHBldF9uYW1lIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoid2ViaG9va19pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InNlbmRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImV4cG9ydF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6Im1lc3NhZ2VfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzZWdtZW50X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoibmV3c2xldHRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImNvbnRlbnRfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjYW1wYWlnbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImFjdGlvbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImN1c3RvbWVyX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoidHJhbnNhY3Rpb25hbF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InRyaWdnZXJfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJmb3JtX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaWRlbnRpZmllciIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRldmljZV9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRlbGl2ZXJ5X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9XQ==)
+
+
+    # Server addresses: US and EU
+
+
+    Customer.io hosts services in the United States (US) and European Union. Select the appropriate server address for your region.
+
+
+    | Region | Server Address |
+
+    | :-- | :-- |
+
+    | US | https://api.customer.io |
+
+    | EU | https://api-eu.customer.io |
+
+
+    # Authentication
+
+
+    All requests to the Customer.io App API use an [App API Key](#App-API-Key).
+
+
+    To authenticate, provide your key as a Bearer token in a HTTP Authorization header. You can create and manage your API keys—including keys with different scopes—in [your account settings page](https://fly.customer.io/settings/api_credentials?keyType=app). Each operation on this page references the authorization header it requires.
+
+
+    # Rate Limits
+
+
+    Most endpoints on this page are limited to 10 requests per second. The exceptions are:
+
+    * The [transactional email](#operation/sendEmail) endpoint is limited to 100 requests per second.
+
+    * The [API-triggered broadcast endpoint](#operation/triggerBroadcast) is limited to 1 request every 10 seconds.
+
+
+    **Rate limits are subject to change. We may adjust these thresholds to ensure stable performance for all customers.**
+
+    '
+servers:
+- url: https://api.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+- url: https://api-eu.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+tags:
+- name: Objects
+  x-displayName: Objects
+  description: 'Objects are "groups" that you can relate people to in Customer.io—like the companies they work for, the online classes they take, and so on. These APIs help you find objects, their attributes, the people they''re related to, etc. Use the [track API v1](/api/track/#tag/Track-Customers) or the [Track v2 API](/api/track/#tag/track_v2) to add and relate people to objects to your workspace and assign their attributes.
+
+    '
+paths:
+  /v1/object_types:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    get:
+      operationId: getObjectTypes
+      summary: List object types
+      security:
+      - Bearer-Auth: []
+      description: Returns a list of object types in your system. Because each object type is an incrementing ID, you may need to use this endpoint to find the ID of the object type you want to query, create, or modify.
+      tags:
+      - Objects
+      responses:
+        '200':
+          description: Returns an array of `types`.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  types:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: The `object_type_id` that you'll use with the Journeys Track API to create or modify objects. Object type IDs are integers passed as strings.
+                        name:
+                          type: string
+                          description: The name of the object type.
+                        singular_name:
+                          type: string
+                          description: The singular name of the object type.
+                        slug:
+                          type: string
+                          description: The slug of the page in the Customer.io UI for the object type.
+                        singular_slug:
+                          type: string
+                          description: The singular slug of the page in the Customer.io UI for the object type.
+                        enabled:
+                          type: boolean
+                          description: If true, the object type is enabled.
+                        icon:
+                          type: string
+                          description: The name of the icon or emoji that represents the object type in the Customer.io UI. Most commonly, you'll see this in the left-side navigation panel in Journeys.
+                      example:
+                        enabled: true
+                        icon: calendar
+                        id: '1'
+                        name: Concerts
+                        singular_name: Concert
+                        singular_slug: concert
+                        slug: concerts
+        '401':
+          description: Unauthorized request. Make sure that you provided the right credentials.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/object_types"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/object_types\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/object_types")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/object_types")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/object_types\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+  /v1/objects:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    post:
+      parameters:
+      - name: start
+        in: query
+        required: false
+        description: The token for the page of results you want to return. Responses contain a `next` property. Use this property as the `start` value to return the next page of results.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: The maximum number of results you want to retrieve per page.
+        schema:
+          type: integer
+      operationId: getObjectsFilter
+      summary: Find objects
+      security:
+      - Bearer-Auth: []
+      description: 'Use a set of filter conditions to find objects in your workspace. Returns a list of object IDs that you can use to look up object attributes, or to create or modify objects.
+
+
+        The list is paged if you have a large number of objects. You can set the `limit` for the number of objects returned, and use the `start` to page through the results. It''s possible that you''ll see duplicate entries across pages. If you want to export objects or relationships, you may want to use the export feature in our UI to return complete results.
+
+        '
+      tags:
+      - Objects
+      requestBody:
+        description: The `object_type_id` you want to search in, and the `filter` you want to apply to find objects. Both are required. The object called `object_attribute` requires `type_id`, as well, which should match the `object_type_id`.
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - object_type_id
+              - filter
+              properties:
+                object_type_id:
+                  type: string
+                  description: The type of object you want to search in. Object type IDs are integers passed as strings.
+                  example: '1'
+                filter:
+                  x-scalar-ignore: true
+                  title: Object Filter
+                  description: Use `and`, `or`, and `not` to combine object attribute conditions. The top-level object accepts one property; nest groups for complex filters.
+                  oneOf:
+                  - x-scalar-ignore: true
+                    title: and
+                    type: object
+                    properties:
+                      and:
+                        type: array
+                        description: Match *all* conditions to return results.
+                        items:
+                          type: object
+                          properties:
+                            object_attribute:
+                              x-scalar-ignore: true
+                              title: object attribute
+                              description: Filter your objects by their attributes.
+                              type: object
+                              required:
+                              - field
+                              - operator
+                              - type_id
+                              properties:
+                                field:
+                                  type: string
+                                  description: The name of the attribute you want to filter against.
+                                  example: location
+                                operator:
+                                  type: string
+                                  description: Determine how to evaluate criteria against the field—`exists` returns results if an object has the attribute; `eq` returns results an object's attribute exists and the attribute has the `value` you specify.
+                                  enum:
+                                  - eq
+                                  - exists
+                                value:
+                                  type: string
+                                  description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
+                                type_id:
+                                  x-scalar-ignore: true
+                                  type: string
+                                  description: The object type an object belongs to—like "Companies" or "Accounts". Object type IDs are string-formatted integers that begin at `1` and increment for each new type.
+                                  example: '1'
+                              example:
+                                field: cancelled
+                                operator: eq
+                                value: true
+                                type_id: 1
+                  - x-scalar-ignore: true
+                    title: or
+                    type: object
+                    properties:
+                      or:
+                        type: array
+                        description: Match *any* condition to return results.
+                        items:
+                          type: object
+                          properties:
+                            object_attribute:
+                              x-scalar-ignore: true
+                              title: object attribute
+                              description: Filter your objects by their attributes.
+                              type: object
+                              required:
+                              - field
+                              - operator
+                              - type_id
+                              properties:
+                                field:
+                                  type: string
+                                  description: The name of the attribute you want to filter against.
+                                  example: location
+                                operator:
+                                  type: string
+                                  description: Determine how to evaluate criteria against the field—`exists` returns results if an object has the attribute; `eq` returns results an object's attribute exists and the attribute has the `value` you specify.
+                                  enum:
+                                  - eq
+                                  - exists
+                                value:
+                                  type: string
+                                  description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
+                                type_id:
+                                  x-scalar-ignore: true
+                                  type: string
+                                  description: The object type an object belongs to—like "Companies" or "Accounts". Object type IDs are string-formatted integers that begin at `1` and increment for each new type.
+                                  example: '1'
+                              example:
+                                field: cancelled
+                                operator: eq
+                                value: true
+                                type_id: 1
+                  - x-scalar-ignore: true
+                    title: not
+                    type: object
+                    properties:
+                      not:
+                        type: object
+                        description: Returns results if a condition is false. While and/or support an array of items, `not` supports a single condition.
+                        properties:
+                          object_attribute:
+                            x-scalar-ignore: true
+                            title: object attribute
+                            description: Filter your objects by their attributes.
+                            type: object
+                            required:
+                            - field
+                            - operator
+                            - type_id
+                            properties:
+                              field:
+                                type: string
+                                description: The name of the attribute you want to filter against.
+                                example: location
+                              operator:
+                                type: string
+                                description: Determine how to evaluate criteria against the field—`exists` returns results if an object has the attribute; `eq` returns results an object's attribute exists and the attribute has the `value` you specify.
+                                enum:
+                                - eq
+                                - exists
+                              value:
+                                type: string
+                                description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
+                              type_id:
+                                x-scalar-ignore: true
+                                type: string
+                                description: The object type an object belongs to—like "Companies" or "Accounts". Object type IDs are string-formatted integers that begin at `1` and increment for each new type.
+                                example: '1'
+                            example:
+                              field: cancelled
+                              operator: eq
+                              value: true
+                              type_id: 1
+                  - title: object attribute
+                    type: object
+                    description: A simple filter to find objects matching an attribute condition.
+                    properties:
+                      object_attribute:
+                        x-scalar-ignore: true
+                        title: object attribute
+                        description: Filter your objects by their attributes.
+                        type: object
+                        required:
+                        - field
+                        - operator
+                        - type_id
+                        properties:
+                          field:
+                            type: string
+                            description: The name of the attribute you want to filter against.
+                            example: location
+                          operator:
+                            type: string
+                            description: Determine how to evaluate criteria against the field—`exists` returns results if an object has the attribute; `eq` returns results an object's attribute exists and the attribute has the `value` you specify.
+                            enum:
+                            - eq
+                            - exists
+                          value:
+                            type: string
+                            description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
+                          type_id:
+                            x-scalar-ignore: true
+                            type: string
+                            description: The object type an object belongs to—like "Companies" or "Accounts". Object type IDs are string-formatted integers that begin at `1` and increment for each new type.
+                            example: '1'
+                        example:
+                          field: cancelled
+                          operator: eq
+                          value: true
+                          type_id: 1
+            example:
+              object_type_id: '1'
+              filter:
+                and:
+                - object_attribute:
+                    field: name
+                    operator: exists
+                    type_id: '1'
+                - not:
+                    object_attribute:
+                      field: name
+                      operator: eq
+                      value: acme corp
+                      type_id: '1'
+      responses:
+        '200':
+          description: Returns arrays of `identifiers` and `ids`.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  identifiers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        cio_object_id:
+                          type: string
+                          description: The canonical, immutable identifier for the object, assigned by Customer.io.
+                          example: ob020101
+                        object_id:
+                          type: string
+                          description: The ID of the object, assigned by you or your systems.
+                          example: ae3000
+                  ids:
+                    type: array
+                    description: A list of object IDs matching the object_type_id and filter in the request. Items are the same as the `object_id` values under `identifiers`, but this array may be easier to search/sort through if you have a large number of objects and don't need to to use the `cio_object_id`.
+                    items:
+                      type: string
+                    example:
+                    - ae3000
+                  next:
+                    x-scalar-ignore: true
+                    type: string
+                    description: Indicates the next page of results. Add `?start=<next_value>` to the request to get the next page of results.
+        '401':
+          description: Unauthorized request. Make sure that you provided the right credentials.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: json
+        label: JSON
+        source: "{\n  \"object_type_id\": \"1\",\n  \"filter\": {\n    \"and\": [\n      {\n        \"object_attribute\": {\n          \"field\": \"name\",\n          \"operator\": \"exists\",\n          \"type_id\": \"1\"\n        }\n      },\n      {\n        \"not\": {\n          \"object_attribute\": {\n            \"field\": \"name\",\n            \"operator\": \"eq\",\n            \"value\": \"acme corp\",\n            \"type_id\": \"1\"\n          }\n        }\n      }\n    ]\n  }\n}"
+      - lang: Shell + Curl
+        source: "curl --request POST \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url 'https://api.customer.io/v1/objects?start=SOME_STRING_VALUE&limit=SOME_INTEGER_VALUE' \\\n  --header 'content-type: application/json' \\\n  --data '{\"object_type_id\":\"1\",\"filter\":{\"and\":[{\"object_attribute\":{\"field\":\"cancelled\",\"operator\":\"eq\",\"value\":true,\"type_id\":1}}]}}'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"POST\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/objects?start=SOME_STRING_VALUE&limit=SOME_INTEGER_VALUE\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({\n  object_type_id: '1',\n  filter: {\n    and: [\n      {\n        object_attribute: {field: 'cancelled', operator: 'eq', value: true, type_id: 1}\n      }\n    ]\n  }\n}));\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/objects?start=SOME_STRING_VALUE&limit=SOME_INTEGER_VALUE")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Post.new(url)
+
+          request["content-type"] = ''application/json''
+
+          request.body = "{\"object_type_id\":\"1\",\"filter\":{\"and\":[{\"object_attribute\":{\"field\":\"cancelled\",\"operator\":\"eq\",\"value\":true,\"type_id\":1}}]}}"
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          payload = "{\"object_type_id\":\"1\",\"filter\":{\"and\":[{\"object_attribute\":{\"field\":\"cancelled\",\"operator\":\"eq\",\"value\":true,\"type_id\":1}}]}}"
+
+
+          headers = { ''content-type'': "application/json" }
+
+
+          conn.request("POST", "/v1/objects?start=SOME_STRING_VALUE&limit=SOME_INTEGER_VALUE", payload, headers)
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/objects?start=SOME_STRING_VALUE&limit=SOME_INTEGER_VALUE\"\n\n\tpayload := strings.NewReader(\"{\\\"object_type_id\\\":\\\"1\\\",\\\"filter\\\":{\\\"and\\\":[{\\\"object_attribute\\\":{\\\"field\\\":\\\"cancelled\\\",\\\"operator\\\":\\\"eq\\\",\\\"value\\\":true,\\\"type_id\\\":1}}]}}\")\n\n\treq, _ := http.NewRequest(\"POST\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+  /v1/objects/{object_type_id}/{object_id}/relationships:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    get:
+      parameters:
+      - name: object_type_id
+        description: The object type an object belongs to—like "Companies" or "Accounts". Object type IDs begin at `1` and increment for each new type.
+        in: path
+        required: true
+        schema:
+          type: integer
+          example: 1
+      - name: object_id
+        description: The `object_id` or `cio_object_id` of an object, depending on the `id_type` specified in query params. `id_type` defaults to `object_id`.
+        in: path
+        required: true
+        schema:
+          type: string
+          example: abc123
+      - name: start
+        in: query
+        required: false
+        description: The token for the page of results you want to return. Responses contain a `next` property. Use this property as the `start` value to return the next page of results.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: The maximum number of results you want to retrieve per page.
+        schema:
+          type: integer
+      - name: id_type
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - object_id
+          - cio_object_id
+          default: object_id
+      operationId: getObjectRelationships
+      summary: Get Object Relationships
+      security:
+      - Bearer-Auth: []
+      description: 'Get a list of people people related to an object.
+
+
+        You can use the `start` parameter with the `next` property in responses to return pages of results. However, it''s possible that you''ll see duplicate entries across pages. If you want to export objects or relationships, you may want to use the export feature in our UI to return complete results.
+
+        '
+      tags:
+      - Objects
+      responses:
+        '200':
+          description: Returns an array of `cio_relationships`. Each object in the array represents a person related to the object specified in the endpoint path.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cio_relationships:
+                    type: array
+                    description: A list of people related to the object specified in the endpoint path.
+                    items:
+                      type: object
+                      properties:
+                        identifiers:
+                          description: Identifies an individual person.
+                          type: object
+                          properties:
+                            cio_id:
+                              x-scalar-ignore: true
+                              type: string
+                              description: A unique identifier set by Customer.io, used to reference a person if you want to update their identifiers.
+                              example: a3000001
+                            id:
+                              x-scalar-ignore: true
+                              type:
+                              - string
+                              - 'null'
+                              description: The ID of a customer profile, analogous to a "person" in the UI. If your workspace supports multiple identifiers (email and ID), this value can be null.
+                              example: '42'
+                            email:
+                              x-scalar-ignore: true
+                              type:
+                              - string
+                              - 'null'
+                              description: The email address of the customer.
+                              example: test@example.com
+                        object_type_id:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The object type an object belongs to—like "Companies" or "Accounts". Object type IDs are string-formatted integers that begin at `1` and increment for each new type.
+                          example: '1'
+                        object_type_disabled:
+                          type: boolean
+                          description: If true, the object is disabled.
+                      example:
+                      - identifiers:
+                          cio_id: ob020101
+                          id: acmeInc
+                        object_type_id: '1'
+                        object_type_disabled: false
+                  next:
+                    x-scalar-ignore: true
+                    type: string
+                    description: Indicates the next page of results. Add `?start=<next_value>` to the request to get the next page of results.
+        '401':
+          description: Unauthorized request. Make sure that you provided the right credentials.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url 'https://api.customer.io/v1/objects/{object_type_id}/{object_id}/relationships?start=SOME_STRING_VALUE&limit=SOME_INTEGER_VALUE&id_type=SOME_STRING_VALUE'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/objects/%7Bobject_type_id%7D/%7Bobject_id%7D/relationships?start=SOME_STRING_VALUE&limit=SOME_INTEGER_VALUE&id_type=SOME_STRING_VALUE\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/objects/%7Bobject_type_id%7D/%7Bobject_id%7D/relationships?start=SOME_STRING_VALUE&limit=SOME_INTEGER_VALUE&id_type=SOME_STRING_VALUE")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/objects/%7Bobject_type_id%7D/%7Bobject_id%7D/relationships?start=SOME_STRING_VALUE&limit=SOME_INTEGER_VALUE&id_type=SOME_STRING_VALUE")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/objects/%7Bobject_type_id%7D/%7Bobject_id%7D/relationships?start=SOME_STRING_VALUE&limit=SOME_INTEGER_VALUE&id_type=SOME_STRING_VALUE\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+  /v1/objects/{object_type_id}/{object_id}/attributes:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    get:
+      parameters:
+      - name: object_type_id
+        description: The object type an object belongs to—like "Companies" or "Accounts". Object type IDs begin at `1` and increment for each new type.
+        in: path
+        required: true
+        schema:
+          type: integer
+          example: 1
+      - name: object_id
+        description: The `object_id` or `cio_object_id` of an object, depending on the `id_type` specified in query params. `id_type` defaults to `object_id`.
+        in: path
+        required: true
+        schema:
+          type: string
+          example: abc123
+      - name: id_type
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - object_id
+          - cio_object_id
+          default: object_id
+      operationId: getObjectAttributes
+      summary: Get Object Attributes
+      security:
+      - Bearer-Auth: []
+      description: 'Get a list of attributes for an object. Attributes are things you know about an object—like an account name, billing date, etc.
+
+        '
+      tags:
+      - Objects
+      responses:
+        '200':
+          description: Returns information about the attributes for the `object` specified in the endpoint path.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  object:
+                    type: object
+                    description: The object specified in the endpoint path
+                    properties:
+                      attributes:
+                        type: object
+                        description: Attributes assigned to this object.
+                        additionalProperties:
+                          x-additionalPropertiesName: Object Attributes
+                      timestamps:
+                        type: object
+                        description: The epoch timestamps when corresponding attributes were set on the object.
+                        additionalProperties:
+                          type: integer
+                          format: unix timestamp
+                          x-additionalPropertiesName: Object Attribute Timestamps
+                      identifiers:
+                        description: Identifies an object.
+                        type: object
+                        properties:
+                          cio_object_id:
+                            x-scalar-ignore: true
+                            type: string
+                            description: A unique identifier set by Customer.io, used to reference a person if you want to update their identifiers.
+                            example: a3000001
+                          id:
+                            x-scalar-ignore: true
+                            type:
+                            - string
+                            - 'null'
+                            description: The ID of a customer profile, analogous to a "person" in the UI. If your workspace supports multiple identifiers (email and ID), this value can be null.
+                            example: '42'
+                          email:
+                            x-scalar-ignore: true
+                            type:
+                            - string
+                            - 'null'
+                            description: The email address of the customer.
+                            example: test@example.com
+                      object_type_id:
+                        x-scalar-ignore: true
+                        type: string
+                        description: The object type an object belongs to—like "Companies" or "Accounts". Object type IDs are string-formatted integers that begin at `1` and increment for each new type.
+                        example: '1'
+        '401':
+          description: Unauthorized request. Make sure that you provided the right credentials.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url 'https://api.customer.io/v1/objects/{object_type_id}/{object_id}/attributes?id_type=SOME_STRING_VALUE'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/objects/%7Bobject_type_id%7D/%7Bobject_id%7D/attributes?id_type=SOME_STRING_VALUE\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/objects/%7Bobject_type_id%7D/%7Bobject_id%7D/attributes?id_type=SOME_STRING_VALUE")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/objects/%7Bobject_type_id%7D/%7Bobject_id%7D/attributes?id_type=SOME_STRING_VALUE")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/objects/%7Bobject_type_id%7D/%7Bobject_id%7D/attributes?id_type=SOME_STRING_VALUE\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+components:
+  securitySchemes:
+    Bearer-Auth:
+      type: http
+      scheme: bearer
+      description: 'The App API uses a bearer authentication scheme.
+
+
+        You can generate a bearer token, known as an **App API Key**, with a defined scope in [your account settings](https://fly.customer.io/settings/api_credentials?keyType=app). [Learn more about bearer authorization in Customer.io](/accounts/settings/managing-credentials).
+
+        '
+    ServiceAccount-Auth:
+      x-scalar-ignore: true
+      type: http
+      scheme: bearer
+      bearerFormat: sa_live_
+      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
+
+
+        Service-account tokens are intended for testing and one-off sends—for example, using the Customer.io CLI with an AI agent like Claude to verify that a transactional message renders correctly before wiring it into your production backend. **For the production integration that triggers the message from your application, use an App API Key instead**: it''s workspace-scoped, easier to rotate, and has a smaller blast radius.
+
+
+        Service-account tokens are server-side credentials. Treat them like any API key—keep them in environment variables or a secret manager, and never embed them in client-side code, mobile apps, or other untrusted contexts.
+
+        '
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: API key passed as a Bearer token

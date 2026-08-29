@@ -1,0 +1,1231 @@
+openapi: 3.2.0
+info:
+  version: 1.0.0
+  title: Customer.io App Reporting Webhooks API
+  description: 'Our App API provides ways to trigger messages and retrieve information about people, campaigns, broadcasts, and more.
+
+
+    # Overview
+
+
+    The App API provides methods to send newsletters, transactional messages, and API-triggered broadcasts. You can create newsletters from scratch and update transactional messages and API-triggered broadcasts.
+
+
+    For transactional messages and API-triggered broadcasts, your payload acts as a message "trigger" and can contain `data` that you reference in your messages using liquid—`{{trigger.<data>}}`.
+
+
+    The other endpoints help you retrieve information about people, segments, campaigns, broadcasts, etc; it also lets you update campaign actions, messages, newsletter variants, etc. Aside from the [API-triggered broadcast](#triggerBroadcast) (1 per 10 seconds) and [Transactional](#sendEmail) (100 per second) endpoints, requests are limited to 10 per second.
+
+
+    # Use our Postman collection
+
+
+    We''ve generated a Postman collection to help you get started with our APIs.
+
+
+    If you fork this collection, you might want to disable the *Watch original collection* option. We automatically update our Postman collection whenever we release changes to our documentation, even if we don''t change our APIs—which happens daily! Rather than being flooded with Postman notifications, you can check out our [Release Notes](/release-notes/) for updates to our APIs.
+
+
+    **NOTE**: Postman endpoints default to our US APIs. If you''re in our European (EU) region, you''ll need to add `-eu` to the server variables (`track_api_url` and `app_api_url`).
+
+
+    [<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://god.gw.postman.com/run-collection/23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d%26entityType%3Dcollection%26workspaceId%3Db886877f-fc09-475f-84fe-6221a98f4d18#?env%5BCustomer.io%20API%20Environment%5D=W3sia2V5IjoidHJhY2tfYXBpX3VybCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiJ0cmFjay5jdXN0b21lci5pbyIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBwX2FwaV91cmwiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiYXBpLmN1c3RvbWVyLmlvIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzaXRlX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBpX2tleSIsInR5cGUiOiJzZWNyZXQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYmVhcmVyIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYnJvYWRjYXN0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaW1wb3J0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiZW1haWxfYWRkcmVzcyIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InN1cHByZXNzaW9uX3R5cGUiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjb2xsZWN0aW9uX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoic25pcHBldF9uYW1lIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoid2ViaG9va19pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InNlbmRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImV4cG9ydF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6Im1lc3NhZ2VfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzZWdtZW50X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoibmV3c2xldHRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImNvbnRlbnRfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjYW1wYWlnbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImFjdGlvbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImN1c3RvbWVyX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoidHJhbnNhY3Rpb25hbF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InRyaWdnZXJfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJmb3JtX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaWRlbnRpZmllciIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRldmljZV9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRlbGl2ZXJ5X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9XQ==)
+
+
+    # Server addresses: US and EU
+
+
+    Customer.io hosts services in the United States (US) and European Union. Select the appropriate server address for your region.
+
+
+    | Region | Server Address |
+
+    | :-- | :-- |
+
+    | US | https://api.customer.io |
+
+    | EU | https://api-eu.customer.io |
+
+
+    # Authentication
+
+
+    All requests to the Customer.io App API use an [App API Key](#App-API-Key).
+
+
+    To authenticate, provide your key as a Bearer token in a HTTP Authorization header. You can create and manage your API keys—including keys with different scopes—in [your account settings page](https://fly.customer.io/settings/api_credentials?keyType=app). Each operation on this page references the authorization header it requires.
+
+
+    # Rate Limits
+
+
+    Most endpoints on this page are limited to 10 requests per second. The exceptions are:
+
+    * The [transactional email](#operation/sendEmail) endpoint is limited to 100 requests per second.
+
+    * The [API-triggered broadcast endpoint](#operation/triggerBroadcast) is limited to 1 request every 10 seconds.
+
+
+    **Rate limits are subject to change. We may adjust these thresholds to ensure stable performance for all customers.**
+
+    '
+servers:
+- url: https://api.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+- url: https://api-eu.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+tags:
+- name: Reporting Webhooks
+  description: 'Set up webhooks to inform an external service about Customer.io events. Webhooks can notify you immediately when immediately when customer attributes change or when people open your messages.
+
+    '
+paths:
+  /v1/reporting_webhooks:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    post:
+      summary: Create a reporting webhook
+      operationId: createWebhook
+      security:
+      - Bearer-Auth: []
+      description: Create a new webhook configuration.
+      tags:
+      - Reporting Webhooks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              x-scalar-ignore: true
+              type: object
+              required:
+              - name
+              - endpoint
+              - events
+              properties:
+                name:
+                  type: string
+                  description: The name of your webhook.
+                  example: my cool webhook
+                id:
+                  type: integer
+                  description: The identifier for the webhook.
+                  readOnly: true
+                  example: 4
+                type:
+                  type: string
+                  description: The type of webhook—`webhook` for a standard reporting webhook or `js` for a JavaScript webhook.
+                  enum:
+                  - webhook
+                  - js
+                  readOnly: true
+                  example: webhook
+                endpoint:
+                  type: string
+                  format: url
+                  description: The webhook URL.
+                  example: https://example.com/webhook
+                disabled:
+                  type: boolean
+                  description: Set to `true` to quit sending events to the webhook URL. Set to `false` to enable the webhook.
+                  example: false
+                full_resolution:
+                  type: boolean
+                  description: Set to `false` to send unique open and click events to the webhook. Set to `true` to send all events.
+                  default: false
+                  example: true
+                with_content:
+                  type: boolean
+                  description: Set to `true` to include the message `body` in `_sent` events.
+                  example: false
+                events:
+                  description: Specifies the types of events you want to report to your webhook. See our [reporting webhooks reference](/api/webhooks/#operation/reportingWebhook) for more information about event types and the information they return.
+                  type: array
+                  minItems: 1
+                  items:
+                    type: string
+                    enum:
+                    - customer_subscribed
+                    - customer_unsubscribed
+                    - customer_subscription_preferences_changed
+                    - email_drafted
+                    - email_attempted
+                    - email_sent
+                    - email_delivered
+                    - email_opened
+                    - email_clicked
+                    - email_converted
+                    - email_bounced
+                    - email_dropped
+                    - email_deferred
+                    - email_spammed
+                    - email_failed
+                    - email_unsubscribed
+                    - email_undeliverable
+                    - in_app_drafted
+                    - in_app_attempted
+                    - in_app_sent
+                    - in_app_opened
+                    - in_app_clicked
+                    - in_app_converted
+                    - in_app_failed
+                    - in_app_undeliverable
+                    - push_drafted
+                    - push_attempted
+                    - push_sent
+                    - push_delivered
+                    - push_opened
+                    - push_clicked
+                    - push_converted
+                    - push_bounced
+                    - push_dropped
+                    - push_failed
+                    - push_undeliverable
+                    - slack_drafted
+                    - slack_attempted
+                    - slack_sent
+                    - slack_clicked
+                    - slack_converted
+                    - slack_failed
+                    - sms_drafted
+                    - sms_attempted
+                    - sms_sent
+                    - sms_delivered
+                    - sms_clicked
+                    - sms_converted
+                    - sms_bounced
+                    - sms_dropped
+                    - sms_failed
+                    - sms_undeliverable
+                    - sms_replied
+                    - whatsapp_drafted
+                    - whatsapp_attempted
+                    - whatsapp_sent
+                    - whatsapp_delivered
+                    - whatsapp_opened
+                    - whatsapp_clicked
+                    - whatsapp_converted
+                    - whatsapp_bounced
+                    - whatsapp_dropped
+                    - whatsapp_failed
+                    - whatsapp_undeliverable
+                    - whatsapp_replied
+                    - webhook_drafted
+                    - webhook_attempted
+                    - webhook_sent
+                    - webhook_clicked
+                    - webhook_converted
+                    - webhook_failed
+                    - webhook_undeliverable
+                  example:
+                  - email_failed
+                  - webhook_failed
+      responses:
+        '200':
+          description: Returns your webhook configuration and the ID of the webhook.
+          content:
+            application/json:
+              schema:
+                x-scalar-ignore: true
+                type: object
+                required:
+                - name
+                - endpoint
+                - events
+                properties:
+                  name:
+                    type: string
+                    description: The name of your webhook.
+                    example: my cool webhook
+                  id:
+                    type: integer
+                    description: The identifier for the webhook.
+                    readOnly: true
+                    example: 4
+                  type:
+                    type: string
+                    description: The type of webhook—`webhook` for a standard reporting webhook or `js` for a JavaScript webhook.
+                    enum:
+                    - webhook
+                    - js
+                    readOnly: true
+                    example: webhook
+                  endpoint:
+                    type: string
+                    format: url
+                    description: The webhook URL.
+                    example: https://example.com/webhook
+                  disabled:
+                    type: boolean
+                    description: Set to `true` to quit sending events to the webhook URL. Set to `false` to enable the webhook.
+                    example: false
+                  full_resolution:
+                    type: boolean
+                    description: Set to `false` to send unique open and click events to the webhook. Set to `true` to send all events.
+                    default: false
+                    example: true
+                  with_content:
+                    type: boolean
+                    description: Set to `true` to include the message `body` in `_sent` events.
+                    example: false
+                  events:
+                    description: Specifies the types of events you want to report to your webhook. See our [reporting webhooks reference](/api/webhooks/#operation/reportingWebhook) for more information about event types and the information they return.
+                    type: array
+                    minItems: 1
+                    items:
+                      type: string
+                      enum:
+                      - customer_subscribed
+                      - customer_unsubscribed
+                      - customer_subscription_preferences_changed
+                      - email_drafted
+                      - email_attempted
+                      - email_sent
+                      - email_delivered
+                      - email_opened
+                      - email_clicked
+                      - email_converted
+                      - email_bounced
+                      - email_dropped
+                      - email_deferred
+                      - email_spammed
+                      - email_failed
+                      - email_unsubscribed
+                      - email_undeliverable
+                      - in_app_drafted
+                      - in_app_attempted
+                      - in_app_sent
+                      - in_app_opened
+                      - in_app_clicked
+                      - in_app_converted
+                      - in_app_failed
+                      - in_app_undeliverable
+                      - push_drafted
+                      - push_attempted
+                      - push_sent
+                      - push_delivered
+                      - push_opened
+                      - push_clicked
+                      - push_converted
+                      - push_bounced
+                      - push_dropped
+                      - push_failed
+                      - push_undeliverable
+                      - slack_drafted
+                      - slack_attempted
+                      - slack_sent
+                      - slack_clicked
+                      - slack_converted
+                      - slack_failed
+                      - sms_drafted
+                      - sms_attempted
+                      - sms_sent
+                      - sms_delivered
+                      - sms_clicked
+                      - sms_converted
+                      - sms_bounced
+                      - sms_dropped
+                      - sms_failed
+                      - sms_undeliverable
+                      - sms_replied
+                      - whatsapp_drafted
+                      - whatsapp_attempted
+                      - whatsapp_sent
+                      - whatsapp_delivered
+                      - whatsapp_opened
+                      - whatsapp_clicked
+                      - whatsapp_converted
+                      - whatsapp_bounced
+                      - whatsapp_dropped
+                      - whatsapp_failed
+                      - whatsapp_undeliverable
+                      - whatsapp_replied
+                      - webhook_drafted
+                      - webhook_attempted
+                      - webhook_sent
+                      - webhook_clicked
+                      - webhook_converted
+                      - webhook_failed
+                      - webhook_undeliverable
+                    example:
+                    - email_failed
+                    - webhook_failed
+        '400':
+          description: The request was malformed.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: json
+        label: JSON
+        source: "{\n  \"name\": \"my cool webhook\",\n  \"endpoint\": \"https://example.com/webhook\",\n  \"events\": [\n    \"email_failed\",\n    \"webhook_failed\"\n  ]\n}"
+      - lang: Shell + Curl
+        source: "curl --request POST \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/reporting_webhooks \\\n  --header 'content-type: application/json' \\\n  --data '{\"name\":\"my cool webhook\",\"endpoint\":\"https://example.com/webhook\",\"disabled\":false,\"full_resolution\":true,\"with_content\":false,\"events\":[\"email_failed\",\"webhook_failed\"]}'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"POST\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/reporting_webhooks\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({\n  name: 'my cool webhook',\n  endpoint: 'https://example.com/webhook',\n  disabled: false,\n  full_resolution: true,\n  with_content: false,\n  events: ['email_failed', 'webhook_failed']\n}));\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/reporting_webhooks")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Post.new(url)
+
+          request["content-type"] = ''application/json''
+
+          request.body = "{\"name\":\"my cool webhook\",\"endpoint\":\"https://example.com/webhook\",\"disabled\":false,\"full_resolution\":true,\"with_content\":false,\"events\":[\"email_failed\",\"webhook_failed\"]}"
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          payload = "{\"name\":\"my cool webhook\",\"endpoint\":\"https://example.com/webhook\",\"disabled\":false,\"full_resolution\":true,\"with_content\":false,\"events\":[\"email_failed\",\"webhook_failed\"]}"
+
+
+          headers = { ''content-type'': "application/json" }
+
+
+          conn.request("POST", "/v1/reporting_webhooks", payload, headers)
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/reporting_webhooks\"\n\n\tpayload := strings.NewReader(\"{\\\"name\\\":\\\"my cool webhook\\\",\\\"endpoint\\\":\\\"https://example.com/webhook\\\",\\\"disabled\\\":false,\\\"full_resolution\\\":true,\\\"with_content\\\":false,\\\"events\\\":[\\\"email_failed\\\",\\\"webhook_failed\\\"]}\")\n\n\treq, _ := http.NewRequest(\"POST\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+    get:
+      summary: List reporting webhooks
+      operationId: listWebhooks
+      security:
+      - Bearer-Auth: []
+      description: Return a list of all of your reporting webhooks
+      tags:
+      - Reporting Webhooks
+      responses:
+        '200':
+          description: Returns an array of your `reporting_webhooks`.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reporting_webhooks:
+                    type: array
+                    items:
+                      x-scalar-ignore: true
+                      type: object
+                      required:
+                      - name
+                      - endpoint
+                      - events
+                      properties:
+                        name:
+                          type: string
+                          description: The name of your webhook.
+                          example: my cool webhook
+                        id:
+                          type: integer
+                          description: The identifier for the webhook.
+                          readOnly: true
+                          example: 4
+                        type:
+                          type: string
+                          description: The type of webhook—`webhook` for a standard reporting webhook or `js` for a JavaScript webhook.
+                          enum:
+                          - webhook
+                          - js
+                          readOnly: true
+                          example: webhook
+                        endpoint:
+                          type: string
+                          format: url
+                          description: The webhook URL.
+                          example: https://example.com/webhook
+                        disabled:
+                          type: boolean
+                          description: Set to `true` to quit sending events to the webhook URL. Set to `false` to enable the webhook.
+                          example: false
+                        full_resolution:
+                          type: boolean
+                          description: Set to `false` to send unique open and click events to the webhook. Set to `true` to send all events.
+                          default: false
+                          example: true
+                        with_content:
+                          type: boolean
+                          description: Set to `true` to include the message `body` in `_sent` events.
+                          example: false
+                        events:
+                          description: Specifies the types of events you want to report to your webhook. See our [reporting webhooks reference](/api/webhooks/#operation/reportingWebhook) for more information about event types and the information they return.
+                          type: array
+                          minItems: 1
+                          items:
+                            type: string
+                            enum:
+                            - customer_subscribed
+                            - customer_unsubscribed
+                            - customer_subscription_preferences_changed
+                            - email_drafted
+                            - email_attempted
+                            - email_sent
+                            - email_delivered
+                            - email_opened
+                            - email_clicked
+                            - email_converted
+                            - email_bounced
+                            - email_dropped
+                            - email_deferred
+                            - email_spammed
+                            - email_failed
+                            - email_unsubscribed
+                            - email_undeliverable
+                            - in_app_drafted
+                            - in_app_attempted
+                            - in_app_sent
+                            - in_app_opened
+                            - in_app_clicked
+                            - in_app_converted
+                            - in_app_failed
+                            - in_app_undeliverable
+                            - push_drafted
+                            - push_attempted
+                            - push_sent
+                            - push_delivered
+                            - push_opened
+                            - push_clicked
+                            - push_converted
+                            - push_bounced
+                            - push_dropped
+                            - push_failed
+                            - push_undeliverable
+                            - slack_drafted
+                            - slack_attempted
+                            - slack_sent
+                            - slack_clicked
+                            - slack_converted
+                            - slack_failed
+                            - sms_drafted
+                            - sms_attempted
+                            - sms_sent
+                            - sms_delivered
+                            - sms_clicked
+                            - sms_converted
+                            - sms_bounced
+                            - sms_dropped
+                            - sms_failed
+                            - sms_undeliverable
+                            - sms_replied
+                            - whatsapp_drafted
+                            - whatsapp_attempted
+                            - whatsapp_sent
+                            - whatsapp_delivered
+                            - whatsapp_opened
+                            - whatsapp_clicked
+                            - whatsapp_converted
+                            - whatsapp_bounced
+                            - whatsapp_dropped
+                            - whatsapp_failed
+                            - whatsapp_undeliverable
+                            - whatsapp_replied
+                            - webhook_drafted
+                            - webhook_attempted
+                            - webhook_sent
+                            - webhook_clicked
+                            - webhook_converted
+                            - webhook_failed
+                            - webhook_undeliverable
+                          example:
+                          - email_failed
+                          - webhook_failed
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/reporting_webhooks"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/reporting_webhooks\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/reporting_webhooks")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/reporting_webhooks")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/reporting_webhooks\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+  /v1/reporting_webhooks/{webhook_id}:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - name: webhook_id
+      in: path
+      required: true
+      description: The identifier of a webhook.
+      schema:
+        type: integer
+    get:
+      summary: Get a reporting webhook
+      operationId: getWebhook
+      security:
+      - Bearer-Auth: []
+      description: Returns information about a specific reporting webhook.
+      tags:
+      - Reporting Webhooks
+      responses:
+        '200':
+          description: Returns an individual webhook configuration.
+          content:
+            application/json:
+              schema:
+                x-scalar-ignore: true
+                type: object
+                required:
+                - name
+                - endpoint
+                - events
+                properties:
+                  name:
+                    type: string
+                    description: The name of your webhook.
+                    example: my cool webhook
+                  id:
+                    type: integer
+                    description: The identifier for the webhook.
+                    readOnly: true
+                    example: 4
+                  type:
+                    type: string
+                    description: The type of webhook—`webhook` for a standard reporting webhook or `js` for a JavaScript webhook.
+                    enum:
+                    - webhook
+                    - js
+                    readOnly: true
+                    example: webhook
+                  endpoint:
+                    type: string
+                    format: url
+                    description: The webhook URL.
+                    example: https://example.com/webhook
+                  disabled:
+                    type: boolean
+                    description: Set to `true` to quit sending events to the webhook URL. Set to `false` to enable the webhook.
+                    example: false
+                  full_resolution:
+                    type: boolean
+                    description: Set to `false` to send unique open and click events to the webhook. Set to `true` to send all events.
+                    default: false
+                    example: true
+                  with_content:
+                    type: boolean
+                    description: Set to `true` to include the message `body` in `_sent` events.
+                    example: false
+                  events:
+                    description: Specifies the types of events you want to report to your webhook. See our [reporting webhooks reference](/api/webhooks/#operation/reportingWebhook) for more information about event types and the information they return.
+                    type: array
+                    minItems: 1
+                    items:
+                      type: string
+                      enum:
+                      - customer_subscribed
+                      - customer_unsubscribed
+                      - customer_subscription_preferences_changed
+                      - email_drafted
+                      - email_attempted
+                      - email_sent
+                      - email_delivered
+                      - email_opened
+                      - email_clicked
+                      - email_converted
+                      - email_bounced
+                      - email_dropped
+                      - email_deferred
+                      - email_spammed
+                      - email_failed
+                      - email_unsubscribed
+                      - email_undeliverable
+                      - in_app_drafted
+                      - in_app_attempted
+                      - in_app_sent
+                      - in_app_opened
+                      - in_app_clicked
+                      - in_app_converted
+                      - in_app_failed
+                      - in_app_undeliverable
+                      - push_drafted
+                      - push_attempted
+                      - push_sent
+                      - push_delivered
+                      - push_opened
+                      - push_clicked
+                      - push_converted
+                      - push_bounced
+                      - push_dropped
+                      - push_failed
+                      - push_undeliverable
+                      - slack_drafted
+                      - slack_attempted
+                      - slack_sent
+                      - slack_clicked
+                      - slack_converted
+                      - slack_failed
+                      - sms_drafted
+                      - sms_attempted
+                      - sms_sent
+                      - sms_delivered
+                      - sms_clicked
+                      - sms_converted
+                      - sms_bounced
+                      - sms_dropped
+                      - sms_failed
+                      - sms_undeliverable
+                      - sms_replied
+                      - whatsapp_drafted
+                      - whatsapp_attempted
+                      - whatsapp_sent
+                      - whatsapp_delivered
+                      - whatsapp_opened
+                      - whatsapp_clicked
+                      - whatsapp_converted
+                      - whatsapp_bounced
+                      - whatsapp_dropped
+                      - whatsapp_failed
+                      - whatsapp_undeliverable
+                      - whatsapp_replied
+                      - webhook_drafted
+                      - webhook_attempted
+                      - webhook_sent
+                      - webhook_clicked
+                      - webhook_converted
+                      - webhook_failed
+                      - webhook_undeliverable
+                    example:
+                    - email_failed
+                    - webhook_failed
+        '404':
+          description: The webhook ID does not exist.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/reporting_webhooks/{webhook_id}"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/reporting_webhooks/%7Bwebhook_id%7D\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/reporting_webhooks/%7Bwebhook_id%7D")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/reporting_webhooks/%7Bwebhook_id%7D")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/reporting_webhooks/%7Bwebhook_id%7D\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+    put:
+      summary: Update a webhook configuration
+      operationId: updateWebhook
+      security:
+      - Bearer-Auth: []
+      description: Update the configuration of a reporting webhook. Turn events on or off, change the webhook URL, etc.
+      tags:
+      - Reporting Webhooks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              x-scalar-ignore: true
+              type: object
+              required:
+              - name
+              - endpoint
+              - events
+              properties:
+                name:
+                  type: string
+                  description: The name of your webhook.
+                  example: my cool webhook
+                id:
+                  type: integer
+                  description: The identifier for the webhook.
+                  readOnly: true
+                  example: 4
+                type:
+                  type: string
+                  description: The type of webhook—`webhook` for a standard reporting webhook or `js` for a JavaScript webhook.
+                  enum:
+                  - webhook
+                  - js
+                  readOnly: true
+                  example: webhook
+                endpoint:
+                  type: string
+                  format: url
+                  description: The webhook URL.
+                  example: https://example.com/webhook
+                disabled:
+                  type: boolean
+                  description: Set to `true` to quit sending events to the webhook URL. Set to `false` to enable the webhook.
+                  example: false
+                full_resolution:
+                  type: boolean
+                  description: Set to `false` to send unique open and click events to the webhook. Set to `true` to send all events.
+                  default: false
+                  example: true
+                with_content:
+                  type: boolean
+                  description: Set to `true` to include the message `body` in `_sent` events.
+                  example: false
+                events:
+                  description: Specifies the types of events you want to report to your webhook. See our [reporting webhooks reference](/api/webhooks/#operation/reportingWebhook) for more information about event types and the information they return.
+                  type: array
+                  minItems: 1
+                  items:
+                    type: string
+                    enum:
+                    - customer_subscribed
+                    - customer_unsubscribed
+                    - customer_subscription_preferences_changed
+                    - email_drafted
+                    - email_attempted
+                    - email_sent
+                    - email_delivered
+                    - email_opened
+                    - email_clicked
+                    - email_converted
+                    - email_bounced
+                    - email_dropped
+                    - email_deferred
+                    - email_spammed
+                    - email_failed
+                    - email_unsubscribed
+                    - email_undeliverable
+                    - in_app_drafted
+                    - in_app_attempted
+                    - in_app_sent
+                    - in_app_opened
+                    - in_app_clicked
+                    - in_app_converted
+                    - in_app_failed
+                    - in_app_undeliverable
+                    - push_drafted
+                    - push_attempted
+                    - push_sent
+                    - push_delivered
+                    - push_opened
+                    - push_clicked
+                    - push_converted
+                    - push_bounced
+                    - push_dropped
+                    - push_failed
+                    - push_undeliverable
+                    - slack_drafted
+                    - slack_attempted
+                    - slack_sent
+                    - slack_clicked
+                    - slack_converted
+                    - slack_failed
+                    - sms_drafted
+                    - sms_attempted
+                    - sms_sent
+                    - sms_delivered
+                    - sms_clicked
+                    - sms_converted
+                    - sms_bounced
+                    - sms_dropped
+                    - sms_failed
+                    - sms_undeliverable
+                    - sms_replied
+                    - whatsapp_drafted
+                    - whatsapp_attempted
+                    - whatsapp_sent
+                    - whatsapp_delivered
+                    - whatsapp_opened
+                    - whatsapp_clicked
+                    - whatsapp_converted
+                    - whatsapp_bounced
+                    - whatsapp_dropped
+                    - whatsapp_failed
+                    - whatsapp_undeliverable
+                    - whatsapp_replied
+                    - webhook_drafted
+                    - webhook_attempted
+                    - webhook_sent
+                    - webhook_clicked
+                    - webhook_converted
+                    - webhook_failed
+                    - webhook_undeliverable
+                  example:
+                  - email_failed
+                  - webhook_failed
+      responses:
+        '200':
+          description: Returns your webhook configuration and the ID of the webhook.
+          content:
+            application/json:
+              schema:
+                x-scalar-ignore: true
+                type: object
+                required:
+                - name
+                - endpoint
+                - events
+                properties:
+                  name:
+                    type: string
+                    description: The name of your webhook.
+                    example: my cool webhook
+                  id:
+                    type: integer
+                    description: The identifier for the webhook.
+                    readOnly: true
+                    example: 4
+                  type:
+                    type: string
+                    description: The type of webhook—`webhook` for a standard reporting webhook or `js` for a JavaScript webhook.
+                    enum:
+                    - webhook
+                    - js
+                    readOnly: true
+                    example: webhook
+                  endpoint:
+                    type: string
+                    format: url
+                    description: The webhook URL.
+                    example: https://example.com/webhook
+                  disabled:
+                    type: boolean
+                    description: Set to `true` to quit sending events to the webhook URL. Set to `false` to enable the webhook.
+                    example: false
+                  full_resolution:
+                    type: boolean
+                    description: Set to `false` to send unique open and click events to the webhook. Set to `true` to send all events.
+                    default: false
+                    example: true
+                  with_content:
+                    type: boolean
+                    description: Set to `true` to include the message `body` in `_sent` events.
+                    example: false
+                  events:
+                    description: Specifies the types of events you want to report to your webhook. See our [reporting webhooks reference](/api/webhooks/#operation/reportingWebhook) for more information about event types and the information they return.
+                    type: array
+                    minItems: 1
+                    items:
+                      type: string
+                      enum:
+                      - customer_subscribed
+                      - customer_unsubscribed
+                      - customer_subscription_preferences_changed
+                      - email_drafted
+                      - email_attempted
+                      - email_sent
+                      - email_delivered
+                      - email_opened
+                      - email_clicked
+                      - email_converted
+                      - email_bounced
+                      - email_dropped
+                      - email_deferred
+                      - email_spammed
+                      - email_failed
+                      - email_unsubscribed
+                      - email_undeliverable
+                      - in_app_drafted
+                      - in_app_attempted
+                      - in_app_sent
+                      - in_app_opened
+                      - in_app_clicked
+                      - in_app_converted
+                      - in_app_failed
+                      - in_app_undeliverable
+                      - push_drafted
+                      - push_attempted
+                      - push_sent
+                      - push_delivered
+                      - push_opened
+                      - push_clicked
+                      - push_converted
+                      - push_bounced
+                      - push_dropped
+                      - push_failed
+                      - push_undeliverable
+                      - slack_drafted
+                      - slack_attempted
+                      - slack_sent
+                      - slack_clicked
+                      - slack_converted
+                      - slack_failed
+                      - sms_drafted
+                      - sms_attempted
+                      - sms_sent
+                      - sms_delivered
+                      - sms_clicked
+                      - sms_converted
+                      - sms_bounced
+                      - sms_dropped
+                      - sms_failed
+                      - sms_undeliverable
+                      - sms_replied
+                      - whatsapp_drafted
+                      - whatsapp_attempted
+                      - whatsapp_sent
+                      - whatsapp_delivered
+                      - whatsapp_opened
+                      - whatsapp_clicked
+                      - whatsapp_converted
+                      - whatsapp_bounced
+                      - whatsapp_dropped
+                      - whatsapp_failed
+                      - whatsapp_undeliverable
+                      - whatsapp_replied
+                      - webhook_drafted
+                      - webhook_attempted
+                      - webhook_sent
+                      - webhook_clicked
+                      - webhook_converted
+                      - webhook_failed
+                      - webhook_undeliverable
+                    example:
+                    - email_failed
+                    - webhook_failed
+        '400':
+          description: The request was malformed.
+        '404':
+          description: The webhook ID does not exist.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: json
+        label: JSON
+        source: "{\n  \"name\": \"my cool webhook\",\n  \"endpoint\": \"https://example.com/webhook\",\n  \"events\": [\n    \"email_failed\",\n    \"webhook_failed\"\n  ]\n}"
+      - lang: Shell + Curl
+        source: "curl --request PUT \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/reporting_webhooks/{webhook_id} \\\n  --header 'content-type: application/json' \\\n  --data '{\"name\":\"my cool webhook\",\"endpoint\":\"https://example.com/webhook\",\"disabled\":false,\"full_resolution\":true,\"with_content\":false,\"events\":[\"email_failed\",\"webhook_failed\"]}'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"PUT\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/reporting_webhooks/%7Bwebhook_id%7D\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({\n  name: 'my cool webhook',\n  endpoint: 'https://example.com/webhook',\n  disabled: false,\n  full_resolution: true,\n  with_content: false,\n  events: ['email_failed', 'webhook_failed']\n}));\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/reporting_webhooks/%7Bwebhook_id%7D")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Put.new(url)
+
+          request["content-type"] = ''application/json''
+
+          request.body = "{\"name\":\"my cool webhook\",\"endpoint\":\"https://example.com/webhook\",\"disabled\":false,\"full_resolution\":true,\"with_content\":false,\"events\":[\"email_failed\",\"webhook_failed\"]}"
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          payload = "{\"name\":\"my cool webhook\",\"endpoint\":\"https://example.com/webhook\",\"disabled\":false,\"full_resolution\":true,\"with_content\":false,\"events\":[\"email_failed\",\"webhook_failed\"]}"
+
+
+          headers = { ''content-type'': "application/json" }
+
+
+          conn.request("PUT", "/v1/reporting_webhooks/%7Bwebhook_id%7D", payload, headers)
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/reporting_webhooks/%7Bwebhook_id%7D\"\n\n\tpayload := strings.NewReader(\"{\\\"name\\\":\\\"my cool webhook\\\",\\\"endpoint\\\":\\\"https://example.com/webhook\\\",\\\"disabled\\\":false,\\\"full_resolution\\\":true,\\\"with_content\\\":false,\\\"events\\\":[\\\"email_failed\\\",\\\"webhook_failed\\\"]}\")\n\n\treq, _ := http.NewRequest(\"PUT\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+    delete:
+      summary: Delete a reporting webhook
+      operationId: deleteWebhook
+      security:
+      - Bearer-Auth: []
+      description: Delete a reporting webhook's configuration.
+      tags:
+      - Reporting Webhooks
+      responses:
+        '200':
+          description: A successful request has no response.
+        '404':
+          description: The webhook ID does not exist.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request DELETE \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/reporting_webhooks/{webhook_id}"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"DELETE\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/reporting_webhooks/%7Bwebhook_id%7D\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/reporting_webhooks/%7Bwebhook_id%7D")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Delete.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("DELETE", "/v1/reporting_webhooks/%7Bwebhook_id%7D")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/reporting_webhooks/%7Bwebhook_id%7D\"\n\n\treq, _ := http.NewRequest(\"DELETE\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+components:
+  securitySchemes:
+    Bearer-Auth:
+      type: http
+      scheme: bearer
+      description: 'The App API uses a bearer authentication scheme.
+
+
+        You can generate a bearer token, known as an **App API Key**, with a defined scope in [your account settings](https://fly.customer.io/settings/api_credentials?keyType=app). [Learn more about bearer authorization in Customer.io](/accounts/settings/managing-credentials).
+
+        '
+    ServiceAccount-Auth:
+      x-scalar-ignore: true
+      type: http
+      scheme: bearer
+      bearerFormat: sa_live_
+      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
+
+
+        Service-account tokens are intended for testing and one-off sends—for example, using the Customer.io CLI with an AI agent like Claude to verify that a transactional message renders correctly before wiring it into your production backend. **For the production integration that triggers the message from your application, use an App API Key instead**: it''s workspace-scoped, easier to rotate, and has a smaller blast radius.
+
+
+        Service-account tokens are server-side credentials. Treat them like any API key—keep them in environment variables or a secret manager, and never embed them in client-side code, mobile apps, or other untrusted contexts.
+
+        '
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: API key passed as a Bearer token

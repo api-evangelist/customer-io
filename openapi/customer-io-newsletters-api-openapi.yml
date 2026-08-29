@@ -1,33 +1,128 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Customer.io App Activities Newsletters API
-  description: The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.
   version: 1.0.0
-  contact:
-    name: Customer.io Support
-    url: https://customer.io/contact
-  termsOfService: https://customer.io/legal/terms-of-service
+  title: Customer.io App Newsletters API
+  description: 'Our App API provides ways to trigger messages and retrieve information about people, campaigns, broadcasts, and more.
+
+
+    # Overview
+
+
+    The App API provides methods to send newsletters, transactional messages, and API-triggered broadcasts. You can create newsletters from scratch and update transactional messages and API-triggered broadcasts.
+
+
+    For transactional messages and API-triggered broadcasts, your payload acts as a message "trigger" and can contain `data` that you reference in your messages using liquid—`{{trigger.<data>}}`.
+
+
+    The other endpoints help you retrieve information about people, segments, campaigns, broadcasts, etc; it also lets you update campaign actions, messages, newsletter variants, etc. Aside from the [API-triggered broadcast](#triggerBroadcast) (1 per 10 seconds) and [Transactional](#sendEmail) (100 per second) endpoints, requests are limited to 10 per second.
+
+
+    # Use our Postman collection
+
+
+    We''ve generated a Postman collection to help you get started with our APIs.
+
+
+    If you fork this collection, you might want to disable the *Watch original collection* option. We automatically update our Postman collection whenever we release changes to our documentation, even if we don''t change our APIs—which happens daily! Rather than being flooded with Postman notifications, you can check out our [Release Notes](/release-notes/) for updates to our APIs.
+
+
+    **NOTE**: Postman endpoints default to our US APIs. If you''re in our European (EU) region, you''ll need to add `-eu` to the server variables (`track_api_url` and `app_api_url`).
+
+
+    [<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://god.gw.postman.com/run-collection/23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d%26entityType%3Dcollection%26workspaceId%3Db886877f-fc09-475f-84fe-6221a98f4d18#?env%5BCustomer.io%20API%20Environment%5D=W3sia2V5IjoidHJhY2tfYXBpX3VybCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiJ0cmFjay5jdXN0b21lci5pbyIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBwX2FwaV91cmwiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiYXBpLmN1c3RvbWVyLmlvIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzaXRlX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBpX2tleSIsInR5cGUiOiJzZWNyZXQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYmVhcmVyIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYnJvYWRjYXN0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaW1wb3J0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiZW1haWxfYWRkcmVzcyIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InN1cHByZXNzaW9uX3R5cGUiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjb2xsZWN0aW9uX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoic25pcHBldF9uYW1lIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoid2ViaG9va19pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InNlbmRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImV4cG9ydF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6Im1lc3NhZ2VfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzZWdtZW50X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoibmV3c2xldHRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImNvbnRlbnRfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjYW1wYWlnbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImFjdGlvbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImN1c3RvbWVyX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoidHJhbnNhY3Rpb25hbF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InRyaWdnZXJfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJmb3JtX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaWRlbnRpZmllciIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRldmljZV9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRlbGl2ZXJ5X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9XQ==)
+
+
+    # Server addresses: US and EU
+
+
+    Customer.io hosts services in the United States (US) and European Union. Select the appropriate server address for your region.
+
+
+    | Region | Server Address |
+
+    | :-- | :-- |
+
+    | US | https://api.customer.io |
+
+    | EU | https://api-eu.customer.io |
+
+
+    # Authentication
+
+
+    All requests to the Customer.io App API use an [App API Key](#App-API-Key).
+
+
+    To authenticate, provide your key as a Bearer token in a HTTP Authorization header. You can create and manage your API keys—including keys with different scopes—in [your account settings page](https://fly.customer.io/settings/api_credentials?keyType=app). Each operation on this page references the authorization header it requires.
+
+
+    # Rate Limits
+
+
+    Most endpoints on this page are limited to 10 requests per second. The exceptions are:
+
+    * The [transactional email](#operation/sendEmail) endpoint is limited to 100 requests per second.
+
+    * The [API-triggered broadcast endpoint](#operation/triggerBroadcast) is limited to 1 request every 10 seconds.
+
+
+    **Rate limits are subject to change. We may adjust these thresholds to ensure stable performance for all customers.**
+
+    '
 servers:
-- url: https://api.customer.io/v1
-  description: US Production Server
-- url: https://api-eu.customer.io/v1
-  description: EU Production Server
-security:
-- bearerAuth: []
+- url: https://api.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+- url: https://api-eu.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
 tags:
 - name: Newsletters
-  description: Retrieve information about newsletters and newsletter variants.
+  description: 'A newsletter is a type of broadcast in Customer.io—a one-time, single message that you send to a group of people. You can also set your newsletter up with A/B test variants and/or translations.
+
+
+    Use the newsletter endpoints to create, send, schedule, translate, A/B test, and get metrics for newsletters.
+
+
+    If your newsletters include assets like images or PDFs, host them in your [workspace''s assets](/integrations/api/app/#tag/assets) or at another public URL, and include the URL in your message content.
+
+    '
 paths:
-  /newsletters:
+  /v1/newsletters:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
     get:
-      operationId: listNewsletters
       summary: List newsletters
-      description: Returns a list of newsletters in your workspace.
+      operationId: listNewsletters
+      security:
+      - Bearer-Auth: []
+      description: Returns a list of your newsletters and associated metadata.
       tags:
       - Newsletters
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        description: The maximum number of results you want to retrieve per page.
+        schema:
+          type: integer
+      - name: sort
+        in: query
+        description: Determine how you want to sort results, `asc` for chronological order and `desc` for reverse chronological order.
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - name: start
+        in: query
+        required: false
+        description: The token for the page of results you want to return. Responses contain a `next` property. Use this property as the `start` value to return the next page of results.
+        schema:
+          type: string
       responses:
         '200':
-          description: A list of newsletters.
+          description: Returns an array of newsletter objects.
           content:
             application/json:
               schema:
@@ -36,94 +131,1364 @@ paths:
                   newsletters:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Newsletter'
-        '401':
-          description: Unauthorized. Invalid App API key.
-  /newsletters/{newsletter_id}:
-    get:
-      operationId: getNewsletter
-      summary: Get a newsletter
-      description: Returns detailed information about a specific newsletter.
+                      x-scalar-ignore: true
+                      type: object
+                      properties:
+                        id:
+                          x-scalar-ignore: true
+                          description: The identifier for a newsletter.
+                          type: integer
+                          example: 10
+                        deduplicate_id:
+                          x-scalar-ignore: true
+                          type: string
+                          readOnly: true
+                          description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+                          example: 15:1492548073
+                        content_ids:
+                          type: array
+                          description: A list of message variants in a newsletter, where a variant is a translation or A/B test.
+                          items:
+                            type: integer
+                        name:
+                          type: string
+                          description: The name of the newsletter. Must be 190 characters or less.
+                          readOnly: true
+                        sent_at:
+                          type: integer
+                          format: unix timestamp
+                          description: The last time the newsletter was sent.
+                        created:
+                          x-scalar-ignore: true
+                          type: integer
+                          format: unix timestamp
+                          description: The date time when the referenced ID was created.
+                          example: 1552341937
+                          readOnly: true
+                        updated:
+                          x-scalar-ignore: true
+                          type: integer
+                          format: unix timestamp
+                          description: The date time when the referenced ID was last updated.
+                          example: 1552341937
+                          readOnly: true
+                        type:
+                          x-scalar-ignore: true
+                          description: Channel type for a newsletter or newsletter content variant.
+                          type: string
+                          enum:
+                          - email
+                          - webhook
+                          - twilio
+                          - push
+                          - in_app
+                          - inbox
+                          readOnly: true
+                          example: email
+                        tags:
+                          type: array
+                          description: An array of tags associated with the newsletter.
+                          items:
+                            type: string
+                        recipient_segment_ids:
+                          description: If the recipient conditions included segments, this returns a list of those segment ids.
+                          type: array
+                          items:
+                            type: integer
+                        subscription_topic_id:
+                          type: integer
+                          description: If you enabled a [subscription center](/journeys/channels/subscriptions/center/) on your workspace, this returns the id of the subscription preference you set.
+                      example:
+                        id: 128275
+                        deduplicate_id: 128275:1484870424
+                        type: email
+                        content_ids:
+                        - 45
+                        name: Weekly Product Update
+                        sent_at: 1481653929
+                        created: 1481653919
+                        updated: 1481653929
+                        recipient_segment_ids:
+                        - 42
+                        - 99
+                        tags:
+                        - Product Updates
+                        subscription_topic_id: 5
+                  next:
+                    x-scalar-ignore: true
+                    type: string
+                    description: Indicates the next page of results. Add `?start=<next_value>` to the request to get the next page of results.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url 'https://api.customer.io/v1/newsletters?limit=SOME_INTEGER_VALUE&sort=SOME_STRING_VALUE&start=SOME_STRING_VALUE'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/newsletters?limit=SOME_INTEGER_VALUE&sort=SOME_STRING_VALUE&start=SOME_STRING_VALUE\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/newsletters?limit=SOME_INTEGER_VALUE&sort=SOME_STRING_VALUE&start=SOME_STRING_VALUE")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/newsletters?limit=SOME_INTEGER_VALUE&sort=SOME_STRING_VALUE&start=SOME_STRING_VALUE")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/newsletters?limit=SOME_INTEGER_VALUE&sort=SOME_STRING_VALUE&start=SOME_STRING_VALUE\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+    post:
+      summary: Create and send a newsletter
+      operationId: createNewsletter
+      security:
+      - Bearer-Auth: []
+      description: 'Create a newsletter and optionally schedule it or send it immediately.
+
+
+        To send the newsletter immediately, set `send_now` to `true`. To schedule for later, set `scheduled_at` to a Unix timestamp in the future. If you don''t set either, the newsletter is created as a draft.
+
+
+        If you [enabled a subscription center](/journeys/channels/subscriptions/center/#enable-sub-center) in your workspace, `subscription_topic_id` is required. Use the [subscription center endpoint](#tag/subscription-center/getTopics) to find IDs.
+
+
+        Use standard HTML/CSS for the `body` of an email; this endpoint can''t pull in global style variables or render our Design Studio''s component syntax. You can create Design Studio emails through [other endpoints](#tag/design-studio). All requests must be less than 1 MB.
+
+        '
       tags:
       - Newsletters
-      parameters:
-      - $ref: '#/components/parameters/NewsletterId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/createEmailNewsletter'
+              - $ref: '#/components/schemas/createSmsNewsletter'
+              - $ref: '#/components/schemas/createPushNewsletter'
+              - $ref: '#/components/schemas/createInAppNewsletter'
+              - $ref: '#/components/schemas/createWebhookNewsletter'
+              - $ref: '#/components/schemas/createInboxNewsletter'
+              discriminator:
+                propertyName: type
+            examples:
+              email:
+                summary: email
+                value:
+                  name: Weekly Product Update
+                  type: email
+                  recipients:
+                    and:
+                    - or:
+                      - segment:
+                          id: 42
+                      - segment:
+                          id: 99
+                    - attribute:
+                        field: plan
+                        operator: eq
+                        value: enterprise
+                  send_now: true
+                  subject: What's new this week, {{ customer.first_name }}
+                  preheader_text: Check out our latest features and improvements
+                  body: <html><body><h1>Product Updates</h1><p>Here's what we shipped this week...</p></body></html>
+                  from: Product Team <updates@example.com>
+                  subscription_topic_id: 5
+                  rate_limit_email_rate: 500
+                  rate_limit_time_period: 60
+                  rate_limit_spread: true
       responses:
         '200':
-          description: Newsletter details.
+          description: Returns the newly created newsletter.
           content:
             application/json:
               schema:
                 type: object
                 properties:
                   newsletter:
-                    $ref: '#/components/schemas/Newsletter'
-        '401':
-          description: Unauthorized. Invalid App API key.
-        '404':
-          description: Newsletter not found.
-  /newsletters/{newsletter_id}/metrics:
+                    x-scalar-ignore: true
+                    type: object
+                    properties:
+                      id:
+                        x-scalar-ignore: true
+                        description: The identifier for a newsletter.
+                        type: integer
+                        example: 10
+                      deduplicate_id:
+                        x-scalar-ignore: true
+                        type: string
+                        readOnly: true
+                        description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+                        example: 15:1492548073
+                      content_ids:
+                        type: array
+                        description: A list of message variants in a newsletter, where a variant is a translation or A/B test.
+                        items:
+                          type: integer
+                      name:
+                        type: string
+                        description: The name of the newsletter. Must be 190 characters or less.
+                        readOnly: true
+                      sent_at:
+                        type: integer
+                        format: unix timestamp
+                        description: The last time the newsletter was sent.
+                      created:
+                        x-scalar-ignore: true
+                        type: integer
+                        format: unix timestamp
+                        description: The date time when the referenced ID was created.
+                        example: 1552341937
+                        readOnly: true
+                      updated:
+                        x-scalar-ignore: true
+                        type: integer
+                        format: unix timestamp
+                        description: The date time when the referenced ID was last updated.
+                        example: 1552341937
+                        readOnly: true
+                      type:
+                        x-scalar-ignore: true
+                        description: Channel type for a newsletter or newsletter content variant.
+                        type: string
+                        enum:
+                        - email
+                        - webhook
+                        - twilio
+                        - push
+                        - in_app
+                        - inbox
+                        readOnly: true
+                        example: email
+                      tags:
+                        type: array
+                        description: An array of tags associated with the newsletter.
+                        items:
+                          type: string
+                      recipient_segment_ids:
+                        description: If the recipient conditions included segments, this returns a list of those segment ids.
+                        type: array
+                        items:
+                          type: integer
+                      subscription_topic_id:
+                        type: integer
+                        description: If you enabled a [subscription center](/journeys/channels/subscriptions/center/) on your workspace, this returns the id of the subscription preference you set.
+                    example:
+                      id: 128275
+                      deduplicate_id: 128275:1484870424
+                      type: email
+                      content_ids:
+                      - 45
+                      name: Weekly Product Update
+                      sent_at: 1481653929
+                      created: 1481653919
+                      updated: 1481653929
+                      recipient_segment_ids:
+                      - 42
+                      - 99
+                      tags:
+                      - Product Updates
+                      subscription_topic_id: 5
+        '400':
+          description: The request is invalid. For example, the newsletter has no valid channel set, no recipients configured, or the request body is malformed.
+          content:
+            application/json:
+              schema:
+                x-scalar-ignore: true
+                type: object
+                description: Error response format for newsletter endpoints.
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: A message describing the error.
+                example:
+                  errors:
+                  - detail: subscription_topic_id is required
+        '422':
+          description: 'Validation error. The request body contains invalid or conflicting values. Possible reasons include:
+
+            - Missing or invalid `subscription_topic_id` (required when a subscription center is enabled)
+
+            - Invalid `from_id` or unverified/malformed `from` address
+
+            - Both `from_id` and `from` provided (use one or the other)
+
+            - Invalid channel `type`
+
+            - Missing required content fields for the channel type (`subject`, `body`, `body_json`, `request_method`, `url`)
+
+            - Invalid `request_method` for webhook newsletters
+
+            - Sender uses a transactional IP pool
+
+            - Recipients include a temporary segment
+
+            '
+          content:
+            application/json:
+              schema:
+                x-scalar-ignore: true
+                type: object
+                description: Error response format for newsletter endpoints.
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: A message describing the error.
+                example:
+                  errors:
+                  - detail: subscription_topic_id is required
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: json
+        label: JSON
+        source: "{\n  \"name\": \"Weekly Product Update\",\n  \"recipients\": {\n    \"and\": [\n      {\n        \"or\": [\n          {\n            \"segment\": {\n              \"id\": 42\n            }\n          },\n          {\n            \"segment\": {\n              \"id\": 99\n            }\n          }\n        ]\n      },\n      {\n        \"attribute\": {\n          \"field\": \"plan\",\n          \"operator\": \"eq\",\n          \"value\": \"trial\",\n          \"inverse\": true\n        }\n      }\n    ]\n  },\n  \"rate_limit_email_rate\": 500,\n  \"rate_limit_time_period\": 60,\n  \"rate_limit_spread\": true,\n  \"type\": \"email\",\n  \"subject\": \"What's new this week, {{ customer.first_name }}\",\n  \"preheader_text\": \"Check out our latest features and improvements\",\n  \"body\": \"<html><body><h1>Product Updates</h1><p>Here's what we shipped this week...</p></body></html>\",\n  \"from\": \"Product Team <updates@example.com>\",\n  \"subscription_topic_id\": 5\n}"
+      - lang: Shell + Curl
+        source: "curl --request POST \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/newsletters \\\n  --header 'content-type: application/json' \\\n  --data '{\"name\":\"Weekly Product Update\",\"recipients\":{\"and\":[{\"or\":[{\"segment\":{\"id\":42}},{\"segment\":{\"id\":99}}]},{\"attribute\":{\"field\":\"plan\",\"operator\":\"eq\",\"value\":\"trial\",\"inverse\":true}}],\"or\":[{}],\"not\":{},\"segment\":{\"id\":0},\"attribute\":{\"field\":\"string\",\"operator\":\"eq\",\"value\":\"string\",\"inverse\":true}},\"send_now\":true,\"scheduled_at\":0,\"subscription_topic_id\":5,\"rate_limit_email_rate\":500,\"rate_limit_time_period\":60,\"rate_limit_spread\":true,\"type\":\"email\",\"subject\":\"What'\\''s new this week, {{ customer.first_name }}\",\"preheader_text\":\"Check out our latest features and improvements\",\"body\":\"<html><body><h1>Product Updates</h1><p>Here'\\''s what we shipped this week...</p></body></html>\",\"from\":\"Product Team <updates@example.com>\"}'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"POST\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/newsletters\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({\n  name: 'Weekly Product Update',\n  recipients: {\n    and: [\n      {or: [{segment: {id: 42}}, {segment: {id: 99}}]},\n      {attribute: {field: 'plan', operator: 'eq', value: 'trial', inverse: true}}\n    ],\n    or: [{}],\n    not: {},\n    segment: {id: 0},\n    attribute: {field: 'string', operator: 'eq', value: 'string', inverse: true}\n  },\n  send_now: true,\n  scheduled_at: 0,\n  subscription_topic_id: 5,\n  rate_limit_email_rate: 500,\n  rate_limit_time_period: 60,\n  rate_limit_spread: true,\n  type: 'email',\n  subject: 'What\\'s new this week, {{ customer.first_name }}',\n  preheader_text: 'Check out our latest features and improvements',\n  body: '<html><body><h1>Product Updates</h1><p>Here\\'s what we shipped this week...</p></body></html>',\n  from: 'Product Team <updates@example.com>'\n}));\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/newsletters")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Post.new(url)
+
+          request["content-type"] = ''application/json''
+
+          request.body = "{\"name\":\"Weekly Product Update\",\"recipients\":{\"and\":[{\"or\":[{\"segment\":{\"id\":42}},{\"segment\":{\"id\":99}}]},{\"attribute\":{\"field\":\"plan\",\"operator\":\"eq\",\"value\":\"trial\",\"inverse\":true}}],\"or\":[{}],\"not\":{},\"segment\":{\"id\":0},\"attribute\":{\"field\":\"string\",\"operator\":\"eq\",\"value\":\"string\",\"inverse\":true}},\"send_now\":true,\"scheduled_at\":0,\"subscription_topic_id\":5,\"rate_limit_email_rate\":500,\"rate_limit_time_period\":60,\"rate_limit_spread\":true,\"type\":\"email\",\"subject\":\"What''s new this week, {{ customer.first_name }}\",\"preheader_text\":\"Check out our latest features and improvements\",\"body\":\"<html><body><h1>Product Updates</h1><p>Here''s what we shipped this week...</p></body></html>\",\"from\":\"Product Team <updates@example.com>\"}"
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          payload = "{\"name\":\"Weekly Product Update\",\"recipients\":{\"and\":[{\"or\":[{\"segment\":{\"id\":42}},{\"segment\":{\"id\":99}}]},{\"attribute\":{\"field\":\"plan\",\"operator\":\"eq\",\"value\":\"trial\",\"inverse\":true}}],\"or\":[{}],\"not\":{},\"segment\":{\"id\":0},\"attribute\":{\"field\":\"string\",\"operator\":\"eq\",\"value\":\"string\",\"inverse\":true}},\"send_now\":true,\"scheduled_at\":0,\"subscription_topic_id\":5,\"rate_limit_email_rate\":500,\"rate_limit_time_period\":60,\"rate_limit_spread\":true,\"type\":\"email\",\"subject\":\"What''s new this week, {{ customer.first_name }}\",\"preheader_text\":\"Check out our latest features and improvements\",\"body\":\"<html><body><h1>Product Updates</h1><p>Here''s what we shipped this week...</p></body></html>\",\"from\":\"Product Team <updates@example.com>\"}"
+
+
+          headers = { ''content-type'': "application/json" }
+
+
+          conn.request("POST", "/v1/newsletters", payload, headers)
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/newsletters\"\n\n\tpayload := strings.NewReader(\"{\\\"name\\\":\\\"Weekly Product Update\\\",\\\"recipients\\\":{\\\"and\\\":[{\\\"or\\\":[{\\\"segment\\\":{\\\"id\\\":42}},{\\\"segment\\\":{\\\"id\\\":99}}]},{\\\"attribute\\\":{\\\"field\\\":\\\"plan\\\",\\\"operator\\\":\\\"eq\\\",\\\"value\\\":\\\"trial\\\",\\\"inverse\\\":true}}],\\\"or\\\":[{}],\\\"not\\\":{},\\\"segment\\\":{\\\"id\\\":0},\\\"attribute\\\":{\\\"field\\\":\\\"string\\\",\\\"operator\\\":\\\"eq\\\",\\\"value\\\":\\\"string\\\",\\\"inverse\\\":true}},\\\"send_now\\\":true,\\\"scheduled_at\\\":0,\\\"subscription_topic_id\\\":5,\\\"rate_limit_email_rate\\\":500,\\\"rate_limit_time_period\\\":60,\\\"rate_limit_spread\\\":true,\\\"type\\\":\\\"email\\\",\\\"subject\\\":\\\"What's new this week, {{ customer.first_name }}\\\",\\\"preheader_text\\\":\\\"Check out our latest features and improvements\\\",\\\"body\\\":\\\"<html><body><h1>Product Updates</h1><p>Here's what we shipped this week...</p></body></html>\\\",\\\"from\\\":\\\"Product Team <updates@example.com>\\\"}\")\n\n\treq, _ := http.NewRequest(\"POST\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+  /v1/newsletters/{newsletter_id}:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - name: newsletter_id
+      in: path
+      required: true
+      description: The identifier of a newsletter.
+      schema:
+        type: integer
     get:
-      operationId: getNewsletterMetrics
-      summary: Get newsletter metrics
-      description: Returns metrics for a specific newsletter including delivery statistics and engagement data.
+      summary: Get a newsletter
+      operationId: getNewsletters
+      security:
+      - Bearer-Auth: []
+      description: Returns metadata for an individual newsletter.
       tags:
       - Newsletters
-      parameters:
-      - $ref: '#/components/parameters/NewsletterId'
       responses:
         '200':
-          description: Newsletter metrics.
+          description: Returns metadata for the newsletter.
           content:
             application/json:
               schema:
                 type: object
-        '401':
-          description: Unauthorized. Invalid App API key.
+                properties:
+                  newsletter:
+                    x-scalar-ignore: true
+                    type: object
+                    properties:
+                      id:
+                        x-scalar-ignore: true
+                        description: The identifier for a newsletter.
+                        type: integer
+                        example: 10
+                      deduplicate_id:
+                        x-scalar-ignore: true
+                        type: string
+                        readOnly: true
+                        description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+                        example: 15:1492548073
+                      content_ids:
+                        type: array
+                        description: A list of message variants in a newsletter, where a variant is a translation or A/B test.
+                        items:
+                          type: integer
+                      name:
+                        type: string
+                        description: The name of the newsletter. Must be 190 characters or less.
+                        readOnly: true
+                      sent_at:
+                        type: integer
+                        format: unix timestamp
+                        description: The last time the newsletter was sent.
+                      created:
+                        x-scalar-ignore: true
+                        type: integer
+                        format: unix timestamp
+                        description: The date time when the referenced ID was created.
+                        example: 1552341937
+                        readOnly: true
+                      updated:
+                        x-scalar-ignore: true
+                        type: integer
+                        format: unix timestamp
+                        description: The date time when the referenced ID was last updated.
+                        example: 1552341937
+                        readOnly: true
+                      type:
+                        x-scalar-ignore: true
+                        description: Channel type for a newsletter or newsletter content variant.
+                        type: string
+                        enum:
+                        - email
+                        - webhook
+                        - twilio
+                        - push
+                        - in_app
+                        - inbox
+                        readOnly: true
+                        example: email
+                      tags:
+                        type: array
+                        description: An array of tags associated with the newsletter.
+                        items:
+                          type: string
+                      recipient_segment_ids:
+                        description: If the recipient conditions included segments, this returns a list of those segment ids.
+                        type: array
+                        items:
+                          type: integer
+                      subscription_topic_id:
+                        type: integer
+                        description: If you enabled a [subscription center](/journeys/channels/subscriptions/center/) on your workspace, this returns the id of the subscription preference you set.
+                    example:
+                      id: 128275
+                      deduplicate_id: 128275:1484870424
+                      type: email
+                      content_ids:
+                      - 45
+                      name: Weekly Product Update
+                      sent_at: 1481653929
+                      created: 1481653919
+                      updated: 1481653929
+                      recipient_segment_ids:
+                      - 42
+                      - 99
+                      tags:
+                      - Product Updates
+                      subscription_topic_id: 5
         '404':
-          description: Newsletter not found.
+          description: The newsletter you requested does not exist.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/newsletters/{newsletter_id}"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/newsletters/%7Bnewsletter_id%7D\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/newsletters/%7Bnewsletter_id%7D")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+    delete:
+      summary: Delete a newsletter
+      operationId: deleteNewsletters
+      security:
+      - Bearer-Auth: []
+      description: 'Deletes an individual newsletter, including content, settings, and metrics. It will be removed from segments, and its templates will no longer show in the Message Library.
+
+
+        If the newsletter is an in-app message, this cancels any undelivered, in-app message, too.
+
+        '
+      tags:
+      - Newsletters
+      responses:
+        '204':
+          description: Success. No content.
+        '404':
+          description: The newsletter does not exist.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request DELETE \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/newsletters/{newsletter_id}"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"DELETE\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/newsletters/%7Bnewsletter_id%7D\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Delete.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("DELETE", "/v1/newsletters/%7Bnewsletter_id%7D")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D\"\n\n\treq, _ := http.NewRequest(\"DELETE\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
 components:
   schemas:
-    Newsletter:
-      type: object
-      description: A newsletter in Customer.io.
-      properties:
-        id:
-          type: integer
-          description: The unique newsletter identifier.
-        name:
-          type: string
-          description: The newsletter name.
-        created:
-          type: integer
-          description: UNIX timestamp of when the newsletter was created.
-        updated:
-          type: integer
-          description: UNIX timestamp of when the newsletter was last updated.
-        sent_at:
-          type: integer
-          description: UNIX timestamp of when the newsletter was sent.
-        num_recipients:
-          type: integer
-          description: The number of recipients.
-        tags:
-          type: array
-          items:
+    createPushNewsletter:
+      title: Push
+      description: For push notifications, you must provide at least one of `subject` or `body`.
+      allOf:
+      - type: object
+        required:
+        - name
+        - type
+        - recipients
+        properties:
+          name:
             type: string
-          description: Tags associated with the newsletter.
-  parameters:
-    NewsletterId:
-      name: newsletter_id
-      in: path
-      required: true
-      description: The unique identifier for the newsletter.
-      schema:
-        type: integer
+            maxLength: 190
+            description: The name of the newsletter.
+          recipients:
+            type: object
+            description: 'Filter conditions that define the newsletter''s recipients. Combine `segment` and `attribute` conditions with `and`, `or`, and `not` operators.
+
+              '
+            properties:
+              and:
+                type: array
+                description: An array of conditions that must all be true.
+                items:
+                  type: object
+              or:
+                type: array
+                description: An array of conditions where at least one must be true.
+                items:
+                  type: object
+              not:
+                type: object
+                description: A condition or group of conditions to exclude.
+              segment:
+                type: object
+                description: A segment condition.
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of a segment.
+              attribute:
+                type: object
+                description: A customer attribute condition.
+                properties:
+                  field:
+                    type: string
+                    description: The attribute name.
+                  operator:
+                    type: string
+                    description: The comparison operator.
+                    enum:
+                    - eq
+                    - exists
+                  value:
+                    type: string
+                    description: The value to compare against. Required when `operator` is `eq`.
+                  inverse:
+                    type: boolean
+                    description: Set to `true` for "is not equal" or "does not exist".
+          send_now:
+            type: boolean
+            description: If `true`, the newsletter is sent immediately after creation. You cannot set both `send_now` and `scheduled_at`.
+          scheduled_at:
+            type: integer
+            format: unix timestamp
+            description: A Unix timestamp indicating when to send the newsletter. The time must be in the future. You cannot set both `send_now` and `scheduled_at`.
+          subscription_topic_id:
+            type: integer
+            description: The newsletter audience's subscription topic ID. Required when [subscription center](/journeys/channels/subscriptions/center/#enable-sub-center) is enabled; otherwise sends to globally subscribed profiles.
+      - type: object
+        example:
+          rate_limit_email_rate: 500
+          rate_limit_time_period: 60
+          rate_limit_spread: true
+        description: Optional newsletter rate limiting. If you set `rate_limit_email_rate` or `rate_limit_time_period`, set both; `rate_limit_spread` can be set alone.
+        properties:
+          rate_limit_email_rate:
+            type: integer
+            minimum: 1
+            description: 'Maximum number of messages per time period. **NOTE:** Though this states `email_rate`, you can use this for other message channels. Only fixed rate limits are supported, not [daily ramp limits](/journeys/send/broadcasts/newsletters/#daily-ramp).
+
+              '
+          rate_limit_time_period:
+            type: integer
+            enum:
+            - 60
+            - 3600
+            - 86400
+            description: Time period in seconds for rate limiting. Must be one of 60 (minute), 3600 (hour), or 86400 (day).
+          rate_limit_spread:
+            type: boolean
+            description: When `true`, spreads messages evenly across the time period. Otherwise, it sends as fast as possible up to the limit in each period.
+      - type: object
+        properties:
+          type:
+            type: string
+            description: The channel type for the newsletter.
+            enum:
+            - push
+          subject:
+            type: string
+            description: The title of the push notification. You must provide `subject`, `body`, or both.
+            example: 24-hour flash sale!
+          body:
+            type: string
+            description: The body content of the push notification. You must provide `subject`, `body`, or both.
+            example: Get 30% off everything. Tap to shop now.
+    createWebhookNewsletter:
+      title: Webhook
+      description: For webhooks, you must include `body`, `request_method`, and `url`.
+      allOf:
+      - type: object
+        required:
+        - name
+        - type
+        - recipients
+        properties:
+          name:
+            type: string
+            maxLength: 190
+            description: The name of the newsletter.
+          recipients:
+            type: object
+            description: 'Filter conditions that define the newsletter''s recipients. Combine `segment` and `attribute` conditions with `and`, `or`, and `not` operators.
+
+              '
+            properties:
+              and:
+                type: array
+                description: An array of conditions that must all be true.
+                items:
+                  type: object
+              or:
+                type: array
+                description: An array of conditions where at least one must be true.
+                items:
+                  type: object
+              not:
+                type: object
+                description: A condition or group of conditions to exclude.
+              segment:
+                type: object
+                description: A segment condition.
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of a segment.
+              attribute:
+                type: object
+                description: A customer attribute condition.
+                properties:
+                  field:
+                    type: string
+                    description: The attribute name.
+                  operator:
+                    type: string
+                    description: The comparison operator.
+                    enum:
+                    - eq
+                    - exists
+                  value:
+                    type: string
+                    description: The value to compare against. Required when `operator` is `eq`.
+                  inverse:
+                    type: boolean
+                    description: Set to `true` for "is not equal" or "does not exist".
+          send_now:
+            type: boolean
+            description: If `true`, the newsletter is sent immediately after creation. You cannot set both `send_now` and `scheduled_at`.
+          scheduled_at:
+            type: integer
+            format: unix timestamp
+            description: A Unix timestamp indicating when to send the newsletter. The time must be in the future. You cannot set both `send_now` and `scheduled_at`.
+          subscription_topic_id:
+            type: integer
+            description: The newsletter audience's subscription topic ID. Required when [subscription center](/journeys/channels/subscriptions/center/#enable-sub-center) is enabled; otherwise sends to globally subscribed profiles.
+      - type: object
+        example:
+          rate_limit_email_rate: 500
+          rate_limit_time_period: 60
+          rate_limit_spread: true
+        description: Optional newsletter rate limiting. If you set `rate_limit_email_rate` or `rate_limit_time_period`, set both; `rate_limit_spread` can be set alone.
+        properties:
+          rate_limit_email_rate:
+            type: integer
+            minimum: 1
+            description: 'Maximum number of messages per time period. **NOTE:** Though this states `email_rate`, you can use this for other message channels. Only fixed rate limits are supported, not [daily ramp limits](/journeys/send/broadcasts/newsletters/#daily-ramp).
+
+              '
+          rate_limit_time_period:
+            type: integer
+            enum:
+            - 60
+            - 3600
+            - 86400
+            description: Time period in seconds for rate limiting. Must be one of 60 (minute), 3600 (hour), or 86400 (day).
+          rate_limit_spread:
+            type: boolean
+            description: When `true`, spreads messages evenly across the time period. Otherwise, it sends as fast as possible up to the limit in each period.
+      - type: object
+        required:
+        - body
+        - request_method
+        - url
+        properties:
+          type:
+            type: string
+            description: The channel type for the newsletter.
+            enum:
+            - webhook
+          body:
+            type: string
+            description: The body content of the webhook request.
+            example: '{"channel":"#marketing","text":"Newsletter sent to {{ customer.email }}"}'
+          request_method:
+            type: string
+            description: The HTTP method for the webhook request.
+            enum:
+            - DELETE
+            - GET
+            - POST
+            - PUT
+            - PATCH
+          url:
+            type: string
+            description: The URL to send the webhook request to.
+    createInAppNewsletter:
+      title: In-App
+      description: For in-app messages, you must include `body_json`.
+      allOf:
+      - type: object
+        required:
+        - name
+        - type
+        - recipients
+        properties:
+          name:
+            type: string
+            maxLength: 190
+            description: The name of the newsletter.
+          recipients:
+            type: object
+            description: 'Filter conditions that define the newsletter''s recipients. Combine `segment` and `attribute` conditions with `and`, `or`, and `not` operators.
+
+              '
+            properties:
+              and:
+                type: array
+                description: An array of conditions that must all be true.
+                items:
+                  type: object
+              or:
+                type: array
+                description: An array of conditions where at least one must be true.
+                items:
+                  type: object
+              not:
+                type: object
+                description: A condition or group of conditions to exclude.
+              segment:
+                type: object
+                description: A segment condition.
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of a segment.
+              attribute:
+                type: object
+                description: A customer attribute condition.
+                properties:
+                  field:
+                    type: string
+                    description: The attribute name.
+                  operator:
+                    type: string
+                    description: The comparison operator.
+                    enum:
+                    - eq
+                    - exists
+                  value:
+                    type: string
+                    description: The value to compare against. Required when `operator` is `eq`.
+                  inverse:
+                    type: boolean
+                    description: Set to `true` for "is not equal" or "does not exist".
+          send_now:
+            type: boolean
+            description: If `true`, the newsletter is sent immediately after creation. You cannot set both `send_now` and `scheduled_at`.
+          scheduled_at:
+            type: integer
+            format: unix timestamp
+            description: A Unix timestamp indicating when to send the newsletter. The time must be in the future. You cannot set both `send_now` and `scheduled_at`.
+          subscription_topic_id:
+            type: integer
+            description: The newsletter audience's subscription topic ID. Required when [subscription center](/journeys/channels/subscriptions/center/#enable-sub-center) is enabled; otherwise sends to globally subscribed profiles.
+      - type: object
+        example:
+          rate_limit_email_rate: 500
+          rate_limit_time_period: 60
+          rate_limit_spread: true
+        description: Optional newsletter rate limiting. If you set `rate_limit_email_rate` or `rate_limit_time_period`, set both; `rate_limit_spread` can be set alone.
+        properties:
+          rate_limit_email_rate:
+            type: integer
+            minimum: 1
+            description: 'Maximum number of messages per time period. **NOTE:** Though this states `email_rate`, you can use this for other message channels. Only fixed rate limits are supported, not [daily ramp limits](/journeys/send/broadcasts/newsletters/#daily-ramp).
+
+              '
+          rate_limit_time_period:
+            type: integer
+            enum:
+            - 60
+            - 3600
+            - 86400
+            description: Time period in seconds for rate limiting. Must be one of 60 (minute), 3600 (hour), or 86400 (day).
+          rate_limit_spread:
+            type: boolean
+            description: When `true`, spreads messages evenly across the time period. Otherwise, it sends as fast as possible up to the limit in each period.
+      - type: object
+        required:
+        - body_json
+        properties:
+          type:
+            type: string
+            description: The channel type for the newsletter.
+            enum:
+            - in_app
+          body_json:
+            type: string
+            description: JSON body content for the in-app message. This defines the structure and content of the in-app message.
+            example: '{"message_id":"welcome","display":{"mode":"modal","value":"center"},"carta_content":"<x-base><x-message>Hello {{customer.first_name}}!</x-message></x-base>"}'
+    createInboxNewsletter:
+      title: Inbox message
+      description: For inbox messages, you must include `body_json`.
+      allOf:
+      - type: object
+        required:
+        - name
+        - type
+        - recipients
+        properties:
+          name:
+            type: string
+            maxLength: 190
+            description: The name of the newsletter.
+          recipients:
+            type: object
+            description: 'Filter conditions that define the newsletter''s recipients. Combine `segment` and `attribute` conditions with `and`, `or`, and `not` operators.
+
+              '
+            properties:
+              and:
+                type: array
+                description: An array of conditions that must all be true.
+                items:
+                  type: object
+              or:
+                type: array
+                description: An array of conditions where at least one must be true.
+                items:
+                  type: object
+              not:
+                type: object
+                description: A condition or group of conditions to exclude.
+              segment:
+                type: object
+                description: A segment condition.
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of a segment.
+              attribute:
+                type: object
+                description: A customer attribute condition.
+                properties:
+                  field:
+                    type: string
+                    description: The attribute name.
+                  operator:
+                    type: string
+                    description: The comparison operator.
+                    enum:
+                    - eq
+                    - exists
+                  value:
+                    type: string
+                    description: The value to compare against. Required when `operator` is `eq`.
+                  inverse:
+                    type: boolean
+                    description: Set to `true` for "is not equal" or "does not exist".
+          send_now:
+            type: boolean
+            description: If `true`, the newsletter is sent immediately after creation. You cannot set both `send_now` and `scheduled_at`.
+          scheduled_at:
+            type: integer
+            format: unix timestamp
+            description: A Unix timestamp indicating when to send the newsletter. The time must be in the future. You cannot set both `send_now` and `scheduled_at`.
+          subscription_topic_id:
+            type: integer
+            description: The newsletter audience's subscription topic ID. Required when [subscription center](/journeys/channels/subscriptions/center/#enable-sub-center) is enabled; otherwise sends to globally subscribed profiles.
+      - type: object
+        example:
+          rate_limit_email_rate: 500
+          rate_limit_time_period: 60
+          rate_limit_spread: true
+        description: Optional newsletter rate limiting. If you set `rate_limit_email_rate` or `rate_limit_time_period`, set both; `rate_limit_spread` can be set alone.
+        properties:
+          rate_limit_email_rate:
+            type: integer
+            minimum: 1
+            description: 'Maximum number of messages per time period. **NOTE:** Though this states `email_rate`, you can use this for other message channels. Only fixed rate limits are supported, not [daily ramp limits](/journeys/send/broadcasts/newsletters/#daily-ramp).
+
+              '
+          rate_limit_time_period:
+            type: integer
+            enum:
+            - 60
+            - 3600
+            - 86400
+            description: Time period in seconds for rate limiting. Must be one of 60 (minute), 3600 (hour), or 86400 (day).
+          rate_limit_spread:
+            type: boolean
+            description: When `true`, spreads messages evenly across the time period. Otherwise, it sends as fast as possible up to the limit in each period.
+      - type: object
+        required:
+        - body_json
+        properties:
+          type:
+            type: string
+            description: The channel type for the newsletter.
+            enum:
+            - inbox
+          body_json:
+            type: string
+            description: 'JSON body content for the inbox message, as a stringified JSON object. The fields you include depend on how you [set up your inbox](/journeys/channels/in-app/inbox/setup/):
+
+              - `topics`—array, topics your audience can filter by in their inbox
+
+              - `type`—string, context that helps render the inbox message
+
+              - `properties`—object, your message info like the title, body, link, and image
+
+              - `expiration`—object; if omitted, the message expires after 30 days. Otherwise set `type` (`relative` or `absolute`), `unit` (`seconds`, `minutes`, `hours`, or `days`; relative only), and `value` (number of units, or a unix timestamp if absolute)
+
+              '
+            example: '{"topics": ["general", "updates"], "type": "notification", "expiration": {"type": "relative", "value": "30", "unit": "days"}, "properties": {"title": "Welcome!", "message": "Thanks for signing up", "link": "https://customer.io"}}'
+    createEmailNewsletter:
+      title: Email
+      description: When you create an email, include `subject` and `body`. Set either `from` or `from_id`, but not both. If you set neither, Customer.io uses your oldest verified sending address.
+      allOf:
+      - type: object
+        required:
+        - name
+        - type
+        - recipients
+        properties:
+          name:
+            type: string
+            maxLength: 190
+            description: The name of the newsletter.
+          recipients:
+            type: object
+            description: 'Filter conditions that define the newsletter''s recipients. Combine `segment` and `attribute` conditions with `and`, `or`, and `not` operators.
+
+              '
+            properties:
+              and:
+                type: array
+                description: An array of conditions that must all be true.
+                items:
+                  type: object
+              or:
+                type: array
+                description: An array of conditions where at least one must be true.
+                items:
+                  type: object
+              not:
+                type: object
+                description: A condition or group of conditions to exclude.
+              segment:
+                type: object
+                description: A segment condition.
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of a segment.
+              attribute:
+                type: object
+                description: A customer attribute condition.
+                properties:
+                  field:
+                    type: string
+                    description: The attribute name.
+                  operator:
+                    type: string
+                    description: The comparison operator.
+                    enum:
+                    - eq
+                    - exists
+                  value:
+                    type: string
+                    description: The value to compare against. Required when `operator` is `eq`.
+                  inverse:
+                    type: boolean
+                    description: Set to `true` for "is not equal" or "does not exist".
+          send_now:
+            type: boolean
+            description: If `true`, the newsletter is sent immediately after creation. You cannot set both `send_now` and `scheduled_at`.
+          scheduled_at:
+            type: integer
+            format: unix timestamp
+            description: A Unix timestamp indicating when to send the newsletter. The time must be in the future. You cannot set both `send_now` and `scheduled_at`.
+          subscription_topic_id:
+            type: integer
+            description: The newsletter audience's subscription topic ID. Required when [subscription center](/journeys/channels/subscriptions/center/#enable-sub-center) is enabled; otherwise sends to globally subscribed profiles.
+      - type: object
+        example:
+          rate_limit_email_rate: 500
+          rate_limit_time_period: 60
+          rate_limit_spread: true
+        description: Optional newsletter rate limiting. If you set `rate_limit_email_rate` or `rate_limit_time_period`, set both; `rate_limit_spread` can be set alone.
+        properties:
+          rate_limit_email_rate:
+            type: integer
+            minimum: 1
+            description: 'Maximum number of messages per time period. **NOTE:** Though this states `email_rate`, you can use this for other message channels. Only fixed rate limits are supported, not [daily ramp limits](/journeys/send/broadcasts/newsletters/#daily-ramp).
+
+              '
+          rate_limit_time_period:
+            type: integer
+            enum:
+            - 60
+            - 3600
+            - 86400
+            description: Time period in seconds for rate limiting. Must be one of 60 (minute), 3600 (hour), or 86400 (day).
+          rate_limit_spread:
+            type: boolean
+            description: When `true`, spreads messages evenly across the time period. Otherwise, it sends as fast as possible up to the limit in each period.
+      - type: object
+        required:
+        - subject
+        - body
+        properties:
+          type:
+            type: string
+            description: The channel type for the newsletter.
+            enum:
+            - email
+          subject:
+            type: string
+            description: The subject line of the email.
+          preheader_text:
+            x-scalar-ignore: true
+            type: string
+            description: '[Also known as "preview text"](/journeys/channels/email/headers/custom-preheader-text/), this is the small block of text shown in an email inbox next to or underneath the subject line.
+
+              '
+          body:
+            type: string
+            description: The HTML body content of the email. Use standard HTML/CSS, not syntax unique to Design Studio.
+          body_plain:
+            type: string
+            description: The plaintext body of the email. If provided, this overwrites the auto-generated plaintext.
+          layout_id:
+            type: integer
+            description: The ID of the [layout](/journeys/channels/email/layouts/3-layouts-and-customerio/) you want to use for the email. If you don't set one, the email uses your workspace's default layout. Find a layout's ID in its URL.
+          from:
+            type: string
+            description: The address to send the email from, in the format `Name <email@domain.com>`. You can set `from` or `from_id`, but not both. Use one of the `address` values from [List sender identities](#tag/sender-identities/listSenders).
+          from_id:
+            x-scalar-ignore: true
+            type: integer
+            description: The identifier of the `from` address, commonly known as the "sender". Use [List sender identities](#tag/sender-identities/listSenders) to find valid IDs.
+            example: 1
+        example:
+          name: Weekly Product Update
+          type: email
+          recipients:
+            and:
+            - or:
+              - segment:
+                  id: 42
+              - segment:
+                  id: 99
+            - attribute:
+                field: plan
+                operator: eq
+                value: trial
+                inverse: true
+          subject: What's new this week, {{ customer.first_name }}
+          preheader_text: Check out our latest features and improvements
+          body: <html><body><h1>Product Updates</h1><p>Here's what we shipped this week...</p></body></html>
+          from: Product Team <updates@example.com>
+          subscription_topic_id: 5
+    createSmsNewsletter:
+      title: SMS
+      description: When creating an SMS text, you must include `body`.
+      allOf:
+      - type: object
+        required:
+        - name
+        - type
+        - recipients
+        properties:
+          name:
+            type: string
+            maxLength: 190
+            description: The name of the newsletter.
+          recipients:
+            type: object
+            description: 'Filter conditions that define the newsletter''s recipients. Combine `segment` and `attribute` conditions with `and`, `or`, and `not` operators.
+
+              '
+            properties:
+              and:
+                type: array
+                description: An array of conditions that must all be true.
+                items:
+                  type: object
+              or:
+                type: array
+                description: An array of conditions where at least one must be true.
+                items:
+                  type: object
+              not:
+                type: object
+                description: A condition or group of conditions to exclude.
+              segment:
+                type: object
+                description: A segment condition.
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of a segment.
+              attribute:
+                type: object
+                description: A customer attribute condition.
+                properties:
+                  field:
+                    type: string
+                    description: The attribute name.
+                  operator:
+                    type: string
+                    description: The comparison operator.
+                    enum:
+                    - eq
+                    - exists
+                  value:
+                    type: string
+                    description: The value to compare against. Required when `operator` is `eq`.
+                  inverse:
+                    type: boolean
+                    description: Set to `true` for "is not equal" or "does not exist".
+          send_now:
+            type: boolean
+            description: If `true`, the newsletter is sent immediately after creation. You cannot set both `send_now` and `scheduled_at`.
+          scheduled_at:
+            type: integer
+            format: unix timestamp
+            description: A Unix timestamp indicating when to send the newsletter. The time must be in the future. You cannot set both `send_now` and `scheduled_at`.
+          subscription_topic_id:
+            type: integer
+            description: The newsletter audience's subscription topic ID. Required when [subscription center](/journeys/channels/subscriptions/center/#enable-sub-center) is enabled; otherwise sends to globally subscribed profiles.
+      - type: object
+        example:
+          rate_limit_email_rate: 500
+          rate_limit_time_period: 60
+          rate_limit_spread: true
+        description: Optional newsletter rate limiting. If you set `rate_limit_email_rate` or `rate_limit_time_period`, set both; `rate_limit_spread` can be set alone.
+        properties:
+          rate_limit_email_rate:
+            type: integer
+            minimum: 1
+            description: 'Maximum number of messages per time period. **NOTE:** Though this states `email_rate`, you can use this for other message channels. Only fixed rate limits are supported, not [daily ramp limits](/journeys/send/broadcasts/newsletters/#daily-ramp).
+
+              '
+          rate_limit_time_period:
+            type: integer
+            enum:
+            - 60
+            - 3600
+            - 86400
+            description: Time period in seconds for rate limiting. Must be one of 60 (minute), 3600 (hour), or 86400 (day).
+          rate_limit_spread:
+            type: boolean
+            description: When `true`, spreads messages evenly across the time period. Otherwise, it sends as fast as possible up to the limit in each period.
+      - type: object
+        required:
+        - body
+        properties:
+          type:
+            type: string
+            description: The channel type for the newsletter.
+            enum:
+            - twilio
+          body:
+            type: string
+            description: The body content of the SMS message.
+            example: Hi {{ customer.first_name }}, your order has shipped!
   securitySchemes:
+    Bearer-Auth:
+      type: http
+      scheme: bearer
+      description: 'The App API uses a bearer authentication scheme.
+
+
+        You can generate a bearer token, known as an **App API Key**, with a defined scope in [your account settings](https://fly.customer.io/settings/api_credentials?keyType=app). [Learn more about bearer authorization in Customer.io](/accounts/settings/managing-credentials).
+
+        '
+    ServiceAccount-Auth:
+      x-scalar-ignore: true
+      type: http
+      scheme: bearer
+      bearerFormat: sa_live_
+      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
+
+
+        Service-account tokens are intended for testing and one-off sends—for example, using the Customer.io CLI with an AI agent like Claude to verify that a transactional message renders correctly before wiring it into your production backend. **For the production integration that triggers the message from your application, use an App API Key instead**: it''s workspace-scoped, easier to rotate, and has a smaller blast radius.
+
+
+        Service-account tokens are server-side credentials. Treat them like any API key—keep them in environment variables or a secret manager, and never embed them in client-side code, mobile apps, or other untrusted contexts.
+
+        '
     bearerAuth:
       type: http
       scheme: bearer
-      description: Bearer token authentication using your App API key. Pass the key in the Authorization header as Bearer {app_api_key}.
-externalDocs:
-  description: App API Documentation
-  url: https://docs.customer.io/integrations/api/app/
+      description: API key passed as a Bearer token

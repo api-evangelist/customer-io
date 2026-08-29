@@ -1,4 +1,4 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
   title: Customer.io App Activities Devices API
   description: The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.
@@ -56,6 +56,21 @@ paths:
         '404':
           description: Device not found.
 components:
+  parameters:
+    DeviceId:
+      name: device_id
+      in: path
+      required: true
+      description: The unique identifier for the device to remove.
+      schema:
+        type: string
+    CustomerIdentifier:
+      name: identifier
+      in: path
+      required: true
+      description: The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration.
+      schema:
+        type: string
   schemas:
     DeviceRequest:
       type: object
@@ -82,21 +97,6 @@ components:
             last_used:
               type: integer
               description: A UNIX timestamp of when the device was last used.
-  parameters:
-    DeviceId:
-      name: device_id
-      in: path
-      required: true
-      description: The unique identifier for the device to remove.
-      schema:
-        type: string
-    CustomerIdentifier:
-      name: identifier
-      in: path
-      required: true
-      description: The unique identifier for the customer. This can be an id or email address depending on your workspace identity configuration.
-      schema:
-        type: string
   securitySchemes:
     bearerAuth:
       type: http

@@ -1,0 +1,490 @@
+openapi: 3.2.0
+info:
+  version: 1.0.0
+  title: Customer.io App Data Index API
+  description: 'Our App API provides ways to trigger messages and retrieve information about people, campaigns, broadcasts, and more.
+
+
+    # Overview
+
+
+    The App API provides methods to send newsletters, transactional messages, and API-triggered broadcasts. You can create newsletters from scratch and update transactional messages and API-triggered broadcasts.
+
+
+    For transactional messages and API-triggered broadcasts, your payload acts as a message "trigger" and can contain `data` that you reference in your messages using liquid—`{{trigger.<data>}}`.
+
+
+    The other endpoints help you retrieve information about people, segments, campaigns, broadcasts, etc; it also lets you update campaign actions, messages, newsletter variants, etc. Aside from the [API-triggered broadcast](#triggerBroadcast) (1 per 10 seconds) and [Transactional](#sendEmail) (100 per second) endpoints, requests are limited to 10 per second.
+
+
+    # Use our Postman collection
+
+
+    We''ve generated a Postman collection to help you get started with our APIs.
+
+
+    If you fork this collection, you might want to disable the *Watch original collection* option. We automatically update our Postman collection whenever we release changes to our documentation, even if we don''t change our APIs—which happens daily! Rather than being flooded with Postman notifications, you can check out our [Release Notes](/release-notes/) for updates to our APIs.
+
+
+    **NOTE**: Postman endpoints default to our US APIs. If you''re in our European (EU) region, you''ll need to add `-eu` to the server variables (`track_api_url` and `app_api_url`).
+
+
+    [<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://god.gw.postman.com/run-collection/23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d%26entityType%3Dcollection%26workspaceId%3Db886877f-fc09-475f-84fe-6221a98f4d18#?env%5BCustomer.io%20API%20Environment%5D=W3sia2V5IjoidHJhY2tfYXBpX3VybCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiJ0cmFjay5jdXN0b21lci5pbyIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBwX2FwaV91cmwiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiYXBpLmN1c3RvbWVyLmlvIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzaXRlX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBpX2tleSIsInR5cGUiOiJzZWNyZXQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYmVhcmVyIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYnJvYWRjYXN0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaW1wb3J0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiZW1haWxfYWRkcmVzcyIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InN1cHByZXNzaW9uX3R5cGUiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjb2xsZWN0aW9uX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoic25pcHBldF9uYW1lIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoid2ViaG9va19pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InNlbmRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImV4cG9ydF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6Im1lc3NhZ2VfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzZWdtZW50X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoibmV3c2xldHRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImNvbnRlbnRfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjYW1wYWlnbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImFjdGlvbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImN1c3RvbWVyX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoidHJhbnNhY3Rpb25hbF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InRyaWdnZXJfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJmb3JtX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaWRlbnRpZmllciIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRldmljZV9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRlbGl2ZXJ5X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9XQ==)
+
+
+    # Server addresses: US and EU
+
+
+    Customer.io hosts services in the United States (US) and European Union. Select the appropriate server address for your region.
+
+
+    | Region | Server Address |
+
+    | :-- | :-- |
+
+    | US | https://api.customer.io |
+
+    | EU | https://api-eu.customer.io |
+
+
+    # Authentication
+
+
+    All requests to the Customer.io App API use an [App API Key](#App-API-Key).
+
+
+    To authenticate, provide your key as a Bearer token in a HTTP Authorization header. You can create and manage your API keys—including keys with different scopes—in [your account settings page](https://fly.customer.io/settings/api_credentials?keyType=app). Each operation on this page references the authorization header it requires.
+
+
+    # Rate Limits
+
+
+    Most endpoints on this page are limited to 10 requests per second. The exceptions are:
+
+    * The [transactional email](#operation/sendEmail) endpoint is limited to 100 requests per second.
+
+    * The [API-triggered broadcast endpoint](#operation/triggerBroadcast) is limited to 1 request every 10 seconds.
+
+
+    **Rate limits are subject to change. We may adjust these thresholds to ensure stable performance for all customers.**
+
+    '
+servers:
+- url: https://api.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+- url: https://api-eu.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+tags:
+- name: Data Index
+  description: 'Update descriptions for attributes and events in your workspace. This helps improve AI-generated content and segments.
+
+    '
+paths:
+  /v1/data_index/attributes:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    post:
+      summary: Add or update attributes
+      operationId: updateAttributeMetadata
+      security:
+      - Bearer-Auth: []
+      description: 'Attributes are customer data like their name and email. Use this endpoint to add new attributes or update existing attributes in your workspace. To add attributes to customers, use our Pipelines or Track APIs. **NOTE:** If you add new attributes, they will not appear in your [Data Index](/journeys/people/find/using-data-index/) until you''ve added it to a customer''s profile.
+
+
+        Add descriptions for attributes [so our AI tools can better understand your data](/ai/cio-with-llms/). For instance, this influences how our segment builder generates conditions with AI.
+
+
+        If you''re on a Premium plan, you can also specify [whether an attribute is sensitive or not](/accounts/settings/team/intro-account-access/#hide-sensitive-attributes). Then Admins and Workspace Admins can decide which teammates to hide sensitive data from.
+
+        '
+      tags:
+      - Data Index
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - attributes
+              properties:
+                attributes:
+                  type: array
+                  description: Array of attribute updates
+                  minItems: 1
+                  maxItems: 100
+                  items:
+                    type: object
+                    required:
+                    - name
+                    properties:
+                      name:
+                        type: string
+                        description: The name of the attribute to update
+                        example: last_active
+                      description:
+                        type: string
+                        maxLength: 255
+                        description: The purpose of the attribute. This helps our AI tools understand your data.
+                        example: The last time the user clicked something on our app after logging in.
+                      privacy_level:
+                        type: integer
+                        enum:
+                        - 0
+                        - 1
+                        description: 'Available on Premium plans. This indicates whether an attribute is sensitive or not.
+
+
+                          0 means NOT sensitive.
+
+
+                          1 means sensitive.
+
+                          '
+                        example: 0
+      responses:
+        '204':
+          description: Attributes updated successfully
+        '400':
+          description: Invalid request format
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: The reason for failure.
+                          enum:
+                          - Invalid request format
+                        status:
+                          type: string
+                          description: The response code.
+                          enum:
+                          - 400
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: The reason for the response.
+                          enum:
+                          - Empty attributes array
+                          - Too many attributes
+                          - Privacy level feature not enabled
+                        status:
+                          type: string
+                          description: The response code.
+                          enum:
+                          - 422
+                        source:
+                          type: object
+                          properties:
+                            pointer:
+                              type: string
+                              description: The path to the attribute that caused the error. 0 is the first attribute, 1 is the second, and so on.
+              examples:
+                empty_attributes:
+                  summary: Empty attributes array
+                  value:
+                    errors:
+                    - detail: At least one attribute is required
+                      source:
+                        pointer: /data/attributes/attributes
+                      status: '422'
+                too_many_attributes:
+                  summary: Too many attributes
+                  value:
+                    errors:
+                    - detail: Can not update more than 100 attributes at once
+                      source:
+                        pointer: /data/attributes/attributes
+                      status: '422'
+                privacy_level_not_enabled:
+                  summary: Privacy level feature not enabled
+                  value:
+                    errors:
+                    - detail: Privacy level updates are not available. Please contact support to enable this feature.
+                      source:
+                        pointer: /data/attributes/attributes[0].privacy_level
+                      status: '422'
+        '500':
+          description: Internal server error
+      x-codeSamples:
+      - lang: json
+        label: JSON
+        source: "{\n  \"attributes\": [\n    {\n      \"name\": \"last_active\"\n    }\n  ]\n}"
+      - lang: Shell + Curl
+        source: "curl --request POST \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/data_index/attributes \\\n  --header 'content-type: application/json' \\\n  --data '{\"attributes\":[{\"name\":\"last_active\",\"description\":\"The last time the user clicked something on our app after logging in.\",\"privacy_level\":0}]}'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"POST\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/data_index/attributes\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({\n  attributes: [\n    {\n      name: 'last_active',\n      description: 'The last time the user clicked something on our app after logging in.',\n      privacy_level: 0\n    }\n  ]\n}));\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/data_index/attributes")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Post.new(url)
+
+          request["content-type"] = ''application/json''
+
+          request.body = "{\"attributes\":[{\"name\":\"last_active\",\"description\":\"The last time the user clicked something on our app after logging in.\",\"privacy_level\":0}]}"
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          payload = "{\"attributes\":[{\"name\":\"last_active\",\"description\":\"The last time the user clicked something on our app after logging in.\",\"privacy_level\":0}]}"
+
+
+          headers = { ''content-type'': "application/json" }
+
+
+          conn.request("POST", "/v1/data_index/attributes", payload, headers)
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/data_index/attributes\"\n\n\tpayload := strings.NewReader(\"{\\\"attributes\\\":[{\\\"name\\\":\\\"last_active\\\",\\\"description\\\":\\\"The last time the user clicked something on our app after logging in.\\\",\\\"privacy_level\\\":0}]}\")\n\n\treq, _ := http.NewRequest(\"POST\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+  /v1/data_index/events:
+    post:
+      summary: Add or update events
+      operationId: updateEventMetadata
+      security:
+      - Bearer-Auth: []
+      description: 'Events are actions your customers have performed. Use this endpoint to add new events or update existing events in your workspace. To associate events with customers, use our Pipelines or Track APIs. **NOTE:** If you add new events, they will not appear in your [Data Index](/journeys/people/find/using-data-index/) until you''ve associated it with a customer.
+
+
+        Add descriptions for events [so our AI tools can better understand your data](/ai/cio-with-llms/). For instance, this influences how our segment builder generates conditions with AI.
+
+        '
+      tags:
+      - Data Index
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - events
+              properties:
+                events:
+                  type: array
+                  description: Array of event updates
+                  minItems: 1
+                  maxItems: 100
+                  items:
+                    type: object
+                    required:
+                    - name
+                    properties:
+                      name:
+                        type: string
+                        description: The name of the event
+                        example: purchase_completed
+                      description:
+                        type: string
+                        maxLength: 255
+                        description: The meaning of the event
+                        example: User successfully completed a purchase
+      responses:
+        '204':
+          description: Events updated successfully
+        '400':
+          description: Invalid request format
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: The reason for the response.
+                          enum:
+                          - Invalid request format
+                        status:
+                          type: string
+                          description: The response code.
+                          enum:
+                          - 400
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          enum:
+                          - Empty events array
+                          - Too many events
+                          description: The reason for the response.
+                        status:
+                          type: string
+                          enum:
+                          - 422
+                        source:
+                          type: object
+                          properties:
+                            pointer:
+                              type: string
+                              description: The path to the event that caused the error.
+              examples:
+                empty_events:
+                  summary: Empty events array
+                  value:
+                    errors:
+                    - detail: At least one event is required
+                      source:
+                        pointer: /data/attributes/events
+                      status: '422'
+                too_many_events:
+                  summary: Too many events
+                  value:
+                    errors:
+                    - detail: Can not update more than 100 events at once
+                      source:
+                        pointer: /data/attributes/events
+                      status: '422'
+        '500':
+          description: Internal server error
+      x-codeSamples:
+      - lang: json
+        label: JSON
+        source: "{\n  \"events\": [\n    {\n      \"name\": \"purchase_completed\"\n    }\n  ]\n}"
+      - lang: Shell + Curl
+        source: "curl --request POST \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/data_index/events \\\n  --header 'content-type: application/json' \\\n  --data '{\"events\":[{\"name\":\"purchase_completed\",\"description\":\"User successfully completed a purchase\"}]}'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"POST\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/data_index/events\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({\n  events: [\n    {\n      name: 'purchase_completed',\n      description: 'User successfully completed a purchase'\n    }\n  ]\n}));\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/data_index/events")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Post.new(url)
+
+          request["content-type"] = ''application/json''
+
+          request.body = "{\"events\":[{\"name\":\"purchase_completed\",\"description\":\"User successfully completed a purchase\"}]}"
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          payload = "{\"events\":[{\"name\":\"purchase_completed\",\"description\":\"User successfully completed a purchase\"}]}"
+
+
+          headers = { ''content-type'': "application/json" }
+
+
+          conn.request("POST", "/v1/data_index/events", payload, headers)
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/data_index/events\"\n\n\tpayload := strings.NewReader(\"{\\\"events\\\":[{\\\"name\\\":\\\"purchase_completed\\\",\\\"description\\\":\\\"User successfully completed a purchase\\\"}]}\")\n\n\treq, _ := http.NewRequest(\"POST\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+components:
+  securitySchemes:
+    Bearer-Auth:
+      type: http
+      scheme: bearer
+      description: 'The App API uses a bearer authentication scheme.
+
+
+        You can generate a bearer token, known as an **App API Key**, with a defined scope in [your account settings](https://fly.customer.io/settings/api_credentials?keyType=app). [Learn more about bearer authorization in Customer.io](/accounts/settings/managing-credentials).
+
+        '
+    ServiceAccount-Auth:
+      x-scalar-ignore: true
+      type: http
+      scheme: bearer
+      bearerFormat: sa_live_
+      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
+
+
+        Service-account tokens are intended for testing and one-off sends—for example, using the Customer.io CLI with an AI agent like Claude to verify that a transactional message renders correctly before wiring it into your production backend. **For the production integration that triggers the message from your application, use an App API Key instead**: it''s workspace-scoped, easier to rotate, and has a smaller blast radius.
+
+
+        Service-account tokens are server-side credentials. Treat them like any API key—keep them in environment variables or a secret manager, and never embed them in client-side code, mobile apps, or other untrusted contexts.
+
+        '
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: API key passed as a Bearer token

@@ -1,0 +1,143 @@
+openapi: 3.2.0
+info:
+  version: 1.0.0
+  title: Customer.io Track Forms API
+  description: "# Overview\n\nOur Track API provides ways to send real-time customer data to your Customer.io workspace including customer identification and event tracking.\n\n# Use our Postman collection\n\nWe've generated a Postman collection to help you get started with our APIs.\n\nIf you fork this collection, you might want to disable the *Watch original collection* option. We automatically update our Postman collection whenever we release changes to our documentation, even if we don't change our APIs—which happens daily! Rather than being flooded with Postman notifications, you can check out our [Release Notes](/release-notes/) for updates to our APIs.\n\n**NOTE**: Postman endpoints default to our US APIs. If you're in our European (EU) region, you'll need to add `-eu` to the server variables (`track_api_url` and `app_api_url`).\n\n[<img src=\"https://run.pstmn.io/button.svg\" alt=\"Run In Postman\" style=\"width: 128px; height: 32px;\">](https://god.gw.postman.com/run-collection/23697545-0f7ae1e8-8177-46fc-808a-2fd363dd52b9?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D23697545-0f7ae1e8-8177-46fc-808a-2fd363dd52b9%26entityType%3Dcollection%26workspaceId%3Db886877f-fc09-475f-84fe-6221a98f4d18#?env%5BCustomer.io%20API%20Environment%5D=W3sia2V5IjoidHJhY2tfYXBpX3VybCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiJ0cmFjay5jdXN0b21lci5pbyIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBwX2FwaV91cmwiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiYXBpLmN1c3RvbWVyLmlvIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzaXRlX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBpX2tleSIsInR5cGUiOiJzZWNyZXQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYmVhcmVyIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYnJvYWRjYXN0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaW1wb3J0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiZW1haWxfYWRkcmVzcyIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InN1cHByZXNzaW9uX3R5cGUiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjb2xsZWN0aW9uX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoic25pcHBldF9uYW1lIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoid2ViaG9va19pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InNlbmRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImV4cG9ydF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6Im1lc3NhZ2VfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzZWdtZW50X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoibmV3c2xldHRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImNvbnRlbnRfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjYW1wYWlnbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImFjdGlvbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImN1c3RvbWVyX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoidHJhbnNhY3Rpb25hbF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InRyaWdnZXJfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJmb3JtX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaWRlbnRpZmllciIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRldmljZV9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRlbGl2ZXJ5X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9XQ==)\n\n# Server addresses: US and EU\nCustomer.io hosts services in the United States (US) and European Union. Select the appropriate server address for your region.\n\n| Region | Server Address |\n| :-- | :-- |\n| US | https://track.customer.io |\n| EU | https://track-eu.customer.io |\n\nNote that if your account is in the EU region and you send traffic to our US endpoints, we'll redirect it accordingly but this traffic still passes through US servers and data could be logged in the US.\n\n# Authentication \n\nYou can find all of your API authentication information in your [Account Settings](https://fly.customer.io/settings/api_credentials). Our Tracking API uses HTTP basic authorization. The App API uses bearer authorization, and you can generate tokens supporting different scopes. Each operation in this document references the authorization header it requires.\n\n# v1 vs v2 APIs\n\nMost of the time, when we talk about *The Track API*, we're talking about the v1 API because the v2 API isn't used in any of our libraries and rarely used in libraries built by third parties; it's much more common that you'd encounter the v1 API.\n\nIf you're integrating with Customer.io using one of our libraries, or a third party customer data platform (CDP) like Segment or Rudderstack, you'll be using the v1 API.\n\nThe v2 API is newer and supports two important features that the v1 API doesn't natively support: objects and batching. But, if you're integrating directly with our API, we suggest you use the [Pipelines API](/integrations/api/cdp/). The Pipelines API supports both objects, batching, *and* all of our newest integrations and libraries are based on it.\n\n# Rate Limits\n\nThe Track API has a rate limit of 1000 requests per second for both active data integrations and historical backfill scripts. This limit applies to both our v1 and v2 APIs. \n\nWhile this rate is not strictly enforced, consistently exceeding it may lead to throttling or dropped data, especially during periods of high system load. If we detect a sustained high volume that could impact other customers, we may contact you to help adjust your integration or, in rare cases, temporarily block requests.\n\n**Rate limits are subject to change. We may adjust these thresholds to ensure stable performance for all customers.**\n\nBelow are the payload size limits for the Track API. If any of these limits are too restrictive for your needs, contact support to let us know your situation as we may be able to accommodate special circumstances. \n\n## Customer limits\n\nThese limits apply to people and their attributes, often referred to as \"customers\" in our APIs.\n\n| Data Type | Limit | Description |\n| -- | -- | -- |\n| ID | 150 bytes | Max length of a person's ID value |\n| Attribute Name | 150 bytes | Max length of each attribute name |\n| Attribute Value | 1000 bytes | Max length of attribute values |\n| Unique attributes | 300 | Max number of attributes allowed per person or Identify call |\n\n## Object and relationship limits\n\nObjects (groups) and relationships between people and objects can have their own attributes. Their limits are similar to people (customers).\n\n| Data Type | Limit | Description |\n| -- | -- | -- |\n| Object ID | 150 bytes | Max length of a object's ID |\n| Attribute Names | 150 bytes | Max length of each attribute name |\n| Attribute Values | 1000 bytes | Max length of attribute values |\n| Unique attributes | 300 | Max number of attributes allowed per object or relationship |\n| Total attribute size | 100 Kilobytes | Max size of all attributes associated with an object or relationship |\n\n## Track API Event limits\n\nThese limits apply to events that you'll send with the `/v1/track` call.\n\n| Data Type | Limit | Description |\n| -- | -- | -- |\n| Event Name | 100 bytes | Max length of each event name |\n| Event Data | 100000 bytes | Max length of each event data |\n\n\n## v2 API Limits\n\nThe v2 API has two endpoints, both of which have limits on the total size of requests. \n* `/entity` is limited to requests 32kb or smaller.\n* `/batch` is limited to requests 500kb or smaller.\n  \n  Each of the requests within a batch must also be 32kb or smaller.\n"
+servers:
+- url: https://track.customer.io
+  description: The base URL for the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+- url: https://track-eu.customer.io
+  description: The base URL for the Track API (EU region). Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+tags:
+- name: Forms
+  description: Connect forms to your workspace to identify people, apply form responses to people, and trigger campaigns for people who fill out forms on your website or in your app.
+paths:
+  /api/v1/forms/{form_id}/submit:
+    post:
+      operationId: submitForm
+      tags:
+      - Forms
+      summary: Submit a form
+      parameters:
+      - name: form_id
+        in: path
+        required: true
+        description: The identifier for a form. If Customer.io does not recognize the `form_id`, we create a new form connection (found on the *Data & Integrations* > *Forms* page). Use a value that makes sense to you, or something that you can trace to your backend system.
+        schema:
+          type: string
+      description: "Submit a form response. If Customer.io does not recognize the `form_id` we create a new form connection (found on the *Data & Integrations* > *Integrations* > *Forms* page). Form submissions with the same ID are treated as submissions from the same form.\n\nThe `data` object _must_ contain at least one of `id` or `email` (depending on the identifiers supported in your workspace)—or a field that is mapped to one of these identifiers—to identify the form respondent. If the person who submitted the form does not already exist, we create them (like an [identify](#operation/identify) request).\n\nAdditional keys in the `data` object represent form fields and values from the form that a person submitted. By default, we map form fields in your request directly to attributes, e.g. if you have a form field called `first_name`, we map that field to the `first_name` attribute.\n\n**NOTES**: \n  * You cannot disable fields that you send to this API. If you send a field (as `data`) to this API, we'll include it in the form submission.\n  * If an identifier in your form is called something like `email_address` rather than `email` in your initial request, you'll receive a `400`, but we'll still add your form on the **Data & Integrations** > **Integrations** > **Forms** page. You can then re-map your `email_address` field to `email`, and your form will begin working normally.\n  * Customer.io reserves `form_id`, `form_name`, `form_type`, `form_url`, and `form_url_param` keys. If your request includes these keys, Customer.io ignores them.\n"
+      servers:
+      - url: https://track.customer.io
+        description: This endpoint is a part of the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+      security:
+      - Tracking-API-Key: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: "The body of the request contains key-value pairs representing form fields; these values are mapped to attributes. Your request must contain one of—and only one of—`email` or `id` to identify a person (depending on the identifiers supported in your workspace). If the person who filled out your form does not already exist, the request creates them. If your request includes more than one identifier, you'll receive an error.\n\n**NOTE**: If your form field is called something like `email_address`, you'll receive a `400`, but we'll still add your form on the **Data & Integrations** > **Integrations** > **Forms** page. You can then re-map your `email_address` field to `email`, and your form will begin working normally.\n \nAdditional keys in the `data` object represent form fields from the form that a person submitted. By default, we map form fields in your request directly to attributes, e.g. if you have a form field called `first_name`, we map that field to the `first_name` attribute. However, if you added or edited this form on the *Data & Integration* > *Forms* page, you can re-map form fields to attributes. If you turned off a form field on the *Forms* page, you can still include it in your request, but it is not applied to the person your form identifies.\n"
+              required:
+              - data
+              properties:
+                data:
+                  description: 'Represents your form data. By default, we assume that form fields map directly to attributes (e.g. if your form field is called `name`, we assume it represents an attribute called "name"). However, you can re-map form fields to attributes on the **Forms** page in your workspace.
+
+
+                    Values for form fields _must_ be formatted as strings.
+
+                    '
+                  oneOf:
+                  - title: identify by email
+                    type: object
+                    description: Identify the person who submitted your form by email.
+                    required:
+                    - email
+                    properties:
+                      email:
+                        $ref: '#/components/schemas/email_address'
+                    additionalProperties:
+                      x-additionalPropertiesName: Form fields
+                      type: string
+                      description: 'Fields from the form and associated values; values _must_ be formatted as strings. Each key represents an a form field. You can map form fields to attributes in the UI; by default, we assume that a form field maps directly to an attribute name.
+
+
+                        Customer.io reserves `form_id`, `form_name`, `form_type`, `form_url`, and `form_url_param` keys. If your request includes these keys, Customer.io ignores them.
+
+                        '
+                    example:
+                      email: cool.person@example.com
+                      first_name: cool
+                      last_name: person
+                      fav_food: pizza
+                  - title: identify by id
+                    type: object
+                    required:
+                    - id
+                    description: Identify the person who submitted your form by ID.
+                    properties:
+                      id:
+                        $ref: '#/components/schemas/customer_id'
+                    additionalProperties:
+                      x-additionalPropertiesName: Form fields
+                      type: string
+                      description: 'Fields from the form and associated values; values _must_ be formatted as strings. Each key represents an a form field. You can map form fields to attributes in the UI; by default, we assume that a form field maps directly to an attribute name.
+
+
+                        Customer.io reserves `form_id`, `form_name`, and `form_type` keys. If your request includes these keys, Customer.io ignores them.
+
+                        '
+                    example:
+                      id: 12345
+                      first_name: cool
+                      last_name: person
+                      fav_food: pizza
+      responses:
+        '204':
+          description: Successful requests do not return anything.
+        '400':
+          description: Invalid or malformed request. One or more form values may not be properly formatted as strings.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    type: object
+                    properties:
+                      errors:
+                        type: array
+                        description: An array of errors.
+                        items:
+                          type: string
+                          description: Error descriptions.
+      x-codeSamples:
+      - lang: json
+        label: JSON
+        source: "{\n  \"data\": {\n    \"email\": \"cool.person@example.com\",\n    \"first_name\": \"cool\",\n    \"last_name\": \"person\",\n    \"fav_food\": \"pizza\"\n  }\n}"
+components:
+  schemas:
+    customer_id:
+      x-scalar-ignore: true
+      type:
+      - string
+      - 'null'
+      description: The ID of a customer profile, analogous to a "person" in the UI. If your workspace supports multiple identifiers (email and ID), this value can be null.
+      example: '42'
+    email_address:
+      x-scalar-ignore: true
+      type:
+      - string
+      - 'null'
+      description: The email address of the customer.
+      example: test@example.com
+  securitySchemes:
+    Tracking-API-Key:
+      type: http
+      scheme: basic
+      description: 'The Track API uses a basic authentication scheme. Your credentials are your **Site ID** and your **API key**, **Base-64 encoded** in the format `site_id:api_key`.
+
+
+        You can find your Site ID and API key on the [Track API Keys page](https://fly.customer.io/settings/api_credentials).
+
+        '

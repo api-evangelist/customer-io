@@ -1,33 +1,100 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Customer.io App Activities Snippets API
-  description: The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.
   version: 1.0.0
-  contact:
-    name: Customer.io Support
-    url: https://customer.io/contact
-  termsOfService: https://customer.io/legal/terms-of-service
+  title: Customer.io App Snippets API
+  description: 'Our App API provides ways to trigger messages and retrieve information about people, campaigns, broadcasts, and more.
+
+
+    # Overview
+
+
+    The App API provides methods to send newsletters, transactional messages, and API-triggered broadcasts. You can create newsletters from scratch and update transactional messages and API-triggered broadcasts.
+
+
+    For transactional messages and API-triggered broadcasts, your payload acts as a message "trigger" and can contain `data` that you reference in your messages using liquid—`{{trigger.<data>}}`.
+
+
+    The other endpoints help you retrieve information about people, segments, campaigns, broadcasts, etc; it also lets you update campaign actions, messages, newsletter variants, etc. Aside from the [API-triggered broadcast](#triggerBroadcast) (1 per 10 seconds) and [Transactional](#sendEmail) (100 per second) endpoints, requests are limited to 10 per second.
+
+
+    # Use our Postman collection
+
+
+    We''ve generated a Postman collection to help you get started with our APIs.
+
+
+    If you fork this collection, you might want to disable the *Watch original collection* option. We automatically update our Postman collection whenever we release changes to our documentation, even if we don''t change our APIs—which happens daily! Rather than being flooded with Postman notifications, you can check out our [Release Notes](/release-notes/) for updates to our APIs.
+
+
+    **NOTE**: Postman endpoints default to our US APIs. If you''re in our European (EU) region, you''ll need to add `-eu` to the server variables (`track_api_url` and `app_api_url`).
+
+
+    [<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://god.gw.postman.com/run-collection/23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d%26entityType%3Dcollection%26workspaceId%3Db886877f-fc09-475f-84fe-6221a98f4d18#?env%5BCustomer.io%20API%20Environment%5D=W3sia2V5IjoidHJhY2tfYXBpX3VybCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiJ0cmFjay5jdXN0b21lci5pbyIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBwX2FwaV91cmwiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiYXBpLmN1c3RvbWVyLmlvIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzaXRlX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBpX2tleSIsInR5cGUiOiJzZWNyZXQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYmVhcmVyIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYnJvYWRjYXN0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaW1wb3J0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiZW1haWxfYWRkcmVzcyIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InN1cHByZXNzaW9uX3R5cGUiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjb2xsZWN0aW9uX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoic25pcHBldF9uYW1lIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoid2ViaG9va19pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InNlbmRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImV4cG9ydF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6Im1lc3NhZ2VfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzZWdtZW50X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoibmV3c2xldHRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImNvbnRlbnRfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjYW1wYWlnbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImFjdGlvbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImN1c3RvbWVyX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoidHJhbnNhY3Rpb25hbF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InRyaWdnZXJfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJmb3JtX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaWRlbnRpZmllciIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRldmljZV9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRlbGl2ZXJ5X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9XQ==)
+
+
+    # Server addresses: US and EU
+
+
+    Customer.io hosts services in the United States (US) and European Union. Select the appropriate server address for your region.
+
+
+    | Region | Server Address |
+
+    | :-- | :-- |
+
+    | US | https://api.customer.io |
+
+    | EU | https://api-eu.customer.io |
+
+
+    # Authentication
+
+
+    All requests to the Customer.io App API use an [App API Key](#App-API-Key).
+
+
+    To authenticate, provide your key as a Bearer token in a HTTP Authorization header. You can create and manage your API keys—including keys with different scopes—in [your account settings page](https://fly.customer.io/settings/api_credentials?keyType=app). Each operation on this page references the authorization header it requires.
+
+
+    # Rate Limits
+
+
+    Most endpoints on this page are limited to 10 requests per second. The exceptions are:
+
+    * The [transactional email](#operation/sendEmail) endpoint is limited to 100 requests per second.
+
+    * The [API-triggered broadcast endpoint](#operation/triggerBroadcast) is limited to 1 request every 10 seconds.
+
+
+    **Rate limits are subject to change. We may adjust these thresholds to ensure stable performance for all customers.**
+
+    '
 servers:
-- url: https://api.customer.io/v1
-  description: US Production Server
-- url: https://api-eu.customer.io/v1
-  description: EU Production Server
-security:
-- bearerAuth: []
+- url: https://api.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+- url: https://api-eu.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
 tags:
 - name: Snippets
-  description: Manage reusable content snippets for use in messages.
+  description: 'Snippets are reusable pieces of messages, like a common email footer or link that you use in your messages. Use these endpoints to create, get, or delete snippets.
+
+    '
 paths:
-  /snippets:
+  /v1/snippets:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
     get:
-      operationId: listSnippets
       summary: List snippets
-      description: Returns a list of reusable content snippets in your workspace.
+      operationId: listSnippets
+      security:
+      - Bearer-Auth: []
+      description: Returns a list of snippets in your workspace. Snippets are pieces of reusable content, like a common footer for your emails.
       tags:
       - Snippets
       responses:
         '200':
-          description: A list of snippets.
+          description: Returns an array of `snippets`.
           content:
             application/json:
               schema:
@@ -36,83 +103,522 @@ paths:
                   snippets:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Snippet'
-        '401':
-          description: Unauthorized. Invalid App API key.
-  /snippets/{snippet_name}:
-    put:
-      operationId: updateSnippet
-      summary: Update a snippet
-      description: Creates or updates a reusable content snippet.
+                      x-scalar-ignore: true
+                      type: object
+                      description: describes a piece of reusable content. You must provide a name for the snippet and the `value`—the content that appears in messages that use the snippet.
+                      required:
+                      - name
+                      - value
+                      properties:
+                        name:
+                          type: string
+                          description: The name of the snippet, must be unique.
+                        value:
+                          type: string
+                          description: The contents of the snippet.
+                        updated_at:
+                          type: integer
+                          format: unix timestamp
+                          description: The last date-time the snippet was updated.
+                          readOnly: true
+                      example:
+                        name: address
+                        value: <strong>My Company</strong></br>1234 Fake St<br/>Fake,NY<br/>10111
+                        updated_at: 1582500000
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/snippets"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/snippets\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/snippets")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/snippets")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/snippets\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+    post:
+      summary: Create a snippet
+      operationId: createSnippet
+      security:
+      - Bearer-Auth: []
+      description: 'Create a new snippet. If a snippet with that name already exists, we''ll return a `422` error. If the value contains Liquid, we validate it.
+
+        '
       tags:
       - Snippets
-      parameters:
-      - name: snippet_name
-        in: path
-        required: true
-        description: The name of the snippet to create or update.
-        schema:
-          type: string
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SnippetRequest'
+              x-scalar-ignore: true
+              type: object
+              description: Request body for creating or updating a snippet. Only `name` and `value` are accepted; `updated_at` is returned in responses only.
+              required:
+              - name
+              - value
+              properties:
+                name:
+                  type: string
+                  maxLength: 150
+                  description: The name of the snippet, must be unique. Trimmed of leading and trailing whitespace before storage.
+                value:
+                  type: string
+                  description: The contents of the snippet (plain text or Liquid). Trimmed of leading and trailing whitespace before storage. Max length is environment-specific (default 16000).
+              example:
+                name: address
+                value: <strong>My Company</strong></br>1234 Fake St<br/>Fake,NY<br/>10111
       responses:
         '200':
-          description: Snippet updated successfully.
+          description: Returns the created snippet.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  snippet:
+                    x-scalar-ignore: true
+                    type: object
+                    description: describes a piece of reusable content. You must provide a name for the snippet and the `value`—the content that appears in messages that use the snippet.
+                    required:
+                    - name
+                    - value
+                    properties:
+                      name:
+                        type: string
+                        description: The name of the snippet, must be unique.
+                      value:
+                        type: string
+                        description: The contents of the snippet.
+                      updated_at:
+                        type: integer
+                        format: unix timestamp
+                        description: The last date-time the snippet was updated.
+                        readOnly: true
+                    example:
+                      name: address
+                      value: <strong>My Company</strong></br>1234 Fake St<br/>Fake,NY<br/>10111
+                      updated_at: 1582500000
         '401':
-          description: Unauthorized. Invalid App API key.
-    delete:
-      operationId: deleteSnippet
-      summary: Delete a snippet
-      description: Deletes a content snippet from your workspace.
+          description: Unauthorized request. Make sure that you provided the right credentials.
+        '422':
+          description: Validation error or a snippet with that name already exists.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    description: Contains an array of error objects.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: The reason for the response.
+                        status:
+                          type: string
+                          description: The HTTP status code.
+                          example: '422'
+                        source:
+                          type: object
+                          description: The field or path that caused the error.
+                          properties:
+                            pointer:
+                              type: string
+              examples:
+                name_blank:
+                  summary: Name empty or blank
+                  value:
+                    errors:
+                    - detail: name cannot be blank
+                      source:
+                        pointer: /name
+                      status: '422'
+                value_blank:
+                  summary: Value empty or blank
+                  value:
+                    errors:
+                    - detail: value cannot be blank
+                      source:
+                        pointer: /value
+                      status: '422'
+                name_too_long:
+                  summary: Name longer than 150 characters
+                  value:
+                    errors:
+                    - detail: name cannot exceed 150 characters
+                      source:
+                        pointer: /name
+                      status: '422'
+                value_too_long:
+                  summary: Value exceeds max length
+                  value:
+                    errors:
+                    - detail: value cannot exceed 16000 characters
+                      source:
+                        pointer: /value
+                      status: '422'
+                snippet_reference:
+                  summary: Value contains snippet reference
+                  value:
+                    errors:
+                    - detail: Snippets cannot contain Liquid code referencing other snippets.
+                      source:
+                        pointer: /value
+                      status: '422'
+                name_exists:
+                  summary: Name already exists
+                  value:
+                    errors:
+                    - detail: A snippet with that name already exists
+                      source:
+                        pointer: /name
+                      status: '422'
+        '429':
+          description: Your request is over the 10-per-second limit.
+        '500':
+          description: Internal server error (for example, render service failure when validating Liquid).
+      x-codeSamples:
+      - lang: json
+        label: JSON
+        source: "{\n  \"name\": \"address\",\n  \"value\": \"<strong>My Company</strong></br>1234 Fake St<br/>Fake,NY<br/>10111\"\n}"
+      - lang: Shell + Curl
+        source: "curl --request POST \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/snippets \\\n  --header 'content-type: application/json' \\\n  --data '{\"name\":\"address\",\"value\":\"<strong>My Company</strong></br>1234 Fake St<br/>Fake,NY<br/>10111\"}'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"POST\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/snippets\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({\n  name: 'address',\n  value: '<strong>My Company</strong></br>1234 Fake St<br/>Fake,NY<br/>10111'\n}));\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/snippets")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Post.new(url)
+
+          request["content-type"] = ''application/json''
+
+          request.body = "{\"name\":\"address\",\"value\":\"<strong>My Company</strong></br>1234 Fake St<br/>Fake,NY<br/>10111\"}"
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          payload = "{\"name\":\"address\",\"value\":\"<strong>My Company</strong></br>1234 Fake St<br/>Fake,NY<br/>10111\"}"
+
+
+          headers = { ''content-type'': "application/json" }
+
+
+          conn.request("POST", "/v1/snippets", payload, headers)
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/snippets\"\n\n\tpayload := strings.NewReader(\"{\\\"name\\\":\\\"address\\\",\\\"value\\\":\\\"<strong>My Company</strong></br>1234 Fake St<br/>Fake,NY<br/>10111\\\"}\")\n\n\treq, _ := http.NewRequest(\"POST\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+    put:
+      summary: Update snippets
+      operationId: updateSnippets
+      security:
+      - Bearer-Auth: []
+      description: "In your payload, you'll pass a `name` and `value`. Snippet names are unique. If the snippet `name` does not exist, we'll create a new snippet. If the `name` exists, we'll update the existing snippet. \n"
       tags:
       - Snippets
-      parameters:
-      - name: snippet_name
-        in: path
-        required: true
-        description: The name of the snippet to delete.
-        schema:
-          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              x-scalar-ignore: true
+              type: object
+              description: Request body for creating or updating a snippet. Only `name` and `value` are accepted; `updated_at` is returned in responses only.
+              required:
+              - name
+              - value
+              properties:
+                name:
+                  type: string
+                  maxLength: 150
+                  description: The name of the snippet, must be unique. Trimmed of leading and trailing whitespace before storage.
+                value:
+                  type: string
+                  description: The contents of the snippet (plain text or Liquid). Trimmed of leading and trailing whitespace before storage. Max length is environment-specific (default 16000).
+              example:
+                name: address
+                value: <strong>My Company</strong></br>1234 Fake St<br/>Fake,NY<br/>10111
       responses:
         '200':
-          description: Snippet deleted successfully.
-        '401':
-          description: Unauthorized. Invalid App API key.
+          description: Returns an array of `snippets`.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  snippet:
+                    x-scalar-ignore: true
+                    type: object
+                    description: describes a piece of reusable content. You must provide a name for the snippet and the `value`—the content that appears in messages that use the snippet.
+                    required:
+                    - name
+                    - value
+                    properties:
+                      name:
+                        type: string
+                        description: The name of the snippet, must be unique.
+                      value:
+                        type: string
+                        description: The contents of the snippet.
+                      updated_at:
+                        type: integer
+                        format: unix timestamp
+                        description: The last date-time the snippet was updated.
+                        readOnly: true
+                    example:
+                      name: address
+                      value: <strong>My Company</strong></br>1234 Fake St<br/>Fake,NY<br/>10111
+                      updated_at: 1582500000
+        '400':
+          description: The request is malformed.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: json
+        label: JSON
+        source: "{\n  \"name\": \"address\",\n  \"value\": \"<strong>My Company</strong></br>1234 Fake St<br/>Fake,NY<br/>10111\"\n}"
+      - lang: Shell + Curl
+        source: "curl --request PUT \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/snippets \\\n  --header 'content-type: application/json' \\\n  --data '{\"name\":\"address\",\"value\":\"<strong>My Company</strong></br>1234 Fake St<br/>Fake,NY<br/>10111\"}'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"PUT\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/snippets\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({\n  name: 'address',\n  value: '<strong>My Company</strong></br>1234 Fake St<br/>Fake,NY<br/>10111'\n}));\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/snippets")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Put.new(url)
+
+          request["content-type"] = ''application/json''
+
+          request.body = "{\"name\":\"address\",\"value\":\"<strong>My Company</strong></br>1234 Fake St<br/>Fake,NY<br/>10111\"}"
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          payload = "{\"name\":\"address\",\"value\":\"<strong>My Company</strong></br>1234 Fake St<br/>Fake,NY<br/>10111\"}"
+
+
+          headers = { ''content-type'': "application/json" }
+
+
+          conn.request("PUT", "/v1/snippets", payload, headers)
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/snippets\"\n\n\tpayload := strings.NewReader(\"{\\\"name\\\":\\\"address\\\",\\\"value\\\":\\\"<strong>My Company</strong></br>1234 Fake St<br/>Fake,NY<br/>10111\\\"}\")\n\n\treq, _ := http.NewRequest(\"PUT\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+  /v1/snippets/{snippet_name}:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - name: snippet_name
+      in: path
+      required: true
+      description: The name of a snippet.
+      schema:
+        type: string
+    delete:
+      summary: Delete a snippet
+      operationId: deleteSnippet
+      security:
+      - Bearer-Auth: []
+      description: Remove a snippet. You can only remove a snippet that is not in use. If your snippet is in use, you'll receive a `400` error.
+      tags:
+      - Snippets
+      responses:
+        '204':
+          description: A successful delete operation returns no content.
+        '400':
+          description: The snippet is in use. You can't delete a snippet until you remove it from messages, templates, etc.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    description: Contains an array of error objects.
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Describes the error.
+                          example: unable to delete snippet in use
+                        status:
+                          type: string
+                          description: The HTTP status code.
+                          example: '400'
         '404':
-          description: Snippet not found.
+          description: The snippet does not exist.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request DELETE \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/snippets/{snippet_name}"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"DELETE\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/snippets/%7Bsnippet_name%7D\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/snippets/%7Bsnippet_name%7D")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Delete.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("DELETE", "/v1/snippets/%7Bsnippet_name%7D")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/snippets/%7Bsnippet_name%7D\"\n\n\treq, _ := http.NewRequest(\"DELETE\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
 components:
-  schemas:
-    Snippet:
-      type: object
-      description: A reusable content snippet.
-      properties:
-        name:
-          type: string
-          description: The snippet name used to reference it in templates.
-        value:
-          type: string
-          description: The snippet content.
-        updated_at:
-          type: integer
-          description: UNIX timestamp of when the snippet was last updated.
-    SnippetRequest:
-      type: object
-      required:
-      - value
-      description: A request to create or update a content snippet.
-      properties:
-        value:
-          type: string
-          description: The snippet content.
   securitySchemes:
+    Bearer-Auth:
+      type: http
+      scheme: bearer
+      description: 'The App API uses a bearer authentication scheme.
+
+
+        You can generate a bearer token, known as an **App API Key**, with a defined scope in [your account settings](https://fly.customer.io/settings/api_credentials?keyType=app). [Learn more about bearer authorization in Customer.io](/accounts/settings/managing-credentials).
+
+        '
+    ServiceAccount-Auth:
+      x-scalar-ignore: true
+      type: http
+      scheme: bearer
+      bearerFormat: sa_live_
+      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
+
+
+        Service-account tokens are intended for testing and one-off sends—for example, using the Customer.io CLI with an AI agent like Claude to verify that a transactional message renders correctly before wiring it into your production backend. **For the production integration that triggers the message from your application, use an App API Key instead**: it''s workspace-scoped, easier to rotate, and has a smaller blast radius.
+
+
+        Service-account tokens are server-side credentials. Treat them like any API key—keep them in environment variables or a secret manager, and never embed them in client-side code, mobile apps, or other untrusted contexts.
+
+        '
     bearerAuth:
       type: http
       scheme: bearer
-      description: Bearer token authentication using your App API key. Pass the key in the Authorization header as Bearer {app_api_key}.
-externalDocs:
-  description: App API Documentation
-  url: https://docs.customer.io/integrations/api/app/
+      description: API key passed as a Bearer token

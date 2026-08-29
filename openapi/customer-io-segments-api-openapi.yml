@@ -1,33 +1,284 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Customer.io App Activities Segments API
-  description: The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information. The API uses bearer token authentication with an App API key and is designed for operations that go beyond data ingestion, such as retrieving metrics, managing message templates, and automating outbound communications from Customer.io.
   version: 1.0.0
-  contact:
-    name: Customer.io Support
-    url: https://customer.io/contact
-  termsOfService: https://customer.io/legal/terms-of-service
+  title: Customer.io App Segments API
+  description: 'Our App API provides ways to trigger messages and retrieve information about people, campaigns, broadcasts, and more.
+
+
+    # Overview
+
+
+    The App API provides methods to send newsletters, transactional messages, and API-triggered broadcasts. You can create newsletters from scratch and update transactional messages and API-triggered broadcasts.
+
+
+    For transactional messages and API-triggered broadcasts, your payload acts as a message "trigger" and can contain `data` that you reference in your messages using liquid—`{{trigger.<data>}}`.
+
+
+    The other endpoints help you retrieve information about people, segments, campaigns, broadcasts, etc; it also lets you update campaign actions, messages, newsletter variants, etc. Aside from the [API-triggered broadcast](#triggerBroadcast) (1 per 10 seconds) and [Transactional](#sendEmail) (100 per second) endpoints, requests are limited to 10 per second.
+
+
+    # Use our Postman collection
+
+
+    We''ve generated a Postman collection to help you get started with our APIs.
+
+
+    If you fork this collection, you might want to disable the *Watch original collection* option. We automatically update our Postman collection whenever we release changes to our documentation, even if we don''t change our APIs—which happens daily! Rather than being flooded with Postman notifications, you can check out our [Release Notes](/release-notes/) for updates to our APIs.
+
+
+    **NOTE**: Postman endpoints default to our US APIs. If you''re in our European (EU) region, you''ll need to add `-eu` to the server variables (`track_api_url` and `app_api_url`).
+
+
+    [<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://god.gw.postman.com/run-collection/23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d%26entityType%3Dcollection%26workspaceId%3Db886877f-fc09-475f-84fe-6221a98f4d18#?env%5BCustomer.io%20API%20Environment%5D=W3sia2V5IjoidHJhY2tfYXBpX3VybCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiJ0cmFjay5jdXN0b21lci5pbyIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBwX2FwaV91cmwiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiYXBpLmN1c3RvbWVyLmlvIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzaXRlX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBpX2tleSIsInR5cGUiOiJzZWNyZXQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYmVhcmVyIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYnJvYWRjYXN0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaW1wb3J0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiZW1haWxfYWRkcmVzcyIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InN1cHByZXNzaW9uX3R5cGUiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjb2xsZWN0aW9uX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoic25pcHBldF9uYW1lIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoid2ViaG9va19pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InNlbmRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImV4cG9ydF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6Im1lc3NhZ2VfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzZWdtZW50X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoibmV3c2xldHRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImNvbnRlbnRfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjYW1wYWlnbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImFjdGlvbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImN1c3RvbWVyX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoidHJhbnNhY3Rpb25hbF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InRyaWdnZXJfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJmb3JtX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaWRlbnRpZmllciIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRldmljZV9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRlbGl2ZXJ5X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9XQ==)
+
+
+    # Server addresses: US and EU
+
+
+    Customer.io hosts services in the United States (US) and European Union. Select the appropriate server address for your region.
+
+
+    | Region | Server Address |
+
+    | :-- | :-- |
+
+    | US | https://api.customer.io |
+
+    | EU | https://api-eu.customer.io |
+
+
+    # Authentication
+
+
+    All requests to the Customer.io App API use an [App API Key](#App-API-Key).
+
+
+    To authenticate, provide your key as a Bearer token in a HTTP Authorization header. You can create and manage your API keys—including keys with different scopes—in [your account settings page](https://fly.customer.io/settings/api_credentials?keyType=app). Each operation on this page references the authorization header it requires.
+
+
+    # Rate Limits
+
+
+    Most endpoints on this page are limited to 10 requests per second. The exceptions are:
+
+    * The [transactional email](#operation/sendEmail) endpoint is limited to 100 requests per second.
+
+    * The [API-triggered broadcast endpoint](#operation/triggerBroadcast) is limited to 1 request every 10 seconds.
+
+
+    **Rate limits are subject to change. We may adjust these thresholds to ensure stable performance for all customers.**
+
+    '
 servers:
-- url: https://api.customer.io/v1
-  description: US Production Server
-- url: https://api-eu.customer.io/v1
-  description: EU Production Server
-security:
-- bearerAuth: []
+- url: https://api.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+- url: https://api-eu.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
 tags:
 - name: Segments
-  description: Create and manage manual segments, and retrieve segment membership information.
+  description: 'Segments are groups of people, subsets of your audience. You get get information about segments and the customers contained by a segment. You can also create or delete manual segments through the API. Use the UI to create, update, or delete data-driven segments.
+
+    '
 paths:
-  /segments:
+  /v1/segments:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    post:
+      summary: Create a manual segment
+      operationId: createManSegment
+      security:
+      - Bearer-Auth: []
+      description: Create a manual segment with a name and a description. This request creates an empty segment.
+      tags:
+      - Segments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - segment
+              properties:
+                segment:
+                  type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      x-scalar-ignore: true
+                      type: string
+                      description: The name of the segment.
+                      example: Manual Segment 1
+                    description:
+                      x-scalar-ignore: true
+                      type: string
+                      description: A description for the segment. This can help you understand the purpose of the segment when you encounter it in other requests or in the UI.
+                      example: My first manual segment
+      responses:
+        '200':
+          description: Returns the segment ID and other information.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  segment:
+                    x-scalar-ignore: true
+                    type: object
+                    properties:
+                      id:
+                        x-scalar-ignore: true
+                        type: integer
+                        description: The identifier for a segment; used to target a segment in requests.
+                        example: 7
+                      deduplicate_id:
+                        x-scalar-ignore: true
+                        type: string
+                        readOnly: true
+                        description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+                        example: 15:1492548073
+                      name:
+                        x-scalar-ignore: true
+                        type: string
+                        description: The name of the segment.
+                        example: Manual Segment 1
+                      description:
+                        x-scalar-ignore: true
+                        type: string
+                        description: A description for the segment. This can help you understand the purpose of the segment when you encounter it in other requests or in the UI.
+                        example: My first manual segment
+                      state:
+                        type: string
+                        description: 'The segment build state:
+
+                          - `events`—handling event conditions for this segment
+
+                          - `build`—handling profile attribute conditions for this segment
+
+                          - `events_queued`—waiting to start handling event conditions
+
+                          - `build_queued`—waiting to start handling profile attribute conditions
+
+                          - `finished`—the segment is finished building
+
+                          '
+                        enum:
+                        - events
+                        - build
+                        - events_queued
+                        - build_queued
+                        - finished
+                      progress:
+                        type:
+                        - integer
+                        - 'null'
+                        description: If Customer.io has not finished processing the segment, this indicates the percentage complete. Otherwise, this key is null.
+                        example: null
+                      type:
+                        type: string
+                        description: The type of segment.
+                        enum:
+                        - dynamic
+                        - manual
+                        example: manual
+                      tags:
+                        type:
+                        - array
+                        - 'null'
+                        description: The tags assigned to the segment, if any. Tags may help you sort through your segments.
+                        items:
+                          type: string
+                        example: null
+                      created_at:
+                        x-scalar-ignore: true
+                        type: integer
+                        format: unix timestamp
+                        description: The date time when the referenced ID was created.
+                        example: 1552341937
+                        readOnly: true
+                      updated_at:
+                        x-scalar-ignore: true
+                        type: integer
+                        format: unix timestamp
+                        description: The date time when the referenced ID was last updated.
+                        example: 1552341937
+                        readOnly: true
+        '400':
+          description: The request was malformed.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: json
+        label: JSON
+        source: "{\n  \"segment\": {\n    \"name\": \"Manual Segment 1\"\n  }\n}"
+      - lang: Shell + Curl
+        source: "curl --request POST \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/segments \\\n  --header 'content-type: application/json' \\\n  --data '{\"segment\":{\"name\":\"Manual Segment 1\",\"description\":\"My first manual segment\"}}'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"POST\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/segments\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({segment: {name: 'Manual Segment 1', description: 'My first manual segment'}}));\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/segments")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Post.new(url)
+
+          request["content-type"] = ''application/json''
+
+          request.body = "{\"segment\":{\"name\":\"Manual Segment 1\",\"description\":\"My first manual segment\"}}"
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          payload = "{\"segment\":{\"name\":\"Manual Segment 1\",\"description\":\"My first manual segment\"}}"
+
+
+          headers = { ''content-type'': "application/json" }
+
+
+          conn.request("POST", "/v1/segments", payload, headers)
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/segments\"\n\n\tpayload := strings.NewReader(\"{\\\"segment\\\":{\\\"name\\\":\\\"Manual Segment 1\\\",\\\"description\\\":\\\"My first manual segment\\\"}}\")\n\n\treq, _ := http.NewRequest(\"POST\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
     get:
-      operationId: listSegments
       summary: List segments
-      description: Returns a list of segments in your workspace.
+      operationId: listSegments
+      security:
+      - Bearer-Auth: []
+      description: Retrieve a list of all of your segments.
       tags:
       - Segments
       responses:
         '200':
-          description: A list of segments.
+          description: Returns an array of `segments`. Each object in the response represents an individual segment.
           content:
             application/json:
               schema:
@@ -36,138 +287,757 @@ paths:
                   segments:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Segment'
-        '401':
-          description: Unauthorized. Invalid App API key.
-    post:
-      operationId: createSegment
-      summary: Create a manual segment
-      description: Creates a new manual segment. Manual segments allow you to group customers by explicitly adding or removing them rather than using automatic filter criteria.
-      tags:
-      - Segments
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateSegmentRequest'
-      responses:
-        '200':
-          description: Segment created successfully.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  segment:
-                    $ref: '#/components/schemas/Segment'
-        '400':
-          description: Bad request. Invalid segment data.
-        '401':
-          description: Unauthorized. Invalid App API key.
-  /segments/{segment_id}:
-    get:
-      operationId: getSegment
-      summary: Get a segment
-      description: Returns detailed information about a specific segment including its type and customer count.
-      tags:
-      - Segments
-      parameters:
-      - $ref: '#/components/parameters/SegmentId'
-      responses:
-        '200':
-          description: Segment details.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  segment:
-                    $ref: '#/components/schemas/Segment'
-        '401':
-          description: Unauthorized. Invalid App API key.
-        '404':
-          description: Segment not found.
-  /segments/{segment_id}/membership:
-    get:
-      operationId: getSegmentMembership
-      summary: Get segment membership
-      description: Returns customer identifiers that are members of a specific segment.
-      tags:
-      - Segments
-      parameters:
-      - $ref: '#/components/parameters/SegmentId'
-      responses:
-        '200':
-          description: Segment membership list.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  ids:
-                    type: array
-                    items:
-                      type: string
-                    description: An array of customer identifiers in the segment.
-        '401':
-          description: Unauthorized. Invalid App API key.
-        '404':
-          description: Segment not found.
-components:
-  schemas:
-    Segment:
-      type: object
-      description: A customer segment in Customer.io.
-      properties:
-        id:
-          type: integer
-          description: The unique segment identifier.
-        name:
-          type: string
-          description: The segment name.
-        description:
-          type: string
-          description: A description of the segment.
-        type:
-          type: string
-          description: The segment type (manual or data-driven).
-          enum:
-          - manual
-          - data_driven
-        state:
-          type: string
-          description: The current state of the segment.
-    CreateSegmentRequest:
-      type: object
-      required:
-      - segment
-      description: A request to create a manual segment.
-      properties:
-        segment:
-          type: object
-          required:
-          - name
-          properties:
-            name:
-              type: string
-              description: The segment name.
-            description:
-              type: string
-              description: A description of the segment.
-  parameters:
-    SegmentId:
-      name: segment_id
+                      x-scalar-ignore: true
+                      type: object
+                      properties:
+                        id:
+                          x-scalar-ignore: true
+                          type: integer
+                          description: The identifier for a segment; used to target a segment in requests.
+                          example: 7
+                        deduplicate_id:
+                          x-scalar-ignore: true
+                          type: string
+                          readOnly: true
+                          description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+                          example: 15:1492548073
+                        name:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The name of the segment.
+                          example: Manual Segment 1
+                        description:
+                          x-scalar-ignore: true
+                          type: string
+                          description: A description for the segment. This can help you understand the purpose of the segment when you encounter it in other requests or in the UI.
+                          example: My first manual segment
+                        state:
+                          type: string
+                          description: 'The segment build state:
+
+                            - `events`—handling event conditions for this segment
+
+                            - `build`—handling profile attribute conditions for this segment
+
+                            - `events_queued`—waiting to start handling event conditions
+
+                            - `build_queued`—waiting to start handling profile attribute conditions
+
+                            - `finished`—the segment is finished building
+
+                            '
+                          enum:
+                          - events
+                          - build
+                          - events_queued
+                          - build_queued
+                          - finished
+                        progress:
+                          type:
+                          - integer
+                          - 'null'
+                          description: If Customer.io has not finished processing the segment, this indicates the percentage complete. Otherwise, this key is null.
+                          example: null
+                        type:
+                          type: string
+                          description: The type of segment.
+                          enum:
+                          - dynamic
+                          - manual
+                          example: manual
+                        tags:
+                          type:
+                          - array
+                          - 'null'
+                          description: The tags assigned to the segment, if any. Tags may help you sort through your segments.
+                          items:
+                            type: string
+                          example: null
+                        created_at:
+                          x-scalar-ignore: true
+                          type: integer
+                          format: unix timestamp
+                          description: The date time when the referenced ID was created.
+                          example: 1552341937
+                          readOnly: true
+                        updated_at:
+                          x-scalar-ignore: true
+                          type: integer
+                          format: unix timestamp
+                          description: The date time when the referenced ID was last updated.
+                          example: 1552341937
+                          readOnly: true
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/segments"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/segments\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/segments")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/segments")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/segments\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+  /v1/segments/{segment_id}:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - name: segment_id
       in: path
       required: true
-      description: The unique identifier for the segment.
+      description: The identifier for a segment. You can find your segment's ID on its page in the dashboard—go to *Segments*, select your segment, and find the ID under *Usage*. Or you can find your segment using the [App API](#tag/Segments).
       schema:
         type: integer
+        format: int32
+    get:
+      summary: Get a segment
+      operationId: getSegment
+      security:
+      - Bearer-Auth: []
+      description: Return information about a segment.
+      tags:
+      - Segments
+      responses:
+        '200':
+          description: Returns the information about the segment.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  segment:
+                    x-scalar-ignore: true
+                    type: object
+                    properties:
+                      id:
+                        x-scalar-ignore: true
+                        type: integer
+                        description: The identifier for a segment; used to target a segment in requests.
+                        example: 7
+                      deduplicate_id:
+                        x-scalar-ignore: true
+                        type: string
+                        readOnly: true
+                        description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+                        example: 15:1492548073
+                      name:
+                        x-scalar-ignore: true
+                        type: string
+                        description: The name of the segment.
+                        example: Manual Segment 1
+                      description:
+                        x-scalar-ignore: true
+                        type: string
+                        description: A description for the segment. This can help you understand the purpose of the segment when you encounter it in other requests or in the UI.
+                        example: My first manual segment
+                      state:
+                        type: string
+                        description: 'The segment build state:
+
+                          - `events`—handling event conditions for this segment
+
+                          - `build`—handling profile attribute conditions for this segment
+
+                          - `events_queued`—waiting to start handling event conditions
+
+                          - `build_queued`—waiting to start handling profile attribute conditions
+
+                          - `finished`—the segment is finished building
+
+                          '
+                        enum:
+                        - events
+                        - build
+                        - events_queued
+                        - build_queued
+                        - finished
+                      progress:
+                        type:
+                        - integer
+                        - 'null'
+                        description: If Customer.io has not finished processing the segment, this indicates the percentage complete. Otherwise, this key is null.
+                        example: null
+                      type:
+                        type: string
+                        description: The type of segment.
+                        enum:
+                        - dynamic
+                        - manual
+                        example: manual
+                      tags:
+                        type:
+                        - array
+                        - 'null'
+                        description: The tags assigned to the segment, if any. Tags may help you sort through your segments.
+                        items:
+                          type: string
+                        example: null
+                      created_at:
+                        x-scalar-ignore: true
+                        type: integer
+                        format: unix timestamp
+                        description: The date time when the referenced ID was created.
+                        example: 1552341937
+                        readOnly: true
+                      updated_at:
+                        x-scalar-ignore: true
+                        type: integer
+                        format: unix timestamp
+                        description: The date time when the referenced ID was last updated.
+                        example: 1552341937
+                        readOnly: true
+        '404':
+          description: The `segment_id` does not exist.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/segments/{segment_id}"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/segments/%7Bsegment_id%7D\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/segments/%7Bsegment_id%7D")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/segments/%7Bsegment_id%7D")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/segments/%7Bsegment_id%7D\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+    delete:
+      summary: Delete a segment
+      operationId: deleteManSegment
+      description: Delete a manual segment.
+      security:
+      - Bearer-Auth: []
+      tags:
+      - Segments
+      responses:
+        '204':
+          description: The segment is deleted.
+        '404':
+          description: The `segment_id` does not exist.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request DELETE \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/segments/{segment_id}"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"DELETE\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/segments/%7Bsegment_id%7D\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/segments/%7Bsegment_id%7D")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Delete.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("DELETE", "/v1/segments/%7Bsegment_id%7D")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/segments/%7Bsegment_id%7D\"\n\n\treq, _ := http.NewRequest(\"DELETE\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+  /v1/segments/{segment_id}/used_by:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - name: segment_id
+      in: path
+      required: true
+      description: The identifier for a segment. You can find your segment's ID on its page in the dashboard—go to *Segments*, select your segment, and find the ID under *Usage*. Or you can find your segment using the [App API](#tag/Segments).
+      schema:
+        type: integer
+        format: int32
+    get:
+      summary: Get a segment's dependencies
+      operationId: getSegmentDependencies
+      security:
+      - Bearer-Auth: []
+      description: Use this endpoint to find out which campaigns and newsletters use a segment.
+      tags:
+      - Segments
+      responses:
+        '200':
+          description: Returns the IDs of items that reference the segment.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  segment_id:
+                    x-scalar-ignore: true
+                    type: integer
+                    description: The identifier for a segment; used to target a segment in requests.
+                    example: 7
+                  used_by:
+                    type: object
+                    properties:
+                      campaigns:
+                        type: array
+                        description: The campaigns that use this segment.
+                        items:
+                          type: integer
+                      sent_newsletters:
+                        type: array
+                        description: The newsletters that you've sent that uses this segment.
+                        items:
+                          type: integer
+                      draft_newsletters:
+                        type: array
+                        description: The newsletters that are still in a draft state that reference this segment.
+                        items:
+                          type: integer
+        '404':
+          description: The `segment_id` does not exist.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/segments/{segment_id}/used_by"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/segments/%7Bsegment_id%7D/used_by\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/segments/%7Bsegment_id%7D/used_by")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/segments/%7Bsegment_id%7D/used_by")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/segments/%7Bsegment_id%7D/used_by\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+  /v1/segments/{segment_id}/customer_count:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - name: segment_id
+      in: path
+      required: true
+      description: The identifier for a segment. You can find your segment's ID on its page in the dashboard—go to *Segments*, select your segment, and find the ID under *Usage*. Or you can find your segment using the [App API](#tag/Segments).
+      schema:
+        type: integer
+        format: int32
+    get:
+      summary: Get a segment customer count
+      operationId: getSegmentCount
+      security:
+      - Bearer-Auth: []
+      description: Returns the membership count for a segment.
+      tags:
+      - Segments
+      responses:
+        '200':
+          description: Returns the customer `count` for a segment.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  segment_id:
+                    x-scalar-ignore: true
+                    type: integer
+                    description: The identifier for a segment; used to target a segment in requests.
+                    example: 7
+                  count:
+                    type: integer
+                    description: The total number of customers in the segment.
+        '404':
+          description: The `segment_id` does not exist.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/segments/{segment_id}/customer_count"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/segments/%7Bsegment_id%7D/customer_count\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/segments/%7Bsegment_id%7D/customer_count")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/segments/%7Bsegment_id%7D/customer_count")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/segments/%7Bsegment_id%7D/customer_count\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+  /v1/segments/{segment_id}/membership:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - name: segment_id
+      in: path
+      required: true
+      description: The identifier for a segment. You can find your segment's ID on its page in the dashboard—go to *Segments*, select your segment, and find the ID under *Usage*. Or you can find your segment using the [App API](#tag/Segments).
+      schema:
+        type: integer
+        format: int32
+    - name: start
+      in: query
+      required: false
+      description: The token for the page of results you want to return. Responses contain a `next` property. Use this property as the `start` value to return the next page of results.
+      schema:
+        type: string
+    - name: limit
+      in: query
+      required: false
+      description: The maximum number of results you want to retrieve per page.
+      schema:
+        type: integer
+        default: 1000
+        maximum: 30000
+    get:
+      summary: List customers in a segment
+      operationId: getSegmentMembership
+      security:
+      - Bearer-Auth: []
+      description: 'Returns customers in a segment. This endpoint returns an array of `identifiers`; each object in the array represents a person and contains the identifier values allowed in your workspace. In general, we recommend that you use `identifiers` rather than `ids` to find people, because it provides more information.
+
+
+        **If your workspace does not use email as a unique identifier** for people, `identifiers` does not contain `email` values. Go to your [Workspace Settings](/accounts/workspaces#migrate-workspace) to find out which identifiers your workspace supports.
+
+
+        The `ids` array only lists ID values for people in a segment; if your workspace uses both `email` and `id` as identifiers, it''s possible that a member of your segment does not have an `id` value, resulting in an empty string in the `ids` array.
+
+        '
+      tags:
+      - Segments
+      responses:
+        '200':
+          description: Returns an array of customers for a segment.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - title: email or id
+                  type: object
+                  properties:
+                    segment_id:
+                      x-scalar-ignore: true
+                      type: integer
+                      description: The identifier for a segment; used to target a segment in requests.
+                      example: 7
+                    ids:
+                      type: array
+                      description: The customers that belong to this segment.
+                      items:
+                        type: string
+                    identifiers:
+                      description: The customers that belong to this segment.
+                      type: array
+                      items:
+                        x-scalar-ignore: true
+                        type: object
+                        description: Identifiers for the person in a response—`id`, `cio_id`, and `email`. Unset `id` or `email` values are `null`. We recommend this object over the less descriptive `customer_id`. This object doesn't include `phone`, even if your workspace uses phone numbers as an identifier; look for the person's `phone` attribute instead.
+                        required:
+                        - email
+                        - id
+                        - cio_id
+                        properties:
+                          email:
+                            type:
+                            - string
+                            - 'null'
+                            format: email
+                            description: A person's email address, if set.
+                            example: test@example.com
+                          id:
+                            type:
+                            - string
+                            - 'null'
+                            description: A person's unique ID, if set. This is the same as the `customer_id` if present.
+                            example: 2
+                          cio_id:
+                            x-scalar-ignore: true
+                            type: string
+                            description: A unique identifier set by Customer.io, used to reference a person if you want to update their identifiers.
+                            example: a3000001
+                    next:
+                      x-scalar-ignore: true
+                      type: string
+                      description: Indicates the next page of results. Add `?start=<next_value>` to the request to get the next page of results.
+                - title: id only
+                  type: object
+                  properties:
+                    segment_id:
+                      x-scalar-ignore: true
+                      type: integer
+                      description: The identifier for a segment; used to target a segment in requests.
+                      example: 7
+                    ids:
+                      type: array
+                      description: The customers that belong to this segment.
+                      items:
+                        type: string
+                    identifiers:
+                      description: The customers that belong to this segment.
+                      type: array
+                      items:
+                        type: object
+                        description: 'Contains `id` and `cio_id` identifiers for a person in a workspace that doesn''t use email as an identifier.
+
+                          '
+                        required:
+                        - id
+                        - cio_id
+                        properties:
+                          id:
+                            type: string
+                            description: A person's unique ID. This matches a value in `ids`.
+                            example: 2
+                          cio_id:
+                            x-scalar-ignore: true
+                            type: string
+                            description: A unique identifier set by Customer.io, used to reference a person if you want to update their identifiers.
+                            example: a3000001
+                    next:
+                      x-scalar-ignore: true
+                      type: string
+                      description: Indicates the next page of results. Add `?start=<next_value>` to the request to get the next page of results.
+        '404':
+          description: The `segment_id` does not exist.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/segments/{segment_id}/membership"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/segments/%7Bsegment_id%7D/membership\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/segments/%7Bsegment_id%7D/membership")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/segments/%7Bsegment_id%7D/membership")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/segments/%7Bsegment_id%7D/membership\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+components:
   securitySchemes:
+    Bearer-Auth:
+      type: http
+      scheme: bearer
+      description: 'The App API uses a bearer authentication scheme.
+
+
+        You can generate a bearer token, known as an **App API Key**, with a defined scope in [your account settings](https://fly.customer.io/settings/api_credentials?keyType=app). [Learn more about bearer authorization in Customer.io](/accounts/settings/managing-credentials).
+
+        '
+    ServiceAccount-Auth:
+      x-scalar-ignore: true
+      type: http
+      scheme: bearer
+      bearerFormat: sa_live_
+      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
+
+
+        Service-account tokens are intended for testing and one-off sends—for example, using the Customer.io CLI with an AI agent like Claude to verify that a transactional message renders correctly before wiring it into your production backend. **For the production integration that triggers the message from your application, use an App API Key instead**: it''s workspace-scoped, easier to rotate, and has a smaller blast radius.
+
+
+        Service-account tokens are server-side credentials. Treat them like any API key—keep them in environment variables or a secret manager, and never embed them in client-side code, mobile apps, or other untrusted contexts.
+
+        '
     bearerAuth:
       type: http
       scheme: bearer
-      description: Bearer token authentication using your App API key. Pass the key in the Authorization header as Bearer {app_api_key}.
-externalDocs:
-  description: App API Documentation
-  url: https://docs.customer.io/integrations/api/app/
+      description: API key passed as a Bearer token

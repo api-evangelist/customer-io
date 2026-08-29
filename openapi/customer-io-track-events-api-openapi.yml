@@ -1,0 +1,687 @@
+openapi: 3.2.0
+info:
+  version: 1.0.0
+  title: Customer.io Track Track Events API
+  description: "# Overview\n\nOur Track API provides ways to send real-time customer data to your Customer.io workspace including customer identification and event tracking.\n\n# Use our Postman collection\n\nWe've generated a Postman collection to help you get started with our APIs.\n\nIf you fork this collection, you might want to disable the *Watch original collection* option. We automatically update our Postman collection whenever we release changes to our documentation, even if we don't change our APIs—which happens daily! Rather than being flooded with Postman notifications, you can check out our [Release Notes](/release-notes/) for updates to our APIs.\n\n**NOTE**: Postman endpoints default to our US APIs. If you're in our European (EU) region, you'll need to add `-eu` to the server variables (`track_api_url` and `app_api_url`).\n\n[<img src=\"https://run.pstmn.io/button.svg\" alt=\"Run In Postman\" style=\"width: 128px; height: 32px;\">](https://god.gw.postman.com/run-collection/23697545-0f7ae1e8-8177-46fc-808a-2fd363dd52b9?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D23697545-0f7ae1e8-8177-46fc-808a-2fd363dd52b9%26entityType%3Dcollection%26workspaceId%3Db886877f-fc09-475f-84fe-6221a98f4d18#?env%5BCustomer.io%20API%20Environment%5D=W3sia2V5IjoidHJhY2tfYXBpX3VybCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiJ0cmFjay5jdXN0b21lci5pbyIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBwX2FwaV91cmwiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiYXBpLmN1c3RvbWVyLmlvIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzaXRlX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBpX2tleSIsInR5cGUiOiJzZWNyZXQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYmVhcmVyIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYnJvYWRjYXN0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaW1wb3J0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiZW1haWxfYWRkcmVzcyIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InN1cHByZXNzaW9uX3R5cGUiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjb2xsZWN0aW9uX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoic25pcHBldF9uYW1lIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoid2ViaG9va19pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InNlbmRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImV4cG9ydF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6Im1lc3NhZ2VfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzZWdtZW50X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoibmV3c2xldHRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImNvbnRlbnRfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjYW1wYWlnbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImFjdGlvbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImN1c3RvbWVyX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoidHJhbnNhY3Rpb25hbF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InRyaWdnZXJfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJmb3JtX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaWRlbnRpZmllciIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRldmljZV9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRlbGl2ZXJ5X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9XQ==)\n\n# Server addresses: US and EU\nCustomer.io hosts services in the United States (US) and European Union. Select the appropriate server address for your region.\n\n| Region | Server Address |\n| :-- | :-- |\n| US | https://track.customer.io |\n| EU | https://track-eu.customer.io |\n\nNote that if your account is in the EU region and you send traffic to our US endpoints, we'll redirect it accordingly but this traffic still passes through US servers and data could be logged in the US.\n\n# Authentication \n\nYou can find all of your API authentication information in your [Account Settings](https://fly.customer.io/settings/api_credentials). Our Tracking API uses HTTP basic authorization. The App API uses bearer authorization, and you can generate tokens supporting different scopes. Each operation in this document references the authorization header it requires.\n\n# v1 vs v2 APIs\n\nMost of the time, when we talk about *The Track API*, we're talking about the v1 API because the v2 API isn't used in any of our libraries and rarely used in libraries built by third parties; it's much more common that you'd encounter the v1 API.\n\nIf you're integrating with Customer.io using one of our libraries, or a third party customer data platform (CDP) like Segment or Rudderstack, you'll be using the v1 API.\n\nThe v2 API is newer and supports two important features that the v1 API doesn't natively support: objects and batching. But, if you're integrating directly with our API, we suggest you use the [Pipelines API](/integrations/api/cdp/). The Pipelines API supports both objects, batching, *and* all of our newest integrations and libraries are based on it.\n\n# Rate Limits\n\nThe Track API has a rate limit of 1000 requests per second for both active data integrations and historical backfill scripts. This limit applies to both our v1 and v2 APIs. \n\nWhile this rate is not strictly enforced, consistently exceeding it may lead to throttling or dropped data, especially during periods of high system load. If we detect a sustained high volume that could impact other customers, we may contact you to help adjust your integration or, in rare cases, temporarily block requests.\n\n**Rate limits are subject to change. We may adjust these thresholds to ensure stable performance for all customers.**\n\nBelow are the payload size limits for the Track API. If any of these limits are too restrictive for your needs, contact support to let us know your situation as we may be able to accommodate special circumstances. \n\n## Customer limits\n\nThese limits apply to people and their attributes, often referred to as \"customers\" in our APIs.\n\n| Data Type | Limit | Description |\n| -- | -- | -- |\n| ID | 150 bytes | Max length of a person's ID value |\n| Attribute Name | 150 bytes | Max length of each attribute name |\n| Attribute Value | 1000 bytes | Max length of attribute values |\n| Unique attributes | 300 | Max number of attributes allowed per person or Identify call |\n\n## Object and relationship limits\n\nObjects (groups) and relationships between people and objects can have their own attributes. Their limits are similar to people (customers).\n\n| Data Type | Limit | Description |\n| -- | -- | -- |\n| Object ID | 150 bytes | Max length of a object's ID |\n| Attribute Names | 150 bytes | Max length of each attribute name |\n| Attribute Values | 1000 bytes | Max length of attribute values |\n| Unique attributes | 300 | Max number of attributes allowed per object or relationship |\n| Total attribute size | 100 Kilobytes | Max size of all attributes associated with an object or relationship |\n\n## Track API Event limits\n\nThese limits apply to events that you'll send with the `/v1/track` call.\n\n| Data Type | Limit | Description |\n| -- | -- | -- |\n| Event Name | 100 bytes | Max length of each event name |\n| Event Data | 100000 bytes | Max length of each event data |\n\n\n## v2 API Limits\n\nThe v2 API has two endpoints, both of which have limits on the total size of requests. \n* `/entity` is limited to requests 32kb or smaller.\n* `/batch` is limited to requests 500kb or smaller.\n  \n  Each of the requests within a batch must also be 32kb or smaller.\n"
+servers:
+- url: https://track.customer.io
+  description: The base URL for the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+- url: https://track-eu.customer.io
+  description: The base URL for the Track API (EU region). Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+tags:
+- name: Track Events
+  x-displayName: Events
+  description: Use customer events to trigger campaigns or add users to segments. You can attribute events directly to customers or send anonymous events and associate them with users later when you identify them.
+paths:
+  /api/v1/customers/{identifier}/events:
+    parameters:
+    - $ref: '#/components/parameters/trackEvent_customer_id'
+    post:
+      operationId: track
+      tags:
+      - Track Events
+      summary: Track a customer event
+      description: 'Send an event associated with a person, referenced by the identifier in the path. There are three defined event `type` values: `page`, `screen` and `event`. Page and screen events represent website page views and mobile app screen views respectively; the `name` for these event types is intended to be the page or screen a person visited or viewed. Any other event, is given the `event` type.
+
+
+        We automatically trim leading and trailing spaces from event names.
+
+
+        **Reserved Properties**
+
+
+        There are a few important values which, if sent with the events that trigger campaigns, will override your campaign settings:
+
+
+        * `from_address`
+
+        * `recipient`
+
+        * `reply_to`
+
+
+        When using the Javascript snippet to track events, you must call the Behavioral Tracking API call after identifying the customer or the event will not associate with the customer’s profile.
+
+        '
+      servers:
+      - url: https://track.customer.io
+        description: This endpoint is a part of the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+      security:
+      - Tracking-API-Key: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/eventsRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+      x-codeSamples:
+      - lang: json
+        label: JSON
+        source: "{\n  \"name\": \"purchase\",\n  \"data\": {\n    \"price\": 23.45,\n    \"product\": \"socks\"\n  }\n}"
+      - label: Node.js (SDK)
+        lang: javascript
+        source: "const { TrackClient, RegionUS } = require('customerio-node');\nlet cio = new TrackClient(siteId, apiKey, { region: RegionUS });\n\n// Depending on your workspace settings, customer_id may be an email address.\ncio.track(5, {\n  name: 'purchase',\n  data: {\n    price: '23.45',\n    product: 'socks'\n  }\n});\n"
+      - label: Ruby (SDK)
+        lang: ruby
+        source: '$customerio = Customerio::Client.new("YOUR SITE ID", "YOUR API SECRET KEY", region: Customerio::Regions::US)
+
+
+          // Depending on your workspace settings, customer_id may be an email address.
+
+          $customerio.track(5, "purchase", :type => "socks", :price => "13.99", :timestamp => 1365436200)
+
+          '
+      - label: Python (SDK)
+        lang: python
+        source: 'from customerio import CustomerIO, Regions
+
+          cio = CustomerIO(site_id, api_key, region=Regions.US)
+
+
+          // Depending on your workspace settings, customer_id may be an email address.
+
+          cio.track(customer_id="5", name=''purchased'', price=23.45, product="widget")
+
+          '
+      - label: Go (SDK)
+        lang: go
+        source: "track := customerio.NewTrackClient(\"YOUR SITE ID\", \"YOUR API SECRET KEY\", customerio.WithRegion(customerio.RegionUS))\n\nif err := track.Track(\"5\", \"purchase\", map[string]interface{}{\n    \"type\": \"socks\",\n    \"price\": \"13.99\",\n}); err != nil {\n    // do something with error\n}\n"
+  /api/v1/events:
+    post:
+      tags:
+      - Track Events
+      operationId: trackAnonymous
+      summary: Track an anonymous event
+      description: 'An anonymous event represents a person you haven''t identified yet. When you identify a person, you can set their `anonymous_id` attribute. If [event merging](/anonymous-events/#turn-on-merging) is turned on in your workspace, and the attribute matches the `anonymous_id` in one or more events that were logged within the last 30 days, we associate those events with the person. If you associate an event with a person within 72 hours of the timestamp on the event, you can trigger campaigns from the event.
+
+
+        There are three possible event `type` values: `page`, `screen` and `event`. Page and screen events represent website page views and mobile app screen views respectively; the `name` for these event types is intended to be the page or screen a person visited or viewed. Any other event, is given the `event` type.
+
+
+        **Note**: Avoid using names with leading or trailing spaces, because you can''t reference event names with leading or trailing spaces in campaigns, etc. In workspaces created after September 21, 2021, we trim leading and trailing spaces from event names automatically to fix this issue.
+
+        '
+      servers:
+      - url: https://track.customer.io
+        description: This endpoint is a part of the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+      security:
+      - Tracking-API-Key: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/anonymousEventsRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+      x-codeSamples:
+      - lang: json
+        label: JSON
+        source: "{\n  \"name\": \"watched_video\",\n  \"anonymous_id\": \"abc123\",\n  \"data\": {\n    \"video\": \"intro-to-platform\"\n  }\n}"
+      - label: Node.js (SDK)
+        lang: javascript
+        source: "const { TrackClient, RegionUS } = require('customerio-node');\nlet cio = new TrackClient(siteId, apiKey, { region: RegionUS });\n\ncio.trackAnonymous('anonymous-id', {\n  name: 'updated',\n  data: {\n    updated: true,\n    plan: 'free'\n  }\n});\n"
+      - label: Ruby (SDK)
+        lang: ruby
+        source: '$customerio = Customerio::Client.new("YOUR SITE ID", "YOUR API SECRET KEY", region: Customerio::Regions::US)
+
+
+          $customerio.track_anonymous(anonymous_id, "help_enquiry", :subject => ''anon-events'')
+
+          '
+      - label: Python (SDK)
+        lang: python
+        source: 'from customerio import CustomerIO, Regions
+
+          cio = CustomerIO(site_id, api_key, region=Regions.US)
+
+
+          cio.track_anonymous(anonymous_id="anon-person", name="purchased", price=23.45, product="widget")
+
+          '
+      - label: Go (SDK)
+        lang: go
+        source: "track := customerio.NewTrackClient(\"YOUR SITE ID\", \"YOUR API SECRET KEY\", customerio.WithRegion(customerio.RegionUS))\n\nif err := track.TrackAnonymous(anonymous_id, \"new_app\", map[string]interface{}{\n  \"first_name\": \"Alex\",\n  \"source\": \"OldApp\",\n}); err != nil {\n  // do something with error\n}\n"
+  /api/v1/metrics:
+    post:
+      summary: Report metrics
+      servers:
+      - url: https://track.customer.io
+        description: This endpoint is a part of the Track API. It does not require authentication.
+      description: 'This endpoint helps you report metrics from channels that aren''t native to Customer.io or don''t rely on our SDKs. When we deliver a message, we include a CIO-Delivery-ID header. This is the `delivery_id` in the payload. You can use it as a UTL and you can pass it as a UTM parameter in links, etc to track metrics when people click, convert, etc.
+
+        '
+      operationId: metrics
+      tags:
+      - Track Events
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - title: Email
+                allOf:
+                - $ref: '#/components/schemas/track-metrics'
+                - type: object
+                  required:
+                  - metric
+                  properties:
+                    metric:
+                      type: string
+                      enum:
+                      - bounced
+                      - clicked
+                      - converted
+                      - deferred
+                      - delivered
+                      - dropped
+                      - opened
+                      - spammed
+                      description: The email metric you want to report back to Customer.io.
+                    recipient:
+                      type: string
+                      description: The email of the person who received the message.
+                    reason:
+                      type: string
+                      description: For metrics indicating a failure (like `bounced`), this field provides the reason for the failure.
+                    href:
+                      type: string
+                      description: For `clicked` metrics, this is the link the recipient clicked.
+              - title: In-app
+                allOf:
+                - $ref: '#/components/schemas/track-metrics'
+                - type: object
+                  required:
+                  - metric
+                  properties:
+                    metric:
+                      type: string
+                      enum:
+                      - clicked
+                      - converted
+                      - opened
+                      description: The type of device-side event you want to report back to Customer.io.
+                    recipient:
+                      type: string
+                      description: The email address or ID of the recipient (depending on the value you use to target in-app messages).
+                    href:
+                      type: string
+                      description: For `clicked` metrics, this is the link the recipient clicked.
+              - title: Push
+                allOf:
+                - $ref: '#/components/schemas/track-metrics'
+                - type: object
+                  required:
+                  - metric
+                  properties:
+                    metric:
+                      type: string
+                      enum:
+                      - converted
+                      - delivered
+                      - opened
+                      description: The type of device-side event you want to report back to Customer.io.
+                    recipient:
+                      type: string
+                      description: The device ID that the message was sent to.
+              - title: Slack
+                allOf:
+                - $ref: '#/components/schemas/track-metrics'
+                - type: object
+                  required:
+                  - metric
+                  properties:
+                    metric:
+                      type: string
+                      enum:
+                      - clicked
+                      - converted
+                      - delivered
+                      - opened
+                      description: The metric you want to report back to Customer.io.
+                    href:
+                      type: string
+                      description: For `clicked` metrics, this is the link the recipient clicked.
+              - title: SMS
+                allOf:
+                - $ref: '#/components/schemas/track-metrics'
+                - type: object
+                  required:
+                  - metric
+                  properties:
+                    metric:
+                      type: string
+                      enum:
+                      - bounced
+                      - clicked
+                      - delivered
+                      - opened
+                      description: The SMS metric you want to report back to Customer.io.
+                    recipient:
+                      type: integer
+                      description: The phone number of the person who received the message.
+                    reason:
+                      type: string
+                      description: For metrics indicating a failure (like `bounced`), this field provides the reason for the failure.
+                    href:
+                      type: string
+                      description: For `clicked` metrics, this is the link the recipient clicked.
+              - title: Webhook
+                allOf:
+                - $ref: '#/components/schemas/track-metrics'
+                - type: object
+                  required:
+                  - metric
+                  properties:
+                    metric:
+                      type: string
+                      enum:
+                      - bounced
+                      - clicked
+                      - converted
+                      - deferred
+                      - delivered
+                      - dropped
+                      - opened
+                      - spammed
+                      description: The type of device-side event you want to report back to Customer.io.
+                    reason:
+                      type: string
+                      description: For metrics indicating a failure (like `bounced`), this field provides the reason for the failure.
+                    href:
+                      type: string
+                      description: For `clicked` metrics, this is the link the recipient clicked.
+      responses:
+        '200':
+          description: The request was received.
+      x-codeSamples:
+      - lang: json
+        label: JSON
+        source: "{\n  \"delivery_id\": \"RPILAgUBcRhIBqSfeiIwdIYJKxTY\",\n  \"metric\": \"bounced\"\n}"
+  /api/v1/push/events:
+    post:
+      deprecated: true
+      summary: Report push metrics
+      servers:
+      - url: https://track.customer.io
+        description: This endpoint is a part of the Track API. It does not require authentication.
+      description: "While this endpoint still works, you should take advantage of our [universal metrics endpoint](#operation/metrics). It supports channels besides push and lets you provide additional information with some metrics.\n\nUse this endpoint to report device-side push metrics—opened, converted, and delivered—back to Customer.io, so you can track the effectiveness of your push notifications. Customer.io has no way of knowing about these metrics, or associating metrics with a specific message, unless you report them back to us.\n\nWhen Customer.io delivers a push notification, we include `CIO-Delivery-ID` and `CIO-Delivery-Token` parameters. Reference these in your payload as the `delivery_id` and `device_id` respectively with the type of device-side `event` metric that you want to associate with your push notification and the person represented by the `device_id`. \n"
+      operationId: pushMetrics
+      security: []
+      tags:
+      - Track Events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                delivery_id:
+                  type: string
+                  description: The CIO-Delivery-ID from the notification that you want to associate the `event` with.
+                  example: RPILAgUBcRhIBqSfeiIwdIYJKxTY
+                event:
+                  type: string
+                  enum:
+                  - opened
+                  - converted
+                  - delivered
+                  description: The type of device-side event you want to report back to Customer.io.
+                device_id:
+                  type: string
+                  description: The CIO-Delivery-Token representing the device that received the original notification.
+                  example: CIO-Delivery-Token from the notification
+                timestamp:
+                  type: integer
+                  format: unix timestamp
+                  description: The unix timestamp when the event occurred.
+                  example: 1613063089
+      responses:
+        '200':
+          description: The request was received.
+      x-codeSamples:
+      - lang: json
+        label: JSON
+        source: '{}'
+components:
+  parameters:
+    trackEvent_customer_id:
+      name: identifier
+      required: true
+      in: path
+      description: 'The unique value representing a person. You may identify a person by `id`, `email` address, or the `cio_id` (when updating people), depending on your workspace settings. You can''t reference a person by their `phone` number here; a phone number in the path is treated as an `id`. To identify people by phone number, use the [Track v2 API](/api/track/#tag/track_v2).
+
+        '
+      schema:
+        oneOf:
+        - title: id
+          type: string
+          example: 12345
+          description: The unique identifier you assigned to a person.
+        - title: email
+          type: string
+          example: person@example.com
+          description: A person's email address.
+        - title: cio_id
+          type: string
+          format: cio_[a-zA-Z0-9]*
+          description: 'A canonical identifier assigned by Customer.io when you add a person. When referencing a person by this value, you must prefix the value with `cio_`. You can [look up a person using the App API](#tag/Customers) to find their `cio_id`, but you must prefix this value with `cio_` when using it to reference a person.
+
+
+            You can use this value to update a person''s other identifiers—their `id` or `email`.
+
+            '
+          example: cio_03000001
+  schemas:
+    eventsRequest:
+      x-scalar-ignore: true
+      oneOf:
+      - title: Standard event
+        type: object
+        required:
+        - name
+        properties:
+          name:
+            type: string
+            description: The name of the event. This is how you'll reference the event in campaigns or segments.
+          id:
+            $ref: '#/components/schemas/dedupe_id'
+          type:
+            type: string
+            description: Sets the event type. If your event isn't a `page` or `screen` type event, we automatically set this property to `event`.
+            enum:
+            - event
+          timestamp:
+            type: integer
+            format: unix timestamp
+            description: 'The unix timestamp when the event took place. If you don''t provide this value, we use the date-time when we receive the event.
+
+
+              **NOTE**: Events with a timestamp in the past 72 hours can trigger campaigns.
+
+              '
+          data:
+            type: object
+            description: Additional information that you might want to reference in a message using liquid or use to set attributes on your customer (referenced by `customer_id`).
+            additionalProperties:
+              x-additionalPropertiesName: liquid merge data
+              description: Insert key-values that you want to reference in your message here.
+            properties:
+              recipient:
+                $ref: '#/components/schemas/recipient'
+              from_address:
+                $ref: '#/components/schemas/from_address'
+              reply_to:
+                $ref: '#/components/schemas/reply_to_settable'
+        example:
+          name: purchase
+          data:
+            price: 23.45
+            product: socks
+      - title: Page view
+        type: object
+        required:
+        - name
+        - type
+        properties:
+          name:
+            type: string
+            description: The name of the event. This is how you'll reference the event in campaigns or segments.
+          id:
+            $ref: '#/components/schemas/dedupe_id'
+          type:
+            type: string
+            description: Indicates that the event represents a page view. See ["page view" events](/integrations/data-in/connections/javascript/legacy-js/events/#page-view-events), for more information.
+            enum:
+            - page
+          timestamp:
+            type: integer
+            format: unix timestamp
+            description: 'The unix timestamp when the event took place. If you don''t provide this value, we use the date-time when we receive the event.
+
+              '
+          data:
+            type: object
+            description: Additional information that you might want to reference in a message using liquid or use to set attributes on your customer (referenced by `customer_id`).
+            additionalProperties:
+              x-additionalPropertiesName: liquid merge data
+              description: Insert key-values that you want to reference in messages or convert to attributes if/when you associate this event with a person.
+        example:
+          name: https://mysite.com/page
+          type: page
+          data:
+            first_name: Cool
+            last_name: Person
+      - title: Mobile screen view
+        type: object
+        required:
+        - anonymous_id
+        - name
+        - type
+        properties:
+          anonymous_id:
+            $ref: '#/components/schemas/anonymous_id'
+          name:
+            type: string
+            description: The screen or deep link path the person viewed, so you can segment your audience or trigger campaigns from this event. Trim any leading and trailing spaces.
+          id:
+            $ref: '#/components/schemas/dedupe_id'
+          type:
+            type: string
+            description: Indicates that the event represents a mobile screen view. You can also capture screen events directly with [our iOS SDK](/integrations/sdk/ios/track-events/#screen-view-events).
+            enum:
+            - screen
+          timestamp:
+            type: integer
+            format: unix timestamp
+            description: 'The unix timestamp when the event took place. If you don''t provide this value, we use the date-time when we receive the event.
+
+              '
+          data:
+            type: object
+            description: Additional information that you might want to reference in a message using liquid or use to set attributes on your customer (referenced by `customer_id`).
+            additionalProperties:
+              x-additionalPropertiesName: liquid merge data
+              description: Insert key-values that you want to reference in messages or convert to attributes if/when you associate this event with a person.
+        example:
+          name: homepage
+          type: screen
+          data:
+            from: push-notification
+    reply_to_settable:
+      x-scalar-ignore: true
+      type: string
+      description: The address that receives replies for the message, if applicable.
+      example: replyto@example.com
+    recipient:
+      x-scalar-ignore: true
+      description: The recipient address for an action.
+      type: string
+      example: '{{customer.email}}'
+    dedupe_id:
+      x-scalar-ignore: true
+      type: string
+      format: ulid
+      description: A [ULID](https://github.com/ulid/spec) we use to deduplicate events. If an event repeats a value we've already received, we ignore the duplicate. Our Python and Ruby libraries don't pass this ID.
+    from_address:
+      x-scalar-ignore: true
+      type: string
+      format: email
+      description: The address you want to trigger messages from, overriding the `from` field in emails triggered by the event.
+    track-metrics:
+      x-scalar-ignore: true
+      description: The base properties shared across multiple metric types.
+      type: object
+      required:
+      - delivery_id
+      properties:
+        delivery_id:
+          type: string
+          description: The CIO-Delivery-ID from the notification that you want to associate the `event` with.
+          example: RPILAgUBcRhIBqSfeiIwdIYJKxTY
+        timestamp:
+          type: integer
+          format: unix timestamp
+          description: The unix timestamp when the event occurred.
+          example: 1613063089
+    anonymousEventsRequest:
+      x-scalar-ignore: true
+      description: An event attributed to an unknown person. If you provide an `anonymous_id` with the event, you can associate the event with a person later (using the anonymous ID).
+      oneOf:
+      - title: Standard anonymous event
+        type: object
+        required:
+        - name
+        properties:
+          anonymous_id:
+            $ref: '#/components/schemas/anonymous_id'
+          name:
+            type: string
+            description: The name of the event. This is how you'll reference the event in campaigns or segments.
+          id:
+            $ref: '#/components/schemas/dedupe_id'
+          type:
+            type: string
+            description: Sets the event type. If your event isn't a `page` or `screen` type event, we automatically set this property to `event`.
+            enum:
+            - event
+            - page
+            - screen
+          timestamp:
+            type: integer
+            format: unix timestamp
+            description: 'The unix timestamp when the event took place. If you don''t provide this value, we use the date-time when we receive the event.
+
+              '
+          data:
+            type: object
+            description: Additional event data you can reference in Liquid or use to set customer attributes. You can include `from_address` and `reply_to`, but an event only triggers a campaign if you associate it with a person within 72 hours.
+            additionalProperties:
+              x-additionalPropertiesName: liquid merge data
+              description: Insert key-values that you want to reference in messages or convert to attributes if/when you associate this event with a person.
+            properties:
+              from_address:
+                $ref: '#/components/schemas/from_address'
+              reply_to:
+                $ref: '#/components/schemas/reply_to_settable'
+        example:
+          name: watched_video
+          anonymous_id: abc123
+          data:
+            video: intro-to-platform
+      - title: Page view
+        type: object
+        required:
+        - name
+        - type
+        properties:
+          anonymous_id:
+            $ref: '#/components/schemas/anonymous_id'
+          name:
+            type: string
+            description: The name of the event. In general, this should be the URL of the page a person visited, making it easy to segment your audience or trigger campaigns using this event. Make sure you trim leading and trailing spaces from this field.
+          id:
+            $ref: '#/components/schemas/dedupe_id'
+          type:
+            type: string
+            description: Indicates that the event represents a page view. See ["page view" events](/integrations/data-in/connections/javascript/legacy-js/events/#page-view-events), for more information.
+            enum:
+            - page
+          timestamp:
+            type: integer
+            format: unix timestamp
+            description: 'The unix timestamp when the event took place. If you don''t provide this value, we use the date-time when we receive the event.
+
+              '
+          data:
+            type: object
+            description: Additional information that you might want to reference in a message using liquid or use to set attributes on your customer (referenced by `customer_id`).
+            additionalProperties:
+              x-additionalPropertiesName: liquid merge data
+              description: Insert key-values that you want to reference in messages or convert to attributes if/when you associate this event with a person.
+        example:
+          name: https://mysite.com/page
+          type: page
+          anonymous_id: abc123
+          data:
+            first_name: Person
+      - title: Mobile screen view
+        type: object
+        required:
+        - name
+        - type
+        properties:
+          anonymous_id:
+            $ref: '#/components/schemas/anonymous_id'
+          name:
+            type: string
+            description: The screen or deep link path the person viewed, so you can segment your audience or trigger campaigns from this event. Trim any leading and trailing spaces.
+          id:
+            $ref: '#/components/schemas/dedupe_id'
+          type:
+            type: string
+            description: Indicates that the event represents a mobile screen view. You can also capture screen events directly with [our iOS SDK](/integrations/sdk/ios/track-events/#screen-view-events).
+            enum:
+            - screen
+          timestamp:
+            type: integer
+            format: unix timestamp
+            description: 'The unix timestamp when the event took place. If you don''t provide this value, we use the date-time when we receive the event.
+
+              '
+          data:
+            type: object
+            description: Additional information that you might want to reference in a message using liquid or use to set attributes on your customer (referenced by `customer_id`).
+            additionalProperties:
+              x-additionalPropertiesName: liquid merge data
+              description: Insert key-values that you want to reference in messages or convert to attributes if/when you associate this event with a person.
+        example:
+          name: homepage
+          type: screen
+          anonymous_id: abc123
+    anonymous_id:
+      x-scalar-ignore: true
+      type: string
+      description: An identifier for an anonymous event, like a cookie. If set as an attribute on a person, any events bearing the same anonymous value are associated with this person. This value must be unique and is not reusable.
+  responses:
+    '200':
+      description: A successful request returns an empty object response.
+    '400':
+      description: Invalid or malformed request.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              meta:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    description: An array of errors.
+                    items:
+                      type: string
+                      description: Error descriptions.
+    '401':
+      description: Unauthorized request. Make sure that you provided the right credentials.
+  securitySchemes:
+    Tracking-API-Key:
+      type: http
+      scheme: basic
+      description: 'The Track API uses a basic authentication scheme. Your credentials are your **Site ID** and your **API key**, **Base-64 encoded** in the format `site_id:api_key`.
+
+
+        You can find your Site ID and API key on the [Track API Keys page](https://fly.customer.io/settings/api_credentials).
+
+        '

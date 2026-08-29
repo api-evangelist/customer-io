@@ -1,0 +1,1936 @@
+openapi: 3.2.0
+info:
+  version: 1.0.0
+  title: Customer.io App Assets API
+  description: 'Our App API provides ways to trigger messages and retrieve information about people, campaigns, broadcasts, and more.
+
+
+    # Overview
+
+
+    The App API provides methods to send newsletters, transactional messages, and API-triggered broadcasts. You can create newsletters from scratch and update transactional messages and API-triggered broadcasts.
+
+
+    For transactional messages and API-triggered broadcasts, your payload acts as a message "trigger" and can contain `data` that you reference in your messages using liquid—`{{trigger.<data>}}`.
+
+
+    The other endpoints help you retrieve information about people, segments, campaigns, broadcasts, etc; it also lets you update campaign actions, messages, newsletter variants, etc. Aside from the [API-triggered broadcast](#triggerBroadcast) (1 per 10 seconds) and [Transactional](#sendEmail) (100 per second) endpoints, requests are limited to 10 per second.
+
+
+    # Use our Postman collection
+
+
+    We''ve generated a Postman collection to help you get started with our APIs.
+
+
+    If you fork this collection, you might want to disable the *Watch original collection* option. We automatically update our Postman collection whenever we release changes to our documentation, even if we don''t change our APIs—which happens daily! Rather than being flooded with Postman notifications, you can check out our [Release Notes](/release-notes/) for updates to our APIs.
+
+
+    **NOTE**: Postman endpoints default to our US APIs. If you''re in our European (EU) region, you''ll need to add `-eu` to the server variables (`track_api_url` and `app_api_url`).
+
+
+    [<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://god.gw.postman.com/run-collection/23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d%26entityType%3Dcollection%26workspaceId%3Db886877f-fc09-475f-84fe-6221a98f4d18#?env%5BCustomer.io%20API%20Environment%5D=W3sia2V5IjoidHJhY2tfYXBpX3VybCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiJ0cmFjay5jdXN0b21lci5pbyIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBwX2FwaV91cmwiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiYXBpLmN1c3RvbWVyLmlvIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzaXRlX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBpX2tleSIsInR5cGUiOiJzZWNyZXQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYmVhcmVyIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYnJvYWRjYXN0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaW1wb3J0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiZW1haWxfYWRkcmVzcyIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InN1cHByZXNzaW9uX3R5cGUiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjb2xsZWN0aW9uX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoic25pcHBldF9uYW1lIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoid2ViaG9va19pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InNlbmRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImV4cG9ydF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6Im1lc3NhZ2VfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzZWdtZW50X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoibmV3c2xldHRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImNvbnRlbnRfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjYW1wYWlnbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImFjdGlvbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImN1c3RvbWVyX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoidHJhbnNhY3Rpb25hbF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InRyaWdnZXJfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJmb3JtX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaWRlbnRpZmllciIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRldmljZV9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRlbGl2ZXJ5X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9XQ==)
+
+
+    # Server addresses: US and EU
+
+
+    Customer.io hosts services in the United States (US) and European Union. Select the appropriate server address for your region.
+
+
+    | Region | Server Address |
+
+    | :-- | :-- |
+
+    | US | https://api.customer.io |
+
+    | EU | https://api-eu.customer.io |
+
+
+    # Authentication
+
+
+    All requests to the Customer.io App API use an [App API Key](#App-API-Key).
+
+
+    To authenticate, provide your key as a Bearer token in a HTTP Authorization header. You can create and manage your API keys—including keys with different scopes—in [your account settings page](https://fly.customer.io/settings/api_credentials?keyType=app). Each operation on this page references the authorization header it requires.
+
+
+    # Rate Limits
+
+
+    Most endpoints on this page are limited to 10 requests per second. The exceptions are:
+
+    * The [transactional email](#operation/sendEmail) endpoint is limited to 100 requests per second.
+
+    * The [API-triggered broadcast endpoint](#operation/triggerBroadcast) is limited to 1 request every 10 seconds.
+
+
+    **Rate limits are subject to change. We may adjust these thresholds to ensure stable performance for all customers.**
+
+    '
+servers:
+- url: https://api.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+- url: https://api-eu.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+tags:
+- name: Assets
+  description: 'Manage file assets such as images and PDFs and organize them into folders.
+
+    '
+paths:
+  /v1/assets:
+    get:
+      tags:
+      - Assets
+      summary: List file assets
+      description: Returns a paginated list of file assets. Supports filtering by parent folder and choosing between direct children or the entire folder subtree.
+      operationId: listAssets
+      parameters:
+      - name: parent_folder_id
+        in: query
+        description: Filter results to a specific parent folder. Use 0 or omit to target the root level.
+        schema:
+          type: integer
+      - name: direct_descendants_only
+        in: query
+        description: If true, this returns only children of the parent folder.
+        schema:
+          type: boolean
+          default: false
+      - name: page
+        in: query
+        description: The page number of results you want to display. Use with `limit`.
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - name: limit
+        in: query
+        description: Limit the number of results per page.
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 10000
+          default: 1000
+      responses:
+        '200':
+          description: A paginated list of file assets with metadata.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  assets:
+                    type: array
+                    description: The list of file assets matching the query.
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The unique identifier of the file asset.
+                        name:
+                          type: string
+                          description: The display name of the file asset.
+                        parent_folder_id:
+                          type:
+                          - integer
+                          - 'null'
+                          description: The ID of the parent folder, or null if the asset is at the root level.
+                        path:
+                          type: string
+                          description: The storage URL or path where the file is hosted.
+                        size:
+                          type: integer
+                          description: The file size in bytes.
+                        created:
+                          type: integer
+                          format: int64
+                          description: Unix timestamp when the asset was created.
+                          example: 1773856017
+                        updated:
+                          type: integer
+                          format: int64
+                          description: Unix timestamp when the asset was last updated.
+                          example: 1773856017
+                  meta:
+                    type: object
+                    description: Metadata about the paginated response including pagination details and applied filters.
+                    properties:
+                      pagination:
+                        type: object
+                        description: Pagination details for the current result set.
+                        properties:
+                          page:
+                            type: integer
+                            description: The current page number.
+                          limit:
+                            type: integer
+                            description: The maximum number of results per page.
+                          total:
+                            type: integer
+                            description: The total number of matching results across all pages.
+                      filters:
+                        type: object
+                        description: The filters that were applied to the query.
+                        properties:
+                          parent_folder_id:
+                            type:
+                            - integer
+                            - 'null'
+                            description: The parent folder ID filter that was applied, or null if not filtering by parent.
+                          direct_descendants_only:
+                            type: boolean
+                            description: Whether the results were limited to direct descendants only.
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+        '401':
+          description: Unauthorized - missing or invalid API key
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+              example:
+                errors:
+                - detail: unauthorized
+                  status: 401
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+              example:
+                errors:
+                - detail: resource not found
+                  status: 404
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request GET \\\n  --url 'https://api.customer.io/v1/assets?parent_folder_id=SOME_INTEGER_VALUE&direct_descendants_only=SOME_BOOLEAN_VALUE&page=SOME_INTEGER_VALUE&limit=SOME_INTEGER_VALUE'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/assets?parent_folder_id=SOME_INTEGER_VALUE&direct_descendants_only=SOME_BOOLEAN_VALUE&page=SOME_INTEGER_VALUE&limit=SOME_INTEGER_VALUE\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/assets?parent_folder_id=SOME_INTEGER_VALUE&direct_descendants_only=SOME_BOOLEAN_VALUE&page=SOME_INTEGER_VALUE&limit=SOME_INTEGER_VALUE")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/assets?parent_folder_id=SOME_INTEGER_VALUE&direct_descendants_only=SOME_BOOLEAN_VALUE&page=SOME_INTEGER_VALUE&limit=SOME_INTEGER_VALUE")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/assets?parent_folder_id=SOME_INTEGER_VALUE&direct_descendants_only=SOME_BOOLEAN_VALUE&page=SOME_INTEGER_VALUE&limit=SOME_INTEGER_VALUE\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+  /v1/assets/files:
+    post:
+      tags:
+      - Assets
+      summary: Create a file asset
+      description: 'Creates a new file asset.
+
+
+        Accepted file types: `image/bmp`, `image/jpeg`, `image/jpg`, `image/png`, `image/gif`, `application/pdf`. Maximum file size: 2 MB. Maximum image dimensions: 4096px.
+
+        '
+      operationId: createAsset
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: 'The file to upload. Must be an accepted image or PDF type. Accepted file types: `image/bmp`, `image/jpeg`, `image/jpg`, `image/png`, `image/gif`, `application/pdf`. Maximum file size: 2 MB.  Maximum image dimensions: 4096px.
+
+                    '
+                name:
+                  type: string
+                  description: Custom display name for the asset. If omitted, the uploaded file's original filename is used.
+                parent_folder_id:
+                  type:
+                  - integer
+                  - 'null'
+                  description: The ID of the parent folder. Omit or set to "0" to place the asset at the root level.
+      responses:
+        '200':
+          description: The newly created file asset.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  asset:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: The unique identifier of the file asset.
+                      name:
+                        type: string
+                        description: The display name of the file asset.
+                      parent_folder_id:
+                        type:
+                        - integer
+                        - 'null'
+                        description: The ID of the parent folder, or null if the asset is at the root level.
+                      path:
+                        type: string
+                        description: The storage URL or path where the file is hosted.
+                      size:
+                        type: integer
+                        description: The file size in bytes.
+                      created:
+                        type: integer
+                        format: int64
+                        description: Unix timestamp when the asset was created.
+                        example: 1773856017
+                      updated:
+                        type: integer
+                        format: int64
+                        description: Unix timestamp when the asset was last updated.
+                        example: 1773856017
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+        '401':
+          description: Unauthorized - missing or invalid API key
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+              example:
+                errors:
+                - detail: unauthorized
+                  status: 401
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+              example:
+                errors:
+                - detail: resource not found
+                  status: 404
+        '409':
+          description: Conflict - linked resource or other constraint violation
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+              example:
+                errors:
+                - detail: a constraint violation prevents this operation
+                  status: 409
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request POST \\\n  --url https://api.customer.io/v1/assets/files \\\n  --header 'content-type: multipart/form-data'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"POST\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/assets/files\",\n  \"headers\": {\n    \"content-type\": \"multipart/form-data\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/assets/files")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Post.new(url)
+
+          request["content-type"] = ''multipart/form-data''
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          headers = { ''content-type'': "multipart/form-data" }
+
+
+          conn.request("POST", "/v1/assets/files", headers=headers)
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/assets/files\"\n\n\treq, _ := http.NewRequest(\"POST\", url, nil)\n\n\treq.Header.Add(\"content-type\", \"multipart/form-data\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+  /v1/assets/files/{id}:
+    get:
+      tags:
+      - Assets
+      summary: Get a file asset
+      description: Retrieves a single file asset by its ID. Returns 404 if the asset does not exist or is a folder.
+      operationId: getAsset
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The unique identifier of the resource.
+        schema:
+          type: integer
+          minimum: 1
+      responses:
+        '200':
+          description: The requested file asset.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  asset:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: The unique identifier of the file asset.
+                      name:
+                        type: string
+                        description: The display name of the file asset.
+                      parent_folder_id:
+                        type:
+                        - integer
+                        - 'null'
+                        description: The ID of the parent folder, or null if the asset is at the root level.
+                      path:
+                        type: string
+                        description: The storage URL or path where the file is hosted.
+                      size:
+                        type: integer
+                        description: The file size in bytes.
+                      created:
+                        type: integer
+                        format: int64
+                        description: Unix timestamp when the asset was created.
+                        example: 1773856017
+                      updated:
+                        type: integer
+                        format: int64
+                        description: Unix timestamp when the asset was last updated.
+                        example: 1773856017
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+        '401':
+          description: Unauthorized - missing or invalid API key
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+              example:
+                errors:
+                - detail: unauthorized
+                  status: 401
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+              example:
+                errors:
+                - detail: resource not found
+                  status: 404
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request GET \\\n  --url https://api.customer.io/v1/assets/files/{id}"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/assets/files/%7Bid%7D\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/assets/files/%7Bid%7D")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/assets/files/%7Bid%7D")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/assets/files/%7Bid%7D\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+    put:
+      tags:
+      - Assets
+      summary: Update a file asset
+      description: Updates the name and/or parent folder of a file asset. The file itself (path, size) cannot be changed. At least one of `name` or `parent_folder_id` must be provided.
+      operationId: updateAsset
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The unique identifier of the resource.
+        schema:
+          type: integer
+          minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  description: New display name for the asset. Cannot be blank after trimming.
+                parent_folder_id:
+                  type:
+                  - integer
+                  - 'null'
+                  description: The ID of the new parent folder. Set to `null` to move the asset to the root level.
+      responses:
+        '204':
+          description: File asset updated successfully.
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+        '401':
+          description: Unauthorized - missing or invalid API key
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+              example:
+                errors:
+                - detail: unauthorized
+                  status: 401
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+              example:
+                errors:
+                - detail: resource not found
+                  status: 404
+        '409':
+          description: Conflict - linked resource or other constraint violation
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+              example:
+                errors:
+                - detail: a constraint violation prevents this operation
+                  status: 409
+      x-codeSamples:
+      - lang: json
+        label: JSON
+        source: '{}'
+      - lang: Shell + Curl
+        source: "curl --request PUT \\\n  --url https://api.customer.io/v1/assets/files/{id} \\\n  --header 'content-type: application/json' \\\n  --data '{\"name\":\"string\",\"parent_folder_id\":0}'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"PUT\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/assets/files/%7Bid%7D\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({name: 'string', parent_folder_id: 0}));\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/assets/files/%7Bid%7D")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Put.new(url)
+
+          request["content-type"] = ''application/json''
+
+          request.body = "{\"name\":\"string\",\"parent_folder_id\":0}"
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          payload = "{\"name\":\"string\",\"parent_folder_id\":0}"
+
+
+          headers = { ''content-type'': "application/json" }
+
+
+          conn.request("PUT", "/v1/assets/files/%7Bid%7D", payload, headers)
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/assets/files/%7Bid%7D\"\n\n\tpayload := strings.NewReader(\"{\\\"name\\\":\\\"string\\\",\\\"parent_folder_id\\\":0}\")\n\n\treq, _ := http.NewRequest(\"PUT\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+    delete:
+      tags:
+      - Assets
+      summary: Delete a file asset
+      description: Soft-deletes a file asset by setting its `deleted_at` timestamp. The underlying file in cloud storage is not removed. Assets that are currently in use cannot be deleted.
+      operationId: deleteAsset
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The unique identifier of the resource.
+        schema:
+          type: integer
+          minimum: 1
+      responses:
+        '204':
+          description: File asset deleted successfully.
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+        '401':
+          description: Unauthorized - missing or invalid API key
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+              example:
+                errors:
+                - detail: unauthorized
+                  status: 401
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+              example:
+                errors:
+                - detail: resource not found
+                  status: 404
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request DELETE \\\n  --url https://api.customer.io/v1/assets/files/{id}"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"DELETE\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/assets/files/%7Bid%7D\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/assets/files/%7Bid%7D")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Delete.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("DELETE", "/v1/assets/files/%7Bid%7D")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/assets/files/%7Bid%7D\"\n\n\treq, _ := http.NewRequest(\"DELETE\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+  /v1/assets/folders:
+    get:
+      tags:
+      - Assets
+      summary: List folders
+      description: Returns a paginated list of asset folders. Supports filtering by parent folder and choosing between direct children or the entire folder subtree.
+      operationId: listAssetFolders
+      parameters:
+      - name: parent_folder_id
+        in: query
+        description: Filter results to a specific parent folder. Use 0 or omit to target the root level.
+        schema:
+          type: integer
+      - name: direct_descendants_only
+        in: query
+        description: If true, this returns only children of the parent folder.
+        schema:
+          type: boolean
+          default: false
+      - name: page
+        in: query
+        description: The page number of results you want to display. Use with `limit`.
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - name: limit
+        in: query
+        description: Limit the number of results per page.
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 10000
+          default: 1000
+      responses:
+        '200':
+          description: A paginated list of folders with metadata.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  folders:
+                    type: array
+                    description: The list of folders matching the query.
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The unique identifier of the folder.
+                        name:
+                          type: string
+                          description: The display name of the folder.
+                          example: Banners
+                        parent_folder_id:
+                          type:
+                          - integer
+                          - 'null'
+                          description: The ID of the parent folder, or null if the folder is at the root level.
+                        created:
+                          type: integer
+                          format: int64
+                          description: Unix timestamp when the folder was created.
+                          example: 1773856017
+                        updated:
+                          type: integer
+                          format: int64
+                          description: Unix timestamp when the folder was last updated.
+                          example: 1773856017
+                  meta:
+                    type: object
+                    description: Metadata about the paginated response including pagination details and applied filters.
+                    properties:
+                      pagination:
+                        type: object
+                        description: Pagination details for the current result set.
+                        properties:
+                          page:
+                            type: integer
+                            description: The current page number.
+                          limit:
+                            type: integer
+                            description: The maximum number of results per page.
+                          total:
+                            type: integer
+                            description: The total number of matching results across all pages.
+                      filters:
+                        type: object
+                        description: The filters that were applied to the query.
+                        properties:
+                          parent_folder_id:
+                            type:
+                            - integer
+                            - 'null'
+                            description: The parent folder ID filter that was applied, or null if not filtering by parent.
+                          direct_descendants_only:
+                            type: boolean
+                            description: Whether the results were limited to direct descendants only.
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+        '401':
+          description: Unauthorized - missing or invalid API key
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+              example:
+                errors:
+                - detail: unauthorized
+                  status: 401
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+              example:
+                errors:
+                - detail: resource not found
+                  status: 404
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request GET \\\n  --url 'https://api.customer.io/v1/assets/folders?parent_folder_id=SOME_INTEGER_VALUE&direct_descendants_only=SOME_BOOLEAN_VALUE&page=SOME_INTEGER_VALUE&limit=SOME_INTEGER_VALUE'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/assets/folders?parent_folder_id=SOME_INTEGER_VALUE&direct_descendants_only=SOME_BOOLEAN_VALUE&page=SOME_INTEGER_VALUE&limit=SOME_INTEGER_VALUE\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/assets/folders?parent_folder_id=SOME_INTEGER_VALUE&direct_descendants_only=SOME_BOOLEAN_VALUE&page=SOME_INTEGER_VALUE&limit=SOME_INTEGER_VALUE")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/assets/folders?parent_folder_id=SOME_INTEGER_VALUE&direct_descendants_only=SOME_BOOLEAN_VALUE&page=SOME_INTEGER_VALUE&limit=SOME_INTEGER_VALUE")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/assets/folders?parent_folder_id=SOME_INTEGER_VALUE&direct_descendants_only=SOME_BOOLEAN_VALUE&page=SOME_INTEGER_VALUE&limit=SOME_INTEGER_VALUE\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+    post:
+      tags:
+      - Assets
+      summary: Create a folder
+      description: Creates a new folder for organizing file assets. Folder names must be unique within the same parent folder.
+      operationId: createAssetFolder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  description: Display name for the folder. Must be unique among siblings in the same parent folder.
+                  example: Banners
+                parent_folder_id:
+                  type:
+                  - integer
+                  - 'null'
+                  description: The ID of the parent folder. Omit or set to "0" to create at the root level.
+      responses:
+        '200':
+          description: The newly created folder.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  folder:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: The unique identifier of the folder.
+                      name:
+                        type: string
+                        description: The display name of the folder.
+                        example: Banners
+                      parent_folder_id:
+                        type:
+                        - integer
+                        - 'null'
+                        description: The ID of the parent folder, or null if the folder is at the root level.
+                      created:
+                        type: integer
+                        format: int64
+                        description: Unix timestamp when the folder was created.
+                        example: 1773856017
+                      updated:
+                        type: integer
+                        format: int64
+                        description: Unix timestamp when the folder was last updated.
+                        example: 1773856017
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+        '401':
+          description: Unauthorized - missing or invalid API key
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+              example:
+                errors:
+                - detail: unauthorized
+                  status: 401
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+              example:
+                errors:
+                - detail: resource not found
+                  status: 404
+        '409':
+          description: Conflict - linked resource or other constraint violation
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+              example:
+                errors:
+                - detail: a constraint violation prevents this operation
+                  status: 409
+      x-codeSamples:
+      - lang: json
+        label: JSON
+        source: "{\n  \"name\": \"Banners\"\n}"
+      - lang: Shell + Curl
+        source: "curl --request POST \\\n  --url https://api.customer.io/v1/assets/folders \\\n  --header 'content-type: application/json' \\\n  --data '{\"name\":\"Banners\",\"parent_folder_id\":0}'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"POST\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/assets/folders\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({name: 'Banners', parent_folder_id: 0}));\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/assets/folders")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Post.new(url)
+
+          request["content-type"] = ''application/json''
+
+          request.body = "{\"name\":\"Banners\",\"parent_folder_id\":0}"
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          payload = "{\"name\":\"Banners\",\"parent_folder_id\":0}"
+
+
+          headers = { ''content-type'': "application/json" }
+
+
+          conn.request("POST", "/v1/assets/folders", payload, headers)
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/assets/folders\"\n\n\tpayload := strings.NewReader(\"{\\\"name\\\":\\\"Banners\\\",\\\"parent_folder_id\\\":0}\")\n\n\treq, _ := http.NewRequest(\"POST\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+  /v1/assets/folders/{id}:
+    get:
+      tags:
+      - Assets
+      summary: Get a folder
+      description: Retrieves a single folder by its ID.
+      operationId: getAssetFolder
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The unique identifier of the resource.
+        schema:
+          type: integer
+          minimum: 1
+      responses:
+        '200':
+          description: The requested folder.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  folder:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: The unique identifier of the folder.
+                      name:
+                        type: string
+                        description: The display name of the folder.
+                        example: Banners
+                      parent_folder_id:
+                        type:
+                        - integer
+                        - 'null'
+                        description: The ID of the parent folder, or null if the folder is at the root level.
+                      created:
+                        type: integer
+                        format: int64
+                        description: Unix timestamp when the folder was created.
+                        example: 1773856017
+                      updated:
+                        type: integer
+                        format: int64
+                        description: Unix timestamp when the folder was last updated.
+                        example: 1773856017
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+        '401':
+          description: Unauthorized - missing or invalid API key
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+              example:
+                errors:
+                - detail: unauthorized
+                  status: 401
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+              example:
+                errors:
+                - detail: resource not found
+                  status: 404
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request GET \\\n  --url https://api.customer.io/v1/assets/folders/{id}"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/assets/folders/%7Bid%7D\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/assets/folders/%7Bid%7D")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/assets/folders/%7Bid%7D")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/assets/folders/%7Bid%7D\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+    put:
+      tags:
+      - Assets
+      summary: Update a folder
+      description: Updates the name and/or parent folder of an existing folder. At least one of `name` or `parent_folder_id` must be provided. Moving a folder into itself or one of its descendants is not allowed (cycle detection).
+      operationId: updateAssetFolder
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The unique identifier of the resource.
+        schema:
+          type: integer
+          minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  description: New display name for the folder. Cannot be blank after trimming.
+                parent_folder_id:
+                  type:
+                  - integer
+                  - 'null'
+                  description: The ID of the new parent folder. Set to `null` to move the folder to the root level. Cannot be the folder itself or one of its descendants.
+      responses:
+        '204':
+          description: Folder updated successfully.
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+        '401':
+          description: Unauthorized - missing or invalid API key
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+              example:
+                errors:
+                - detail: unauthorized
+                  status: 401
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+              example:
+                errors:
+                - detail: resource not found
+                  status: 404
+        '409':
+          description: Conflict - linked resource or other constraint violation
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+              example:
+                errors:
+                - detail: a constraint violation prevents this operation
+                  status: 409
+      x-codeSamples:
+      - lang: json
+        label: JSON
+        source: '{}'
+      - lang: Shell + Curl
+        source: "curl --request PUT \\\n  --url https://api.customer.io/v1/assets/folders/{id} \\\n  --header 'content-type: application/json' \\\n  --data '{\"name\":\"string\",\"parent_folder_id\":0}'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"PUT\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/assets/folders/%7Bid%7D\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({name: 'string', parent_folder_id: 0}));\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/assets/folders/%7Bid%7D")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Put.new(url)
+
+          request["content-type"] = ''application/json''
+
+          request.body = "{\"name\":\"string\",\"parent_folder_id\":0}"
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          payload = "{\"name\":\"string\",\"parent_folder_id\":0}"
+
+
+          headers = { ''content-type'': "application/json" }
+
+
+          conn.request("PUT", "/v1/assets/folders/%7Bid%7D", payload, headers)
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/assets/folders/%7Bid%7D\"\n\n\tpayload := strings.NewReader(\"{\\\"name\\\":\\\"string\\\",\\\"parent_folder_id\\\":0}\")\n\n\treq, _ := http.NewRequest(\"PUT\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+    delete:
+      tags:
+      - Assets
+      summary: Delete a folder
+      description: Soft-deletes an empty folder. Folders that still contain files or subfolders cannot be deleted. Assets marked as in use also prevent deletion.
+      operationId: deleteAssetFolder
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The unique identifier of the resource.
+        schema:
+          type: integer
+          minimum: 1
+      responses:
+        '204':
+          description: Folder deleted successfully.
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+        '401':
+          description: Unauthorized - missing or invalid API key
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+              example:
+                errors:
+                - detail: unauthorized
+                  status: 401
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                type: object
+                description: An error response containing one or more error details.
+                properties:
+                  errors:
+                    type: array
+                    description: A list of errors that occurred while processing the request.
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Reason for error
+                        status:
+                          type: integer
+                          description: Response code
+              example:
+                errors:
+                - detail: resource not found
+                  status: 404
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request DELETE \\\n  --url https://api.customer.io/v1/assets/folders/{id}"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"DELETE\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/assets/folders/%7Bid%7D\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/assets/folders/%7Bid%7D")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Delete.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("DELETE", "/v1/assets/folders/%7Bid%7D")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/assets/folders/%7Bid%7D\"\n\n\treq, _ := http.NewRequest(\"DELETE\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+components:
+  securitySchemes:
+    Bearer-Auth:
+      type: http
+      scheme: bearer
+      description: 'The App API uses a bearer authentication scheme.
+
+
+        You can generate a bearer token, known as an **App API Key**, with a defined scope in [your account settings](https://fly.customer.io/settings/api_credentials?keyType=app). [Learn more about bearer authorization in Customer.io](/accounts/settings/managing-credentials).
+
+        '
+    ServiceAccount-Auth:
+      x-scalar-ignore: true
+      type: http
+      scheme: bearer
+      bearerFormat: sa_live_
+      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
+
+
+        Service-account tokens are intended for testing and one-off sends—for example, using the Customer.io CLI with an AI agent like Claude to verify that a transactional message renders correctly before wiring it into your production backend. **For the production integration that triggers the message from your application, use an App API Key instead**: it''s workspace-scoped, easier to rotate, and has a smaller blast radius.
+
+
+        Service-account tokens are server-side credentials. Treat them like any API key—keep them in environment variables or a secret manager, and never embed them in client-side code, mobile apps, or other untrusted contexts.
+
+        '
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: API key passed as a Bearer token

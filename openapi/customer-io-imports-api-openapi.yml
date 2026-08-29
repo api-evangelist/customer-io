@@ -1,0 +1,683 @@
+openapi: 3.2.0
+info:
+  version: 1.0.0
+  title: Customer.io App Imports API
+  description: 'Our App API provides ways to trigger messages and retrieve information about people, campaigns, broadcasts, and more.
+
+
+    # Overview
+
+
+    The App API provides methods to send newsletters, transactional messages, and API-triggered broadcasts. You can create newsletters from scratch and update transactional messages and API-triggered broadcasts.
+
+
+    For transactional messages and API-triggered broadcasts, your payload acts as a message "trigger" and can contain `data` that you reference in your messages using liquid—`{{trigger.<data>}}`.
+
+
+    The other endpoints help you retrieve information about people, segments, campaigns, broadcasts, etc; it also lets you update campaign actions, messages, newsletter variants, etc. Aside from the [API-triggered broadcast](#triggerBroadcast) (1 per 10 seconds) and [Transactional](#sendEmail) (100 per second) endpoints, requests are limited to 10 per second.
+
+
+    # Use our Postman collection
+
+
+    We''ve generated a Postman collection to help you get started with our APIs.
+
+
+    If you fork this collection, you might want to disable the *Watch original collection* option. We automatically update our Postman collection whenever we release changes to our documentation, even if we don''t change our APIs—which happens daily! Rather than being flooded with Postman notifications, you can check out our [Release Notes](/release-notes/) for updates to our APIs.
+
+
+    **NOTE**: Postman endpoints default to our US APIs. If you''re in our European (EU) region, you''ll need to add `-eu` to the server variables (`track_api_url` and `app_api_url`).
+
+
+    [<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://god.gw.postman.com/run-collection/23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d%26entityType%3Dcollection%26workspaceId%3Db886877f-fc09-475f-84fe-6221a98f4d18#?env%5BCustomer.io%20API%20Environment%5D=W3sia2V5IjoidHJhY2tfYXBpX3VybCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiJ0cmFjay5jdXN0b21lci5pbyIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBwX2FwaV91cmwiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiYXBpLmN1c3RvbWVyLmlvIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzaXRlX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBpX2tleSIsInR5cGUiOiJzZWNyZXQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYmVhcmVyIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYnJvYWRjYXN0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaW1wb3J0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiZW1haWxfYWRkcmVzcyIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InN1cHByZXNzaW9uX3R5cGUiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjb2xsZWN0aW9uX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoic25pcHBldF9uYW1lIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoid2ViaG9va19pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InNlbmRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImV4cG9ydF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6Im1lc3NhZ2VfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzZWdtZW50X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoibmV3c2xldHRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImNvbnRlbnRfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjYW1wYWlnbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImFjdGlvbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImN1c3RvbWVyX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoidHJhbnNhY3Rpb25hbF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InRyaWdnZXJfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJmb3JtX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaWRlbnRpZmllciIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRldmljZV9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRlbGl2ZXJ5X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9XQ==)
+
+
+    # Server addresses: US and EU
+
+
+    Customer.io hosts services in the United States (US) and European Union. Select the appropriate server address for your region.
+
+
+    | Region | Server Address |
+
+    | :-- | :-- |
+
+    | US | https://api.customer.io |
+
+    | EU | https://api-eu.customer.io |
+
+
+    # Authentication
+
+
+    All requests to the Customer.io App API use an [App API Key](#App-API-Key).
+
+
+    To authenticate, provide your key as a Bearer token in a HTTP Authorization header. You can create and manage your API keys—including keys with different scopes—in [your account settings page](https://fly.customer.io/settings/api_credentials?keyType=app). Each operation on this page references the authorization header it requires.
+
+
+    # Rate Limits
+
+
+    Most endpoints on this page are limited to 10 requests per second. The exceptions are:
+
+    * The [transactional email](#operation/sendEmail) endpoint is limited to 100 requests per second.
+
+    * The [API-triggered broadcast endpoint](#operation/triggerBroadcast) is limited to 1 request every 10 seconds.
+
+
+    **Rate limits are subject to change. We may adjust these thresholds to ensure stable performance for all customers.**
+
+    '
+servers:
+- url: https://api.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+- url: https://api-eu.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+tags:
+- name: Imports
+  description: 'APIs to upload CSV files containing lists of people. These endpoints provide a convenient way to add and update people without having to make an `identify` call for each individual person.
+
+    '
+paths:
+  /v1/imports:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    post:
+      operationId: import
+      summary: Import items in bulk
+      security:
+      - Bearer-Auth: []
+      description: 'This endpoint lets you upload a CSV file containing people, events, objects, or relationships. It provides a handy way of adding and updating them in bulk. Uploading people, objects, or relationships is like performing an [`identify` call](/api/track/#operation/entity) for each row in your CSV; uploading events is like performing a [`track` call](/api/track/#operation/track).
+
+
+        You''ll need to provide us the public URL of your CSV as a part of this operation. We recommend that you host your CSVs from short-lived URLs. Ideally, your URLs will expire 2 hours after you initiate an import so that your customers'' information doesn''t remain publicly available after you''ve uploaded it to us.
+
+
+        Check out the CSV requirements based on what you''re importing: [people](/journeys/people/uploading-people/#csv-requirements), [events](/journeys/people/uploading-people/#event-csv-requirements), and [objects or relationships](/journeys/objects-data/objects/import-objects/#csv-requirements).
+
+
+        This endpoint performs some basic validation on the request and then queues the import for processing. The import happens in multiple stages after your request, and may even fail. You''ll need to [lookup the status of the import](#getImport) to check on its progress.
+
+
+        Records in your CSV might result in errors or warnings during the import. We make the errors and warnings available in CSV files that you can download via our export endpoints. [Lookup your import](#getImport) to get download URLs for error and warning reports.
+
+        '
+      tags:
+      - Imports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - import
+              properties:
+                import:
+                  x-scalar-ignore: true
+                  oneOf:
+                  - title: people
+                    type: object
+                    description: Contains your import parameters.
+                    required:
+                    - data_file_url
+                    - name
+                    - type
+                    - identifier
+                    properties:
+                      name:
+                        x-scalar-ignore: true
+                        type: string
+                        description: A friendly name for your import. This helps you identify your import.
+                      data_file_url:
+                        type: string
+                        description: The URL or path to the CSV file you want to import.
+                      type:
+                        type: string
+                        description: The type of import.
+                        enum:
+                        - people
+                      identifier:
+                        x-scalar-ignore: true
+                        type: string
+                        description: The type of identifier you want to use to identify people in your sheet—`id` or `email`. At least one column in the CSV must contain an identifier.
+                        enum:
+                        - id
+                        - email
+                      data_to_process:
+                        x-scalar-ignore: true
+                        type: string
+                        description: Controls whether your import adds and updates all rows, adds only new rows, or updates only existing rows. Defaults to `all`. Event imports support only `all` and `only_existing`. Formerly called `people_to_process`.
+                        enum:
+                        - all
+                        - only_new
+                        - only_existing
+                      description:
+                        x-scalar-ignore: true
+                        type: string
+                        description: A helpful description that can help you find and recognize your import operation.
+                  - title: event
+                    type: object
+                    description: Contains your import parameters.
+                    required:
+                    - data_file_url
+                    - name
+                    - type
+                    - identifier
+                    properties:
+                      name:
+                        x-scalar-ignore: true
+                        type: string
+                        description: A friendly name for your import. This helps you identify your import.
+                      data_file_url:
+                        type: string
+                        description: The URL or path to the CSV file you want to import.
+                      type:
+                        type: string
+                        description: The type of import.
+                        enum:
+                        - event
+                      identifier:
+                        x-scalar-ignore: true
+                        type: string
+                        description: The type of identifier you want to use to identify people in your sheet—`id` or `email`. At least one column in the CSV must contain an identifier.
+                        enum:
+                        - id
+                        - email
+                      data_to_process:
+                        x-scalar-ignore: true
+                        type: string
+                        description: Controls whether your import adds and updates all rows, adds only new rows, or updates only existing rows. Defaults to `all`. Event imports support only `all` and `only_existing`. Formerly called `people_to_process`.
+                        enum:
+                        - all
+                        - only_new
+                        - only_existing
+                      description:
+                        x-scalar-ignore: true
+                        type: string
+                        description: A helpful description that can help you find and recognize your import operation.
+                  - title: relationship
+                    type: object
+                    description: Contains your import parameters.
+                    required:
+                    - data_file_url
+                    - name
+                    - type
+                    - identifier
+                    properties:
+                      name:
+                        x-scalar-ignore: true
+                        type: string
+                        description: A friendly name for your import. This helps you identify your import.
+                      data_file_url:
+                        type: string
+                        description: The URL or path to the CSV file you want to import.
+                      type:
+                        type: string
+                        description: The type of import.
+                        enum:
+                        - relationship
+                      identifier:
+                        type: string
+                        description: The type of identifier used to identify the person in each relationship—`id`, `email`, or `cio_id`.
+                        enum:
+                        - id
+                        - email
+                        - cio_id
+                      data_to_process:
+                        x-scalar-ignore: true
+                        type: string
+                        description: Controls whether your import adds and updates all rows, adds only new rows, or updates only existing rows. Defaults to `all`. Event imports support only `all` and `only_existing`. Formerly called `people_to_process`.
+                        enum:
+                        - all
+                        - only_new
+                        - only_existing
+                      description:
+                        x-scalar-ignore: true
+                        type: string
+                        description: A helpful description that can help you find and recognize your import operation.
+                  - title: object
+                    type: object
+                    description: Contains your import parameters.
+                    required:
+                    - data_file_url
+                    - name
+                    - type
+                    - object_type_id
+                    properties:
+                      name:
+                        x-scalar-ignore: true
+                        type: string
+                        description: A friendly name for your import. This helps you identify your import.
+                      data_file_url:
+                        type: string
+                        description: The URL or path to the CSV file you want to import.
+                      object_type_id:
+                        x-scalar-ignore: true
+                        type: string
+                        description: The object type an object belongs to—like "Companies" or "Accounts". Object type IDs are string-formatted integers that begin at `1` and increment for each new type.
+                        example: '1'
+                      type:
+                        type: string
+                        description: The type of import.
+                        enum:
+                        - object
+                      data_to_process:
+                        x-scalar-ignore: true
+                        type: string
+                        description: Controls whether your import adds and updates all rows, adds only new rows, or updates only existing rows. Defaults to `all`. Event imports support only `all` and `only_existing`. Formerly called `people_to_process`.
+                        enum:
+                        - all
+                        - only_new
+                        - only_existing
+                      description:
+                        x-scalar-ignore: true
+                        type: string
+                        description: A helpful description that can help you find and recognize your import operation.
+      responses:
+        '200':
+          description: Returns an import payload.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - import
+                properties:
+                  import:
+                    x-scalar-ignore: true
+                    description: Represents an import operation.
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: This is the `import_id` you'll use if you want to [lookup your import operation](#getImport).
+                      created_at:
+                        x-scalar-ignore: true
+                        type: integer
+                        format: unix timestamp
+                        description: The date time when the referenced ID was created.
+                        example: 1552341937
+                        readOnly: true
+                      updated_at:
+                        x-scalar-ignore: true
+                        type: integer
+                        format: unix timestamp
+                        description: The date time when the referenced ID was last updated.
+                        example: 1552341937
+                        readOnly: true
+                      name:
+                        x-scalar-ignore: true
+                        type: string
+                        description: A friendly name for your import. This helps you identify your import.
+                      description:
+                        x-scalar-ignore: true
+                        type: string
+                        description: A helpful description that can help you find and recognize your import operation.
+                      rows_to_import:
+                        x-scalar-ignore: true
+                        type: integer
+                        description: The total number of importable rows we found in the CSV.
+                      rows_imported:
+                        x-scalar-ignore: true
+                        type: integer
+                        description: The number of rows we imported from the CSV.
+                      state:
+                        x-scalar-ignore: true
+                        type: string
+                        description: The state of the import—whether your import is being processed, fully completed (`imported`), or if it failed.
+                        enum:
+                        - preprocessing
+                        - preprocessed
+                        - validating
+                        - validated
+                        - importing
+                        - imported
+                        - failed
+                        - canceled
+                      type:
+                        x-scalar-ignore: true
+                        type: string
+                        description: The type of import.
+                        enum:
+                        - people
+                        - event
+                        - object
+                        - relationship
+                      identifier:
+                        type: string
+                        description: The type of identifier you used to identify people in your CSV. Not applicable for object imports.
+                        enum:
+                        - id
+                        - email
+                      data_to_process:
+                        x-scalar-ignore: true
+                        type: string
+                        description: Controls whether your import adds and updates all rows, adds only new rows, or updates only existing rows. Defaults to `all`. Event imports support only `all` and `only_existing`. Formerly called `people_to_process`.
+                        enum:
+                        - all
+                        - only_new
+                        - only_existing
+                      people_to_process:
+                        type: string
+                        description: 'Returned for people and event imports, even if you imported using the field `data_to_process`. This field will be deprecated soon.
+
+                          '
+                        enum:
+                        - all
+                        - only_new
+                        - only_existing
+                      object_type_id:
+                        type: string
+                        description: The object type an object belongs to—like "Companies" or "Accounts". Only applies to object imports.
+                        example: '1'
+                      error:
+                        description: If your import fails, this helps you understand why.
+                        type: string
+                    example:
+                      id: 30
+                      name: account-object-import
+                      description: importing accounts
+                      created_at: 1706081641
+                      updated_at: 1706081645
+                      rows_to_import: 3
+                      rows_imported: 3
+                      state: imported
+                      type: object
+                      data_to_process: all
+                      people_to_process: all
+                      object_type_id: 1
+                      error: possible error - The specified Object Type does not exist.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: json
+        label: JSON
+        source: "{\n  \"import\": {\n    \"name\": \"string\",\n    \"data_file_url\": \"string\",\n    \"type\": \"people\",\n    \"identifier\": \"id\"\n  }\n}"
+      - lang: Shell + Curl
+        source: "curl --request POST \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/imports \\\n  --header 'content-type: application/json' \\\n  --data '{\"import\":{\"name\":\"string\",\"data_file_url\":\"string\",\"type\":\"people\",\"identifier\":\"id\",\"data_to_process\":\"all\",\"description\":\"string\"}}'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"POST\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/imports\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({\n  import: {\n    name: 'string',\n    data_file_url: 'string',\n    type: 'people',\n    identifier: 'id',\n    data_to_process: 'all',\n    description: 'string'\n  }\n}));\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/imports")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Post.new(url)
+
+          request["content-type"] = ''application/json''
+
+          request.body = "{\"import\":{\"name\":\"string\",\"data_file_url\":\"string\",\"type\":\"people\",\"identifier\":\"id\",\"data_to_process\":\"all\",\"description\":\"string\"}}"
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          payload = "{\"import\":{\"name\":\"string\",\"data_file_url\":\"string\",\"type\":\"people\",\"identifier\":\"id\",\"data_to_process\":\"all\",\"description\":\"string\"}}"
+
+
+          headers = { ''content-type'': "application/json" }
+
+
+          conn.request("POST", "/v1/imports", payload, headers)
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/imports\"\n\n\tpayload := strings.NewReader(\"{\\\"import\\\":{\\\"name\\\":\\\"string\\\",\\\"data_file_url\\\":\\\"string\\\",\\\"type\\\":\\\"people\\\",\\\"identifier\\\":\\\"id\\\",\\\"data_to_process\\\":\\\"all\\\",\\\"description\\\":\\\"string\\\"}}\")\n\n\treq, _ := http.NewRequest(\"POST\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+  /v1/imports/{import_id}:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    get:
+      operationId: getImport
+      parameters:
+      - name: import_id
+        in: path
+        required: true
+        description: The `id` of the import you want to lookup. This value is [returned from an import](#import) that was accepted and queued for processing.
+        schema:
+          type: integer
+      summary: Retrieve a bulk import
+      security:
+      - Bearer-Auth: []
+      description: This endpoint returns information about an "import"—a CSV file containing a group of people or events you uploaded to using `v1/imports` endpoint. You can use this endpoint to check to status of imports, or find out how many rows you successfully imported from a CSV file.
+      tags:
+      - Imports
+      responses:
+        '200':
+          description: Returns an import payload.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - import
+                properties:
+                  import:
+                    allOf:
+                    - x-scalar-ignore: true
+                      description: Represents an import operation.
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: This is the `import_id` you'll use if you want to [lookup your import operation](#getImport).
+                        created_at:
+                          x-scalar-ignore: true
+                          type: integer
+                          format: unix timestamp
+                          description: The date time when the referenced ID was created.
+                          example: 1552341937
+                          readOnly: true
+                        updated_at:
+                          x-scalar-ignore: true
+                          type: integer
+                          format: unix timestamp
+                          description: The date time when the referenced ID was last updated.
+                          example: 1552341937
+                          readOnly: true
+                        name:
+                          x-scalar-ignore: true
+                          type: string
+                          description: A friendly name for your import. This helps you identify your import.
+                        description:
+                          x-scalar-ignore: true
+                          type: string
+                          description: A helpful description that can help you find and recognize your import operation.
+                        rows_to_import:
+                          x-scalar-ignore: true
+                          type: integer
+                          description: The total number of importable rows we found in the CSV.
+                        rows_imported:
+                          x-scalar-ignore: true
+                          type: integer
+                          description: The number of rows we imported from the CSV.
+                        state:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The state of the import—whether your import is being processed, fully completed (`imported`), or if it failed.
+                          enum:
+                          - preprocessing
+                          - preprocessed
+                          - validating
+                          - validated
+                          - importing
+                          - imported
+                          - failed
+                          - canceled
+                        type:
+                          x-scalar-ignore: true
+                          type: string
+                          description: The type of import.
+                          enum:
+                          - people
+                          - event
+                          - object
+                          - relationship
+                        identifier:
+                          type: string
+                          description: The type of identifier you used to identify people in your CSV. Not applicable for object imports.
+                          enum:
+                          - id
+                          - email
+                        data_to_process:
+                          x-scalar-ignore: true
+                          type: string
+                          description: Controls whether your import adds and updates all rows, adds only new rows, or updates only existing rows. Defaults to `all`. Event imports support only `all` and `only_existing`. Formerly called `people_to_process`.
+                          enum:
+                          - all
+                          - only_new
+                          - only_existing
+                        people_to_process:
+                          type: string
+                          description: 'Returned for people and event imports, even if you imported using the field `data_to_process`. This field will be deprecated soon.
+
+                            '
+                          enum:
+                          - all
+                          - only_new
+                          - only_existing
+                        object_type_id:
+                          type: string
+                          description: The object type an object belongs to—like "Companies" or "Accounts". Only applies to object imports.
+                          example: '1'
+                        error:
+                          description: If your import fails, this helps you understand why.
+                          type: string
+                      example:
+                        id: 30
+                        name: account-object-import
+                        description: importing accounts
+                        created_at: 1706081641
+                        updated_at: 1706081645
+                        rows_to_import: 3
+                        rows_imported: 3
+                        state: imported
+                        type: object
+                        data_to_process: all
+                        people_to_process: all
+                        object_type_id: 1
+                        error: possible error - The specified Object Type does not exist.
+                    - type: object
+                      properties:
+                        error_export_id:
+                          type: integer
+                          example: 2
+                          description: ID of the export containing errors for the import, which can retrieved via [the *Get an export* endpoint](#operation/getExport). Only present when there are errors.
+                        error_download_url:
+                          type: string
+                          example: https://api.customer.io/v1/exports/2/download
+                          description: URL to download errors for the import via [the *Download an export* endpoint](#operation/downloadExport). Only present when there are errors.
+                        warning_export_id:
+                          type: integer
+                          example: 1
+                          description: ID of the export containing warnings for the import, which can retrieved via [the *Get an export* endpoint](#operation/getExport). Only present when there are warnings.
+                        warning_download_url:
+                          type: string
+                          example: https://api.customer.io/v1/exports/1/download
+                          description: URL to download warnings for the import via [the *Download an export* endpoint](#operation/downloadExport). Only present when there are warnings.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/imports/{import_id}"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/imports/%7Bimport_id%7D\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/imports/%7Bimport_id%7D")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/imports/%7Bimport_id%7D")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/imports/%7Bimport_id%7D\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+components:
+  securitySchemes:
+    Bearer-Auth:
+      type: http
+      scheme: bearer
+      description: 'The App API uses a bearer authentication scheme.
+
+
+        You can generate a bearer token, known as an **App API Key**, with a defined scope in [your account settings](https://fly.customer.io/settings/api_credentials?keyType=app). [Learn more about bearer authorization in Customer.io](/accounts/settings/managing-credentials).
+
+        '
+    ServiceAccount-Auth:
+      x-scalar-ignore: true
+      type: http
+      scheme: bearer
+      bearerFormat: sa_live_
+      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
+
+
+        Service-account tokens are intended for testing and one-off sends—for example, using the Customer.io CLI with an AI agent like Claude to verify that a transactional message renders correctly before wiring it into your production backend. **For the production integration that triggers the message from your application, use an App API Key instead**: it''s workspace-scoped, easier to rotate, and has a smaller blast radius.
+
+
+        Service-account tokens are server-side credentials. Treat them like any API key—keep them in environment variables or a secret manager, and never embed them in client-side code, mobile apps, or other untrusted contexts.
+
+        '
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: API key passed as a Bearer token

@@ -154,53 +154,6 @@ apis:
     url: https://docs.customer.io/integrations/api/app/
   - type: Documentation
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
-- aid: customer-io:customer-io-devices-api
-  name: Customer.io Devices API
-  description: Manage push notification devices associated with customer profiles.
-  humanURL: https://docs.customer.io/integrations/api/track/
-  baseURL: https://track.customer.io
-  tags:
-  - Devices
-  properties:
-  - type: OpenAPI
-    url: openapi/customer-io-devices-api-openapi.yml
-  - type: Documentation
-    url: https://docs.customer.io/integrations/api/app/
-  - type: Documentation
-    url: https://docs.customer.io/integrations/data-in/connections/http-api/
-- aid: customer-io:customer-io-entity-api
-  name: Customer.io Entity API
-  description: >-
-    Track API v2 entity endpoint for creating and managing people and objects using a unified request
-    format.
-  humanURL: https://docs.customer.io/integrations/api/track/
-  baseURL: https://track.customer.io
-  tags:
-  - Entity
-  properties:
-  - type: OpenAPI
-    url: openapi/customer-io-entity-api-openapi.yml
-  - type: Documentation
-    url: https://docs.customer.io/integrations/api/app/
-  - type: Documentation
-    url: https://docs.customer.io/integrations/data-in/connections/http-api/
-- aid: customer-io:customer-io-events-api
-  name: Customer.io Events API
-  description: >-
-    Track customer events and anonymous events to record behavioral data and trigger messaging workflows.
-  humanURL: https://docs.customer.io/integrations/api/track/
-  baseURL: https://track.customer.io
-  tags:
-  - Event
-  tags_raw:
-  - Events
-  properties:
-  - type: OpenAPI
-    url: openapi/customer-io-events-api-openapi.yml
-  - type: Documentation
-    url: https://docs.customer.io/integrations/api/app/
-  - type: Documentation
-    url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-exports-api
   name: Customer.io Exports API
   description: Export customer data, deliveries, and other information from your workspace.
@@ -243,20 +196,6 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/customer-io-identify-api-openapi.yml
-  - type: Documentation
-    url: https://docs.customer.io/integrations/api/app/
-  - type: Documentation
-    url: https://docs.customer.io/integrations/data-in/connections/http-api/
-- aid: customer-io:customer-io-merge-api
-  name: Customer.io Merge API
-  description: Merge two customer profiles into a single profile.
-  humanURL: https://docs.customer.io/integrations/api/track/
-  baseURL: https://track.customer.io
-  tags:
-  - Merge
-  properties:
-  - type: OpenAPI
-    url: openapi/customer-io-merge-api-openapi.yml
   - type: Documentation
     url: https://docs.customer.io/integrations/api/app/
   - type: Documentation
@@ -404,6 +343,453 @@ apis:
     url: scopes/customer-io-scopes.yml
   - type: Documentation
     url: https://docs.customer.io/ai/mcp/get-started/
+- aid: customer-io:customer-io-assets-api
+  name: Customer.io Assets API
+  description: Manage file assets such as images and PDFs and organize them into folders.
+  humanURL: https://docs.customer.io/integrations/api/track/
+  baseURL: https://track.customer.io
+  tags:
+  - Assets
+  properties:
+  - type: OpenAPI
+    url: openapi/customer-io-assets-api-openapi.yml
+  - type: Documentation
+    url: https://docs.customer.io/integrations/api/app/
+  - type: Documentation
+    url: https://docs.customer.io/integrations/data-in/connections/http-api/
+- aid: customer-io:customer-io-customer-io-app-api-api
+  name: Customer.io Customer.io App API
+  description: The Customer.io App API API from Customer.io — 0 operation(s) for customer.io app api.
+  humanURL: https://docs.customer.io/integrations/api/track/
+  baseURL: https://track.customer.io
+  tags:
+  - Customer.io App API
+  properties:
+  - type: OpenAPI
+    url: openapi/customer-io-customer-io-app-api-api-openapi.yml
+  - type: Documentation
+    url: https://docs.customer.io/integrations/api/app/
+  - type: Documentation
+    url: https://docs.customer.io/integrations/data-in/connections/http-api/
+- aid: customer-io:customer-io-data-index-api
+  name: Customer.io Data Index API
+  description: >-
+    Update descriptions for attributes and events in your workspace. This helps improve AI-generated content
+    and segments.
+  humanURL: https://docs.customer.io/integrations/api/track/
+  baseURL: https://track.customer.io
+  tags:
+  - Data Index
+  properties:
+  - type: OpenAPI
+    url: openapi/customer-io-data-index-api-openapi.yml
+  - type: Documentation
+    url: https://docs.customer.io/integrations/api/app/
+  - type: Documentation
+    url: https://docs.customer.io/integrations/data-in/connections/http-api/
+- aid: customer-io:customer-io-design-studio-api
+  name: Customer.io Design Studio API
+  description: >-
+    Use these endpoints to manage emails, translations, and components made with Design Studio. You can
+    programmatically manage Design Studio content and migrate templates from an external service. To manage
+    assets like images, use the [Assets API](/integrations/api/app/#tag/assets).
+
+
+    These endpoints do not enable you to publish changes to connected workflows like campaigns, nor can
+    you update global styles. They're only for content management at this time. Learn more about the [best
+    practices](/integrations/api/integrate-with-ds/) for sending HTML through these endpoints.
+
+
+    If you're an external tool and interested in being listed as one of our integrated partners, please
+    reach out to [product@customer.io](mailto:product@customer.io) to chat with a Product Manager!
+  humanURL: https://docs.customer.io/integrations/api/track/
+  baseURL: https://track.customer.io
+  tags:
+  - Design Studio
+  properties:
+  - type: OpenAPI
+    url: openapi/customer-io-design-studio-api-openapi.yml
+  - type: Documentation
+    url: https://docs.customer.io/integrations/api/app/
+  - type: Documentation
+    url: https://docs.customer.io/integrations/data-in/connections/http-api/
+- aid: customer-io:customer-io-esp-suppression-api
+  name: Customer.io ESP Suppression API
+  description: >-
+    If you use Customer.io as your email service provider (ESP), these endpoints help you retrieve information
+    about email addresses suppressed directly by the ESP. ESP-based suppressions are different from suppression
+    in Customer.io: these are addresses that the ESP suppressed automatically because a message bounced,
+    a customer requested they not be contacted again, etc. These are _not_ addresses that you deleted
+    and suppressed either in our UI or through [the API](#operation/suppress).
+  humanURL: https://docs.customer.io/integrations/api/track/
+  baseURL: https://track.customer.io
+  tags:
+  - ESP Suppression
+  properties:
+  - type: OpenAPI
+    url: openapi/customer-io-esp-suppression-api-openapi.yml
+  - type: Documentation
+    url: https://docs.customer.io/integrations/api/app/
+  - type: Documentation
+    url: https://docs.customer.io/integrations/data-in/connections/http-api/
+- aid: customer-io:customer-io-forms-api
+  name: Customer.io Forms API
+  description: >-
+    Connect forms to your workspace to identify people, apply form responses to people, and trigger campaigns
+    for people who fill out forms on your website or in your app.
+  humanURL: https://docs.customer.io/integrations/api/track/
+  baseURL: https://track.customer.io
+  tags:
+  - Forms
+  properties:
+  - type: OpenAPI
+    url: openapi/customer-io-forms-api-openapi.yml
+  - type: Documentation
+    url: https://docs.customer.io/integrations/api/app/
+  - type: Documentation
+    url: https://docs.customer.io/integrations/data-in/connections/http-api/
+- aid: customer-io:customer-io-imports-api
+  name: Customer.io Imports API
+  description: >-
+    APIs to upload CSV files containing lists of people. These endpoints provide a convenient way to add
+    and update people without having to make an `identify` call for each individual person.
+  humanURL: https://docs.customer.io/integrations/api/track/
+  baseURL: https://track.customer.io
+  tags:
+  - Imports
+  properties:
+  - type: OpenAPI
+    url: openapi/customer-io-imports-api-openapi.yml
+  - type: Documentation
+    url: https://docs.customer.io/integrations/api/app/
+  - type: Documentation
+    url: https://docs.customer.io/integrations/data-in/connections/http-api/
+- aid: customer-io:customer-io-info-api
+  name: Customer.io Info API
+  description: >-
+    Returns the list of addresses used by Customer.io. You must add add these addresses to your allowlist
+    when using a custom SMTP provider and blocking unknown IP addresses.
+  humanURL: https://docs.customer.io/integrations/api/track/
+  baseURL: https://track.customer.io
+  tags:
+  - Info
+  properties:
+  - type: OpenAPI
+    url: openapi/customer-io-info-api-openapi.yml
+  - type: Documentation
+    url: https://docs.customer.io/integrations/api/app/
+  - type: Documentation
+    url: https://docs.customer.io/integrations/data-in/connections/http-api/
+- aid: customer-io:customer-io-live-notifications-api
+  name: Customer.io Live Notifications API
+  description: >-
+    Start, update, and end live notifications—real-time activities on the iOS Lock Screen and Dynamic
+    Island, and in the Android notification shade. Your server drives the activity's content; Customer.io
+    handles token lookup and push delivery.
+  humanURL: https://docs.customer.io/integrations/api/track/
+  baseURL: https://track.customer.io
+  tags:
+  - Live Notifications
+  properties:
+  - type: OpenAPI
+    url: openapi/customer-io-live-notifications-api-openapi.yml
+  - type: Documentation
+    url: https://docs.customer.io/integrations/api/app/
+  - type: Documentation
+    url: https://docs.customer.io/integrations/data-in/connections/http-api/
+- aid: customer-io:customer-io-newsletter-metrics-api
+  name: Customer.io Newsletter Metrics API
+  description: >-
+    Newsletter metrics include metrics for translations, A/B tests, and links.
+
+
+    These endpoints return information about newsletter metrics including metrics for translations and
+    A/B tests. You can update variants in newsletters from these endpoints, but you must perform all other
+    create, update, and/or delete operations through the UI.
+  humanURL: https://docs.customer.io/integrations/api/track/
+  baseURL: https://track.customer.io
+  tags:
+  - Newsletter Metrics
+  properties:
+  - type: OpenAPI
+    url: openapi/customer-io-newsletter-metrics-api-openapi.yml
+  - type: Documentation
+    url: https://docs.customer.io/integrations/api/app/
+  - type: Documentation
+    url: https://docs.customer.io/integrations/data-in/connections/http-api/
+- aid: customer-io:customer-io-newsletter-variants-api
+  name: Customer.io Newsletter Variants API
+  description: >-
+    A newsletter variant is a translation or an A/B test. You can create, update, or delete variants in
+    newsletters from these endpoints. You can also create a new A/B test group.
+
+
+    If your newsletters include assets like images or PDFs, host them in your [workspace's assets](/integrations/api/app/#tag/assets)
+    or at another public URL, and include the URL in your message content.
+  humanURL: https://docs.customer.io/integrations/api/track/
+  baseURL: https://track.customer.io
+  tags:
+  - Newsletter Variants
+  properties:
+  - type: OpenAPI
+    url: openapi/customer-io-newsletter-variants-api-openapi.yml
+  - type: Documentation
+    url: https://docs.customer.io/integrations/api/app/
+  - type: Documentation
+    url: https://docs.customer.io/integrations/data-in/connections/http-api/
+- aid: customer-io:customer-io-objects-api
+  name: Customer.io Objects API
+  description: >-
+    Objects are "groups" that you can relate people to in Customer.io—like the companies they work for,
+    the online classes they take, and so on. These APIs help you find objects, their attributes, the people
+    they're related to, etc. Use the [track API v1](/api/track/#tag/Track-Customers) or the [Track v2
+    API](/api/track/#tag/track_v2) to add and relate people to objects to your workspace and assign their
+    attributes.
+  humanURL: https://docs.customer.io/integrations/api/track/
+  baseURL: https://track.customer.io
+  tags:
+  - Objects
+  properties:
+  - type: OpenAPI
+    url: openapi/customer-io-objects-api-openapi.yml
+  - type: Documentation
+    url: https://docs.customer.io/integrations/api/app/
+  - type: Documentation
+    url: https://docs.customer.io/integrations/data-in/connections/http-api/
+- aid: customer-io:customer-io-opt-outs-api
+  name: Customer.io Opt Outs API
+  description: The Opt-outs API from Customer.io — 2 operation(s) for opt-outs.
+  humanURL: https://docs.customer.io/integrations/api/track/
+  baseURL: https://track.customer.io
+  tags:
+  - Opt-outs
+  properties:
+  - type: OpenAPI
+    url: openapi/customer-io-opt-outs-api-openapi.yml
+  - type: Documentation
+    url: https://docs.customer.io/integrations/api/app/
+  - type: Documentation
+    url: https://docs.customer.io/integrations/data-in/connections/http-api/
+- aid: customer-io:customer-io-reporting-webhooks-api
+  name: Customer.io Reporting Webhooks API
+  description: >-
+    Set up webhooks to inform an external service about Customer.io events. Webhooks can notify you immediately
+    when immediately when customer attributes change or when people open your messages.
+  humanURL: https://docs.customer.io/integrations/api/track/
+  baseURL: https://track.customer.io
+  tags:
+  - Reporting Webhooks
+  properties:
+  - type: OpenAPI
+    url: openapi/customer-io-reporting-webhooks-api-openapi.yml
+  - type: Documentation
+    url: https://docs.customer.io/integrations/api/app/
+  - type: Documentation
+    url: https://docs.customer.io/integrations/data-in/connections/http-api/
+- aid: customer-io:customer-io-send-messages-api
+  name: Customer.io Send Messages API
+  description: >-
+    Use these endpoints to send broadcasts or transactional messages to your audience. They use the same
+    authentication method, but review the limits for both types of workflows to make sure you'll successfully
+    trigger your messages.
+
+
+    You can't trigger campaigns through our APIs.
+
+
+    ## API triggered broadcast limits
+
+
+    While [API triggered broadcasts](#operation/triggerBroadcast) are limited to 1 request every 10 seconds,
+    they're also limited by the number of triggers you can have queued at a time, as shown in the table
+    below.
+
+
+    | Data Type | Limit | Description |
+
+    | -- | -- | -- |
+
+    | Trigger Payload | 25MB | Max length of the entire Trigger call, larger calls are typically to support
+    `per_user_data` |
+
+    | Trigger Data | 50000 bytes | Max length of the data section in the Trigger call |
+
+    | Recipient List<sup>1</sup> | 10000 recipients | Max number of ids or emails included in the Trigger
+    call |
+
+    | Custom Per User Data<sup>1</sup> | 10000 entries | Max number of entries in `per_user_data` |
+
+    | Custom Per User Data<sup>1</sup> | 2MB | Max length per user in the file referenced by `data_file_url`.
+    |
+
+    | Custom Per User Data<sup>1</sup> | 10GB | Max length of the entire size of the file referenced by
+    `data_file_url` |
+
+    | Trigger Queue | 5 triggers | Max number of triggers waiting to be processed consecutively |
+
+
+    <sup>1</sup>For larger data sets, use `data_file_url` to supply a link to a file that contains your
+    merge data. Attempting to send too much data in a single API call will fail.
+
+
+    ## Transactional Message Limits
+
+
+    The `/send-*` endpoints are limited to 100 requests per second.
+
+
+    | Data Type | Limit | Description |
+
+    | -- | -- | -- |
+
+    | Payload | 1MB | Max length of the payload, excepting attachments |
+
+    | Attachments (email) | 2MB | Maximum size of attachments |
+
+    | Recipients | 15 | Total number of recipients across the `to`, `cc`, and `bcc` fields. |
+  humanURL: https://docs.customer.io/integrations/api/track/
+  baseURL: https://track.customer.io
+  tags:
+  - Send Messages
+  properties:
+  - type: OpenAPI
+    url: openapi/customer-io-send-messages-api-openapi.yml
+  - type: Documentation
+    url: https://docs.customer.io/integrations/api/app/
+  - type: Documentation
+    url: https://docs.customer.io/integrations/data-in/connections/http-api/
+- aid: customer-io:customer-io-subscription-center-api
+  name: Customer.io Subscription Center API
+  description: >-
+    A subscription center differentiates the types of messages available for your product. Your audience
+    sets subscription preferences by name, but we record subscription preferences by topic ID. You can
+    use these endpoints to get a list of topics and names, helping you understand your audience's subscription
+    preferences.
+  humanURL: https://docs.customer.io/integrations/api/track/
+  baseURL: https://track.customer.io
+  tags:
+  - Subscription Center
+  properties:
+  - type: OpenAPI
+    url: openapi/customer-io-subscription-center-api-openapi.yml
+  - type: Documentation
+    url: https://docs.customer.io/integrations/api/app/
+  - type: Documentation
+    url: https://docs.customer.io/integrations/data-in/connections/http-api/
+- aid: customer-io:customer-io-track-customers-api
+  name: Customer.io Track Customers API
+  description: >-
+    Add, modify, suppress, or unsuppress people (referred to as "customers" in our APIs). You can also
+    use these endpoints to set attributes on people.
+  humanURL: https://docs.customer.io/integrations/api/track/
+  baseURL: https://track.customer.io
+  tags:
+  - Track Customers
+  properties:
+  - type: OpenAPI
+    url: openapi/customer-io-track-customers-api-openapi.yml
+  - type: Documentation
+    url: https://docs.customer.io/integrations/api/app/
+  - type: Documentation
+    url: https://docs.customer.io/integrations/data-in/connections/http-api/
+- aid: customer-io:customer-io-track-events-api
+  name: Customer.io Track Events API
+  description: >-
+    Use customer events to trigger campaigns or add users to segments. You can attribute events directly
+    to customers or send anonymous events and associate them with users later when you identify them.
+  humanURL: https://docs.customer.io/integrations/api/track/
+  baseURL: https://track.customer.io
+  tags:
+  - Track Events
+  properties:
+  - type: OpenAPI
+    url: openapi/customer-io-track-events-api-openapi.yml
+  - type: Documentation
+    url: https://docs.customer.io/integrations/api/app/
+  - type: Documentation
+    url: https://docs.customer.io/integrations/data-in/connections/http-api/
+- aid: customer-io:customer-io-track-segments-api
+  name: Customer.io Track Segments API
+  description: >-
+    Manual segments are lists of people that you incorporate using the API or by uploading CSVs. You can
+    add people to, or remove people from, manual segments with these endpoints. These endpoints do _not_
+    let you modify data-driven segments.
+
+
+    **NOTE**: These endpoints do not yet support workspaces that use both `email` and `id` as identifiers.
+
+
+    A segment must exist before you can add people to it. You can create manual segments using the [App
+    API `/segments` endpoints](/api/#operation/createManSegment).
+  humanURL: https://docs.customer.io/integrations/api/track/
+  baseURL: https://track.customer.io
+  tags:
+  - Track Segments
+  properties:
+  - type: OpenAPI
+    url: openapi/customer-io-track-segments-api-openapi.yml
+  - type: Documentation
+    url: https://docs.customer.io/integrations/api/app/
+  - type: Documentation
+    url: https://docs.customer.io/integrations/data-in/connections/http-api/
+- aid: customer-io:customer-io-track-v2-api
+  name: Customer.io Track V2 API
+  description: "This version of our edge API has only two endpoints, but supports the majority of our\
+    \ traditional v1 track operations and then some based on the `type` and `action` keys that you set\
+    \ in your request. \n  \nYou can use the `/batch` call to send multiple requests at the same time.\
+    \ Unlike the v1 API, you can also make requests affecting objects and deliveries. Objects are a grouping\
+    \ mechanism for people—like an account people belong to or an online course that they enroll in. Deliveries\
+    \ are events based on messages sent from Customer.io.\n\nThe chart below lists the type of `action`\
+    \ you can perform for each `type`. Our requests below are broken out by `type`; use the `action` dropdown\
+    \ to see the specific payload structure for each action.\n\n| Action | Person | Object | Delivery\
+    \ | \n| :-- | :--: | :--: | :--: |\n| identify | &#9989; | &#9989; | |\n| delete | &#9989; | &#9989;\
+    \ | |\n| event | &#9989; | | &#9989; |\n| screen | &#9989; | | |\n| page | &#9989; | | |\n| add_relationships\
+    \ | &#9989; | &#9989; | |\n| delete_relationships | &#9989; | &#9989; | |\n| add_device | &#9989;\
+    \ | | | \n| delete_device | &#9989; | | |\n| merge | &#9989; | | |\n| suppress | &#9989; | | |\n|\
+    \ unsuppress | &#9989; | | |"
+  humanURL: https://docs.customer.io/integrations/api/track/
+  baseURL: https://track.customer.io
+  tags:
+  - track_v2
+  properties:
+  - type: OpenAPI
+    url: openapi/customer-io-track-v2-api-openapi.yml
+  - type: Documentation
+    url: https://docs.customer.io/integrations/api/app/
+  - type: Documentation
+    url: https://docs.customer.io/integrations/data-in/connections/http-api/
+- aid: customer-io:customer-io-trackregion-api
+  name: Customer.io Track Region API
+  description: >-
+    Determine whether your account and data are hosted in the US or EU data center using your [Track API
+    Key](https://fly.customer.io/settings/api_credentials).
+  humanURL: https://docs.customer.io/integrations/api/track/
+  baseURL: https://track.customer.io
+  tags:
+  - trackRegion
+  properties:
+  - type: OpenAPI
+    url: openapi/customer-io-trackregion-api-openapi.yml
+  - type: Documentation
+    url: https://docs.customer.io/integrations/api/app/
+  - type: Documentation
+    url: https://docs.customer.io/integrations/data-in/connections/http-api/
+- aid: customer-io:customer-io-workspaces-api
+  name: Customer.io Workspaces API
+  description: >-
+    An API to retrieve information about your workspaces in your account. You can use this to look up
+    counts for messages sent, monthly billable emails sent, people, and objects.
+  humanURL: https://docs.customer.io/integrations/api/track/
+  baseURL: https://track.customer.io
+  tags:
+  - Workspaces
+  properties:
+  - type: OpenAPI
+    url: openapi/customer-io-workspaces-api-openapi.yml
+  - type: Documentation
+    url: https://docs.customer.io/integrations/api/app/
+  - type: Documentation
+    url: https://docs.customer.io/integrations/data-in/connections/http-api/
 common:
 - type: Overlay
   url: overlays/customer-io-pipelines-api-overlay.yaml

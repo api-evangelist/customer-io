@@ -1,0 +1,501 @@
+openapi: 3.2.0
+info:
+  version: 1.0.0
+  title: Customer.io App Opt Outs API
+  description: 'Our App API provides ways to trigger messages and retrieve information about people, campaigns, broadcasts, and more.
+
+
+    # Overview
+
+
+    The App API provides methods to send newsletters, transactional messages, and API-triggered broadcasts. You can create newsletters from scratch and update transactional messages and API-triggered broadcasts.
+
+
+    For transactional messages and API-triggered broadcasts, your payload acts as a message "trigger" and can contain `data` that you reference in your messages using liquid—`{{trigger.<data>}}`.
+
+
+    The other endpoints help you retrieve information about people, segments, campaigns, broadcasts, etc; it also lets you update campaign actions, messages, newsletter variants, etc. Aside from the [API-triggered broadcast](#triggerBroadcast) (1 per 10 seconds) and [Transactional](#sendEmail) (100 per second) endpoints, requests are limited to 10 per second.
+
+
+    # Use our Postman collection
+
+
+    We''ve generated a Postman collection to help you get started with our APIs.
+
+
+    If you fork this collection, you might want to disable the *Watch original collection* option. We automatically update our Postman collection whenever we release changes to our documentation, even if we don''t change our APIs—which happens daily! Rather than being flooded with Postman notifications, you can check out our [Release Notes](/release-notes/) for updates to our APIs.
+
+
+    **NOTE**: Postman endpoints default to our US APIs. If you''re in our European (EU) region, you''ll need to add `-eu` to the server variables (`track_api_url` and `app_api_url`).
+
+
+    [<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://god.gw.postman.com/run-collection/23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d%26entityType%3Dcollection%26workspaceId%3Db886877f-fc09-475f-84fe-6221a98f4d18#?env%5BCustomer.io%20API%20Environment%5D=W3sia2V5IjoidHJhY2tfYXBpX3VybCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiJ0cmFjay5jdXN0b21lci5pbyIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBwX2FwaV91cmwiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiYXBpLmN1c3RvbWVyLmlvIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzaXRlX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBpX2tleSIsInR5cGUiOiJzZWNyZXQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYmVhcmVyIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYnJvYWRjYXN0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaW1wb3J0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiZW1haWxfYWRkcmVzcyIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InN1cHByZXNzaW9uX3R5cGUiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjb2xsZWN0aW9uX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoic25pcHBldF9uYW1lIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoid2ViaG9va19pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InNlbmRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImV4cG9ydF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6Im1lc3NhZ2VfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzZWdtZW50X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoibmV3c2xldHRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImNvbnRlbnRfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjYW1wYWlnbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImFjdGlvbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImN1c3RvbWVyX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoidHJhbnNhY3Rpb25hbF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InRyaWdnZXJfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJmb3JtX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaWRlbnRpZmllciIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRldmljZV9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRlbGl2ZXJ5X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9XQ==)
+
+
+    # Server addresses: US and EU
+
+
+    Customer.io hosts services in the United States (US) and European Union. Select the appropriate server address for your region.
+
+
+    | Region | Server Address |
+
+    | :-- | :-- |
+
+    | US | https://api.customer.io |
+
+    | EU | https://api-eu.customer.io |
+
+
+    # Authentication
+
+
+    All requests to the Customer.io App API use an [App API Key](#App-API-Key).
+
+
+    To authenticate, provide your key as a Bearer token in a HTTP Authorization header. You can create and manage your API keys—including keys with different scopes—in [your account settings page](https://fly.customer.io/settings/api_credentials?keyType=app). Each operation on this page references the authorization header it requires.
+
+
+    # Rate Limits
+
+
+    Most endpoints on this page are limited to 10 requests per second. The exceptions are:
+
+    * The [transactional email](#operation/sendEmail) endpoint is limited to 100 requests per second.
+
+    * The [API-triggered broadcast endpoint](#operation/triggerBroadcast) is limited to 1 request every 10 seconds.
+
+
+    **Rate limits are subject to change. We may adjust these thresholds to ensure stable performance for all customers.**
+
+    '
+servers:
+- url: https://api.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+- url: https://api-eu.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+tags:
+- name: Opt-outs
+paths:
+  /v1/optouts:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - name: from
+      in: query
+      required: false
+      description: Filter for a specific sender on any channel. For SMS, this is a sender phone number (E.164), an alphanumeric sender ID, or a messaging-service SID; for WhatsApp, it's the sender phone number.
+      schema:
+        type: string
+        example: '+15551234567'
+    - name: start
+      in: query
+      required: false
+      description: A pagination cursor—a base64-encoded value returned in the `next` property of the previous page. Omit this parameter to return the first page; pass the previous page's `next` value to return the following page.
+      schema:
+        type: string
+        example: MTox
+    - name: limit
+      in: query
+      required: false
+      description: The maximum number of results you want to retrieve per page.
+      schema:
+        type: integer
+        default: 100
+        maximum: 1000
+    get:
+      tags:
+      - Opt-outs
+      summary: List opt-outs in the workspace
+      operationId: getOptouts
+      security:
+      - Bearer-Auth: []
+      description: 'Return a workspace-wide list of opt-outs across all channels. Each entry represents a person and the senders/channels (SMS or WhatsApp) they''ve opted out of.
+
+
+        A person opts out of a specific sender on a specific channel—for example, a person can opt out of SMS messages from one sender number while continuing to receive messages from another. An entry''s presence in the `optouts` array means the person is opted out of that sender/channel.
+
+
+        Use the `from` parameter to filter for a specific sender. Use the `start` parameter with the `next` value from the previous response to paginate through results.
+
+
+        **Note**: SMS sender values are stored normalized (trimmed and lowercased). For alphanumeric SMS senders and messaging-service SIDs, the response recovers the original casing from your workspace''s Twilio sender identities. E.164 phone numbers are unaffected.
+
+        '
+      responses:
+        '200':
+          description: Returns an array of opt-out records, one per person.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  optouts:
+                    type: array
+                    description: A list of people and their opt-outs. Each object represents a person and the senders/channels they've opted out of.
+                    items:
+                      type: object
+                      properties:
+                        customer_id:
+                          type: string
+                          description: The person's ID.
+                          example: abc123
+                        cio_id:
+                          x-scalar-ignore: true
+                          type: string
+                          description: A unique identifier set by Customer.io, used to reference a person if you want to update their identifiers.
+                          example: a3000001
+                        optouts:
+                          x-scalar-ignore: true
+                          type: array
+                          description: The senders and channels that the person is opted out of. An entry's presence means the person is opted out of that sender on that channel.
+                          items:
+                            type: object
+                            properties:
+                              channel:
+                                type: string
+                                description: The channel that the person is opted out of.
+                                enum:
+                                - sms
+                                - whatsapp
+                                example: sms
+                              from:
+                                type: string
+                                description: The sender that the person is opted out of. For SMS, this is a sender phone number (E.164), an alphanumeric sender ID, or a messaging-service SID; for WhatsApp, it's the sender phone number.
+                                example: '+15551234567'
+                  next:
+                    type: string
+                    description: The `start` value for the next page of results. Absent or empty when there are no more results.
+              example:
+                optouts:
+                - customer_id: abc123
+                  cio_id: cio_03000001
+                  optouts:
+                  - channel: sms
+                    from: '+15551234567'
+                  - channel: whatsapp
+                    from: '+15559876543'
+                next: MTox
+        '401':
+          description: Unauthorized request. Make sure that you provided the right credentials.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/optouts"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/optouts\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/optouts")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/optouts")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/optouts\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+  /v1/customers/{customer_id}/optouts:
+    servers:
+    - url: https://api.customer.io
+      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - name: customer_id
+      required: true
+      in: path
+      description: The ID of the customer you want to perform an operation against.
+      schema:
+        type: string
+        example: 12345
+    - name: id_type
+      required: false
+      in: query
+      description: The type of `customer_id` you want to use to reference a person. If you don't provide this parameter, we assume that the `customer_id` in your request is a person's `id`. You can use `email` and `phone` only if they're enabled as identifiers in your [workspace settings](/accounts/workspaces/overview/#migrate-workspace); otherwise the request returns `400`. Reference `phone` values in [E.164 format](https://en.wikipedia.org/wiki/E.164), like `+14155552671`, and URL-encode the leading `+` as `%2B`.
+      schema:
+        type: string
+        enum:
+        - id
+        - email
+        - phone
+        - cio_id
+    get:
+      tags:
+      - Opt-outs
+      summary: Lookup a customer's opt-outs
+      operationId: getPersonOptouts
+      security:
+      - Bearer-Auth: []
+      description: 'Return a list of the senders and channels that a person has opted out of, across all channels.
+
+
+        An entry''s presence in the `optouts` array means the person is opted out of that sender/channel. Use the [`PUT /v1/customers/{customer_id}/optouts`](#operation/updatePersonOptouts) endpoint to opt a person out of, or back in to, specific senders.
+
+        '
+      responses:
+        '200':
+          description: Returns the person's opt-outs across channels.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  optouts:
+                    x-scalar-ignore: true
+                    type: array
+                    description: The senders and channels that the person is opted out of. An entry's presence means the person is opted out of that sender on that channel.
+                    items:
+                      type: object
+                      properties:
+                        channel:
+                          type: string
+                          description: The channel that the person is opted out of.
+                          enum:
+                          - sms
+                          - whatsapp
+                          example: sms
+                        from:
+                          type: string
+                          description: The sender that the person is opted out of. For SMS, this is a sender phone number (E.164), an alphanumeric sender ID, or a messaging-service SID; for WhatsApp, it's the sender phone number.
+                          example: '+15551234567'
+              example:
+                optouts:
+                - channel: sms
+                  from: '+15551234567'
+                - channel: whatsapp
+                  from: '+15559876543'
+        '404':
+          description: The `customer_id` does not exist.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: Shell + Curl
+        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/customers/{customer_id}/optouts"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/customers/%7Bcustomer_id%7D/optouts\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/customers/%7Bcustomer_id%7D/optouts")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/customers/%7Bcustomer_id%7D/optouts")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/customers/%7Bcustomer_id%7D/optouts\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+    put:
+      tags:
+      - Opt-outs
+      summary: Update a customer's opt-outs
+      operationId: updatePersonOptouts
+      security:
+      - Bearer-Auth: []
+      description: 'Opt a person out of, or back in to, specific senders and channels. Provide one entry per sender/channel in the `optouts` array.
+
+
+        Set `optout` to `true` to opt the person out of a sender, or `false` to opt them back in. The `channel` field is optional and defaults to `sms`.
+
+
+        This request is processed asynchronously; it may take a moment for changes to reflect in read requests.
+
+        '
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - optouts
+              properties:
+                optouts:
+                  type: array
+                  description: The senders and channels you want to opt the person out of, or back in to. Provide one entry per sender/channel.
+                  items:
+                    type: object
+                    required:
+                    - from
+                    - optout
+                    properties:
+                      from:
+                        type: string
+                        description: The sender you want to opt the person out of, or back in to. For SMS, this is a sender phone number (E.164), an alphanumeric sender ID, or a messaging-service SID; for WhatsApp, it's the sender phone number.
+                        example: '+15551234567'
+                      optout:
+                        type: boolean
+                        description: Set to `true` to opt the person out of the sender, or `false` to opt them back in.
+                        example: true
+                      channel:
+                        type: string
+                        description: The channel for the opt-out. Defaults to `sms`.
+                        enum:
+                        - sms
+                        - whatsapp
+                        default: sms
+                        example: sms
+            example:
+              optouts:
+              - from: '+15551234567'
+                optout: true
+                channel: sms
+      responses:
+        '204':
+          description: A successful request produces an empty response.
+        '400':
+          description: The request is malformed—for example, it references an unknown `channel`.
+        '404':
+          description: The `customer_id` does not exist.
+        '429':
+          description: Your request is over the 10-per-second limit.
+      x-codeSamples:
+      - lang: json
+        label: JSON
+        source: "{\n  \"optouts\": [\n    {\n      \"from\": \"+15551234567\",\n      \"optout\": true,\n      \"channel\": \"sms\"\n    }\n  ]\n}"
+      - lang: Shell + Curl
+        source: "curl --request PUT \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/customers/{customer_id}/optouts \\\n  --header 'content-type: application/json' \\\n  --data '{\"optouts\":[{\"from\":\"+15551234567\",\"optout\":true,\"channel\":\"sms\"}]}'"
+      - lang: Node + Native
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"PUT\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/customers/%7Bcustomer_id%7D/optouts\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({optouts: [{from: '+15551234567', optout: true, channel: 'sms'}]}));\nreq.end();"
+      - lang: Ruby + Native
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/customers/%7Bcustomer_id%7D/optouts")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Put.new(url)
+
+          request["content-type"] = ''application/json''
+
+          request.body = "{\"optouts\":[{\"from\":\"+15551234567\",\"optout\":true,\"channel\":\"sms\"}]}"
+
+
+          response = http.request(request)
+
+          puts response.read_body'
+      - lang: Python + Python3
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          payload = "{\"optouts\":[{\"from\":\"+15551234567\",\"optout\":true,\"channel\":\"sms\"}]}"
+
+
+          headers = { ''content-type'': "application/json" }
+
+
+          conn.request("PUT", "/v1/customers/%7Bcustomer_id%7D/optouts", payload, headers)
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))'
+      - lang: Go + Native
+        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/customers/%7Bcustomer_id%7D/optouts\"\n\n\tpayload := strings.NewReader(\"{\\\"optouts\\\":[{\\\"from\\\":\\\"+15551234567\\\",\\\"optout\\\":true,\\\"channel\\\":\\\"sms\\\"}]}\")\n\n\treq, _ := http.NewRequest(\"PUT\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+components:
+  securitySchemes:
+    Bearer-Auth:
+      type: http
+      scheme: bearer
+      description: 'The App API uses a bearer authentication scheme.
+
+
+        You can generate a bearer token, known as an **App API Key**, with a defined scope in [your account settings](https://fly.customer.io/settings/api_credentials?keyType=app). [Learn more about bearer authorization in Customer.io](/accounts/settings/managing-credentials).
+
+        '
+    ServiceAccount-Auth:
+      x-scalar-ignore: true
+      type: http
+      scheme: bearer
+      bearerFormat: sa_live_
+      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
+
+
+        Service-account tokens are intended for testing and one-off sends—for example, using the Customer.io CLI with an AI agent like Claude to verify that a transactional message renders correctly before wiring it into your production backend. **For the production integration that triggers the message from your application, use an App API Key instead**: it''s workspace-scoped, easier to rotate, and has a smaller blast radius.
+
+
+        Service-account tokens are server-side credentials. Treat them like any API key—keep them in environment variables or a secret manager, and never embed them in client-side code, mobile apps, or other untrusted contexts.
+
+        '
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: API key passed as a Bearer token
