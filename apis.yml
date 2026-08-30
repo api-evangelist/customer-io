@@ -562,6 +562,8 @@ apis:
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags:
+  - Opt-Outs
+  tags_raw:
   - Opt-outs
   properties:
   - type: OpenAPI
@@ -749,7 +751,8 @@ apis:
     \ unsuppress | &#9989; | | |"
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
-  tags:
+  tags: []
+  tags_raw:
   - track_v2
   properties:
   - type: OpenAPI
@@ -765,7 +768,8 @@ apis:
     Key](https://fly.customer.io/settings/api_credentials).
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
-  tags:
+  tags: []
+  tags_raw:
   - trackRegion
   properties:
   - type: OpenAPI
