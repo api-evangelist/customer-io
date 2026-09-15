@@ -45,11 +45,10 @@ apis:
     type: OpenAPI
   - url: graphql/customer-io-graphql.md
     type: GraphQL
-  description: >-
-    The Customer.io Track API allows developers to send behavioral data and customer profile information
-    into Customer.io. It provides endpoints for identifying customers, tracking events, managing devices
-    for push notifications, and sending anonymous events. The API uses basic authentication with a Site
-    ID and API key, and accepts JSON request bodies.
+  description: The Customer.io Track API allows developers to send behavioral data and customer profile
+    information into Customer.io. It provides endpoints for identifying customers, tracking events, managing
+    devices for push notifications, and sending anonymous events. The API uses basic authentication with
+    a Site ID and API key, and accepts JSON request bodies.
 - aid: customer-io:customer-io-activities-api
   name: Customer.io Activities API
   description: Retrieve activity logs for your workspace.
@@ -66,8 +65,7 @@ apis:
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-alias-api
   name: Customer.io Alias API
-  description: >-
-    Merge two user identities by creating an alias linking a new identity to an existing one.
+  description: Merge two user identities by creating an alias linking a new identity to an existing one.
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://cdp.customer.io/v1
   tags:
@@ -95,8 +93,8 @@ apis:
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-broadcasts-api
   name: Customer.io Broadcasts API
-  description: >-
-    Trigger API-triggered broadcasts to send messages to groups of people based on segments or filters.
+  description: Trigger API-triggered broadcasts to send messages to groups of people based on segments
+    or filters.
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://api.customer.io
   tags:
@@ -110,8 +108,7 @@ apis:
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-campaigns-api
   name: Customer.io Campaigns API
-  description: >-
-    Retrieve information about campaigns, campaign actions, and campaign metrics in your workspace.
+  description: Retrieve information about campaigns, campaign actions, and campaign metrics in your workspace.
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://api.customer.io
   tags:
@@ -141,8 +138,8 @@ apis:
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-customers-api
   name: Customer.io Customers API
-  description: >-
-    Look up customer profiles, search for customers, and retrieve customer attributes and activity data.
+  description: Look up customer profiles, search for customers, and retrieve customer attributes and activity
+    data.
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags:
@@ -186,9 +183,8 @@ apis:
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-identify-api
   name: Customer.io Identify API
-  description: >-
-    Identify people and set their profile attributes. The identify call tells Customer.io who the current
-    user is and assigns traits to them.
+  description: Identify people and set their profile attributes. The identify call tells Customer.io who
+    the current user is and assigns traits to them.
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://cdp.customer.io/v1
   tags:
@@ -302,9 +298,8 @@ apis:
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-transactional-api
   name: Customer.io Transactional API
-  description: >-
-    Send transactional messages such as password resets, purchase receipts, and other important notifications
-    triggered by user actions.
+  description: Send transactional messages such as password resets, purchase receipts, and other important
+    notifications triggered by user actions.
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://api.customer.io
   tags:
@@ -318,12 +313,11 @@ apis:
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:mcp
   name: Customer.io MCP
-  description: >-
-    Customer.io's first-party hosted Model Context Protocol server. It exposes the full Journeys App API
-    and CDP Data Pipelines API to any MCP client through eight tools — a context primer, a schema browser,
-    three verb-scoped HTTP proxies split so reads can be approved independently of writes and deletes,
-    a two-tool skill library, and an auth-status probe. Authorization is OAuth 2.1 with PKCE and dynamic
-    client registration, bound to the authorizing user's own Customer.io permissions.
+  description: Customer.io's first-party hosted Model Context Protocol server. It exposes the full Journeys
+    App API and CDP Data Pipelines API to any MCP client through eight tools — a context primer, a schema
+    browser, three verb-scoped HTTP proxies split so reads can be approved independently of writes and
+    deletes, a two-tool skill library, and an auth-status probe. Authorization is OAuth 2.1 with PKCE
+    and dynamic client registration, bound to the authorizing user's own Customer.io permissions.
   baseURL: https://mcp.customer.io/mcp
   humanURL: https://docs.customer.io/ai/mcp/get-started/
   tags:
@@ -373,9 +367,8 @@ apis:
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-data-index-api
   name: Customer.io Data Index API
-  description: >-
-    Update descriptions for attributes and events in your workspace. This helps improve AI-generated content
-    and segments.
+  description: Update descriptions for attributes and events in your workspace. This helps improve AI-generated
+    content and segments.
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags:
@@ -389,19 +382,18 @@ apis:
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-design-studio-api
   name: Customer.io Design Studio API
-  description: >-
-    Use these endpoints to manage emails, translations, and components made with Design Studio. You can
-    programmatically manage Design Studio content and migrate templates from an external service. To manage
-    assets like images, use the [Assets API](/integrations/api/app/#tag/assets).
+  description: 'Use these endpoints to manage emails, translations, and components made with Design Studio.
+    You can programmatically manage Design Studio content and migrate templates from an external service.
+    To manage assets like images, use the [Assets API](/integrations/api/app/#tag/assets).
 
 
     These endpoints do not enable you to publish changes to connected workflows like campaigns, nor can
-    you update global styles. They're only for content management at this time. Learn more about the [best
-    practices](/integrations/api/integrate-with-ds/) for sending HTML through these endpoints.
+    you update global styles. They''re only for content management at this time. Learn more about the
+    [best practices](/integrations/api/integrate-with-ds/) for sending HTML through these endpoints.
 
 
-    If you're an external tool and interested in being listed as one of our integrated partners, please
-    reach out to [product@customer.io](mailto:product@customer.io) to chat with a Product Manager!
+    If you''re an external tool and interested in being listed as one of our integrated partners, please
+    reach out to [product@customer.io](mailto:product@customer.io) to chat with a Product Manager!'
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags:
@@ -415,12 +407,11 @@ apis:
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-esp-suppression-api
   name: Customer.io ESP Suppression API
-  description: >-
-    If you use Customer.io as your email service provider (ESP), these endpoints help you retrieve information
-    about email addresses suppressed directly by the ESP. ESP-based suppressions are different from suppression
-    in Customer.io: these are addresses that the ESP suppressed automatically because a message bounced,
-    a customer requested they not be contacted again, etc. These are _not_ addresses that you deleted
-    and suppressed either in our UI or through [the API](#operation/suppress).
+  description: 'If you use Customer.io as your email service provider (ESP), these endpoints help you
+    retrieve information about email addresses suppressed directly by the ESP. ESP-based suppressions
+    are different from suppression in Customer.io: these are addresses that the ESP suppressed automatically
+    because a message bounced, a customer requested they not be contacted again, etc. These are _not_
+    addresses that you deleted and suppressed either in our UI or through [the API](#operation/suppress).'
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags:
@@ -434,9 +425,8 @@ apis:
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-forms-api
   name: Customer.io Forms API
-  description: >-
-    Connect forms to your workspace to identify people, apply form responses to people, and trigger campaigns
-    for people who fill out forms on your website or in your app.
+  description: Connect forms to your workspace to identify people, apply form responses to people, and
+    trigger campaigns for people who fill out forms on your website or in your app.
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags:
@@ -450,9 +440,8 @@ apis:
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-imports-api
   name: Customer.io Imports API
-  description: >-
-    APIs to upload CSV files containing lists of people. These endpoints provide a convenient way to add
-    and update people without having to make an `identify` call for each individual person.
+  description: APIs to upload CSV files containing lists of people. These endpoints provide a convenient
+    way to add and update people without having to make an `identify` call for each individual person.
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags:
@@ -466,9 +455,8 @@ apis:
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-info-api
   name: Customer.io Info API
-  description: >-
-    Returns the list of addresses used by Customer.io. You must add add these addresses to your allowlist
-    when using a custom SMTP provider and blocking unknown IP addresses.
+  description: Returns the list of addresses used by Customer.io. You must add add these addresses to
+    your allowlist when using a custom SMTP provider and blocking unknown IP addresses.
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags:
@@ -482,10 +470,9 @@ apis:
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-live-notifications-api
   name: Customer.io Live Notifications API
-  description: >-
-    Start, update, and end live notifications—real-time activities on the iOS Lock Screen and Dynamic
-    Island, and in the Android notification shade. Your server drives the activity's content; Customer.io
-    handles token lookup and push delivery.
+  description: Start, update, and end live notifications—real-time activities on the iOS Lock Screen and
+    Dynamic Island, and in the Android notification shade. Your server drives the activity's content;
+    Customer.io handles token lookup and push delivery.
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags:
@@ -499,13 +486,12 @@ apis:
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-newsletter-metrics-api
   name: Customer.io Newsletter Metrics API
-  description: >-
-    Newsletter metrics include metrics for translations, A/B tests, and links.
+  description: 'Newsletter metrics include metrics for translations, A/B tests, and links.
 
 
     These endpoints return information about newsletter metrics including metrics for translations and
     A/B tests. You can update variants in newsletters from these endpoints, but you must perform all other
-    create, update, and/or delete operations through the UI.
+    create, update, and/or delete operations through the UI.'
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags:
@@ -519,13 +505,12 @@ apis:
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-newsletter-variants-api
   name: Customer.io Newsletter Variants API
-  description: >-
-    A newsletter variant is a translation or an A/B test. You can create, update, or delete variants in
-    newsletters from these endpoints. You can also create a new A/B test group.
+  description: 'A newsletter variant is a translation or an A/B test. You can create, update, or delete
+    variants in newsletters from these endpoints. You can also create a new A/B test group.
 
 
-    If your newsletters include assets like images or PDFs, host them in your [workspace's assets](/integrations/api/app/#tag/assets)
-    or at another public URL, and include the URL in your message content.
+    If your newsletters include assets like images or PDFs, host them in your [workspace''s assets](/integrations/api/app/#tag/assets)
+    or at another public URL, and include the URL in your message content.'
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags:
@@ -539,12 +524,11 @@ apis:
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-objects-api
   name: Customer.io Objects API
-  description: >-
-    Objects are "groups" that you can relate people to in Customer.io—like the companies they work for,
-    the online classes they take, and so on. These APIs help you find objects, their attributes, the people
-    they're related to, etc. Use the [track API v1](/api/track/#tag/Track-Customers) or the [Track v2
-    API](/api/track/#tag/track_v2) to add and relate people to objects to your workspace and assign their
-    attributes.
+  description: Objects are "groups" that you can relate people to in Customer.io—like the companies they
+    work for, the online classes they take, and so on. These APIs help you find objects, their attributes,
+    the people they're related to, etc. Use the [track API v1](/api/track/#tag/Track-Customers) or the
+    [Track v2 API](/api/track/#tag/track_v2) to add and relate people to objects to your workspace and
+    assign their attributes.
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags:
@@ -574,9 +558,8 @@ apis:
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-reporting-webhooks-api
   name: Customer.io Reporting Webhooks API
-  description: >-
-    Set up webhooks to inform an external service about Customer.io events. Webhooks can notify you immediately
-    when immediately when customer attributes change or when people open your messages.
+  description: Set up webhooks to inform an external service about Customer.io events. Webhooks can notify
+    you immediately when immediately when customer attributes change or when people open your messages.
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags:
@@ -590,20 +573,19 @@ apis:
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-send-messages-api
   name: Customer.io Send Messages API
-  description: >-
-    Use these endpoints to send broadcasts or transactional messages to your audience. They use the same
-    authentication method, but review the limits for both types of workflows to make sure you'll successfully
-    trigger your messages.
+  description: 'Use these endpoints to send broadcasts or transactional messages to your audience. They
+    use the same authentication method, but review the limits for both types of workflows to make sure
+    you''ll successfully trigger your messages.
 
 
-    You can't trigger campaigns through our APIs.
+    You can''t trigger campaigns through our APIs.
 
 
     ## API triggered broadcast limits
 
 
     While [API triggered broadcasts](#operation/triggerBroadcast) are limited to 1 request every 10 seconds,
-    they're also limited by the number of triggers you can have queued at a time, as shown in the table
+    they''re also limited by the number of triggers you can have queued at a time, as shown in the table
     below.
 
 
@@ -648,7 +630,7 @@ apis:
 
     | Attachments (email) | 2MB | Maximum size of attachments |
 
-    | Recipients | 15 | Total number of recipients across the `to`, `cc`, and `bcc` fields. |
+    | Recipients | 15 | Total number of recipients across the `to`, `cc`, and `bcc` fields. |'
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags:
@@ -662,11 +644,10 @@ apis:
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-subscription-center-api
   name: Customer.io Subscription Center API
-  description: >-
-    A subscription center differentiates the types of messages available for your product. Your audience
-    sets subscription preferences by name, but we record subscription preferences by topic ID. You can
-    use these endpoints to get a list of topics and names, helping you understand your audience's subscription
-    preferences.
+  description: A subscription center differentiates the types of messages available for your product.
+    Your audience sets subscription preferences by name, but we record subscription preferences by topic
+    ID. You can use these endpoints to get a list of topics and names, helping you understand your audience's
+    subscription preferences.
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags:
@@ -680,9 +661,8 @@ apis:
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-track-customers-api
   name: Customer.io Track Customers API
-  description: >-
-    Add, modify, suppress, or unsuppress people (referred to as "customers" in our APIs). You can also
-    use these endpoints to set attributes on people.
+  description: Add, modify, suppress, or unsuppress people (referred to as "customers" in our APIs). You
+    can also use these endpoints to set attributes on people.
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags:
@@ -696,9 +676,9 @@ apis:
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-track-events-api
   name: Customer.io Track Events API
-  description: >-
-    Use customer events to trigger campaigns or add users to segments. You can attribute events directly
-    to customers or send anonymous events and associate them with users later when you identify them.
+  description: Use customer events to trigger campaigns or add users to segments. You can attribute events
+    directly to customers or send anonymous events and associate them with users later when you identify
+    them.
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags:
@@ -712,17 +692,16 @@ apis:
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-track-segments-api
   name: Customer.io Track Segments API
-  description: >-
-    Manual segments are lists of people that you incorporate using the API or by uploading CSVs. You can
-    add people to, or remove people from, manual segments with these endpoints. These endpoints do _not_
-    let you modify data-driven segments.
+  description: 'Manual segments are lists of people that you incorporate using the API or by uploading
+    CSVs. You can add people to, or remove people from, manual segments with these endpoints. These endpoints
+    do _not_ let you modify data-driven segments.
 
 
     **NOTE**: These endpoints do not yet support workspaces that use both `email` and `id` as identifiers.
 
 
     A segment must exist before you can add people to it. You can create manual segments using the [App
-    API `/segments` endpoints](/api/#operation/createManSegment).
+    API `/segments` endpoints](/api/#operation/createManSegment).'
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags:
@@ -744,11 +723,10 @@ apis:
     \ are events based on messages sent from Customer.io.\n\nThe chart below lists the type of `action`\
     \ you can perform for each `type`. Our requests below are broken out by `type`; use the `action` dropdown\
     \ to see the specific payload structure for each action.\n\n| Action | Person | Object | Delivery\
-    \ | \n| :-- | :--: | :--: | :--: |\n| identify | &#9989; | &#9989; | |\n| delete | &#9989; | &#9989;\
-    \ | |\n| event | &#9989; | | &#9989; |\n| screen | &#9989; | | |\n| page | &#9989; | | |\n| add_relationships\
-    \ | &#9989; | &#9989; | |\n| delete_relationships | &#9989; | &#9989; | |\n| add_device | &#9989;\
-    \ | | | \n| delete_device | &#9989; | | |\n| merge | &#9989; | | |\n| suppress | &#9989; | | |\n|\
-    \ unsuppress | &#9989; | | |"
+    \ | \n| :-- | :--: | :--: | :--: |\n| identify | ✅ | ✅ | |\n| delete | ✅ | ✅ | |\n| event | ✅ | |\
+    \ ✅ |\n| screen | ✅ | | |\n| page | ✅ | | |\n| add_relationships | ✅ | ✅ | |\n| delete_relationships\
+    \ | ✅ | ✅ | |\n| add_device | ✅ | | | \n| delete_device | ✅ | | |\n| merge | ✅ | | |\n| suppress |\
+    \ ✅ | | |\n| unsuppress | ✅ | | |"
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags: []
@@ -763,9 +741,8 @@ apis:
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-trackregion-api
   name: Customer.io Track Region API
-  description: >-
-    Determine whether your account and data are hosted in the US or EU data center using your [Track API
-    Key](https://fly.customer.io/settings/api_credentials).
+  description: Determine whether your account and data are hosted in the US or EU data center using your
+    [Track API Key](https://fly.customer.io/settings/api_credentials).
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags: []
@@ -780,9 +757,8 @@ apis:
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-workspaces-api
   name: Customer.io Workspaces API
-  description: >-
-    An API to retrieve information about your workspaces in your account. You can use this to look up
-    counts for messages sent, monthly billable emails sent, people, and objects.
+  description: An API to retrieve information about your workspaces in your account. You can use this
+    to look up counts for messages sent, monthly billable emails sent, people, and objects.
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags:
@@ -937,14 +913,12 @@ tags:
 - Segments
 - SMS
 - Transactional Email
-description: Customer.io is a customer engagement platform that combines a customer
-  data platform, marketing automation, and messaging delivery to send behavior-triggered
-  email, push, SMS, and in-app messages. Its API surface includes the Track API for
-  sending behavioral data and customer profile updates, the App API for managing workspace
-  resources and sending transactional and broadcast messages, the Pipelines API which
-  is a Segment-spec data ingestion interface, and outbound reporting webhooks that
-  deliver message lifecycle events.
-
+description: Customer.io is a customer engagement platform that combines a customer data platform, marketing
+  automation, and messaging delivery to send behavior-triggered email, push, SMS, and in-app messages.
+  Its API surface includes the Track API for sending behavioral data and customer profile updates, the
+  App API for managing workspace resources and sending transactional and broadcast messages, the Pipelines
+  API which is a Segment-spec data ingestion interface, and outbound reporting webhooks that deliver message
+  lifecycle events.
 x-enrichment:
   date: '2026-08-13'
   status: enriched
