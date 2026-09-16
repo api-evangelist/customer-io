@@ -352,7 +352,7 @@ apis:
   - type: Documentation
     url: https://docs.customer.io/integrations/data-in/connections/http-api/
 - aid: customer-io:customer-io-customer-io-app-api-api
-  name: Customer.io Customer.io App API
+  name: Customer.io App API
   description: The Customer.io App API API from Customer.io — 0 operation(s) for customer.io app api.
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
@@ -897,7 +897,7 @@ maintainers:
   email: kin@apievangelist.com
 specificationVersion: '0.23'
 created: '2024-01-01'
-modified: '2026-08-13'
+modified: '2026-09-16'
 name: Customer.io
 tags:
 - Behavioral Data
