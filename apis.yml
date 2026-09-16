@@ -888,6 +888,8 @@ common:
   url: https://customer.io/legal/privacy-policy
 - type: Academy
   url: https://academy.customer.io/pages/get-started
+- type: Contact
+  url: mailto:press@customer.io
 integrations:
 - name: See all integrations See all integrations
 maintainers:
