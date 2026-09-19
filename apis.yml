@@ -98,6 +98,8 @@ apis:
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://api.customer.io
   tags:
+  - Broadcast
+  tags_raw:
   - Broadcasts
   properties:
   - type: OpenAPI
@@ -445,6 +447,8 @@ apis:
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags:
+  - Import
+  tags_raw:
   - Imports
   properties:
   - type: OpenAPI
@@ -762,6 +766,8 @@ apis:
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags:
+  - Workspace
+  tags_raw:
   - Workspaces
   properties:
   - type: OpenAPI
@@ -900,6 +906,22 @@ created: '2024-01-01'
 modified: '2026-09-16'
 name: Customer.io
 tags:
+- Behavioral Data
+- Broadcast
+- Campaigns
+- CDP
+- Customer Data
+- Customer Data Platform
+- Data Ingestion
+- Email
+- Event Tracking
+- Marketing Automation
+- Messaging
+- Push Notifications
+- Segments
+- SMS
+- Transactional Email
+tags_raw:
 - Behavioral Data
 - Broadcasts
 - Campaigns
