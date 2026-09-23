@@ -2,73 +2,7 @@ openapi: 3.2.0
 info:
   version: 1.0.0
   title: Customer.io App Send Messages API
-  description: 'Our App API provides ways to trigger messages and retrieve information about people, campaigns, broadcasts, and more.
-
-
-    # Overview
-
-
-    The App API provides methods to send newsletters, transactional messages, and API-triggered broadcasts. You can create newsletters from scratch and update transactional messages and API-triggered broadcasts.
-
-
-    For transactional messages and API-triggered broadcasts, your payload acts as a message "trigger" and can contain `data` that you reference in your messages using liquid—`{{trigger.<data>}}`.
-
-
-    The other endpoints help you retrieve information about people, segments, campaigns, broadcasts, etc; it also lets you update campaign actions, messages, newsletter variants, etc. Aside from the [API-triggered broadcast](#triggerBroadcast) (1 per 10 seconds) and [Transactional](#sendEmail) (100 per second) endpoints, requests are limited to 10 per second.
-
-
-    # Use our Postman collection
-
-
-    We''ve generated a Postman collection to help you get started with our APIs.
-
-
-    If you fork this collection, you might want to disable the *Watch original collection* option. We automatically update our Postman collection whenever we release changes to our documentation, even if we don''t change our APIs—which happens daily! Rather than being flooded with Postman notifications, you can check out our [Release Notes](/release-notes/) for updates to our APIs.
-
-
-    **NOTE**: Postman endpoints default to our US APIs. If you''re in our European (EU) region, you''ll need to add `-eu` to the server variables (`track_api_url` and `app_api_url`).
-
-
-    [<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://god.gw.postman.com/run-collection/23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d%26entityType%3Dcollection%26workspaceId%3Db886877f-fc09-475f-84fe-6221a98f4d18#?env%5BCustomer.io%20API%20Environment%5D=W3sia2V5IjoidHJhY2tfYXBpX3VybCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiJ0cmFjay5jdXN0b21lci5pbyIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBwX2FwaV91cmwiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiYXBpLmN1c3RvbWVyLmlvIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzaXRlX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBpX2tleSIsInR5cGUiOiJzZWNyZXQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYmVhcmVyIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYnJvYWRjYXN0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaW1wb3J0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiZW1haWxfYWRkcmVzcyIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InN1cHByZXNzaW9uX3R5cGUiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjb2xsZWN0aW9uX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoic25pcHBldF9uYW1lIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoid2ViaG9va19pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InNlbmRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImV4cG9ydF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6Im1lc3NhZ2VfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzZWdtZW50X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoibmV3c2xldHRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImNvbnRlbnRfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjYW1wYWlnbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImFjdGlvbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImN1c3RvbWVyX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoidHJhbnNhY3Rpb25hbF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InRyaWdnZXJfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJmb3JtX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaWRlbnRpZmllciIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRldmljZV9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRlbGl2ZXJ5X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9XQ==)
-
-
-    # Server addresses: US and EU
-
-
-    Customer.io hosts services in the United States (US) and European Union. Select the appropriate server address for your region.
-
-
-    | Region | Server Address |
-
-    | :-- | :-- |
-
-    | US | https://api.customer.io |
-
-    | EU | https://api-eu.customer.io |
-
-
-    # Authentication
-
-
-    All requests to the Customer.io App API use an [App API Key](#App-API-Key).
-
-
-    To authenticate, provide your key as a Bearer token in a HTTP Authorization header. You can create and manage your API keys—including keys with different scopes—in [your account settings page](https://fly.customer.io/settings/api_credentials?keyType=app). Each operation on this page references the authorization header it requires.
-
-
-    # Rate Limits
-
-
-    Most endpoints on this page are limited to 10 requests per second. The exceptions are:
-
-    * The [transactional email](#operation/sendEmail) endpoint is limited to 100 requests per second.
-
-    * The [API-triggered broadcast endpoint](#operation/triggerBroadcast) is limited to 1 request every 10 seconds.
-
-
-    **Rate limits are subject to change. We may adjust these thresholds to ensure stable performance for all customers.**
-
-    '
+  description: Our App API provides ways to trigger messages and retrieve information about people, campaigns, broadcasts, and more.
 servers:
 - url: https://api.customer.io
   description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
@@ -76,57 +10,7 @@ servers:
   description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
 tags:
 - name: Send Messages
-  description: 'Use these endpoints to send broadcasts or transactional messages to your audience. They use the same authentication method, but review the limits for both types of workflows to make sure you''ll successfully trigger your messages.
-
-
-    You can''t trigger campaigns through our APIs.
-
-
-    ## API triggered broadcast limits
-
-
-    While [API triggered broadcasts](#operation/triggerBroadcast) are limited to 1 request every 10 seconds, they''re also limited by the number of triggers you can have queued at a time, as shown in the table below.
-
-
-    | Data Type | Limit | Description |
-
-    | -- | -- | -- |
-
-    | Trigger Payload | 25MB | Max length of the entire Trigger call, larger calls are typically to support `per_user_data` |
-
-    | Trigger Data | 50000 bytes | Max length of the data section in the Trigger call |
-
-    | Recipient List<sup>1</sup> | 10000 recipients | Max number of ids or emails included in the Trigger call |
-
-    | Custom Per User Data<sup>1</sup> | 10000 entries | Max number of entries in `per_user_data` |
-
-    | Custom Per User Data<sup>1</sup> | 2MB | Max length per user in the file referenced by `data_file_url`. |
-
-    | Custom Per User Data<sup>1</sup> | 10GB | Max length of the entire size of the file referenced by `data_file_url` |
-
-    | Trigger Queue | 5 triggers | Max number of triggers waiting to be processed consecutively |
-
-
-    <sup>1</sup>For larger data sets, use `data_file_url` to supply a link to a file that contains your merge data. Attempting to send too much data in a single API call will fail.
-
-
-    ## Transactional Message Limits
-
-
-    The `/send-*` endpoints are limited to 100 requests per second.
-
-
-    | Data Type | Limit | Description |
-
-    | -- | -- | -- |
-
-    | Payload | 1MB | Max length of the payload, excepting attachments |
-
-    | Attachments (email) | 2MB | Maximum size of attachments |
-
-    | Recipients | 15 | Total number of recipients across the `to`, `cc`, and `bcc` fields. |
-
-    '
+  description: Use these endpoints to send broadcasts or transactional messages to your audience.
 paths:
   /v1/campaigns/{broadcast_id}/triggers:
     servers:
@@ -155,18 +39,16 @@ paths:
         **You can only trigger broadcasts to send to people you''ve already added to your workspace.** A broadcast cannot add or identify new people. If you reference people who don''t exist in your broadcast audience, the broadcast will fail by default. You can override this behavior by setting the `email_ignore_missing` and/or `id_ignore_missing` flags to `true`. The broadcast will skip over any people who don''t exist in your workspace and send to the remaining recipients.
 
 
-        You can reference properties in the `data` object in your broadcast using liquid—`{{trigger.<property_in_data_obj>}}`.
+        You can reference properties in the `data` object in your broadcast using liquid—`{{trigger.}}`.
 
 
-        If your broadcast produces a `422` error, you can [get more information about the errors](#tag/broadcasts/broadcastErrors) to see what went wrong.
+        If your broadcast produces a `422` error, you can get more information about the errors to see what went wrong.
 
 
-        **This endpoint is rate-limited to one request every 10 seconds.** After exceeding this, you''ll receive a status of `429`. Learn more about [API-triggered broadcast limits](/integrations/api/app/#tag/send-messages) above.
+        **This endpoint is rate-limited to one request every 10 seconds.** After exceeding this, you''ll receive a status of `429`. Learn more about API-triggered broadcast limits above.
 
 
-        Broadcasts are optimized to send messages to a large audience and not for one-to-one interactions. Use our [transactional API](#tag/send-messages/sendEmail) or [event-triggered campaigns](/journeys/send/campaigns/triggers/#event-trigger) to respond to your audience on an individual, one-to-one basis.
-
-        '
+        Broadcasts are optimized to send messages to a large audience and not for one-to-one interactions. Use our transactional API or event-triggered campaigns to respond to your audience on an individual, one-to-one basis.'
       requestBody:
         content:
           application/json:
@@ -1775,12 +1657,10 @@ paths:
       summary: Send a newsletter
       security:
       - Bearer-Auth: []
-      description: 'Send a newsletter immediately. The newsletter must be in a draft state. If the newsletter has already been sent, you''ll get a `400` error. The recipients for the newsletter are defined when you create/update the newsletter. If you''re not sure who will receive the newsletter, you can use the [List newsletters](/integrations/api/app/#tag/newsletters/listNewsletters) endpoint to get a list of newsletters and their recipients.
+      description: 'Send a newsletter immediately. The newsletter must be in a draft state. If the newsletter has already been sent, you''ll get a `400` error. The recipients for the newsletter are defined when you create/update the newsletter. If you''re not sure who will receive the newsletter, you can use the List newsletters endpoint to get a list of newsletters and their recipients.
 
 
-        To reschedule a newsletter, use the [Schedule a newsletter](#tag/send-messages/scheduleNewsletter) endpoint instead.
-
-        '
+        To reschedule a newsletter, use the Schedule a newsletter endpoint instead.'
       requestBody:
         required: false
         content:
@@ -2044,9 +1924,7 @@ paths:
       description: 'Schedule a newsletter to send at a specific time. The newsletter must be in a draft state. If the newsletter has already been sent, you''ll get a `400` error. If the newsletter is already scheduled, this endpoint updates the scheduled time.
 
 
-        The recipients for the newsletter are defined when you create/update the newsletter. If you''re not sure who will receive the newsletter, you can use the [List newsletters](/integrations/api/app/#tag/newsletters/listNewsletters) endpoint to get a list of newsletters and their recipients.
-
-        '
+        The recipients for the newsletter are defined when you create/update the newsletter. If you''re not sure who will receive the newsletter, you can use the List newsletters endpoint to get a list of newsletters and their recipients.'
       requestBody:
         required: true
         content:
@@ -2353,9 +2231,7 @@ paths:
         If this is the first time you send a message with the API, you can include the `auto_create` parameter along with a `transactional_message_id` string to create a record for you.
 
 
-        You can also include a `body`, `subject`, and `from` values to override the message template. Or, if you create your message entirely through the API, you *must* include these values because your `transactional_message_id` won''t have any content. See [Examples and API parameters](/journeys/send/transactional/email/#auto-create-transactional-message-records) for more details.
-
-        '
+        You can also include a `body`, `subject`, and `from` values to override the message template. Or, if you create your message entirely through the API, you *must* include these values because your `transactional_message_id` won''t have any content. See Examples and API parameters for more details.'
       tags:
       - Send Messages
       parameters:
@@ -2691,12 +2567,10 @@ paths:
         You send a message using a `transactional_message_id` for an in-app message template that you''ve set up in the user interface. The `transactional_message_id` can be either the numerical ID for the template or the *Trigger Name* that you assigned the template.
 
 
-        You can find your `transactional_message_id` from the code sample in the **Overview** tab for your transactional message in the user interface, or you can look up a list of your transactional messages through the [App API](#tag/Transactional).
+        You can find your `transactional_message_id` from the code sample in the **Overview** tab for your transactional message in the user interface, or you can look up a list of your transactional messages through the App API.
 
 
-        **Note**: Your workspace must have in-app messaging enabled. Requests sent to a workspace without the in-app capability return `403`.
-
-        '
+        **Note**: Your workspace must have in-app messaging enabled. Requests sent to a workspace without the in-app capability return `403`.'
       tags:
       - Send Messages
       parameters:
@@ -2918,12 +2792,10 @@ paths:
         You send a message using a `transactional_message_id` for an inbox message template created in the user interface. The `transactional_message_id` can be either the numerical ID for the template or the *Trigger Name* that you assigned the template.
 
 
-        You can find your `transactional_message_id` from the code sample in the **Overview** tab for your transactional message in the user interface, or you can look up a list of your transactional messages through the [App API](#tag/Transactional).
+        You can find your `transactional_message_id` from the code sample in the **Overview** tab for your transactional message in the user interface, or you can look up a list of your transactional messages through the App API.
 
 
-        **Note**: Inbox messages are currently available for web platforms only and require the Customer.io In-App Plugin to be installed.
-
-        '
+        **Note**: Inbox messages are currently available for web platforms only and require the Customer.io In-App Plugin to be installed.'
       tags:
       - Send Messages
       parameters:
@@ -3147,9 +3019,7 @@ paths:
       description: 'Send a transactional push. You send a message using a `transactional_message_id` for a transactional push message template composed in the user interface. You can optionally override any of the template values at send time. The `transactional_message_id` can be either the numerical ID for the template or the *Trigger Name* that you assigned the template.
 
 
-        You can find your `transactional_message_id` from the code sample in the **Overview** tab for your transactional message in the user interface, or you can look up a list of your transactional messages through the [App API](#tag/Transactional).
-
-        '
+        You can find your `transactional_message_id` from the code sample in the **Overview** tab for your transactional message in the user interface, or you can look up a list of your transactional messages through the App API.'
       tags:
       - Send Messages
       parameters:
@@ -3823,9 +3693,7 @@ paths:
       description: 'Send a transactional SMS message. To send a message, you''ll need to provide a `transactional_message_id`. This is either the numerical ID of your transactional message template or the *Trigger Name* that you assigned the template.
 
 
-        You can find your `transactional_message_id` from the code sample in the **Overview** tab for your transactional message in the user interface, or you can look up a list of your transactional messages through the [App API](#tag/Transactional).
-
-        '
+        You can find your `transactional_message_id` from the code sample in the **Overview** tab for your transactional message in the user interface, or you can look up a list of your transactional messages through the App API.'
       tags:
       - Send Messages
       parameters:

@@ -1,21 +1,16 @@
-generated: '2026-08-13'
+generated: '2026-09-19'
 method: probed
-source: >-
-  Direct unauthenticated GET of each /.well-known/ path on every Customer.io
-  host named in apis.yml baseURLs, in the published OpenAPI servers[] blocks,
-  and on the documentation and MCP hosts.
+source: Direct unauthenticated GET of each /.well-known/ path on every Customer.io host named in apis.yml
+  baseURLs, in the published OpenAPI servers[] blocks, and on the documentation and MCP hosts.
 summary:
   hosts_probed: 6
   paths_probed: 22
   documents_found: 4
-  note: >-
-    Customer.io serves a real RFC 9727 api-catalog link set from its marketing
-    root, and full RFC 8414 / RFC 9728 OAuth metadata from its MCP hosts. It
-    does NOT serve a security.txt, an openid-configuration, or an ai-plugin.json
-    anywhere. customer.io answers every unknown /.well-known/ path with a 404
-    that carries the full marketing SPA (~145 KB of HTML), so a naive
-    status-only probe of that host would be misleading; the statuses below are
-    real 404s.
+  note: Customer.io serves a real RFC 9727 api-catalog link set from its marketing root, and full RFC
+    8414 / RFC 9728 OAuth metadata from its MCP hosts. It does NOT serve a security.txt, an openid-configuration,
+    or an ai-plugin.json anywhere. customer.io answers every unknown /.well-known/ path with a 404 that
+    carries the full marketing SPA (~145 KB of HTML), so a naive status-only probe of that host would
+    be misleading; the statuses below are real 404s.
 probes:
 - host: customer.io
   path: /.well-known/api-catalog
@@ -23,10 +18,8 @@ probes:
   content_type: application/linkset+json
   file: customer-io-api-catalog.json
   document: true
-  note: >-
-    RFC 9727 link set naming two service-doc anchors: the REST API index and the
-    MCP server documentation. This is the provider's own machine-readable
-    pointer to its API surface.
+  note: 'RFC 9727 link set naming two service-doc anchors: the REST API index and the MCP server documentation.
+    This is the provider''s own machine-readable pointer to its API surface.'
 - host: customer.io
   path: /.well-known/security.txt
   status: 404
@@ -61,8 +54,7 @@ probes:
   content_type: application/json
   file: ../a2a/customer-io-agent-card.json
   document: true
-  note: >-
-    A2A Agent Card for the documentation surface. Saved and graded under a2a/.
+  note: A2A Agent Card for the documentation surface. Saved and graded under a2a/.
 - host: docs.customer.io
   path: /.well-known/security.txt
   status: 404
@@ -73,18 +65,15 @@ probes:
   content_type: application/json
   file: customer-io-oauth-authorization-server.json
   document: true
-  note: >-
-    RFC 8414 authorization server metadata for the Customer.io MCP server.
-    Advertises dynamic client registration (RFC 7591) and PKCE S256.
+  note: RFC 8414 authorization server metadata for the Customer.io MCP server. Advertises dynamic client
+    registration (RFC 7591) and PKCE S256.
 - host: mcp.customer.io
   path: /.well-known/oauth-protected-resource
   status: 200
   content_type: application/json
   file: customer-io-oauth-protected-resource.json
   document: true
-  note: >-
-    RFC 9728 protected resource metadata. Names the five MCP scopes captured in
-    scopes/customer-io-scopes.yml.
+  note: RFC 9728 protected resource metadata. Names the five MCP scopes captured in scopes/customer-io-scopes.yml.
 - host: mcp.customer.io
   path: /.well-known/oauth-protected-resource/mcp
   status: 200
@@ -100,9 +89,8 @@ probes:
   status: 200
   content_type: application/json
   document: true
-  note: >-
-    EU-region equivalent; resource https://mcp-eu.customer.io/mcp, same five
-    scopes. Not saved separately — differs from the US document only in host.
+  note: EU-region equivalent; resource https://mcp-eu.customer.io/mcp, same five scopes. Not saved separately
+    — differs from the US document only in host.
 - host: api.customer.io
   path: /.well-known/security.txt
   status: 404
@@ -134,3 +122,62 @@ probes:
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
+hosts:
+- host: ''
+  documents:
+  - path: /.well-known/api-catalog
+    status: 200
+    file: customer-io-api-catalog.json
+    content_type: application/linkset+json
+    note: 'RFC 9727 link set naming two service-doc anchors: the REST API index and the MCP server documentation.
+      This is the provider''s own machine-readable pointer to its API surface.'
+  - path: /.well-known/agent-card.json
+    status: 200
+    file: ../a2a/customer-io-agent-card.json
+    content_type: application/json
+    note: A2A Agent Card for the documentation surface. Saved and graded under a2a/.
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: customer-io-oauth-authorization-server.json
+    content_type: application/json
+    note: RFC 8414 authorization server metadata for the Customer.io MCP server. Advertises dynamic client
+      registration (RFC 7591) and PKCE S256.
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    file: customer-io-oauth-protected-resource.json
+    content_type: application/json
+    note: RFC 9728 protected resource metadata. Names the five MCP scopes captured in scopes/customer-io-scopes.yml.
+- host: https://mcp.customer.io
+  documents:
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    file: customer-io-mcp-oauth-protected-resource.json
+    bytes: 311
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: customer-io-mcp-oauth-authorization-server.json
+    bytes: 622
+  path_echo_control: passed
+x-shape-fix:
+  converted: '2026-08-20'
+  from: probes
+  note: Rewritten into hosts[] -> documents[], the only shape well_known_docs() in score.rb reads. A served
+    .well-known surface recorded in any other shape scores as absent. Promoted ONLY the 2xx rows out of
+    the probe log; non-2xx probes are real negative results and were left in place, not converted into
+    documents.
+x-mcp-probe:
+  probed: '2026-09-19'
+  issue: roadmap#321, roadmap#337
+  documents:
+  - host: https://mcp.customer.io
+    path: /.well-known/oauth-protected-resource
+    file: customer-io-mcp-oauth-protected-resource.json
+  - host: https://mcp.customer.io
+    path: /.well-known/oauth-authorization-server
+    file: customer-io-mcp-oauth-authorization-server.json
+  validated_on: resource (RFC 9728) / issuer (RFC 8414, OIDC)
+  negative_control: one per host; a 2xx JSON object at an impossible path discards the host
+note: 'MCP-host OAuth discovery added 2026-09-19 (roadmap#321/#337): the harvest visits a provider''s
+  primary hosts, and RFC 9728 protected-resource metadata lives on the MCP host, so these documents existed
+  and were invisible to the scorer. Fetched live and validated on `resource`/`issuer`; one negative control
+  per host.'

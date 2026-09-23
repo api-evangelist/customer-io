@@ -1,0 +1,1 @@
+{"resource":"https://mcp.customer.io/mcp","resource_name":"Customer.io MCP","resource_documentation":"https://docs.customer.io/ai/mcp-server","authorization_servers":["https://mcp.customer.io"],"scopes_supported":["configure","read","read:sensitive","write","write:live"],"bearer_methods_supported":["header"]}

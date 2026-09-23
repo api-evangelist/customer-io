@@ -2,73 +2,7 @@ openapi: 3.2.0
 info:
   version: 1.0.0
   title: Customer.io App Newsletters API
-  description: 'Our App API provides ways to trigger messages and retrieve information about people, campaigns, broadcasts, and more.
-
-
-    # Overview
-
-
-    The App API provides methods to send newsletters, transactional messages, and API-triggered broadcasts. You can create newsletters from scratch and update transactional messages and API-triggered broadcasts.
-
-
-    For transactional messages and API-triggered broadcasts, your payload acts as a message "trigger" and can contain `data` that you reference in your messages using liquid—`{{trigger.<data>}}`.
-
-
-    The other endpoints help you retrieve information about people, segments, campaigns, broadcasts, etc; it also lets you update campaign actions, messages, newsletter variants, etc. Aside from the [API-triggered broadcast](#triggerBroadcast) (1 per 10 seconds) and [Transactional](#sendEmail) (100 per second) endpoints, requests are limited to 10 per second.
-
-
-    # Use our Postman collection
-
-
-    We''ve generated a Postman collection to help you get started with our APIs.
-
-
-    If you fork this collection, you might want to disable the *Watch original collection* option. We automatically update our Postman collection whenever we release changes to our documentation, even if we don''t change our APIs—which happens daily! Rather than being flooded with Postman notifications, you can check out our [Release Notes](/release-notes/) for updates to our APIs.
-
-
-    **NOTE**: Postman endpoints default to our US APIs. If you''re in our European (EU) region, you''ll need to add `-eu` to the server variables (`track_api_url` and `app_api_url`).
-
-
-    [<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://god.gw.postman.com/run-collection/23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d%26entityType%3Dcollection%26workspaceId%3Db886877f-fc09-475f-84fe-6221a98f4d18#?env%5BCustomer.io%20API%20Environment%5D=W3sia2V5IjoidHJhY2tfYXBpX3VybCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiJ0cmFjay5jdXN0b21lci5pbyIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBwX2FwaV91cmwiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiYXBpLmN1c3RvbWVyLmlvIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzaXRlX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBpX2tleSIsInR5cGUiOiJzZWNyZXQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYmVhcmVyIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYnJvYWRjYXN0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaW1wb3J0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiZW1haWxfYWRkcmVzcyIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InN1cHByZXNzaW9uX3R5cGUiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjb2xsZWN0aW9uX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoic25pcHBldF9uYW1lIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoid2ViaG9va19pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InNlbmRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImV4cG9ydF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6Im1lc3NhZ2VfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzZWdtZW50X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoibmV3c2xldHRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImNvbnRlbnRfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjYW1wYWlnbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImFjdGlvbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImN1c3RvbWVyX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoidHJhbnNhY3Rpb25hbF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InRyaWdnZXJfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJmb3JtX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaWRlbnRpZmllciIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRldmljZV9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRlbGl2ZXJ5X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9XQ==)
-
-
-    # Server addresses: US and EU
-
-
-    Customer.io hosts services in the United States (US) and European Union. Select the appropriate server address for your region.
-
-
-    | Region | Server Address |
-
-    | :-- | :-- |
-
-    | US | https://api.customer.io |
-
-    | EU | https://api-eu.customer.io |
-
-
-    # Authentication
-
-
-    All requests to the Customer.io App API use an [App API Key](#App-API-Key).
-
-
-    To authenticate, provide your key as a Bearer token in a HTTP Authorization header. You can create and manage your API keys—including keys with different scopes—in [your account settings page](https://fly.customer.io/settings/api_credentials?keyType=app). Each operation on this page references the authorization header it requires.
-
-
-    # Rate Limits
-
-
-    Most endpoints on this page are limited to 10 requests per second. The exceptions are:
-
-    * The [transactional email](#operation/sendEmail) endpoint is limited to 100 requests per second.
-
-    * The [API-triggered broadcast endpoint](#operation/triggerBroadcast) is limited to 1 request every 10 seconds.
-
-
-    **Rate limits are subject to change. We may adjust these thresholds to ensure stable performance for all customers.**
-
-    '
+  description: Our App API provides ways to trigger messages and retrieve information about people, campaigns, broadcasts, and more.
 servers:
 - url: https://api.customer.io
   description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
@@ -82,9 +16,7 @@ tags:
     Use the newsletter endpoints to create, send, schedule, translate, A/B test, and get metrics for newsletters.
 
 
-    If your newsletters include assets like images or PDFs, host them in your [workspace''s assets](/integrations/api/app/#tag/assets) or at another public URL, and include the URL in your message content.
-
-    '
+    If your newsletters include assets like images or PDFs, host them in your workspace''s assets or at another public URL, and include the URL in your message content.'
 paths:
   /v1/newsletters:
     servers:
@@ -276,12 +208,10 @@ paths:
         To send the newsletter immediately, set `send_now` to `true`. To schedule for later, set `scheduled_at` to a Unix timestamp in the future. If you don''t set either, the newsletter is created as a draft.
 
 
-        If you [enabled a subscription center](/journeys/channels/subscriptions/center/#enable-sub-center) in your workspace, `subscription_topic_id` is required. Use the [subscription center endpoint](#tag/subscription-center/getTopics) to find IDs.
+        If you enabled a subscription center in your workspace, `subscription_topic_id` is required. Use the subscription center endpoint to find IDs.
 
 
-        Use standard HTML/CSS for the `body` of an email; this endpoint can''t pull in global style variables or render our Design Studio''s component syntax. You can create Design Studio emails through [other endpoints](#tag/design-studio). All requests must be less than 1 MB.
-
-        '
+        Use standard HTML/CSS for the `body` of an email; this endpoint can''t pull in global style variables or render our Design Studio''s component syntax. You can create Design Studio emails through other endpoints. All requests must be less than 1 MB.'
       tags:
       - Newsletters
       requestBody:
@@ -706,9 +636,7 @@ paths:
       description: 'Deletes an individual newsletter, including content, settings, and metrics. It will be removed from segments, and its templates will no longer show in the Message Library.
 
 
-        If the newsletter is an in-app message, this cancels any undelivered, in-app message, too.
-
-        '
+        If the newsletter is an in-app message, this cancels any undelivered, in-app message, too.'
       tags:
       - Newsletters
       responses:
@@ -765,232 +693,6 @@ paths:
         source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D\"\n\n\treq, _ := http.NewRequest(\"DELETE\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
 components:
   schemas:
-    createPushNewsletter:
-      title: Push
-      description: For push notifications, you must provide at least one of `subject` or `body`.
-      allOf:
-      - type: object
-        required:
-        - name
-        - type
-        - recipients
-        properties:
-          name:
-            type: string
-            maxLength: 190
-            description: The name of the newsletter.
-          recipients:
-            type: object
-            description: 'Filter conditions that define the newsletter''s recipients. Combine `segment` and `attribute` conditions with `and`, `or`, and `not` operators.
-
-              '
-            properties:
-              and:
-                type: array
-                description: An array of conditions that must all be true.
-                items:
-                  type: object
-              or:
-                type: array
-                description: An array of conditions where at least one must be true.
-                items:
-                  type: object
-              not:
-                type: object
-                description: A condition or group of conditions to exclude.
-              segment:
-                type: object
-                description: A segment condition.
-                properties:
-                  id:
-                    type: integer
-                    description: The ID of a segment.
-              attribute:
-                type: object
-                description: A customer attribute condition.
-                properties:
-                  field:
-                    type: string
-                    description: The attribute name.
-                  operator:
-                    type: string
-                    description: The comparison operator.
-                    enum:
-                    - eq
-                    - exists
-                  value:
-                    type: string
-                    description: The value to compare against. Required when `operator` is `eq`.
-                  inverse:
-                    type: boolean
-                    description: Set to `true` for "is not equal" or "does not exist".
-          send_now:
-            type: boolean
-            description: If `true`, the newsletter is sent immediately after creation. You cannot set both `send_now` and `scheduled_at`.
-          scheduled_at:
-            type: integer
-            format: unix timestamp
-            description: A Unix timestamp indicating when to send the newsletter. The time must be in the future. You cannot set both `send_now` and `scheduled_at`.
-          subscription_topic_id:
-            type: integer
-            description: The newsletter audience's subscription topic ID. Required when [subscription center](/journeys/channels/subscriptions/center/#enable-sub-center) is enabled; otherwise sends to globally subscribed profiles.
-      - type: object
-        example:
-          rate_limit_email_rate: 500
-          rate_limit_time_period: 60
-          rate_limit_spread: true
-        description: Optional newsletter rate limiting. If you set `rate_limit_email_rate` or `rate_limit_time_period`, set both; `rate_limit_spread` can be set alone.
-        properties:
-          rate_limit_email_rate:
-            type: integer
-            minimum: 1
-            description: 'Maximum number of messages per time period. **NOTE:** Though this states `email_rate`, you can use this for other message channels. Only fixed rate limits are supported, not [daily ramp limits](/journeys/send/broadcasts/newsletters/#daily-ramp).
-
-              '
-          rate_limit_time_period:
-            type: integer
-            enum:
-            - 60
-            - 3600
-            - 86400
-            description: Time period in seconds for rate limiting. Must be one of 60 (minute), 3600 (hour), or 86400 (day).
-          rate_limit_spread:
-            type: boolean
-            description: When `true`, spreads messages evenly across the time period. Otherwise, it sends as fast as possible up to the limit in each period.
-      - type: object
-        properties:
-          type:
-            type: string
-            description: The channel type for the newsletter.
-            enum:
-            - push
-          subject:
-            type: string
-            description: The title of the push notification. You must provide `subject`, `body`, or both.
-            example: 24-hour flash sale!
-          body:
-            type: string
-            description: The body content of the push notification. You must provide `subject`, `body`, or both.
-            example: Get 30% off everything. Tap to shop now.
-    createWebhookNewsletter:
-      title: Webhook
-      description: For webhooks, you must include `body`, `request_method`, and `url`.
-      allOf:
-      - type: object
-        required:
-        - name
-        - type
-        - recipients
-        properties:
-          name:
-            type: string
-            maxLength: 190
-            description: The name of the newsletter.
-          recipients:
-            type: object
-            description: 'Filter conditions that define the newsletter''s recipients. Combine `segment` and `attribute` conditions with `and`, `or`, and `not` operators.
-
-              '
-            properties:
-              and:
-                type: array
-                description: An array of conditions that must all be true.
-                items:
-                  type: object
-              or:
-                type: array
-                description: An array of conditions where at least one must be true.
-                items:
-                  type: object
-              not:
-                type: object
-                description: A condition or group of conditions to exclude.
-              segment:
-                type: object
-                description: A segment condition.
-                properties:
-                  id:
-                    type: integer
-                    description: The ID of a segment.
-              attribute:
-                type: object
-                description: A customer attribute condition.
-                properties:
-                  field:
-                    type: string
-                    description: The attribute name.
-                  operator:
-                    type: string
-                    description: The comparison operator.
-                    enum:
-                    - eq
-                    - exists
-                  value:
-                    type: string
-                    description: The value to compare against. Required when `operator` is `eq`.
-                  inverse:
-                    type: boolean
-                    description: Set to `true` for "is not equal" or "does not exist".
-          send_now:
-            type: boolean
-            description: If `true`, the newsletter is sent immediately after creation. You cannot set both `send_now` and `scheduled_at`.
-          scheduled_at:
-            type: integer
-            format: unix timestamp
-            description: A Unix timestamp indicating when to send the newsletter. The time must be in the future. You cannot set both `send_now` and `scheduled_at`.
-          subscription_topic_id:
-            type: integer
-            description: The newsletter audience's subscription topic ID. Required when [subscription center](/journeys/channels/subscriptions/center/#enable-sub-center) is enabled; otherwise sends to globally subscribed profiles.
-      - type: object
-        example:
-          rate_limit_email_rate: 500
-          rate_limit_time_period: 60
-          rate_limit_spread: true
-        description: Optional newsletter rate limiting. If you set `rate_limit_email_rate` or `rate_limit_time_period`, set both; `rate_limit_spread` can be set alone.
-        properties:
-          rate_limit_email_rate:
-            type: integer
-            minimum: 1
-            description: 'Maximum number of messages per time period. **NOTE:** Though this states `email_rate`, you can use this for other message channels. Only fixed rate limits are supported, not [daily ramp limits](/journeys/send/broadcasts/newsletters/#daily-ramp).
-
-              '
-          rate_limit_time_period:
-            type: integer
-            enum:
-            - 60
-            - 3600
-            - 86400
-            description: Time period in seconds for rate limiting. Must be one of 60 (minute), 3600 (hour), or 86400 (day).
-          rate_limit_spread:
-            type: boolean
-            description: When `true`, spreads messages evenly across the time period. Otherwise, it sends as fast as possible up to the limit in each period.
-      - type: object
-        required:
-        - body
-        - request_method
-        - url
-        properties:
-          type:
-            type: string
-            description: The channel type for the newsletter.
-            enum:
-            - webhook
-          body:
-            type: string
-            description: The body content of the webhook request.
-            example: '{"channel":"#marketing","text":"Newsletter sent to {{ customer.email }}"}'
-          request_method:
-            type: string
-            description: The HTTP method for the webhook request.
-            enum:
-            - DELETE
-            - GET
-            - POST
-            - PUT
-            - PATCH
-          url:
-            type: string
-            description: The URL to send the webhook request to.
     createInAppNewsletter:
       title: In-App
       description: For in-app messages, you must include `body_json`.
@@ -1096,121 +798,6 @@ components:
             type: string
             description: JSON body content for the in-app message. This defines the structure and content of the in-app message.
             example: '{"message_id":"welcome","display":{"mode":"modal","value":"center"},"carta_content":"<x-base><x-message>Hello {{customer.first_name}}!</x-message></x-base>"}'
-    createInboxNewsletter:
-      title: Inbox message
-      description: For inbox messages, you must include `body_json`.
-      allOf:
-      - type: object
-        required:
-        - name
-        - type
-        - recipients
-        properties:
-          name:
-            type: string
-            maxLength: 190
-            description: The name of the newsletter.
-          recipients:
-            type: object
-            description: 'Filter conditions that define the newsletter''s recipients. Combine `segment` and `attribute` conditions with `and`, `or`, and `not` operators.
-
-              '
-            properties:
-              and:
-                type: array
-                description: An array of conditions that must all be true.
-                items:
-                  type: object
-              or:
-                type: array
-                description: An array of conditions where at least one must be true.
-                items:
-                  type: object
-              not:
-                type: object
-                description: A condition or group of conditions to exclude.
-              segment:
-                type: object
-                description: A segment condition.
-                properties:
-                  id:
-                    type: integer
-                    description: The ID of a segment.
-              attribute:
-                type: object
-                description: A customer attribute condition.
-                properties:
-                  field:
-                    type: string
-                    description: The attribute name.
-                  operator:
-                    type: string
-                    description: The comparison operator.
-                    enum:
-                    - eq
-                    - exists
-                  value:
-                    type: string
-                    description: The value to compare against. Required when `operator` is `eq`.
-                  inverse:
-                    type: boolean
-                    description: Set to `true` for "is not equal" or "does not exist".
-          send_now:
-            type: boolean
-            description: If `true`, the newsletter is sent immediately after creation. You cannot set both `send_now` and `scheduled_at`.
-          scheduled_at:
-            type: integer
-            format: unix timestamp
-            description: A Unix timestamp indicating when to send the newsletter. The time must be in the future. You cannot set both `send_now` and `scheduled_at`.
-          subscription_topic_id:
-            type: integer
-            description: The newsletter audience's subscription topic ID. Required when [subscription center](/journeys/channels/subscriptions/center/#enable-sub-center) is enabled; otherwise sends to globally subscribed profiles.
-      - type: object
-        example:
-          rate_limit_email_rate: 500
-          rate_limit_time_period: 60
-          rate_limit_spread: true
-        description: Optional newsletter rate limiting. If you set `rate_limit_email_rate` or `rate_limit_time_period`, set both; `rate_limit_spread` can be set alone.
-        properties:
-          rate_limit_email_rate:
-            type: integer
-            minimum: 1
-            description: 'Maximum number of messages per time period. **NOTE:** Though this states `email_rate`, you can use this for other message channels. Only fixed rate limits are supported, not [daily ramp limits](/journeys/send/broadcasts/newsletters/#daily-ramp).
-
-              '
-          rate_limit_time_period:
-            type: integer
-            enum:
-            - 60
-            - 3600
-            - 86400
-            description: Time period in seconds for rate limiting. Must be one of 60 (minute), 3600 (hour), or 86400 (day).
-          rate_limit_spread:
-            type: boolean
-            description: When `true`, spreads messages evenly across the time period. Otherwise, it sends as fast as possible up to the limit in each period.
-      - type: object
-        required:
-        - body_json
-        properties:
-          type:
-            type: string
-            description: The channel type for the newsletter.
-            enum:
-            - inbox
-          body_json:
-            type: string
-            description: 'JSON body content for the inbox message, as a stringified JSON object. The fields you include depend on how you [set up your inbox](/journeys/channels/in-app/inbox/setup/):
-
-              - `topics`—array, topics your audience can filter by in their inbox
-
-              - `type`—string, context that helps render the inbox message
-
-              - `properties`—object, your message info like the title, body, link, and image
-
-              - `expiration`—object; if omitted, the message expires after 30 days. Otherwise set `type` (`relative` or `absolute`), `unit` (`seconds`, `minutes`, `hours`, or `days`; relative only), and `value` (number of units, or a unix timestamp if absolute)
-
-              '
-            example: '{"topics": ["general", "updates"], "type": "notification", "expiration": {"type": "relative", "value": "30", "unit": "days"}, "properties": {"title": "Welcome!", "message": "Thanks for signing up", "link": "https://customer.io"}}'
     createEmailNewsletter:
       title: Email
       description: When you create an email, include `subject` and `body`. Set either `from` or `from_id`, but not both. If you set neither, Customer.io uses your oldest verified sending address.
@@ -1359,6 +946,228 @@ components:
           body: <html><body><h1>Product Updates</h1><p>Here's what we shipped this week...</p></body></html>
           from: Product Team <updates@example.com>
           subscription_topic_id: 5
+    createPushNewsletter:
+      title: Push
+      description: For push notifications, you must provide at least one of `subject` or `body`.
+      allOf:
+      - type: object
+        required:
+        - name
+        - type
+        - recipients
+        properties:
+          name:
+            type: string
+            maxLength: 190
+            description: The name of the newsletter.
+          recipients:
+            type: object
+            description: 'Filter conditions that define the newsletter''s recipients. Combine `segment` and `attribute` conditions with `and`, `or`, and `not` operators.
+
+              '
+            properties:
+              and:
+                type: array
+                description: An array of conditions that must all be true.
+                items:
+                  type: object
+              or:
+                type: array
+                description: An array of conditions where at least one must be true.
+                items:
+                  type: object
+              not:
+                type: object
+                description: A condition or group of conditions to exclude.
+              segment:
+                type: object
+                description: A segment condition.
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of a segment.
+              attribute:
+                type: object
+                description: A customer attribute condition.
+                properties:
+                  field:
+                    type: string
+                    description: The attribute name.
+                  operator:
+                    type: string
+                    description: The comparison operator.
+                    enum:
+                    - eq
+                    - exists
+                  value:
+                    type: string
+                    description: The value to compare against. Required when `operator` is `eq`.
+                  inverse:
+                    type: boolean
+                    description: Set to `true` for "is not equal" or "does not exist".
+          send_now:
+            type: boolean
+            description: If `true`, the newsletter is sent immediately after creation. You cannot set both `send_now` and `scheduled_at`.
+          scheduled_at:
+            type: integer
+            format: unix timestamp
+            description: A Unix timestamp indicating when to send the newsletter. The time must be in the future. You cannot set both `send_now` and `scheduled_at`.
+          subscription_topic_id:
+            type: integer
+            description: The newsletter audience's subscription topic ID. Required when [subscription center](/journeys/channels/subscriptions/center/#enable-sub-center) is enabled; otherwise sends to globally subscribed profiles.
+      - type: object
+        example:
+          rate_limit_email_rate: 500
+          rate_limit_time_period: 60
+          rate_limit_spread: true
+        description: Optional newsletter rate limiting. If you set `rate_limit_email_rate` or `rate_limit_time_period`, set both; `rate_limit_spread` can be set alone.
+        properties:
+          rate_limit_email_rate:
+            type: integer
+            minimum: 1
+            description: 'Maximum number of messages per time period. **NOTE:** Though this states `email_rate`, you can use this for other message channels. Only fixed rate limits are supported, not [daily ramp limits](/journeys/send/broadcasts/newsletters/#daily-ramp).
+
+              '
+          rate_limit_time_period:
+            type: integer
+            enum:
+            - 60
+            - 3600
+            - 86400
+            description: Time period in seconds for rate limiting. Must be one of 60 (minute), 3600 (hour), or 86400 (day).
+          rate_limit_spread:
+            type: boolean
+            description: When `true`, spreads messages evenly across the time period. Otherwise, it sends as fast as possible up to the limit in each period.
+      - type: object
+        properties:
+          type:
+            type: string
+            description: The channel type for the newsletter.
+            enum:
+            - push
+          subject:
+            type: string
+            description: The title of the push notification. You must provide `subject`, `body`, or both.
+            example: 24-hour flash sale!
+          body:
+            type: string
+            description: The body content of the push notification. You must provide `subject`, `body`, or both.
+            example: Get 30% off everything. Tap to shop now.
+    createInboxNewsletter:
+      title: Inbox message
+      description: For inbox messages, you must include `body_json`.
+      allOf:
+      - type: object
+        required:
+        - name
+        - type
+        - recipients
+        properties:
+          name:
+            type: string
+            maxLength: 190
+            description: The name of the newsletter.
+          recipients:
+            type: object
+            description: 'Filter conditions that define the newsletter''s recipients. Combine `segment` and `attribute` conditions with `and`, `or`, and `not` operators.
+
+              '
+            properties:
+              and:
+                type: array
+                description: An array of conditions that must all be true.
+                items:
+                  type: object
+              or:
+                type: array
+                description: An array of conditions where at least one must be true.
+                items:
+                  type: object
+              not:
+                type: object
+                description: A condition or group of conditions to exclude.
+              segment:
+                type: object
+                description: A segment condition.
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of a segment.
+              attribute:
+                type: object
+                description: A customer attribute condition.
+                properties:
+                  field:
+                    type: string
+                    description: The attribute name.
+                  operator:
+                    type: string
+                    description: The comparison operator.
+                    enum:
+                    - eq
+                    - exists
+                  value:
+                    type: string
+                    description: The value to compare against. Required when `operator` is `eq`.
+                  inverse:
+                    type: boolean
+                    description: Set to `true` for "is not equal" or "does not exist".
+          send_now:
+            type: boolean
+            description: If `true`, the newsletter is sent immediately after creation. You cannot set both `send_now` and `scheduled_at`.
+          scheduled_at:
+            type: integer
+            format: unix timestamp
+            description: A Unix timestamp indicating when to send the newsletter. The time must be in the future. You cannot set both `send_now` and `scheduled_at`.
+          subscription_topic_id:
+            type: integer
+            description: The newsletter audience's subscription topic ID. Required when [subscription center](/journeys/channels/subscriptions/center/#enable-sub-center) is enabled; otherwise sends to globally subscribed profiles.
+      - type: object
+        example:
+          rate_limit_email_rate: 500
+          rate_limit_time_period: 60
+          rate_limit_spread: true
+        description: Optional newsletter rate limiting. If you set `rate_limit_email_rate` or `rate_limit_time_period`, set both; `rate_limit_spread` can be set alone.
+        properties:
+          rate_limit_email_rate:
+            type: integer
+            minimum: 1
+            description: 'Maximum number of messages per time period. **NOTE:** Though this states `email_rate`, you can use this for other message channels. Only fixed rate limits are supported, not [daily ramp limits](/journeys/send/broadcasts/newsletters/#daily-ramp).
+
+              '
+          rate_limit_time_period:
+            type: integer
+            enum:
+            - 60
+            - 3600
+            - 86400
+            description: Time period in seconds for rate limiting. Must be one of 60 (minute), 3600 (hour), or 86400 (day).
+          rate_limit_spread:
+            type: boolean
+            description: When `true`, spreads messages evenly across the time period. Otherwise, it sends as fast as possible up to the limit in each period.
+      - type: object
+        required:
+        - body_json
+        properties:
+          type:
+            type: string
+            description: The channel type for the newsletter.
+            enum:
+            - inbox
+          body_json:
+            type: string
+            description: 'JSON body content for the inbox message, as a stringified JSON object. The fields you include depend on how you [set up your inbox](/journeys/channels/in-app/inbox/setup/):
+
+              - `topics`—array, topics your audience can filter by in their inbox
+
+              - `type`—string, context that helps render the inbox message
+
+              - `properties`—object, your message info like the title, body, link, and image
+
+              - `expiration`—object; if omitted, the message expires after 30 days. Otherwise set `type` (`relative` or `absolute`), `unit` (`seconds`, `minutes`, `hours`, or `days`; relative only), and `value` (number of units, or a unix timestamp if absolute)
+
+              '
+            example: '{"topics": ["general", "updates"], "type": "notification", "expiration": {"type": "relative", "value": "30", "unit": "days"}, "properties": {"title": "Welcome!", "message": "Thanks for signing up", "link": "https://customer.io"}}'
     createSmsNewsletter:
       title: SMS
       description: When creating an SMS text, you must include `body`.
@@ -1464,6 +1273,125 @@ components:
             type: string
             description: The body content of the SMS message.
             example: Hi {{ customer.first_name }}, your order has shipped!
+    createWebhookNewsletter:
+      title: Webhook
+      description: For webhooks, you must include `body`, `request_method`, and `url`.
+      allOf:
+      - type: object
+        required:
+        - name
+        - type
+        - recipients
+        properties:
+          name:
+            type: string
+            maxLength: 190
+            description: The name of the newsletter.
+          recipients:
+            type: object
+            description: 'Filter conditions that define the newsletter''s recipients. Combine `segment` and `attribute` conditions with `and`, `or`, and `not` operators.
+
+              '
+            properties:
+              and:
+                type: array
+                description: An array of conditions that must all be true.
+                items:
+                  type: object
+              or:
+                type: array
+                description: An array of conditions where at least one must be true.
+                items:
+                  type: object
+              not:
+                type: object
+                description: A condition or group of conditions to exclude.
+              segment:
+                type: object
+                description: A segment condition.
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of a segment.
+              attribute:
+                type: object
+                description: A customer attribute condition.
+                properties:
+                  field:
+                    type: string
+                    description: The attribute name.
+                  operator:
+                    type: string
+                    description: The comparison operator.
+                    enum:
+                    - eq
+                    - exists
+                  value:
+                    type: string
+                    description: The value to compare against. Required when `operator` is `eq`.
+                  inverse:
+                    type: boolean
+                    description: Set to `true` for "is not equal" or "does not exist".
+          send_now:
+            type: boolean
+            description: If `true`, the newsletter is sent immediately after creation. You cannot set both `send_now` and `scheduled_at`.
+          scheduled_at:
+            type: integer
+            format: unix timestamp
+            description: A Unix timestamp indicating when to send the newsletter. The time must be in the future. You cannot set both `send_now` and `scheduled_at`.
+          subscription_topic_id:
+            type: integer
+            description: The newsletter audience's subscription topic ID. Required when [subscription center](/journeys/channels/subscriptions/center/#enable-sub-center) is enabled; otherwise sends to globally subscribed profiles.
+      - type: object
+        example:
+          rate_limit_email_rate: 500
+          rate_limit_time_period: 60
+          rate_limit_spread: true
+        description: Optional newsletter rate limiting. If you set `rate_limit_email_rate` or `rate_limit_time_period`, set both; `rate_limit_spread` can be set alone.
+        properties:
+          rate_limit_email_rate:
+            type: integer
+            minimum: 1
+            description: 'Maximum number of messages per time period. **NOTE:** Though this states `email_rate`, you can use this for other message channels. Only fixed rate limits are supported, not [daily ramp limits](/journeys/send/broadcasts/newsletters/#daily-ramp).
+
+              '
+          rate_limit_time_period:
+            type: integer
+            enum:
+            - 60
+            - 3600
+            - 86400
+            description: Time period in seconds for rate limiting. Must be one of 60 (minute), 3600 (hour), or 86400 (day).
+          rate_limit_spread:
+            type: boolean
+            description: When `true`, spreads messages evenly across the time period. Otherwise, it sends as fast as possible up to the limit in each period.
+      - type: object
+        required:
+        - body
+        - request_method
+        - url
+        properties:
+          type:
+            type: string
+            description: The channel type for the newsletter.
+            enum:
+            - webhook
+          body:
+            type: string
+            description: The body content of the webhook request.
+            example: '{"channel":"#marketing","text":"Newsletter sent to {{ customer.email }}"}'
+          request_method:
+            type: string
+            description: The HTTP method for the webhook request.
+            enum:
+            - DELETE
+            - GET
+            - POST
+            - PUT
+            - PATCH
+          url:
+            type: string
+            description: The URL to send the webhook request to.
   securitySchemes:
     Bearer-Auth:
       type: http

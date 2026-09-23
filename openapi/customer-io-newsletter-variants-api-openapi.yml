@@ -2,73 +2,7 @@ openapi: 3.2.0
 info:
   version: 1.0.0
   title: Customer.io App Newsletter Variants API
-  description: 'Our App API provides ways to trigger messages and retrieve information about people, campaigns, broadcasts, and more.
-
-
-    # Overview
-
-
-    The App API provides methods to send newsletters, transactional messages, and API-triggered broadcasts. You can create newsletters from scratch and update transactional messages and API-triggered broadcasts.
-
-
-    For transactional messages and API-triggered broadcasts, your payload acts as a message "trigger" and can contain `data` that you reference in your messages using liquid—`{{trigger.<data>}}`.
-
-
-    The other endpoints help you retrieve information about people, segments, campaigns, broadcasts, etc; it also lets you update campaign actions, messages, newsletter variants, etc. Aside from the [API-triggered broadcast](#triggerBroadcast) (1 per 10 seconds) and [Transactional](#sendEmail) (100 per second) endpoints, requests are limited to 10 per second.
-
-
-    # Use our Postman collection
-
-
-    We''ve generated a Postman collection to help you get started with our APIs.
-
-
-    If you fork this collection, you might want to disable the *Watch original collection* option. We automatically update our Postman collection whenever we release changes to our documentation, even if we don''t change our APIs—which happens daily! Rather than being flooded with Postman notifications, you can check out our [Release Notes](/release-notes/) for updates to our APIs.
-
-
-    **NOTE**: Postman endpoints default to our US APIs. If you''re in our European (EU) region, you''ll need to add `-eu` to the server variables (`track_api_url` and `app_api_url`).
-
-
-    [<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://god.gw.postman.com/run-collection/23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D23697545-2931c004-e63d-4cdc-bf4b-e685ba6da42d%26entityType%3Dcollection%26workspaceId%3Db886877f-fc09-475f-84fe-6221a98f4d18#?env%5BCustomer.io%20API%20Environment%5D=W3sia2V5IjoidHJhY2tfYXBpX3VybCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiJ0cmFjay5jdXN0b21lci5pbyIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBwX2FwaV91cmwiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiYXBpLmN1c3RvbWVyLmlvIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzaXRlX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXBpX2tleSIsInR5cGUiOiJzZWNyZXQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYmVhcmVyIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYnJvYWRjYXN0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaW1wb3J0X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiZW1haWxfYWRkcmVzcyIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InN1cHByZXNzaW9uX3R5cGUiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjb2xsZWN0aW9uX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoic25pcHBldF9uYW1lIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5Ijoid2ViaG9va19pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InNlbmRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImV4cG9ydF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6Im1lc3NhZ2VfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJzZWdtZW50X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoibmV3c2xldHRlcl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImNvbnRlbnRfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJjYW1wYWlnbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImFjdGlvbl9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImN1c3RvbWVyX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoidHJhbnNhY3Rpb25hbF9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InRyaWdnZXJfaWQiLCJ0eXBlIjoiZGVmYXVsdCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJmb3JtX2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiaWRlbnRpZmllciIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRldmljZV9pZCIsInR5cGUiOiJkZWZhdWx0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRlbGl2ZXJ5X2lkIiwidHlwZSI6ImRlZmF1bHQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9XQ==)
-
-
-    # Server addresses: US and EU
-
-
-    Customer.io hosts services in the United States (US) and European Union. Select the appropriate server address for your region.
-
-
-    | Region | Server Address |
-
-    | :-- | :-- |
-
-    | US | https://api.customer.io |
-
-    | EU | https://api-eu.customer.io |
-
-
-    # Authentication
-
-
-    All requests to the Customer.io App API use an [App API Key](#App-API-Key).
-
-
-    To authenticate, provide your key as a Bearer token in a HTTP Authorization header. You can create and manage your API keys—including keys with different scopes—in [your account settings page](https://fly.customer.io/settings/api_credentials?keyType=app). Each operation on this page references the authorization header it requires.
-
-
-    # Rate Limits
-
-
-    Most endpoints on this page are limited to 10 requests per second. The exceptions are:
-
-    * The [transactional email](#operation/sendEmail) endpoint is limited to 100 requests per second.
-
-    * The [API-triggered broadcast endpoint](#operation/triggerBroadcast) is limited to 1 request every 10 seconds.
-
-
-    **Rate limits are subject to change. We may adjust these thresholds to ensure stable performance for all customers.**
-
-    '
+  description: Our App API provides ways to trigger messages and retrieve information about people, campaigns, broadcasts, and more.
 servers:
 - url: https://api.customer.io
   description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
@@ -79,9 +13,7 @@ tags:
   description: 'A newsletter variant is a translation or an A/B test. You can create, update, or delete variants in newsletters from these endpoints. You can also create a new A/B test group.
 
 
-    If your newsletters include assets like images or PDFs, host them in your [workspace''s assets](/integrations/api/app/#tag/assets) or at another public URL, and include the URL in your message content.
-
-    '
+    If your newsletters include assets like images or PDFs, host them in your workspace''s assets or at another public URL, and include the URL in your message content.'
 paths:
   /v1/newsletters/{newsletter_id}/contents:
     servers:
@@ -525,9 +457,7 @@ paths:
         For an email, you can also update the envelope: from address, subject line, etc.
 
 
-        **NOTE**: You cannot manage content made with the drag-and-drop editor via API, and you cannot use this endpoint to update Design Studio emails. You can, however, [manage Design Studio content with other endpoints](#tag/design-studio).
-
-        '
+        **NOTE**: You cannot manage content made with the drag-and-drop editor via API, and you cannot use this endpoint to update Design Studio emails. You can, however, manage Design Studio content with other endpoints.'
       tags:
       - Newsletter Variants
       requestBody:
@@ -769,12 +699,10 @@ paths:
         If you omit optional fields, the values from the default template are copied over untranslated. Make sure you translate all aspects of your default template.
 
 
-        You can''t add language variants to a newsletter that has already been sent. You can''t manage emails created with the drag-and-drop editor or Design Studio via this endpoint—use [Create an email translation](#tag/design-studio/createEmailTranslation) for Design Studio emails.
+        You can''t add language variants to a newsletter that has already been sent. You can''t manage emails created with the drag-and-drop editor or Design Studio via this endpoint—use Create an email translation for Design Studio emails.
 
 
-        If the newsletter has A/B tests, use [Add a translation to a newsletter test group](#operation/createNewsletterTestLanguageVariant) instead.
-
-        '
+        If the newsletter has A/B tests, use Add a translation to a newsletter test group instead.'
       tags:
       - Newsletter Variants
       requestBody:
@@ -1082,7 +1010,7 @@ paths:
       operationId: getNewsletterVariantTranslation
       security:
       - Bearer-Auth: []
-      description: Returns information about a specific language variant of a newsletter. If your newsletter includes A/B tests, use [Get a translation in a newsletter test group](/api/app/#operation/getNewsletterVariantTranslationTest).
+      description: Returns information about a specific language variant of a newsletter. If your newsletter includes A/B tests, use Get a translation in a newsletter test group.
       tags:
       - Newsletter Variants
       responses:
@@ -1282,12 +1210,10 @@ paths:
       operationId: updateNewsletterVariantTranslation
       security:
       - Bearer-Auth: []
-      description: 'Update the translation of a newsletter variant. If your newsletter includes A/B tests, use [Update a translation in a newsletter test group](/api/app/#operation/updateNewsletterTestTranslation).
+      description: 'Update the translation of a newsletter variant. If your newsletter includes A/B tests, use Update a translation in a newsletter test group.
 
 
-        **NOTE**: You cannot manage content made with Design Studio with this endpoint. Use the [Design Studio APIs](#tag/design-studio) instead.
-
-        '
+        **NOTE**: You cannot manage content made with Design Studio with this endpoint. Use the Design Studio APIs instead.'
       tags:
       - Newsletter Variants
       requestBody:
@@ -1515,9 +1441,7 @@ paths:
       description: 'Delete a specific language variant of a newsletter. You cannot delete the default language variant. If your newsletter has already been sent, you cannot delete language variants.
 
 
-        If your newsletter includes A/B tests, use [Delete a translation in a newsletter test group](#operation/deleteNewsletterTestLanguageVariant).
-
-        '
+        If your newsletter includes A/B tests, use Delete a translation in a newsletter test group.'
       tags:
       - Newsletter Variants
       responses:
@@ -1704,9 +1628,7 @@ paths:
         This endpoint does not require a request body. The new test group is created as a copy of the existing content.
 
 
-        You cannot add test groups to a newsletter that has already been sent.
-
-        '
+        You cannot add test groups to a newsletter that has already been sent.'
       tags:
       - Newsletter Variants
       requestBody:
@@ -1899,9 +1821,7 @@ paths:
       description: 'Add a language variant to a specific A/B test group in a newsletter. The new variant is a copy of the default template in the test group with the content you provide. The payload the endpoint accepts depends on the parent newsletter''s channel type: if the newsletter is an email, the payload will be an email variant; if the newsletter is an SMS, the payload will be an SMS variant.
 
 
-        You cannot add language variants to a newsletter that has already been sent, or to newsletters created with the drag-and-drop editor or Design Studio.
-
-        '
+        You cannot add language variants to a newsletter that has already been sent, or to newsletters created with the drag-and-drop editor or Design Studio.'
       tags:
       - Newsletter Variants
       requestBody:
@@ -2215,7 +2135,7 @@ paths:
       operationId: getNewsletterVariantTranslationTest
       security:
       - Bearer-Auth: []
-      description: Returns information about a specific language variant of a newsletter in an A/B test group. You can retrieve `test_group_ids` from [Get variants in a newsletter test group](/api/app/#operation/getNewsletterVariantTest).
+      description: Returns information about a specific language variant of a newsletter in an A/B test group. You can retrieve `test_group_ids` from Get variants in a newsletter test group.
       tags:
       - Newsletter Variants
       responses:
@@ -2415,12 +2335,10 @@ paths:
       operationId: updateNewsletterTestTranslation
       security:
       - Bearer-Auth: []
-      description: 'Update the translation of a newsletter variant in an A/B test. You can retrieve a list of `test_group_ids` from [Get variants in a newsletter test group](/api/app/#operation/getNewsletterVariantTest).
+      description: 'Update the translation of a newsletter variant in an A/B test. You can retrieve a list of `test_group_ids` from Get variants in a newsletter test group.
 
 
-        **NOTE**: You cannot manage content made with Design Studio with this endpoint. Use the [Design Studio APIs](#tag/design-studio) instead.
-
-        '
+        **NOTE**: You cannot manage content made with Design Studio with this endpoint. Use the Design Studio APIs instead.'
       tags:
       - Newsletter Variants
       requestBody:
@@ -2648,9 +2566,7 @@ paths:
       description: 'Delete a specific language variant of a newsletter in an A/B test group. You cannot delete the default language variant. If your newsletter has already been sent, you cannot delete language variants.
 
 
-        You can retrieve a list of `test_group_ids` from [List A/B test groups in a newsletter](#operation/getNewsletterTestGroups).
-
-        '
+        You can retrieve a list of `test_group_ids` from List A/B test groups in a newsletter.'
       tags:
       - Newsletter Variants
       responses:
@@ -2711,6 +2627,82 @@ paths:
         source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/test_group/%7Btest_group_id%7D/language/%7Blanguage%7D\"\n\n\treq, _ := http.NewRequest(\"DELETE\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
 components:
   schemas:
+    updateSmsContent:
+      title: SMS
+      description: Update the contents of an SMS newsletter variant.
+      allOf:
+      - type: object
+        properties:
+          type:
+            x-scalar-ignore: true
+            description: Channel type for a newsletter or newsletter content variant.
+            type: string
+            enum:
+            - email
+            - webhook
+            - twilio
+            - push
+            - in_app
+            - inbox
+            readOnly: true
+            example: email
+          deduplicate_id:
+            x-scalar-ignore: true
+            type: string
+            readOnly: true
+            description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+            example: 15:1492548073
+      - type: object
+        properties:
+          type:
+            type: string
+            enum:
+            - twilio
+            readOnly: true
+          body:
+            type: string
+            description: The body of the SMS message.
+            example: Hi {{ customer.first_name }}, check out our latest deals!
+    updatePushContent:
+      title: Push
+      description: Update the contents of a push notification newsletter variant.
+      allOf:
+      - type: object
+        properties:
+          type:
+            x-scalar-ignore: true
+            description: Channel type for a newsletter or newsletter content variant.
+            type: string
+            enum:
+            - email
+            - webhook
+            - twilio
+            - push
+            - in_app
+            - inbox
+            readOnly: true
+            example: email
+          deduplicate_id:
+            x-scalar-ignore: true
+            type: string
+            readOnly: true
+            description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+            example: 15:1492548073
+      - type: object
+        properties:
+          type:
+            type: string
+            enum:
+            - push
+            readOnly: true
+          subject:
+            type: string
+            description: The title of the push notification.
+            example: 24-hour flash sale!
+          body:
+            type: string
+            description: The body of the push notification.
+            example: Get 30% off everything. Tap to shop now.
     updateEmailContent:
       title: Email
       description: 'Update the contents of an email newsletter variant. You can set the sender with `from_id`. If you don''t provide it, the existing sender is preserved.
@@ -2880,82 +2872,6 @@ components:
 
               '
             example: '{"topics": ["general", "updates"], "type": "notification", "expiration": {"type": "relative", "value": "30", "unit": "days"}, "properties": {"title": "Welcome!", "message": "Thanks for signing up", "link": "https://customer.io"}}'
-    updateSmsContent:
-      title: SMS
-      description: Update the contents of an SMS newsletter variant.
-      allOf:
-      - type: object
-        properties:
-          type:
-            x-scalar-ignore: true
-            description: Channel type for a newsletter or newsletter content variant.
-            type: string
-            enum:
-            - email
-            - webhook
-            - twilio
-            - push
-            - in_app
-            - inbox
-            readOnly: true
-            example: email
-          deduplicate_id:
-            x-scalar-ignore: true
-            type: string
-            readOnly: true
-            description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
-            example: 15:1492548073
-      - type: object
-        properties:
-          type:
-            type: string
-            enum:
-            - twilio
-            readOnly: true
-          body:
-            type: string
-            description: The body of the SMS message.
-            example: Hi {{ customer.first_name }}, check out our latest deals!
-    updatePushContent:
-      title: Push
-      description: Update the contents of a push notification newsletter variant.
-      allOf:
-      - type: object
-        properties:
-          type:
-            x-scalar-ignore: true
-            description: Channel type for a newsletter or newsletter content variant.
-            type: string
-            enum:
-            - email
-            - webhook
-            - twilio
-            - push
-            - in_app
-            - inbox
-            readOnly: true
-            example: email
-          deduplicate_id:
-            x-scalar-ignore: true
-            type: string
-            readOnly: true
-            description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
-            example: 15:1492548073
-      - type: object
-        properties:
-          type:
-            type: string
-            enum:
-            - push
-            readOnly: true
-          subject:
-            type: string
-            description: The title of the push notification.
-            example: 24-hour flash sale!
-          body:
-            type: string
-            description: The body of the push notification.
-            example: Get 30% off everything. Tap to shop now.
   securitySchemes:
     Bearer-Auth:
       type: http
