@@ -43,8 +43,6 @@ apis:
     type: Documentation
   - url: openapi/customer-io-track-api-openapi.yml
     type: OpenAPI
-  - url: graphql/customer-io-graphql.md
-    type: GraphQL
   description: The Customer.io Track API allows developers to send behavioral data and customer profile
     information into Customer.io. It provides endpoints for identifying customers, tracking events, managing
     devices for push notifications, and sending anonymous events. The API uses basic authentication with
@@ -921,6 +919,7 @@ tags:
 - Segments
 - SMS
 - Transactional Email
+- A2A
 tags_raw:
 - Behavioral Data
 - Broadcasts
@@ -937,6 +936,7 @@ tags_raw:
 - Segments
 - SMS
 - Transactional Email
+- A2A
 description: Customer.io is a customer engagement platform that combines a customer data platform, marketing
   automation, and messaging delivery to send behavior-triggered email, push, SMS, and in-app messages.
   Its API surface includes the Track API for sending behavioral data and customer profile updates, the
