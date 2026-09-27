@@ -359,6 +359,16 @@ paths:
         source: '{}'
 components:
   schemas:
+    recipient:
+      x-scalar-ignore: true
+      description: The recipient address for an action.
+      type: string
+      example: '{{customer.email}}'
+    from_address:
+      x-scalar-ignore: true
+      type: string
+      format: email
+      description: The address you want to trigger messages from, overriding the `from` field in emails triggered by the event.
     eventsRequest:
       x-scalar-ignore: true
       oneOf:
@@ -474,25 +484,32 @@ components:
           type: screen
           data:
             from: push-notification
+    track-metrics:
+      x-scalar-ignore: true
+      description: The base properties shared across multiple metric types.
+      type: object
+      required:
+      - delivery_id
+      properties:
+        delivery_id:
+          type: string
+          description: The CIO-Delivery-ID from the notification that you want to associate the `event` with.
+          example: RPILAgUBcRhIBqSfeiIwdIYJKxTY
+        timestamp:
+          type: integer
+          format: unix timestamp
+          description: The unix timestamp when the event occurred.
+          example: 1613063089
+    reply_to_settable:
+      x-scalar-ignore: true
+      type: string
+      description: The address that receives replies for the message, if applicable.
+      example: replyto@example.com
     dedupe_id:
       x-scalar-ignore: true
       type: string
       format: ulid
       description: A [ULID](https://github.com/ulid/spec) we use to deduplicate events. If an event repeats a value we've already received, we ignore the duplicate. Our Python and Ruby libraries don't pass this ID.
-    anonymous_id:
-      x-scalar-ignore: true
-      type: string
-      description: An identifier for an anonymous event, like a cookie. If set as an attribute on a person, any events bearing the same anonymous value are associated with this person. This value must be unique and is not reusable.
-    recipient:
-      x-scalar-ignore: true
-      description: The recipient address for an action.
-      type: string
-      example: '{{customer.email}}'
-    from_address:
-      x-scalar-ignore: true
-      type: string
-      format: email
-      description: The address you want to trigger messages from, overriding the `from` field in emails triggered by the event.
     anonymousEventsRequest:
       x-scalar-ignore: true
       description: An event attributed to an unknown person. If you provide an `anonymous_id` with the event, you can associate the event with a person later (using the anonymous ID).
@@ -608,27 +625,31 @@ components:
           name: homepage
           type: screen
           anonymous_id: abc123
-    reply_to_settable:
+    anonymous_id:
       x-scalar-ignore: true
       type: string
-      description: The address that receives replies for the message, if applicable.
-      example: replyto@example.com
-    track-metrics:
-      x-scalar-ignore: true
-      description: The base properties shared across multiple metric types.
-      type: object
-      required:
-      - delivery_id
-      properties:
-        delivery_id:
-          type: string
-          description: The CIO-Delivery-ID from the notification that you want to associate the `event` with.
-          example: RPILAgUBcRhIBqSfeiIwdIYJKxTY
-        timestamp:
-          type: integer
-          format: unix timestamp
-          description: The unix timestamp when the event occurred.
-          example: 1613063089
+      description: An identifier for an anonymous event, like a cookie. If set as an attribute on a person, any events bearing the same anonymous value are associated with this person. This value must be unique and is not reusable.
+  responses:
+    '401':
+      description: Unauthorized request. Make sure that you provided the right credentials.
+    '200':
+      description: A successful request returns an empty object response.
+    '400':
+      description: Invalid or malformed request.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              meta:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    description: An array of errors.
+                    items:
+                      type: string
+                      description: Error descriptions.
   parameters:
     trackEvent_customer_id:
       name: identifier
@@ -657,27 +678,6 @@ components:
 
             '
           example: cio_03000001
-  responses:
-    '401':
-      description: Unauthorized request. Make sure that you provided the right credentials.
-    '200':
-      description: A successful request returns an empty object response.
-    '400':
-      description: Invalid or malformed request.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              meta:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    description: An array of errors.
-                    items:
-                      type: string
-                      description: Error descriptions.
   securitySchemes:
     Tracking-API-Key:
       type: http

@@ -104,6 +104,11 @@ components:
           - server
           - mobile
           description: The channel the event originated from.
+    userId:
+      x-scalar-ignore: true
+      type: string
+      description: The unique identifier for a person. This value should be unique across systems, so you recognize the same person in your sources _and_ destinations.
+      example: 241ma8mf4a
     context_page:
       x-scalar-ignore: true
       type: object
@@ -134,11 +139,72 @@ components:
           description: A list/array of keywords describing the page's content. The keywords are likely the same as, or similar to, the keywords you would find in an HTML `meta` tag for SEO purposes. This property is mainly used by content publishers that rely heavily on pageview tracking. This isn't automatically collected.
           items:
             type: string
-    userId:
+    anonymousId:
       x-scalar-ignore: true
       type: string
-      description: The unique identifier for a person. This value should be unique across systems, so you recognize the same person in your sources _and_ destinations.
-      example: 241ma8mf4a
+      description: A unique substitute for a User ID in cases when you don’t have an absolutely unique identifier. Our libraries generate this value automatically to help you track people before they sign up, log in, provide their email, etc.
+      example: c0e5cae6-6f04-46e4-97a8-25076e8bdc0b
+    page_common_fields:
+      x-scalar-ignore: true
+      allOf:
+      - $ref: '#/components/schemas/common_fields'
+      - type: object
+        properties:
+          context:
+            $ref: '#/components/schemas/context_non_mobile'
+    common_fields:
+      x-scalar-ignore: true
+      type: object
+      properties:
+        integrations:
+          $ref: '#/components/schemas/integrations'
+        messageId:
+          type: string
+          description: A unique identifier for a Data Pipelines call, ensuring that each individual event is unique. This is set by Customer.io
+        receivedAt:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The ISO-8601 timestamp when Data Pipelines receives an event.
+        sentAt:
+          type: string
+          format: date-time
+          description: The ISO-8601 timestamp when a library sends an event to Data Pipelines.
+        originalTimestamp:
+          type: string
+          format: date-time
+          description: In general, you can use `timestamp` rather than this field if you want to back-date events. This is the timestamp on the client device you invoke a call or the timestamp value you manually passed in a server-side library call.
+        timestamp:
+          type: string
+          format: date-time
+          description: The ISO-8601 timestamp when the event originally took place. This is mostly useful when you backfill past events. If you're not backfilling data, you can leave this field empty and we'll use the current time or server time.
+        type:
+          readOnly: true
+          type: string
+          enum:
+          - identify
+          - group
+          - track
+          - page
+          - screen
+          - alias
+          description: The type of source event. This is implicit and set by Customer.io based on the endpoint/method you use (e.g. `identify`).
+        version:
+          readOnly: true
+          type: number
+          description: The version of the API that received the event, automatically set by Customer.io.
+    integrations:
+      x-scalar-ignore: true
+      type: object
+      description: 'Contains a list of booleans indicating the integrations that are enabled (true) or disabled (false). By default, all integrations are enabled (returning an empty object). Set `"All": false` to reverse this behavior.
+
+        '
+      additionalProperties:
+        type: boolean
+        x-additionalPropertiesName: Enabled/Disabled integrations
+      example:
+        All: true
+        Salesforce: false
     context_non_mobile:
       x-scalar-ignore: true
       description: A dictionary of context about a source call/event, like the user’s IP address or locale. Context is automatically collected by our source libraries.
@@ -172,14 +238,6 @@ components:
               x-additionalPropertiesName: Additional UTM Parameters
           page:
             $ref: '#/components/schemas/context_page'
-    page_common_fields:
-      x-scalar-ignore: true
-      allOf:
-      - $ref: '#/components/schemas/common_fields'
-      - type: object
-        properties:
-          context:
-            $ref: '#/components/schemas/context_non_mobile'
     page:
       x-scalar-ignore: true
       oneOf:
@@ -297,64 +355,6 @@ components:
         type: page
         userId: 97980cfea0067
         version: 1.1
-    integrations:
-      x-scalar-ignore: true
-      type: object
-      description: 'Contains a list of booleans indicating the integrations that are enabled (true) or disabled (false). By default, all integrations are enabled (returning an empty object). Set `"All": false` to reverse this behavior.
-
-        '
-      additionalProperties:
-        type: boolean
-        x-additionalPropertiesName: Enabled/Disabled integrations
-      example:
-        All: true
-        Salesforce: false
-    anonymousId:
-      x-scalar-ignore: true
-      type: string
-      description: A unique substitute for a User ID in cases when you don’t have an absolutely unique identifier. Our libraries generate this value automatically to help you track people before they sign up, log in, provide their email, etc.
-      example: c0e5cae6-6f04-46e4-97a8-25076e8bdc0b
-    common_fields:
-      x-scalar-ignore: true
-      type: object
-      properties:
-        integrations:
-          $ref: '#/components/schemas/integrations'
-        messageId:
-          type: string
-          description: A unique identifier for a Data Pipelines call, ensuring that each individual event is unique. This is set by Customer.io
-        receivedAt:
-          type: string
-          format: date-time
-          readOnly: true
-          description: The ISO-8601 timestamp when Data Pipelines receives an event.
-        sentAt:
-          type: string
-          format: date-time
-          description: The ISO-8601 timestamp when a library sends an event to Data Pipelines.
-        originalTimestamp:
-          type: string
-          format: date-time
-          description: In general, you can use `timestamp` rather than this field if you want to back-date events. This is the timestamp on the client device you invoke a call or the timestamp value you manually passed in a server-side library call.
-        timestamp:
-          type: string
-          format: date-time
-          description: The ISO-8601 timestamp when the event originally took place. This is mostly useful when you backfill past events. If you're not backfilling data, you can leave this field empty and we'll use the current time or server time.
-        type:
-          readOnly: true
-          type: string
-          enum:
-          - identify
-          - group
-          - track
-          - page
-          - screen
-          - alias
-          description: The type of source event. This is implicit and set by Customer.io based on the endpoint/method you use (e.g. `identify`).
-        version:
-          readOnly: true
-          type: number
-          description: The version of the API that received the event, automatically set by Customer.io.
   responses:
     '200':
       description: A successful request returns an empty object response.

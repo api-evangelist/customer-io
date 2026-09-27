@@ -72,100 +72,6 @@ paths:
       - Track
 components:
   schemas:
-    userId:
-      x-scalar-ignore: true
-      type: string
-      description: The unique identifier for a person. This value should be unique across systems, so you recognize the same person in your sources _and_ destinations.
-      example: 241ma8mf4a
-    context_non_mobile:
-      x-scalar-ignore: true
-      description: A dictionary of context about a source call/event, like the user’s IP address or locale. Context is automatically collected by our source libraries.
-      title: Non-mobile
-      allOf:
-      - $ref: '#/components/schemas/context_common'
-      - type: object
-        properties:
-          campaign:
-            type: object
-            description: 'Contains information about the campaign that resulted in the API call, gathered from, or mapping to, UTM parameters (e.g. `utm_source`).
-
-              '
-            properties:
-              name:
-                type: string
-                description: The campaign name.
-              source:
-                type: string
-                description: The source of traffic—like the name of your email list, Facebook, Google, etc.
-              medium:
-                type: string
-                description: The type of traffic a person/event originates from, like `email`, or `referral`.
-              term:
-                type: string
-                description: The keyword term(s) a user came from.
-              content:
-                type: string
-            additionalProperties:
-              type: string
-              x-additionalPropertiesName: Additional UTM Parameters
-          page:
-            $ref: '#/components/schemas/context_page'
-    report_delivery_event:
-      x-scalar-ignore: true
-      title: Report Delivery Event
-      description: Reports delivery events for messages.
-      type: object
-      required:
-      - event
-      - properties
-      properties:
-        event:
-          type: string
-          enum:
-          - Report Delivery Event
-        timestamp:
-          type: string
-          format: date-time
-        properties:
-          type: object
-          properties:
-            deliveryId:
-              type: string
-            metric:
-              type: string
-              enum:
-              - delivered
-              - clicked
-              - converted
-              - opened
-            recipient:
-              type: string
-            reason:
-              type: string
-            actionValue:
-              type: string
-            href:
-              type: string
-    unsuppress_person:
-      x-scalar-ignore: true
-      title: Unsuppress Person
-      description: Allow a userId to be added back to your Customer.io workspace.
-      type: object
-      required:
-      - event
-      - userId
-      properties:
-        event:
-          type: string
-          enum:
-          - User Unsuppressed
-        userId:
-          type: string
-        timestamp:
-          type: string
-          format: date-time
-        properties:
-          type: object
     context_mobile:
       x-scalar-ignore: true
       description: A dictionary of context about a source call/event, like the user’s IP address or locale. Context is automatically collected by our source libraries.
@@ -251,107 +157,6 @@ components:
               version:
                 type: string
                 description: The version of the OS running on the device.
-    group_deleted:
-      x-scalar-ignore: true
-      title: Delete Object
-      description: Remove a group (also called an "object") from Customer.io Journeys.
-      type: object
-      required:
-      - event
-      - anonymousId
-      - properties
-      properties:
-        event:
-          type: string
-          enum:
-          - Object Deleted
-        anonymousId:
-          type: string
-        properties:
-          type: object
-          properties:
-            objectId:
-              type: string
-            objectTypeId:
-              type: integer
-              default: 1
-    integrations:
-      x-scalar-ignore: true
-      type: object
-      description: 'Contains a list of booleans indicating the integrations that are enabled (true) or disabled (false). By default, all integrations are enabled (returning an empty object). Set `"All": false` to reverse this behavior.
-
-        '
-      additionalProperties:
-        type: boolean
-        x-additionalPropertiesName: Enabled/Disabled integrations
-      example:
-        All: true
-        Salesforce: false
-    anonymousId:
-      x-scalar-ignore: true
-      type: string
-      description: A unique substitute for a User ID in cases when you don’t have an absolutely unique identifier. Our libraries generate this value automatically to help you track people before they sign up, log in, provide their email, etc.
-      example: c0e5cae6-6f04-46e4-97a8-25076e8bdc0b
-    context_page:
-      x-scalar-ignore: true
-      type: object
-      description: Contains information about the current page in the browser. This is automatically collected by our JavaScript source.
-      properties:
-        name:
-          type: string
-          description: 'The name of the page. Reserved for future use.
-
-            '
-        path:
-          type: string
-          description: The path portion of the page's URL. Equivalent to the canonical `path` which defaults to `location.pathname` from the DOM API.
-        referrer:
-          type: string
-          description: The previous page's full URL. Equivalent to `document.referrer` from the DOM API.
-        search:
-          type: string
-          description: The query string portion of the page's URL. Equivalent to `location.search` from the DOM API.
-        title:
-          type: string
-          description: The page's title. Equivalent to `document.title` from the DOM API.
-        url:
-          type: string
-          description: A page's full URL. We first look for the canonical URL. If the canonical URL is not provided, we'll use `location.href` from the DOM API.
-        keywords:
-          type: array
-          description: A list/array of keywords describing the page's content. The keywords are likely the same as, or similar to, the keywords you would find in an HTML `meta` tag for SEO purposes. This property is mainly used by content publishers that rely heavily on pageview tracking. This isn't automatically collected.
-          items:
-            type: string
-    report_content_event:
-      x-scalar-ignore: true
-      title: Report Content Event
-      description: Reports impressions and clicks for anonymous messages.
-      type: object
-      required:
-      - event
-      - properties
-      properties:
-        event:
-          type: string
-          enum:
-          - Report Content Event
-        timestamp:
-          type: string
-          format: date-time
-        properties:
-          type: object
-          required:
-          - activityType
-          properties:
-            actionType:
-              type: string
-              enum:
-              - viewed_content
-              - clicked_content
-            contentId:
-              type: integer
-            templateId:
-              type: integer
     delete_person:
       x-scalar-ignore: true
       title: Delete Person
@@ -369,10 +174,39 @@ components:
           type: string
         properties:
           type: object
-    create_update_device:
+    context_common:
       x-scalar-ignore: true
-      title: Create or Update Device
-      description: Add or update a device. If a device (represented by `device.token`) exists, does not exist, we'll create it. If the device token already exists, we'll update the it.
+      type: object
+      description: Contains contextual information about the event.
+      properties:
+        active:
+          type: boolean
+          description: 'Whether a user is active.
+
+
+            This is usually used when you send an .identify() call to update the traits independently of when you''ve “last seen” a user.
+
+            '
+        ip:
+          type: string
+          description: The user's IP address. This isn't captured by our libraries, but by our servers when we receive client-side events (like from our JavaScript source).
+        locale:
+          type: string
+          description: The locale string for the current user, e.g. `en-US`.
+        userAgent:
+          type: string
+          description: The user agent of the device making the request
+        channel:
+          type: string
+          enum:
+          - browser
+          - server
+          - mobile
+          description: The channel the event originated from.
+    delete_device:
+      x-scalar-ignore: true
+      title: Delete Device
+      description: Delete a device.
       type: object
       required:
       - event
@@ -381,17 +215,14 @@ components:
       properties:
         event:
           type: string
-          description: The event name.
           enum:
-          - Device Created or Updated
+          - Device Deleted
         userId:
           type: string
-          description: The user's unique identifier.
         context:
           type: object
           required:
           - device
-          description: Information about the device performing the event.
           properties:
             device:
               type: object
@@ -400,54 +231,47 @@ components:
               properties:
                 token:
                   type: string
-                  description: The device token.
                 type:
                   type: string
-                  description: The device type.
                   enum:
                   - ios
                   - android
-    common_fields:
+    report_delivery_event:
       x-scalar-ignore: true
+      title: Report Delivery Event
+      description: Reports delivery events for messages.
       type: object
+      required:
+      - event
+      - properties
       properties:
-        integrations:
-          $ref: '#/components/schemas/integrations'
-        messageId:
+        event:
           type: string
-          description: A unique identifier for a Data Pipelines call, ensuring that each individual event is unique. This is set by Customer.io
-        receivedAt:
-          type: string
-          format: date-time
-          readOnly: true
-          description: The ISO-8601 timestamp when Data Pipelines receives an event.
-        sentAt:
-          type: string
-          format: date-time
-          description: The ISO-8601 timestamp when a library sends an event to Data Pipelines.
-        originalTimestamp:
-          type: string
-          format: date-time
-          description: In general, you can use `timestamp` rather than this field if you want to back-date events. This is the timestamp on the client device you invoke a call or the timestamp value you manually passed in a server-side library call.
+          enum:
+          - Report Delivery Event
         timestamp:
           type: string
           format: date-time
-          description: The ISO-8601 timestamp when the event originally took place. This is mostly useful when you backfill past events. If you're not backfilling data, you can leave this field empty and we'll use the current time or server time.
-        type:
-          readOnly: true
-          type: string
-          enum:
-          - identify
-          - group
-          - track
-          - page
-          - screen
-          - alias
-          description: The type of source event. This is implicit and set by Customer.io based on the endpoint/method you use (e.g. `identify`).
-        version:
-          readOnly: true
-          type: number
-          description: The version of the API that received the event, automatically set by Customer.io.
+        properties:
+          type: object
+          properties:
+            deliveryId:
+              type: string
+            metric:
+              type: string
+              enum:
+              - delivered
+              - clicked
+              - converted
+              - opened
+            recipient:
+              type: string
+            reason:
+              type: string
+            actionValue:
+              type: string
+            href:
+              type: string
     all_common_fields:
       x-scalar-ignore: true
       allOf:
@@ -577,6 +401,220 @@ components:
         type: track
         userId: AiUGstSDIg
         originalTimestamp: '2015-12-12T19:11:01.152Z'
+    context_page:
+      x-scalar-ignore: true
+      type: object
+      description: Contains information about the current page in the browser. This is automatically collected by our JavaScript source.
+      properties:
+        name:
+          type: string
+          description: 'The name of the page. Reserved for future use.
+
+            '
+        path:
+          type: string
+          description: The path portion of the page's URL. Equivalent to the canonical `path` which defaults to `location.pathname` from the DOM API.
+        referrer:
+          type: string
+          description: The previous page's full URL. Equivalent to `document.referrer` from the DOM API.
+        search:
+          type: string
+          description: The query string portion of the page's URL. Equivalent to `location.search` from the DOM API.
+        title:
+          type: string
+          description: The page's title. Equivalent to `document.title` from the DOM API.
+        url:
+          type: string
+          description: A page's full URL. We first look for the canonical URL. If the canonical URL is not provided, we'll use `location.href` from the DOM API.
+        keywords:
+          type: array
+          description: A list/array of keywords describing the page's content. The keywords are likely the same as, or similar to, the keywords you would find in an HTML `meta` tag for SEO purposes. This property is mainly used by content publishers that rely heavily on pageview tracking. This isn't automatically collected.
+          items:
+            type: string
+    anonymousId:
+      x-scalar-ignore: true
+      type: string
+      description: A unique substitute for a User ID in cases when you don’t have an absolutely unique identifier. Our libraries generate this value automatically to help you track people before they sign up, log in, provide their email, etc.
+      example: c0e5cae6-6f04-46e4-97a8-25076e8bdc0b
+    common_fields:
+      x-scalar-ignore: true
+      type: object
+      properties:
+        integrations:
+          $ref: '#/components/schemas/integrations'
+        messageId:
+          type: string
+          description: A unique identifier for a Data Pipelines call, ensuring that each individual event is unique. This is set by Customer.io
+        receivedAt:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The ISO-8601 timestamp when Data Pipelines receives an event.
+        sentAt:
+          type: string
+          format: date-time
+          description: The ISO-8601 timestamp when a library sends an event to Data Pipelines.
+        originalTimestamp:
+          type: string
+          format: date-time
+          description: In general, you can use `timestamp` rather than this field if you want to back-date events. This is the timestamp on the client device you invoke a call or the timestamp value you manually passed in a server-side library call.
+        timestamp:
+          type: string
+          format: date-time
+          description: The ISO-8601 timestamp when the event originally took place. This is mostly useful when you backfill past events. If you're not backfilling data, you can leave this field empty and we'll use the current time or server time.
+        type:
+          readOnly: true
+          type: string
+          enum:
+          - identify
+          - group
+          - track
+          - page
+          - screen
+          - alias
+          description: The type of source event. This is implicit and set by Customer.io based on the endpoint/method you use (e.g. `identify`).
+        version:
+          readOnly: true
+          type: number
+          description: The version of the API that received the event, automatically set by Customer.io.
+    integrations:
+      x-scalar-ignore: true
+      type: object
+      description: 'Contains a list of booleans indicating the integrations that are enabled (true) or disabled (false). By default, all integrations are enabled (returning an empty object). Set `"All": false` to reverse this behavior.
+
+        '
+      additionalProperties:
+        type: boolean
+        x-additionalPropertiesName: Enabled/Disabled integrations
+      example:
+        All: true
+        Salesforce: false
+    unsuppress_person:
+      x-scalar-ignore: true
+      title: Unsuppress Person
+      description: Allow a userId to be added back to your Customer.io workspace.
+      type: object
+      required:
+      - event
+      - userId
+      properties:
+        event:
+          type: string
+          enum:
+          - User Unsuppressed
+        userId:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        properties:
+          type: object
+    context_non_mobile:
+      x-scalar-ignore: true
+      description: A dictionary of context about a source call/event, like the user’s IP address or locale. Context is automatically collected by our source libraries.
+      title: Non-mobile
+      allOf:
+      - $ref: '#/components/schemas/context_common'
+      - type: object
+        properties:
+          campaign:
+            type: object
+            description: 'Contains information about the campaign that resulted in the API call, gathered from, or mapping to, UTM parameters (e.g. `utm_source`).
+
+              '
+            properties:
+              name:
+                type: string
+                description: The campaign name.
+              source:
+                type: string
+                description: The source of traffic—like the name of your email list, Facebook, Google, etc.
+              medium:
+                type: string
+                description: The type of traffic a person/event originates from, like `email`, or `referral`.
+              term:
+                type: string
+                description: The keyword term(s) a user came from.
+              content:
+                type: string
+            additionalProperties:
+              type: string
+              x-additionalPropertiesName: Additional UTM Parameters
+          page:
+            $ref: '#/components/schemas/context_page'
+    userId:
+      x-scalar-ignore: true
+      type: string
+      description: The unique identifier for a person. This value should be unique across systems, so you recognize the same person in your sources _and_ destinations.
+      example: 241ma8mf4a
+    create_update_device:
+      x-scalar-ignore: true
+      title: Create or Update Device
+      description: Add or update a device. If a device (represented by `device.token`) exists, does not exist, we'll create it. If the device token already exists, we'll update the it.
+      type: object
+      required:
+      - event
+      - userId
+      - context
+      properties:
+        event:
+          type: string
+          description: The event name.
+          enum:
+          - Device Created or Updated
+        userId:
+          type: string
+          description: The user's unique identifier.
+        context:
+          type: object
+          required:
+          - device
+          description: Information about the device performing the event.
+          properties:
+            device:
+              type: object
+              required:
+              - token
+              properties:
+                token:
+                  type: string
+                  description: The device token.
+                type:
+                  type: string
+                  description: The device type.
+                  enum:
+                  - ios
+                  - android
+    report_content_event:
+      x-scalar-ignore: true
+      title: Report Content Event
+      description: Reports impressions and clicks for anonymous messages.
+      type: object
+      required:
+      - event
+      - properties
+      properties:
+        event:
+          type: string
+          enum:
+          - Report Content Event
+        timestamp:
+          type: string
+          format: date-time
+        properties:
+          type: object
+          required:
+          - activityType
+          properties:
+            actionType:
+              type: string
+              enum:
+              - viewed_content
+              - clicked_content
+            contentId:
+              type: integer
+            templateId:
+              type: integer
     relationship_deleted:
       x-scalar-ignore: true
       title: Delete Relationship
@@ -603,39 +641,6 @@ components:
             objectTypeId:
               type: integer
               default: 1
-    delete_device:
-      x-scalar-ignore: true
-      title: Delete Device
-      description: Delete a device.
-      type: object
-      required:
-      - event
-      - userId
-      - context
-      properties:
-        event:
-          type: string
-          enum:
-          - Device Deleted
-        userId:
-          type: string
-        context:
-          type: object
-          required:
-          - device
-          properties:
-            device:
-              type: object
-              required:
-              - token
-              properties:
-                token:
-                  type: string
-                type:
-                  type: string
-                  enum:
-                  - ios
-                  - android
     suppress_person:
       x-scalar-ignore: true
       title: Suppress Person
@@ -656,35 +661,30 @@ components:
           format: date-time
         properties:
           type: object
-    context_common:
+    group_deleted:
       x-scalar-ignore: true
+      title: Delete Object
+      description: Remove a group (also called an "object") from Customer.io Journeys.
       type: object
-      description: Contains contextual information about the event.
+      required:
+      - event
+      - anonymousId
+      - properties
       properties:
-        active:
-          type: boolean
-          description: 'Whether a user is active.
-
-
-            This is usually used when you send an .identify() call to update the traits independently of when you''ve “last seen” a user.
-
-            '
-        ip:
-          type: string
-          description: The user's IP address. This isn't captured by our libraries, but by our servers when we receive client-side events (like from our JavaScript source).
-        locale:
-          type: string
-          description: The locale string for the current user, e.g. `en-US`.
-        userAgent:
-          type: string
-          description: The user agent of the device making the request
-        channel:
+        event:
           type: string
           enum:
-          - browser
-          - server
-          - mobile
-          description: The channel the event originated from.
+          - Object Deleted
+        anonymousId:
+          type: string
+        properties:
+          type: object
+          properties:
+            objectId:
+              type: string
+            objectTypeId:
+              type: integer
+              default: 1
   responses:
     '200':
       description: A successful request returns an empty object response.

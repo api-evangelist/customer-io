@@ -54,19 +54,35 @@ paths:
       - Screen
 components:
   schemas:
-    userId:
+    context_common:
       x-scalar-ignore: true
-      type: string
-      description: The unique identifier for a person. This value should be unique across systems, so you recognize the same person in your sources _and_ destinations.
-      example: 241ma8mf4a
-    mobile_common_fields:
-      x-scalar-ignore: true
-      allOf:
-      - $ref: '#/components/schemas/common_fields'
-      - type: object
-        properties:
-          context:
-            $ref: '#/components/schemas/context_mobile'
+      type: object
+      description: Contains contextual information about the event.
+      properties:
+        active:
+          type: boolean
+          description: 'Whether a user is active.
+
+
+            This is usually used when you send an .identify() call to update the traits independently of when you''ve “last seen” a user.
+
+            '
+        ip:
+          type: string
+          description: The user's IP address. This isn't captured by our libraries, but by our servers when we receive client-side events (like from our JavaScript source).
+        locale:
+          type: string
+          description: The locale string for the current user, e.g. `en-US`.
+        userAgent:
+          type: string
+          description: The user agent of the device making the request
+        channel:
+          type: string
+          enum:
+          - browser
+          - server
+          - mobile
+          description: The channel the event originated from.
     context_mobile:
       x-scalar-ignore: true
       description: A dictionary of context about a source call/event, like the user’s IP address or locale. Context is automatically collected by our source libraries.
@@ -152,47 +168,19 @@ components:
               version:
                 type: string
                 description: The version of the OS running on the device.
-    context_common:
+    userId:
       x-scalar-ignore: true
-      type: object
-      description: Contains contextual information about the event.
-      properties:
-        active:
-          type: boolean
-          description: 'Whether a user is active.
-
-
-            This is usually used when you send an .identify() call to update the traits independently of when you''ve “last seen” a user.
-
-            '
-        ip:
-          type: string
-          description: The user's IP address. This isn't captured by our libraries, but by our servers when we receive client-side events (like from our JavaScript source).
-        locale:
-          type: string
-          description: The locale string for the current user, e.g. `en-US`.
-        userAgent:
-          type: string
-          description: The user agent of the device making the request
-        channel:
-          type: string
-          enum:
-          - browser
-          - server
-          - mobile
-          description: The channel the event originated from.
-    integrations:
+      type: string
+      description: The unique identifier for a person. This value should be unique across systems, so you recognize the same person in your sources _and_ destinations.
+      example: 241ma8mf4a
+    mobile_common_fields:
       x-scalar-ignore: true
-      type: object
-      description: 'Contains a list of booleans indicating the integrations that are enabled (true) or disabled (false). By default, all integrations are enabled (returning an empty object). Set `"All": false` to reverse this behavior.
-
-        '
-      additionalProperties:
-        type: boolean
-        x-additionalPropertiesName: Enabled/Disabled integrations
-      example:
-        All: true
-        Salesforce: false
+      allOf:
+      - $ref: '#/components/schemas/common_fields'
+      - type: object
+        properties:
+          context:
+            $ref: '#/components/schemas/context_mobile'
     anonymousId:
       x-scalar-ignore: true
       type: string
@@ -239,6 +227,18 @@ components:
           readOnly: true
           type: number
           description: The version of the API that received the event, automatically set by Customer.io.
+    integrations:
+      x-scalar-ignore: true
+      type: object
+      description: 'Contains a list of booleans indicating the integrations that are enabled (true) or disabled (false). By default, all integrations are enabled (returning an empty object). Set `"All": false` to reverse this behavior.
+
+        '
+      additionalProperties:
+        type: boolean
+        x-additionalPropertiesName: Enabled/Disabled integrations
+      example:
+        All: true
+        Salesforce: false
     screen:
       x-scalar-ignore: true
       oneOf:

@@ -132,27 +132,6 @@ paths:
         label: JSON
         source: "{\n  \"ids\": [\n    \"customer_id1\",\n    \"customer_id2\"\n  ]\n}"
 components:
-  parameters:
-    id_type_segment:
-      name: id_type
-      required: false
-      in: query
-      description: The type of `ids` you want to use. All of the values in the `ids` array must be of this type. If you don't provide this parameter, we assume that the `ids` array contains `id` values.
-      schema:
-        type: string
-        enum:
-        - id
-        - email
-        - cio_id
-        default: id
-    segment_id:
-      name: segment_id
-      in: path
-      required: true
-      description: The identifier for a segment. You can find your segment's ID on its page in the dashboard—go to *Segments*, select your segment, and find the ID under *Usage*. Or you can find your segment using the [App API](#tag/Segments).
-      schema:
-        type: integer
-        format: int32
   responses:
     '401':
       description: Unauthorized request. Make sure that you provided the right credentials.
@@ -174,6 +153,27 @@ components:
                     items:
                       type: string
                       description: Error descriptions.
+  parameters:
+    segment_id:
+      name: segment_id
+      in: path
+      required: true
+      description: The identifier for a segment. You can find your segment's ID on its page in the dashboard—go to *Segments*, select your segment, and find the ID under *Usage*. Or you can find your segment using the [App API](#tag/Segments).
+      schema:
+        type: integer
+        format: int32
+    id_type_segment:
+      name: id_type
+      required: false
+      in: query
+      description: The type of `ids` you want to use. All of the values in the `ids` array must be of this type. If you don't provide this parameter, we assume that the `ids` array contains `id` values.
+      schema:
+        type: string
+        enum:
+        - id
+        - email
+        - cio_id
+        default: id
   securitySchemes:
     Tracking-API-Key:
       type: http
