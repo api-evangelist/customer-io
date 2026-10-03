@@ -2627,6 +2627,42 @@ paths:
         source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/test_group/%7Btest_group_id%7D/language/%7Blanguage%7D\"\n\n\treq, _ := http.NewRequest(\"DELETE\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
 components:
   schemas:
+    updateSmsContent:
+      title: SMS
+      description: Update the contents of an SMS newsletter variant.
+      allOf:
+      - type: object
+        properties:
+          type:
+            x-scalar-ignore: true
+            description: Channel type for a newsletter or newsletter content variant.
+            type: string
+            enum:
+            - email
+            - webhook
+            - twilio
+            - push
+            - in_app
+            - inbox
+            readOnly: true
+            example: email
+          deduplicate_id:
+            x-scalar-ignore: true
+            type: string
+            readOnly: true
+            description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+            example: 15:1492548073
+      - type: object
+        properties:
+          type:
+            type: string
+            enum:
+            - twilio
+            readOnly: true
+          body:
+            type: string
+            description: The body of the SMS message.
+            example: Hi {{ customer.first_name }}, check out our latest deals!
     updateInboxContent:
       title: Inbox message
       description: Update the contents of an inbox message newsletter variant.
@@ -2673,42 +2709,6 @@ components:
 
               '
             example: '{"topics": ["general", "updates"], "type": "notification", "expiration": {"type": "relative", "value": "30", "unit": "days"}, "properties": {"title": "Welcome!", "message": "Thanks for signing up", "link": "https://customer.io"}}'
-    updateSmsContent:
-      title: SMS
-      description: Update the contents of an SMS newsletter variant.
-      allOf:
-      - type: object
-        properties:
-          type:
-            x-scalar-ignore: true
-            description: Channel type for a newsletter or newsletter content variant.
-            type: string
-            enum:
-            - email
-            - webhook
-            - twilio
-            - push
-            - in_app
-            - inbox
-            readOnly: true
-            example: email
-          deduplicate_id:
-            x-scalar-ignore: true
-            type: string
-            readOnly: true
-            description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
-            example: 15:1492548073
-      - type: object
-        properties:
-          type:
-            type: string
-            enum:
-            - twilio
-            readOnly: true
-          body:
-            type: string
-            description: The body of the SMS message.
-            example: Hi {{ customer.first_name }}, check out our latest deals!
     updatePushContent:
       title: Push
       description: Update the contents of a push notification newsletter variant.

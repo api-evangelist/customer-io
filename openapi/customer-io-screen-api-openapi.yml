@@ -53,7 +53,86 @@ paths:
       tags:
       - Screen
 components:
+  responses:
+    '200':
+      description: A successful request returns an empty object response.
   schemas:
+    mobile_common_fields:
+      x-scalar-ignore: true
+      allOf:
+      - $ref: '#/components/schemas/common_fields'
+      - type: object
+        properties:
+          context:
+            $ref: '#/components/schemas/context_mobile'
+    screen:
+      x-scalar-ignore: true
+      oneOf:
+      - title: Known User
+        allOf:
+        - type: object
+          required:
+          - userId
+          properties:
+            userId:
+              $ref: '#/components/schemas/userId'
+            type:
+              type: string
+              enum:
+              - screen
+              description: The event type. This is set automatically by the request method/endpoint.
+            name:
+              type: string
+              description: The name of the screen the person visited.
+              example: home
+            properties:
+              type: object
+              description: Additional properties for your screen.
+              additionalProperties:
+                x-additionalPropertiesName: Screen Properties
+        - $ref: '#/components/schemas/mobile_common_fields'
+      - title: Anonymous User
+        allOf:
+        - type: object
+          required:
+          - anonymousId
+          properties:
+            anonymousId:
+              $ref: '#/components/schemas/anonymousId'
+            type:
+              type: string
+              enum:
+              - screen
+              description: The event type. This is set automatically by the request method/endpoint.
+            name:
+              type: string
+              description: The name of the screen the person visited.
+              example: home
+            properties:
+              type: object
+              description: Additional properties for your screen.
+              additionalProperties:
+                x-additionalPropertiesName: Screen Properties
+        - $ref: '#/components/schemas/mobile_common_fields'
+      example:
+        anonymousId: 507f191e810c19729de860ea
+        context:
+          ip: 8.8.8.8
+        integrations:
+          All: true
+          Salesforce: false
+        messageId: 022bb90c-bbac-11e4-8dfc-aa07a5b093db
+        name: feed
+        properties:
+          subscriptions:
+          - baseball
+          - basketball
+        receivedAt: '2015-02-23T22:28:55.387Z'
+        sentAt: '2015-02-23T22:28:55.111Z'
+        timestamp: '2015-02-23T22:28:55.111Z'
+        type: screen
+        userId: 97980cfea0067
+        version: 1.1
     context_common:
       x-scalar-ignore: true
       type: object
@@ -83,6 +162,18 @@ components:
           - server
           - mobile
           description: The channel the event originated from.
+    integrations:
+      x-scalar-ignore: true
+      type: object
+      description: 'Contains a list of booleans indicating the integrations that are enabled (true) or disabled (false). By default, all integrations are enabled (returning an empty object). Set `"All": false` to reverse this behavior.
+
+        '
+      additionalProperties:
+        type: boolean
+        x-additionalPropertiesName: Enabled/Disabled integrations
+      example:
+        All: true
+        Salesforce: false
     context_mobile:
       x-scalar-ignore: true
       description: A dictionary of context about a source call/event, like the user’s IP address or locale. Context is automatically collected by our source libraries.
@@ -168,24 +259,6 @@ components:
               version:
                 type: string
                 description: The version of the OS running on the device.
-    userId:
-      x-scalar-ignore: true
-      type: string
-      description: The unique identifier for a person. This value should be unique across systems, so you recognize the same person in your sources _and_ destinations.
-      example: 241ma8mf4a
-    mobile_common_fields:
-      x-scalar-ignore: true
-      allOf:
-      - $ref: '#/components/schemas/common_fields'
-      - type: object
-        properties:
-          context:
-            $ref: '#/components/schemas/context_mobile'
-    anonymousId:
-      x-scalar-ignore: true
-      type: string
-      description: A unique substitute for a User ID in cases when you don’t have an absolutely unique identifier. Our libraries generate this value automatically to help you track people before they sign up, log in, provide their email, etc.
-      example: c0e5cae6-6f04-46e4-97a8-25076e8bdc0b
     common_fields:
       x-scalar-ignore: true
       type: object
@@ -227,89 +300,16 @@ components:
           readOnly: true
           type: number
           description: The version of the API that received the event, automatically set by Customer.io.
-    integrations:
+    anonymousId:
       x-scalar-ignore: true
-      type: object
-      description: 'Contains a list of booleans indicating the integrations that are enabled (true) or disabled (false). By default, all integrations are enabled (returning an empty object). Set `"All": false` to reverse this behavior.
-
-        '
-      additionalProperties:
-        type: boolean
-        x-additionalPropertiesName: Enabled/Disabled integrations
-      example:
-        All: true
-        Salesforce: false
-    screen:
+      type: string
+      description: A unique substitute for a User ID in cases when you don’t have an absolutely unique identifier. Our libraries generate this value automatically to help you track people before they sign up, log in, provide their email, etc.
+      example: c0e5cae6-6f04-46e4-97a8-25076e8bdc0b
+    userId:
       x-scalar-ignore: true
-      oneOf:
-      - title: Known User
-        allOf:
-        - type: object
-          required:
-          - userId
-          properties:
-            userId:
-              $ref: '#/components/schemas/userId'
-            type:
-              type: string
-              enum:
-              - screen
-              description: The event type. This is set automatically by the request method/endpoint.
-            name:
-              type: string
-              description: The name of the screen the person visited.
-              example: home
-            properties:
-              type: object
-              description: Additional properties for your screen.
-              additionalProperties:
-                x-additionalPropertiesName: Screen Properties
-        - $ref: '#/components/schemas/mobile_common_fields'
-      - title: Anonymous User
-        allOf:
-        - type: object
-          required:
-          - anonymousId
-          properties:
-            anonymousId:
-              $ref: '#/components/schemas/anonymousId'
-            type:
-              type: string
-              enum:
-              - screen
-              description: The event type. This is set automatically by the request method/endpoint.
-            name:
-              type: string
-              description: The name of the screen the person visited.
-              example: home
-            properties:
-              type: object
-              description: Additional properties for your screen.
-              additionalProperties:
-                x-additionalPropertiesName: Screen Properties
-        - $ref: '#/components/schemas/mobile_common_fields'
-      example:
-        anonymousId: 507f191e810c19729de860ea
-        context:
-          ip: 8.8.8.8
-        integrations:
-          All: true
-          Salesforce: false
-        messageId: 022bb90c-bbac-11e4-8dfc-aa07a5b093db
-        name: feed
-        properties:
-          subscriptions:
-          - baseball
-          - basketball
-        receivedAt: '2015-02-23T22:28:55.387Z'
-        sentAt: '2015-02-23T22:28:55.111Z'
-        timestamp: '2015-02-23T22:28:55.111Z'
-        type: screen
-        userId: 97980cfea0067
-        version: 1.1
-  responses:
-    '200':
-      description: A successful request returns an empty object response.
+      type: string
+      description: The unique identifier for a person. This value should be unique across systems, so you recognize the same person in your sources _and_ destinations.
+      example: 241ma8mf4a
   securitySchemes:
     Basic-Auth:
       type: http

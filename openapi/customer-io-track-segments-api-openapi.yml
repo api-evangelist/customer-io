@@ -135,8 +135,6 @@ components:
   responses:
     '401':
       description: Unauthorized request. Make sure that you provided the right credentials.
-    '200':
-      description: A successful request returns an empty object response.
     '400':
       description: Invalid or malformed request.
       content:
@@ -153,15 +151,9 @@ components:
                     items:
                       type: string
                       description: Error descriptions.
+    '200':
+      description: A successful request returns an empty object response.
   parameters:
-    segment_id:
-      name: segment_id
-      in: path
-      required: true
-      description: The identifier for a segment. You can find your segment's ID on its page in the dashboard—go to *Segments*, select your segment, and find the ID under *Usage*. Or you can find your segment using the [App API](#tag/Segments).
-      schema:
-        type: integer
-        format: int32
     id_type_segment:
       name: id_type
       required: false
@@ -174,6 +166,14 @@ components:
         - email
         - cio_id
         default: id
+    segment_id:
+      name: segment_id
+      in: path
+      required: true
+      description: The identifier for a segment. You can find your segment's ID on its page in the dashboard—go to *Segments*, select your segment, and find the ID under *Usage*. Or you can find your segment using the [App API](#tag/Segments).
+      schema:
+        type: integer
+        format: int32
   securitySchemes:
     Tracking-API-Key:
       type: http
