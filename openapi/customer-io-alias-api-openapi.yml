@@ -86,9 +86,6 @@ paths:
       tags:
       - Alias
 components:
-  responses:
-    '200':
-      description: A successful request returns an empty object response.
   schemas:
     alias:
       x-scalar-ignore: true
@@ -111,6 +108,9 @@ components:
           description: 'The userId that you want to keep. This is required if you haven''t already identified someone with one of our web or server-side libraries.
 
             '
+  responses:
+    '200':
+      description: A successful request returns an empty object response.
   securitySchemes:
     Basic-Auth:
       type: http

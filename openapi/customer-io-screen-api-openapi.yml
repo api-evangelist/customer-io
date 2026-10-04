@@ -53,18 +53,155 @@ paths:
       tags:
       - Screen
 components:
-  responses:
-    '200':
-      description: A successful request returns an empty object response.
   schemas:
-    mobile_common_fields:
+    anonymousId:
       x-scalar-ignore: true
+      type: string
+      description: A unique substitute for a User ID in cases when you don’t have an absolutely unique identifier. Our libraries generate this value automatically to help you track people before they sign up, log in, provide their email, etc.
+      example: c0e5cae6-6f04-46e4-97a8-25076e8bdc0b
+    context_mobile:
+      x-scalar-ignore: true
+      description: A dictionary of context about a source call/event, like the user’s IP address or locale. Context is automatically collected by our source libraries.
+      title: Mobile
       allOf:
-      - $ref: '#/components/schemas/common_fields'
+      - $ref: '#/components/schemas/context_common'
       - type: object
+        description: Fields included in events from mobile libraries.
         properties:
-          context:
-            $ref: '#/components/schemas/context_mobile'
+          app:
+            type: object
+            description: 'Contains information about the mobile app the event originated from, automatically collected by our mobile libraries when possible.
+
+              '
+            properties:
+              name:
+                type: string
+                description: The name of the app.
+              version:
+                type: string
+                description: The version of the app the call originated from.
+              build:
+                type: string
+                description: The specific build number in the app.
+              namespace:
+                type: string
+                description: The app's namespace.
+          device:
+            type: object
+            description: 'Contains information about the device the event originated from.
+
+              '
+            properties:
+              id:
+                type: string
+                description: The device ID.
+              advertisingId:
+                type: string
+                description: The advertising ID is a unique, anonymous ID for advertising.
+              manufacturer:
+                type: string
+                description: The device manufacturer.
+              model:
+                type: string
+                description: The device model.
+              name:
+                type: string
+                description: The device name.
+              type:
+                type: string
+                description: The device type—android, iOS, etc.
+                enum:
+                - android
+                - ios
+              version:
+                type: string
+                description: The firmware version for the device.
+          network:
+            type: object
+            description: Information about the current network connection, containing `bluetooth`, `carrier`, `cellular`, and `wifi`. If the `context.network.cellular` and `context.network.wifi` fields are empty, then the user is offline.
+            properties:
+              bluetooth:
+                type: boolean
+                description: Lets you know if bluetooth is enabled on a device.
+              carrier:
+                type: string
+                description: The cellular carrier the phone uses.
+              cellular:
+                type: boolean
+                description: Indicates whether the device's cellular connection is enabled or not.
+              wifi:
+                type: boolean
+                description: Indicates whether a device's wifi connection is enabled or not.
+          os:
+            type: object
+            description: 'Dictionary of information about the operating system, containing `name` and `version`.
+
+              '
+            properties:
+              name:
+                type: string
+                description: The operating system running on the device.
+              version:
+                type: string
+                description: The version of the OS running on the device.
+    userId:
+      x-scalar-ignore: true
+      type: string
+      description: The unique identifier for a person. This value should be unique across systems, so you recognize the same person in your sources _and_ destinations.
+      example: 241ma8mf4a
+    common_fields:
+      x-scalar-ignore: true
+      type: object
+      properties:
+        integrations:
+          $ref: '#/components/schemas/integrations'
+        messageId:
+          type: string
+          description: A unique identifier for a Data Pipelines call, ensuring that each individual event is unique. This is set by Customer.io
+        receivedAt:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The ISO-8601 timestamp when Data Pipelines receives an event.
+        sentAt:
+          type: string
+          format: date-time
+          description: The ISO-8601 timestamp when a library sends an event to Data Pipelines.
+        originalTimestamp:
+          type: string
+          format: date-time
+          description: In general, you can use `timestamp` rather than this field if you want to back-date events. This is the timestamp on the client device you invoke a call or the timestamp value you manually passed in a server-side library call.
+        timestamp:
+          type: string
+          format: date-time
+          description: The ISO-8601 timestamp when the event originally took place. This is mostly useful when you backfill past events. If you're not backfilling data, you can leave this field empty and we'll use the current time or server time.
+        type:
+          readOnly: true
+          type: string
+          enum:
+          - identify
+          - group
+          - track
+          - page
+          - screen
+          - alias
+          description: The type of source event. This is implicit and set by Customer.io based on the endpoint/method you use (e.g. `identify`).
+        version:
+          readOnly: true
+          type: number
+          description: The version of the API that received the event, automatically set by Customer.io.
+    integrations:
+      x-scalar-ignore: true
+      type: object
+      description: 'Contains a list of booleans indicating the integrations that are enabled (true) or disabled (false). By default, all integrations are enabled (returning an empty object). Set `"All": false` to reverse this behavior.
+
+        '
+      additionalProperties:
+        type: boolean
+        x-additionalPropertiesName: Enabled/Disabled integrations
+      example:
+        All: true
+        Salesforce: false
     screen:
       x-scalar-ignore: true
       oneOf:
@@ -162,154 +299,17 @@ components:
           - server
           - mobile
           description: The channel the event originated from.
-    integrations:
+    mobile_common_fields:
       x-scalar-ignore: true
-      type: object
-      description: 'Contains a list of booleans indicating the integrations that are enabled (true) or disabled (false). By default, all integrations are enabled (returning an empty object). Set `"All": false` to reverse this behavior.
-
-        '
-      additionalProperties:
-        type: boolean
-        x-additionalPropertiesName: Enabled/Disabled integrations
-      example:
-        All: true
-        Salesforce: false
-    context_mobile:
-      x-scalar-ignore: true
-      description: A dictionary of context about a source call/event, like the user’s IP address or locale. Context is automatically collected by our source libraries.
-      title: Mobile
       allOf:
-      - $ref: '#/components/schemas/context_common'
+      - $ref: '#/components/schemas/common_fields'
       - type: object
-        description: Fields included in events from mobile libraries.
         properties:
-          app:
-            type: object
-            description: 'Contains information about the mobile app the event originated from, automatically collected by our mobile libraries when possible.
-
-              '
-            properties:
-              name:
-                type: string
-                description: The name of the app.
-              version:
-                type: string
-                description: The version of the app the call originated from.
-              build:
-                type: string
-                description: The specific build number in the app.
-              namespace:
-                type: string
-                description: The app's namespace.
-          device:
-            type: object
-            description: 'Contains information about the device the event originated from.
-
-              '
-            properties:
-              id:
-                type: string
-                description: The device ID.
-              advertisingId:
-                type: string
-                description: The advertising ID is a unique, anonymous ID for advertising.
-              manufacturer:
-                type: string
-                description: The device manufacturer.
-              model:
-                type: string
-                description: The device model.
-              name:
-                type: string
-                description: The device name.
-              type:
-                type: string
-                description: The device type—android, iOS, etc.
-                enum:
-                - android
-                - ios
-              version:
-                type: string
-                description: The firmware version for the device.
-          network:
-            type: object
-            description: Information about the current network connection, containing `bluetooth`, `carrier`, `cellular`, and `wifi`. If the `context.network.cellular` and `context.network.wifi` fields are empty, then the user is offline.
-            properties:
-              bluetooth:
-                type: boolean
-                description: Lets you know if bluetooth is enabled on a device.
-              carrier:
-                type: string
-                description: The cellular carrier the phone uses.
-              cellular:
-                type: boolean
-                description: Indicates whether the device's cellular connection is enabled or not.
-              wifi:
-                type: boolean
-                description: Indicates whether a device's wifi connection is enabled or not.
-          os:
-            type: object
-            description: 'Dictionary of information about the operating system, containing `name` and `version`.
-
-              '
-            properties:
-              name:
-                type: string
-                description: The operating system running on the device.
-              version:
-                type: string
-                description: The version of the OS running on the device.
-    common_fields:
-      x-scalar-ignore: true
-      type: object
-      properties:
-        integrations:
-          $ref: '#/components/schemas/integrations'
-        messageId:
-          type: string
-          description: A unique identifier for a Data Pipelines call, ensuring that each individual event is unique. This is set by Customer.io
-        receivedAt:
-          type: string
-          format: date-time
-          readOnly: true
-          description: The ISO-8601 timestamp when Data Pipelines receives an event.
-        sentAt:
-          type: string
-          format: date-time
-          description: The ISO-8601 timestamp when a library sends an event to Data Pipelines.
-        originalTimestamp:
-          type: string
-          format: date-time
-          description: In general, you can use `timestamp` rather than this field if you want to back-date events. This is the timestamp on the client device you invoke a call or the timestamp value you manually passed in a server-side library call.
-        timestamp:
-          type: string
-          format: date-time
-          description: The ISO-8601 timestamp when the event originally took place. This is mostly useful when you backfill past events. If you're not backfilling data, you can leave this field empty and we'll use the current time or server time.
-        type:
-          readOnly: true
-          type: string
-          enum:
-          - identify
-          - group
-          - track
-          - page
-          - screen
-          - alias
-          description: The type of source event. This is implicit and set by Customer.io based on the endpoint/method you use (e.g. `identify`).
-        version:
-          readOnly: true
-          type: number
-          description: The version of the API that received the event, automatically set by Customer.io.
-    anonymousId:
-      x-scalar-ignore: true
-      type: string
-      description: A unique substitute for a User ID in cases when you don’t have an absolutely unique identifier. Our libraries generate this value automatically to help you track people before they sign up, log in, provide their email, etc.
-      example: c0e5cae6-6f04-46e4-97a8-25076e8bdc0b
-    userId:
-      x-scalar-ignore: true
-      type: string
-      description: The unique identifier for a person. This value should be unique across systems, so you recognize the same person in your sources _and_ destinations.
-      example: 241ma8mf4a
+          context:
+            $ref: '#/components/schemas/context_mobile'
+  responses:
+    '200':
+      description: A successful request returns an empty object response.
   securitySchemes:
     Basic-Auth:
       type: http

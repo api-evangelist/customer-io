@@ -74,39 +74,47 @@ paths:
       tags:
       - Page
 components:
-  responses:
-    '200':
-      description: A successful request returns an empty object response.
   schemas:
-    context_common:
+    anonymousId:
+      x-scalar-ignore: true
+      type: string
+      description: A unique substitute for a User ID in cases when you don’t have an absolutely unique identifier. Our libraries generate this value automatically to help you track people before they sign up, log in, provide their email, etc.
+      example: c0e5cae6-6f04-46e4-97a8-25076e8bdc0b
+    context_page:
       x-scalar-ignore: true
       type: object
-      description: Contains contextual information about the event.
+      description: Contains information about the current page in the browser. This is automatically collected by our JavaScript source.
       properties:
-        active:
-          type: boolean
-          description: 'Whether a user is active.
-
-
-            This is usually used when you send an .identify() call to update the traits independently of when you''ve “last seen” a user.
+        name:
+          type: string
+          description: 'The name of the page. Reserved for future use.
 
             '
-        ip:
+        path:
           type: string
-          description: The user's IP address. This isn't captured by our libraries, but by our servers when we receive client-side events (like from our JavaScript source).
-        locale:
+          description: The path portion of the page's URL. Equivalent to the canonical `path` which defaults to `location.pathname` from the DOM API.
+        referrer:
           type: string
-          description: The locale string for the current user, e.g. `en-US`.
-        userAgent:
+          description: The previous page's full URL. Equivalent to `document.referrer` from the DOM API.
+        search:
           type: string
-          description: The user agent of the device making the request
-        channel:
+          description: The query string portion of the page's URL. Equivalent to `location.search` from the DOM API.
+        title:
           type: string
-          enum:
-          - browser
-          - server
-          - mobile
-          description: The channel the event originated from.
+          description: The page's title. Equivalent to `document.title` from the DOM API.
+        url:
+          type: string
+          description: A page's full URL. We first look for the canonical URL. If the canonical URL is not provided, we'll use `location.href` from the DOM API.
+        keywords:
+          type: array
+          description: A list/array of keywords describing the page's content. The keywords are likely the same as, or similar to, the keywords you would find in an HTML `meta` tag for SEO purposes. This property is mainly used by content publishers that rely heavily on pageview tracking. This isn't automatically collected.
+          items:
+            type: string
+    userId:
+      x-scalar-ignore: true
+      type: string
+      description: The unique identifier for a person. This value should be unique across systems, so you recognize the same person in your sources _and_ destinations.
+      example: 241ma8mf4a
     integrations:
       x-scalar-ignore: true
       type: object
@@ -119,39 +127,6 @@ components:
       example:
         All: true
         Salesforce: false
-    context_non_mobile:
-      x-scalar-ignore: true
-      description: A dictionary of context about a source call/event, like the user’s IP address or locale. Context is automatically collected by our source libraries.
-      title: Non-mobile
-      allOf:
-      - $ref: '#/components/schemas/context_common'
-      - type: object
-        properties:
-          campaign:
-            type: object
-            description: 'Contains information about the campaign that resulted in the API call, gathered from, or mapping to, UTM parameters (e.g. `utm_source`).
-
-              '
-            properties:
-              name:
-                type: string
-                description: The campaign name.
-              source:
-                type: string
-                description: The source of traffic—like the name of your email list, Facebook, Google, etc.
-              medium:
-                type: string
-                description: The type of traffic a person/event originates from, like `email`, or `referral`.
-              term:
-                type: string
-                description: The keyword term(s) a user came from.
-              content:
-                type: string
-            additionalProperties:
-              type: string
-              x-additionalPropertiesName: Additional UTM Parameters
-          page:
-            $ref: '#/components/schemas/context_page'
     common_fields:
       x-scalar-ignore: true
       type: object
@@ -201,6 +176,68 @@ components:
         properties:
           context:
             $ref: '#/components/schemas/context_non_mobile'
+    context_non_mobile:
+      x-scalar-ignore: true
+      description: A dictionary of context about a source call/event, like the user’s IP address or locale. Context is automatically collected by our source libraries.
+      title: Non-mobile
+      allOf:
+      - $ref: '#/components/schemas/context_common'
+      - type: object
+        properties:
+          campaign:
+            type: object
+            description: 'Contains information about the campaign that resulted in the API call, gathered from, or mapping to, UTM parameters (e.g. `utm_source`).
+
+              '
+            properties:
+              name:
+                type: string
+                description: The campaign name.
+              source:
+                type: string
+                description: The source of traffic—like the name of your email list, Facebook, Google, etc.
+              medium:
+                type: string
+                description: The type of traffic a person/event originates from, like `email`, or `referral`.
+              term:
+                type: string
+                description: The keyword term(s) a user came from.
+              content:
+                type: string
+            additionalProperties:
+              type: string
+              x-additionalPropertiesName: Additional UTM Parameters
+          page:
+            $ref: '#/components/schemas/context_page'
+    context_common:
+      x-scalar-ignore: true
+      type: object
+      description: Contains contextual information about the event.
+      properties:
+        active:
+          type: boolean
+          description: 'Whether a user is active.
+
+
+            This is usually used when you send an .identify() call to update the traits independently of when you''ve “last seen” a user.
+
+            '
+        ip:
+          type: string
+          description: The user's IP address. This isn't captured by our libraries, but by our servers when we receive client-side events (like from our JavaScript source).
+        locale:
+          type: string
+          description: The locale string for the current user, e.g. `en-US`.
+        userAgent:
+          type: string
+          description: The user agent of the device making the request
+        channel:
+          type: string
+          enum:
+          - browser
+          - server
+          - mobile
+          description: The channel the event originated from.
     page:
       x-scalar-ignore: true
       oneOf:
@@ -318,46 +355,9 @@ components:
         type: page
         userId: 97980cfea0067
         version: 1.1
-    anonymousId:
-      x-scalar-ignore: true
-      type: string
-      description: A unique substitute for a User ID in cases when you don’t have an absolutely unique identifier. Our libraries generate this value automatically to help you track people before they sign up, log in, provide their email, etc.
-      example: c0e5cae6-6f04-46e4-97a8-25076e8bdc0b
-    context_page:
-      x-scalar-ignore: true
-      type: object
-      description: Contains information about the current page in the browser. This is automatically collected by our JavaScript source.
-      properties:
-        name:
-          type: string
-          description: 'The name of the page. Reserved for future use.
-
-            '
-        path:
-          type: string
-          description: The path portion of the page's URL. Equivalent to the canonical `path` which defaults to `location.pathname` from the DOM API.
-        referrer:
-          type: string
-          description: The previous page's full URL. Equivalent to `document.referrer` from the DOM API.
-        search:
-          type: string
-          description: The query string portion of the page's URL. Equivalent to `location.search` from the DOM API.
-        title:
-          type: string
-          description: The page's title. Equivalent to `document.title` from the DOM API.
-        url:
-          type: string
-          description: A page's full URL. We first look for the canonical URL. If the canonical URL is not provided, we'll use `location.href` from the DOM API.
-        keywords:
-          type: array
-          description: A list/array of keywords describing the page's content. The keywords are likely the same as, or similar to, the keywords you would find in an HTML `meta` tag for SEO purposes. This property is mainly used by content publishers that rely heavily on pageview tracking. This isn't automatically collected.
-          items:
-            type: string
-    userId:
-      x-scalar-ignore: true
-      type: string
-      description: The unique identifier for a person. This value should be unique across systems, so you recognize the same person in your sources _and_ destinations.
-      example: 241ma8mf4a
+  responses:
+    '200':
+      description: A successful request returns an empty object response.
   securitySchemes:
     Basic-Auth:
       type: http

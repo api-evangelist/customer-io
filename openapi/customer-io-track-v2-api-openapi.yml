@@ -188,68 +188,92 @@ paths:
         label: JSON
         source: "{\n  \"batch\": [\n    {\n      \"type\": \"person\",\n      \"identifiers\": {\n        \"id\": \"42\"\n      },\n      \"action\": \"identify\",\n      \"attributes\": {\n        \"first_name\": \"Jane\",\n        \"last_name\": \"Doe\",\n        \"plan\": \"premium\"\n      }\n    },\n    {\n      \"type\": \"object\",\n      \"identifiers\": {\n        \"object_type_id\": \"1\",\n        \"object_id\": \"acme\"\n      },\n      \"action\": \"identify\",\n      \"attributes\": {\n        \"name\": \"Acme Corp\",\n        \"plan\": \"enterprise\",\n        \"seats\": 50\n      }\n    },\n    {\n      \"type\": \"object\",\n      \"identifiers\": {\n        \"object_type_id\": \"1\",\n        \"object_id\": \"acme\"\n      },\n      \"action\": \"add_relationships\",\n      \"cio_relationships\": [\n        {\n          \"identifiers\": {\n            \"id\": \"42\"\n          },\n          \"relationship_attributes\": {\n            \"role\": \"admin\"\n          }\n        }\n      ]\n    }\n  ]\n}"
 components:
-  responses:
-    '401':
-      description: Unauthorized request. Make sure that you provided the right credentials.
-    '200':
-      description: A successful request returns an empty object response.
   schemas:
-    person_operations:
+    person_common:
       x-scalar-ignore: true
-      title: Person operations
+      type: object
+      required:
+      - type
+      - identifiers
+      properties:
+        type:
+          description: The operation modifies a person in Customer.io
+          type: string
+          enum:
+          - person
+        identifiers:
+          description: The person you want to perform an action for—one of `id`, `email`, `phone`, or `cio_id`. You cannot pass multiple identifiers. You can use `email` and `phone` only if they're enabled as identifiers in your [workspace settings](/accounts/workspaces/overview/#migrate-workspace).
+          oneOf:
+          - title: id
+            type: object
+            required:
+            - id
+            properties:
+              id:
+                $ref: '#/components/schemas/not_nullable_customer_id'
+          - title: email
+            type: object
+            required:
+            - email
+            properties:
+              email:
+                $ref: '#/components/schemas/not_nullable_email_address'
+          - title: phone
+            type: object
+            required:
+            - phone
+            properties:
+              phone:
+                type: string
+                description: A person's phone number, in [E.164 format](https://en.wikipedia.org/wiki/E.164) (a leading `+` followed by up to 15 digits). Available only when `phone` is enabled as an identifier in your workspace.
+                example: '+14155552671'
+          - title: cio_id
+            type: object
+            required:
+            - cio_id
+            properties:
+              cio_id:
+                $ref: '#/components/schemas/cio_id'
+    cio_subscription_preferences:
+      x-scalar-ignore: true
+      description: A person's [subscription center](/journeys/channels/subscriptions/center/) preferences. Use JSON dot notation, such as `cio_subscription_preferences.topics.topic_<id>`, to update one topic without replacing others.
+      type: object
+      properties:
+        topics:
+          type: object
+          description: Contains active topics in your workspace, named `topic_<id>`.
+          additionalProperties:
+            x-additionalPropertiesName: topic_<id>
+            description: Boolean preference for a topic named `topic_<id>`; `true` subscribes, `false` unsubscribes, and empty or missing values use the topic default. Find topic IDs with [getTopics](#tag/subscription-center/getTopics).
+            type: boolean
+      example:
+        topics:
+          topic_1: true
+          topic_2: false
+          topic_3: true
+    person_suppress:
+      title: 'Person: Suppress'
+      description: Suppress a person's identifier(s) in Customer.io, so that you can't message a person or add their identifiers back to your workspace. This is separate from suppressions performed by your email provider.
       example:
         type: person
         identifiers:
           id: '42'
-        action: identify
-        attributes:
-          first_name: Jane
-      oneOf:
-      - $ref: '#/components/schemas/identify_person'
-      - $ref: '#/components/schemas/person_delete'
-      - $ref: '#/components/schemas/person_event'
-      - $ref: '#/components/schemas/person_screen'
-      - $ref: '#/components/schemas/person_page'
-      - $ref: '#/components/schemas/person_add_relationships'
-      - $ref: '#/components/schemas/person_delete_relationships'
-      - $ref: '#/components/schemas/person_add_device'
-      - $ref: '#/components/schemas/person_delete_device'
-      - $ref: '#/components/schemas/person_merge'
-      - $ref: '#/components/schemas/person_suppress'
-      - $ref: '#/components/schemas/person_unsuppress'
-      discriminator:
-        propertyName: action
-    person_delete_device:
-      title: 'Person: Delete device'
-      description: Delete devices that belong to a person.
-      example:
-        type: person
-        identifiers:
-          id: '42'
-        action: delete_device
-        device:
-          token: a83b219c-e756-4c5b-a8e3-d1a5c5b2f3c1
+        action: suppress
       allOf:
       - $ref: '#/components/schemas/person_common'
       - type: object
         required:
         - action
-        - device
         properties:
           action:
             type: string
-            description: Delete a device from a person's profile.
+            description: Suppress a person's identifier(s) in Customer.io, so that you can't message a person or add their identifiers back to your workspace. This is separate from suppressions performed by your email provider.
             enum:
-            - delete_device
-          device:
-            description: The device you want to remove.
-            type: object
-            required:
-            - token
-            properties:
-              token:
-                description: The token of the device you want to remove.
-                type: string
+            - suppress
+    object_attributes:
+      x-scalar-ignore: true
+      type: object
+      description: Data that belongs to the object. Pass `null` or an empty string to remove an attribute. Some attributes have special meaning—see [reserved attributes](/journeys/objects-data/objects/create/#reserved-attributes).
     relationship_attributes:
       x-scalar-ignore: true
       type: object
@@ -260,54 +284,91 @@ components:
         x-additionalPropertiesName: Relationship Attributes
       example:
         role: admin
-    person_add_device:
-      title: 'Person: Add device'
-      description: Assign devices to a person.
+    v2_cio_relationships:
+      x-scalar-ignore: true
+      type: array
+      description: The people you want to associate with an object. Each object in the array represents a person.
+      items:
+        type: object
+        properties:
+          identifiers:
+            oneOf:
+            - title: id
+              type: object
+              properties:
+                id:
+                  $ref: '#/components/schemas/not_nullable_customer_id'
+            - title: email
+              type: object
+              properties:
+                email:
+                  $ref: '#/components/schemas/not_nullable_email_address'
+            - title: cio_id
+              type: object
+              properties:
+                cio_id:
+                  $ref: '#/components/schemas/cio_id'
+          relationship_attributes:
+            type: object
+            description: 'The attributes associated with a relationship. Passing null or an empty string removes the attribute from the relationship.
+
+              '
+            additionalProperties:
+              x-additionalPropertiesName: Relationship Attributes
+        example:
+          identifiers:
+            id: '42'
+          relationship_attributes:
+            role: admin
+            date_created: 1702480414
+    object_relationships:
+      x-scalar-ignore: true
+      type: array
+      description: Each object in the array represents a relationship you want to add to, or remove from, a person.
+      items:
+        allOf:
+        - $ref: '#/components/schemas/object_identifiers'
+        - type: object
+          properties:
+            relationship_attributes:
+              $ref: '#/components/schemas/relationship_attributes'
+    object_identify_anonymous:
+      title: 'Object: Identify anonymous'
+      description: The `identify_anonymous` action lets you relate an object to a person who hasn't yet identified themselves by anonymous_id. When you identify the person, their anonymous relationship will carry over to the identified profile.
       example:
-        type: person
+        type: object
         identifiers:
-          id: '42'
-        action: add_device
-        device:
-          token: a83b219c-e756-4c5b-a8e3-d1a5c5b2f3c1
-          platform: ios
-          last_used: 1713484800
+          object_type_id: '1'
+          object_id: acme
+        action: identify_anonymous
+        anonymous_id: anon-abc-123
       allOf:
-      - $ref: '#/components/schemas/person_common'
+      - $ref: '#/components/schemas/object_common_identify'
       - type: object
         required:
         - action
-        - device
         properties:
           action:
             type: string
-            description: Add a mobile device to a person's profile.
+            description: Indicates that the operation will `identify` the item of the specified `type` and relate it to an `anonymous_id`.
             enum:
-            - add_device
-          device:
-            description: Device properties collected by [Customer.io SDKs](/integrations/sdk/) unless `autoTrackDeviceAttributes` is disabled. You can reference them outside `attributes` in segments.
-            allOf:
-            - type: object
-              required:
-              - token
+            - identify_anonymous
+          attributes:
+            $ref: '#/components/schemas/object_attributes'
+          cio_relationships:
+            type: array
+            description: The anonymous people you want to associate with an object. Each object in the array contains an `anonymous_id` representing a person you haven't yet identified by `id` or `email`.
+            items:
+              type: object
               properties:
-                token:
-                  description: The device token.
-                  type: string
-            - $ref: '#/components/schemas/device_object_common'
-    object_common:
-      x-scalar-ignore: true
-      allOf:
-      - $ref: '#/components/schemas/object_identifiers'
-      - type: object
-        required:
-        - type
-        properties:
-          type:
-            description: The operation modifies a single object—non person data.
-            type: string
-            enum:
-            - object
+                identifiers:
+                  type: object
+                  properties:
+                    anonymous_id:
+                      $ref: '#/components/schemas/anonymous_id'
+                relationship_attributes:
+                  type: object
+                  description: Coming October 2023 - The attributes associated with a relationship. Passing null or an empty string removes the attribute from the relationship.
     person_screen:
       title: 'Person: Screen view'
       description: A mobile "screenview" event attributed to a person. Our `screen` and `page` event types are more specific than our standard `event`, and help you track and target people based on the pages people visit in your mobile app or website.
@@ -347,79 +408,6 @@ components:
             additionalProperties:
               x-additionalPropertiesName: liquid merge data
               description: Insert key-values that you want to reference in your message here.
-    v2_cio_relationships:
-      x-scalar-ignore: true
-      type: array
-      description: The people you want to associate with an object. Each object in the array represents a person.
-      items:
-        type: object
-        properties:
-          identifiers:
-            oneOf:
-            - title: id
-              type: object
-              properties:
-                id:
-                  $ref: '#/components/schemas/not_nullable_customer_id'
-            - title: email
-              type: object
-              properties:
-                email:
-                  $ref: '#/components/schemas/not_nullable_email_address'
-            - title: cio_id
-              type: object
-              properties:
-                cio_id:
-                  $ref: '#/components/schemas/cio_id'
-          relationship_attributes:
-            type: object
-            description: 'The attributes associated with a relationship. Passing null or an empty string removes the attribute from the relationship.
-
-              '
-            additionalProperties:
-              x-additionalPropertiesName: Relationship Attributes
-        example:
-          identifiers:
-            id: '42'
-          relationship_attributes:
-            role: admin
-            date_created: 1702480414
-    not_nullable_customer_id:
-      x-scalar-ignore: true
-      type: string
-      description: The ID of a customer profile, analogous to a "person" in the UI.
-      example: '42'
-    object_identify:
-      example:
-        type: object
-        identifiers:
-          object_type_id: '1'
-          object_id: acme
-        action: identify
-        attributes:
-          name: Acme Corp
-          plan: enterprise
-          seats: 50
-      type: object
-      title: 'Object: Identify'
-      description: 'The `action` determines the type of operation you want to perform with an object. If `identifiers.object_id` does not exist, we''ll create a new object; if it exists, we''ll update the object accordingly.
-
-        '
-      allOf:
-      - $ref: '#/components/schemas/object_common_identify'
-      - type: object
-        required:
-        - action
-        properties:
-          action:
-            type: string
-            description: Indicates that the operation will `identify` the the item of the specified `type`.
-            enum:
-            - identify
-          attributes:
-            $ref: '#/components/schemas/object_attributes'
-          cio_relationships:
-            $ref: '#/components/schemas/v2_cio_relationships'
     delivery_operations:
       title: 'Delivery: Event'
       description: The "delivery" type lets you attribute metrics to messages that don't self-report back to Customer.io, like push and in-app notifications.
@@ -472,184 +460,6 @@ components:
             device_token:
               type: string
               description: The device that received the message.
-    cio_id:
-      x-scalar-ignore: true
-      type: string
-      description: A unique identifier set by Customer.io, used to reference a person if you want to update their identifiers.
-      example: a3000001
-    not_nullable_email_address:
-      x-scalar-ignore: true
-      type: string
-      description: The email address of the customer.
-      example: test@example.com
-    errors:
-      x-scalar-ignore: true
-      type: array
-      description: An array of errors, where each object represents a different error.
-      items:
-        type: object
-        properties:
-          reason:
-            type: string
-            description: The reason for the error.
-          field:
-            type: string
-            description: The field containing the error.
-          message:
-            type: string
-            description: A detailed description of the error in the offending field.
-    object_attributes:
-      x-scalar-ignore: true
-      type: object
-      description: Data that belongs to the object. Pass `null` or an empty string to remove an attribute. Some attributes have special meaning—see [reserved attributes](/journeys/objects-data/objects/create/#reserved-attributes).
-    person_common:
-      x-scalar-ignore: true
-      type: object
-      required:
-      - type
-      - identifiers
-      properties:
-        type:
-          description: The operation modifies a person in Customer.io
-          type: string
-          enum:
-          - person
-        identifiers:
-          description: The person you want to perform an action for—one of `id`, `email`, `phone`, or `cio_id`. You cannot pass multiple identifiers. You can use `email` and `phone` only if they're enabled as identifiers in your [workspace settings](/accounts/workspaces/overview/#migrate-workspace).
-          oneOf:
-          - title: id
-            type: object
-            required:
-            - id
-            properties:
-              id:
-                $ref: '#/components/schemas/not_nullable_customer_id'
-          - title: email
-            type: object
-            required:
-            - email
-            properties:
-              email:
-                $ref: '#/components/schemas/not_nullable_email_address'
-          - title: phone
-            type: object
-            required:
-            - phone
-            properties:
-              phone:
-                type: string
-                description: A person's phone number, in [E.164 format](https://en.wikipedia.org/wiki/E.164) (a leading `+` followed by up to 15 digits). Available only when `phone` is enabled as an identifier in your workspace.
-                example: '+14155552671'
-          - title: cio_id
-            type: object
-            required:
-            - cio_id
-            properties:
-              cio_id:
-                $ref: '#/components/schemas/cio_id'
-    person_page:
-      title: 'Person: Page view'
-      description: A web "pageview" event attributed to a person. Our `screen` and `page` event types are more specific than our standard `event`, and help you track and target people based on the pages people visit in your mobile app or website.
-      example:
-        type: person
-        identifiers:
-          id: '42'
-        action: page
-        name: /pricing
-        attributes:
-          referrer: https://example.com
-      allOf:
-      - $ref: '#/components/schemas/person_common'
-      - type: object
-        required:
-        - action
-        - name
-        properties:
-          action:
-            type: string
-            description: A web "pageview" event attributed to a person. Our `screen` and `page` event types are more specific than our standard `event`, and help you track and target people based on the pages people visit in your mobile app or website.
-            enum:
-            - page
-          id:
-            type: string
-            format: ULID
-            description: A valid ULID used to deduplicate events. Note - our Python and Ruby libraries do not pass this id.
-          name:
-            type: string
-            description: The name of the page or page path that a person visited. This is how you'll find and select page view events in Customer.io.
-          timestamp:
-            type: integer
-            description: The Unix timestamp when the event happened.
-          attributes:
-            type: object
-            description: Additional information that you might want to reference in a message using liquid or use to set attributes on the identified person.
-            properties:
-              path:
-                type: string
-                description: The path portion of the page's URL. Equivalent to the canonical `path` which defaults to `location.pathname` from the DOM API.
-              referrer:
-                type: string
-                description: The previous page's full URL. Equivalent to `document.referrer` from the DOM API.
-              search:
-                type: string
-                description: The query string portion of the page's URL. Equivalent to `location.search` from the DOM API.
-              title:
-                type: string
-                description: The page's title. Equivalent to `document.title` from the DOM API.
-              url:
-                type: string
-                description: A page's full URL. We first look for the canonical URL. If the canonical URL is not provided, we'll use `location.href` from the DOM API.
-              keywords:
-                type: array
-                description: Page-content keywords, typically like HTML meta keywords. Mainly for publishers with pageview tracking; not collected automatically.
-                items:
-                  type: string
-            additionalProperties:
-              x-additionalPropertiesName: liquid merge data
-              description: Insert key-values that you want to reference in your message here.
-    anonymous_id:
-      x-scalar-ignore: true
-      type: string
-      description: An identifier for an anonymous event, like a cookie. If set as an attribute on a person, any events bearing the same anonymous value are associated with this person. This value must be unique and is not reusable.
-    person_add_relationships:
-      title: 'Person: Add relationships'
-      description: Associate multiple objects with a person.
-      example:
-        type: person
-        identifiers:
-          id: '42'
-        action: add_relationships
-        cio_relationships:
-        - identifiers:
-            object_type_id: '1'
-            object_id: acme
-          relationship_attributes:
-            role: admin
-      allOf:
-      - $ref: '#/components/schemas/person_common'
-      - type: object
-        required:
-        - action
-        - cio_relationships
-        properties:
-          action:
-            type: string
-            description: This operation associates a person with one or more objects.
-            enum:
-            - add_relationships
-          cio_relationships:
-            $ref: '#/components/schemas/object_relationships'
-    object_relationships:
-      x-scalar-ignore: true
-      type: array
-      description: Each object in the array represents a relationship you want to add to, or remove from, a person.
-      items:
-        allOf:
-        - $ref: '#/components/schemas/object_identifiers'
-        - type: object
-          properties:
-            relationship_attributes:
-              $ref: '#/components/schemas/relationship_attributes'
     object_add_relationships:
       title: 'Object: Add relationships'
       description: Add relationships between an object and one or more people.
@@ -678,20 +488,51 @@ components:
             - add_relationships
           cio_relationships:
             $ref: '#/components/schemas/v2_cio_relationships'
-    object_delete_relationships:
-      title: 'Object: Delete relationships'
-      description: Delete relationships between an object and one or more people.
+    object_identify:
       example:
         type: object
         identifiers:
           object_type_id: '1'
           object_id: acme
+        action: identify
+        attributes:
+          name: Acme Corp
+          plan: enterprise
+          seats: 50
+      type: object
+      title: 'Object: Identify'
+      description: 'The `action` determines the type of operation you want to perform with an object. If `identifiers.object_id` does not exist, we''ll create a new object; if it exists, we''ll update the object accordingly.
+
+        '
+      allOf:
+      - $ref: '#/components/schemas/object_common_identify'
+      - type: object
+        required:
+        - action
+        properties:
+          action:
+            type: string
+            description: Indicates that the operation will `identify` the the item of the specified `type`.
+            enum:
+            - identify
+          attributes:
+            $ref: '#/components/schemas/object_attributes'
+          cio_relationships:
+            $ref: '#/components/schemas/v2_cio_relationships'
+    person_delete_relationships:
+      title: 'Person: Delete relationships'
+      description: Remove multiple object relationships from a person.
+      example:
+        type: person
+        identifiers:
+          id: '42'
         action: delete_relationships
         cio_relationships:
         - identifiers:
-            id: '42'
+            object_type_id: '1'
+            object_id: acme
       allOf:
-      - $ref: '#/components/schemas/object_common'
+      - $ref: '#/components/schemas/person_common'
       - type: object
         required:
         - action
@@ -703,192 +544,20 @@ components:
             enum:
             - delete_relationships
           cio_relationships:
-            $ref: '#/components/schemas/v2_cio_relationships'
-    object_operations:
+            $ref: '#/components/schemas/object_relationships'
+    object_common:
       x-scalar-ignore: true
-      title: Object operations
-      example:
-        type: object
-        identifiers:
-          object_type_id: '1'
-          object_id: acme
-        action: identify
-        attributes:
-          name: Acme Corp
-      oneOf:
-      - $ref: '#/components/schemas/object_identify'
-      - $ref: '#/components/schemas/object_identify_anonymous'
-      - $ref: '#/components/schemas/object_delete'
-      - $ref: '#/components/schemas/object_add_relationships'
-      - $ref: '#/components/schemas/object_delete_relationships'
-      discriminator:
-        propertyName: action
-    cio_subscription_preferences:
-      x-scalar-ignore: true
-      description: A person's [subscription center](/journeys/channels/subscriptions/center/) preferences. Use JSON dot notation, such as `cio_subscription_preferences.topics.topic_<id>`, to update one topic without replacing others.
-      type: object
-      properties:
-        topics:
-          type: object
-          description: Contains active topics in your workspace, named `topic_<id>`.
-          additionalProperties:
-            x-additionalPropertiesName: topic_<id>
-            description: Boolean preference for a topic named `topic_<id>`; `true` subscribes, `false` unsubscribes, and empty or missing values use the topic default. Find topic IDs with [getTopics](#tag/subscription-center/getTopics).
-            type: boolean
-      example:
-        topics:
-          topic_1: true
-          topic_2: false
-          topic_3: true
-    person_delete:
-      title: 'Person: Delete'
-      description: Delete a person from your workspace.
-      example:
-        type: person
-        identifiers:
-          id: '42'
-        action: delete
       allOf:
-      - $ref: '#/components/schemas/person_common'
+      - $ref: '#/components/schemas/object_identifiers'
       - type: object
         required:
-        - action
+        - type
         properties:
-          action:
+          type:
+            description: The operation modifies a single object—non person data.
             type: string
-            description: Indicates that the operation will `delete` the the item of the specified `type`.
             enum:
-            - delete
-    person_suppress:
-      title: 'Person: Suppress'
-      description: Suppress a person's identifier(s) in Customer.io, so that you can't message a person or add their identifiers back to your workspace. This is separate from suppressions performed by your email provider.
-      example:
-        type: person
-        identifiers:
-          id: '42'
-        action: suppress
-      allOf:
-      - $ref: '#/components/schemas/person_common'
-      - type: object
-        required:
-        - action
-        properties:
-          action:
-            type: string
-            description: Suppress a person's identifier(s) in Customer.io, so that you can't message a person or add their identifiers back to your workspace. This is separate from suppressions performed by your email provider.
-            enum:
-            - suppress
-    device_object_common:
-      x-scalar-ignore: true
-      type: object
-      description: Device information common to the v1 and v2 APIs.
-      required:
-      - platform
-      properties:
-        last_used:
-          type: integer
-          format: unix timestamp
-          description: The `timestamp` when you last identified this device. If you don't pass a timestamp when you add or update a device, we use the time of the request itself. Our SDKs identify a device when a person launches their app.
-        platform:
-          type: string
-          enum:
-          - ios
-          - android
-          description: The device/messaging platform.
-        attributes:
-          type: object
-          description: Attributes that you can reference to segment your audience—like a person's attributes, but specific to a device. These can be either the attributes defined below or custom key-value attributes.
-          properties:
-            device_os:
-              type: string
-              description: The operating system, including the version, on the device.
-            device_model:
-              type: string
-              description: The model of the device a person uses.
-            app_version:
-              type: string
-              description: The version of your app that a customer uses. You might target app versions to let people know when they need to update, or expose them to new features when they do.
-            cio_sdk_version:
-              type: string
-              description: The version of the Customer.io SDK in the app.
-            _last_status:
-              type: string
-              readOnly: true
-              description: The delivery status of the last message sent to the device—sent, bounced, or suppressed. An empty string indicates that that the device hasn't received a push yet.
-              enum:
-              - ''
-              - bounced
-              - sent
-              - suppressed
-            device_locale:
-              type: string
-              description: The device's [IETF language code](/journeys/channels/localization/getting-started/#supported-languages), such as `en-MX` or `es-ES`.
-            push_enabled:
-              type: string
-              description: If `"true"`, the device is opted-in and can receive push notifications.
-              enum:
-              - 'true'
-              - 'false'
-          additionalProperties:
-            x-additionalPropertiesName: Custom Device Attributes
-            description: Custom properties that you want to associate with the device.
-            type: string
-    object_identify_anonymous:
-      title: 'Object: Identify anonymous'
-      description: The `identify_anonymous` action lets you relate an object to a person who hasn't yet identified themselves by anonymous_id. When you identify the person, their anonymous relationship will carry over to the identified profile.
-      example:
-        type: object
-        identifiers:
-          object_type_id: '1'
-          object_id: acme
-        action: identify_anonymous
-        anonymous_id: anon-abc-123
-      allOf:
-      - $ref: '#/components/schemas/object_common_identify'
-      - type: object
-        required:
-        - action
-        properties:
-          action:
-            type: string
-            description: Indicates that the operation will `identify` the item of the specified `type` and relate it to an `anonymous_id`.
-            enum:
-            - identify_anonymous
-          attributes:
-            $ref: '#/components/schemas/object_attributes'
-          cio_relationships:
-            type: array
-            description: The anonymous people you want to associate with an object. Each object in the array contains an `anonymous_id` representing a person you haven't yet identified by `id` or `email`.
-            items:
-              type: object
-              properties:
-                identifiers:
-                  type: object
-                  properties:
-                    anonymous_id:
-                      $ref: '#/components/schemas/anonymous_id'
-                relationship_attributes:
-                  type: object
-                  description: Coming October 2023 - The attributes associated with a relationship. Passing null or an empty string removes the attribute from the relationship.
-    person_unsuppress:
-      title: 'Person: Unsuppress'
-      description: Unsuppress a person's identifier(s) in Customer.io, so that you can message a person or add their identifiers back to your workspace. This does not unsuppress addresses that were previously suppressed by your email provider.
-      example:
-        type: person
-        identifiers:
-          id: '42'
-        action: unsuppress
-      allOf:
-      - $ref: '#/components/schemas/person_common'
-      - type: object
-        required:
-        - action
-        properties:
-          action:
-            type: string
-            description: Unsuppress a person's identifier(s) in Customer.io, so that you can message a person or add their identifiers back to your workspace. This does not unsuppress addresses that were previously suppressed by your email provider.
-            enum:
-            - unsuppress
+            - object
     object_common_identify:
       x-scalar-ignore: true
       type: object
@@ -925,18 +594,66 @@ components:
           type: string
           enum:
           - object
-    identify_person:
-      title: 'Person: Identify'
-      description: Add or update a person.
+    errors:
+      x-scalar-ignore: true
+      type: array
+      description: An array of errors, where each object represents a different error.
+      items:
+        type: object
+        properties:
+          reason:
+            type: string
+            description: The reason for the error.
+          field:
+            type: string
+            description: The field containing the error.
+          message:
+            type: string
+            description: A detailed description of the error in the offending field.
+    object_type_id:
+      x-scalar-ignore: true
+      type: string
+      description: The object type an object belongs to—like "Companies" or "Accounts". Object type IDs are string-formatted integers that begin at `1` and increment for each new type.
+      example: '1'
+    object_delete_relationships:
+      title: 'Object: Delete relationships'
+      description: Delete relationships between an object and one or more people.
+      example:
+        type: object
+        identifiers:
+          object_type_id: '1'
+          object_id: acme
+        action: delete_relationships
+        cio_relationships:
+        - identifiers:
+            id: '42'
+      allOf:
+      - $ref: '#/components/schemas/object_common'
+      - type: object
+        required:
+        - action
+        - cio_relationships
+        properties:
+          action:
+            type: string
+            description: This operation deletes an object relationship from one or more people.
+            enum:
+            - delete_relationships
+          cio_relationships:
+            $ref: '#/components/schemas/v2_cio_relationships'
+    cio_id:
+      x-scalar-ignore: true
+      type: string
+      description: A unique identifier set by Customer.io, used to reference a person if you want to update their identifiers.
+      example: a3000001
+    person_unsuppress:
+      title: 'Person: Unsuppress'
+      description: Unsuppress a person's identifier(s) in Customer.io, so that you can message a person or add their identifiers back to your workspace. This does not unsuppress addresses that were previously suppressed by your email provider.
       example:
         type: person
         identifiers:
           id: '42'
-        action: identify
-        attributes:
-          first_name: Jane
-          last_name: Doe
-          plan: premium
+        action: unsuppress
       allOf:
       - $ref: '#/components/schemas/person_common'
       - type: object
@@ -945,28 +662,61 @@ components:
         properties:
           action:
             type: string
-            description: Indicates that the operation will `identify` the the item of the specified `type`.
+            description: Unsuppress a person's identifier(s) in Customer.io, so that you can message a person or add their identifiers back to your workspace. This does not unsuppress addresses that were previously suppressed by your email provider.
             enum:
-            - identify
-          timestamp:
-            type: integer
-            description: The Unix timestamp for when the attribute update occurred. This can be used to control the order of attribute updates when multiple requests are sent in rapid succession.
-            example: 1772013598
-          attributes:
-            type: object
-            description: Attributes that you want to add or update for this person. You can pass properties that aren't defined below to set custom attributes; the defined properties are reserved in the Customer.io Track API.
-            properties:
-              cio_subscription_preferences:
-                $ref: '#/components/schemas/cio_subscription_preferences'
-              _update:
-                type: boolean
-                default: false
-                description: If `true`, update only existing people and prevent accidental profile creation. If no person matches the identifiers, the request does nothing.
-            additionalProperties:
-              x-additionalPropertiesName: additional attributes
-              description: Custom properties that you want to set as attributes on this person.
+            - unsuppress
+    person_delete:
+      title: 'Person: Delete'
+      description: Delete a person from your workspace.
+      example:
+        type: person
+        identifiers:
+          id: '42'
+        action: delete
+      allOf:
+      - $ref: '#/components/schemas/person_common'
+      - type: object
+        required:
+        - action
+        properties:
+          action:
+            type: string
+            description: Indicates that the operation will `delete` the the item of the specified `type`.
+            enum:
+            - delete
+    person_add_relationships:
+      title: 'Person: Add relationships'
+      description: Associate multiple objects with a person.
+      example:
+        type: person
+        identifiers:
+          id: '42'
+        action: add_relationships
+        cio_relationships:
+        - identifiers:
+            object_type_id: '1'
+            object_id: acme
+          relationship_attributes:
+            role: admin
+      allOf:
+      - $ref: '#/components/schemas/person_common'
+      - type: object
+        required:
+        - action
+        - cio_relationships
+        properties:
+          action:
+            type: string
+            description: This operation associates a person with one or more objects.
+            enum:
+            - add_relationships
           cio_relationships:
             $ref: '#/components/schemas/object_relationships'
+    not_nullable_customer_id:
+      x-scalar-ignore: true
+      type: string
+      description: The ID of a customer profile, analogous to a "person" in the UI.
+      example: '42'
     person_merge:
       title: 'Person: Merge'
       example:
@@ -1040,11 +790,6 @@ components:
             properties:
               cio_id:
                 $ref: '#/components/schemas/cio_id'
-    object_type_id:
-      x-scalar-ignore: true
-      type: string
-      description: The object type an object belongs to—like "Companies" or "Accounts". Object type IDs are string-formatted integers that begin at `1` and increment for each new type.
-      example: '1'
     object_delete:
       title: 'Object: Delete'
       description: 'Delete an object. This also removes relationships from people.
@@ -1067,32 +812,39 @@ components:
             description: Indicates that the operation will `delete` the the item of the specified `type`.
             enum:
             - delete
-    person_delete_relationships:
-      title: 'Person: Delete relationships'
-      description: Remove multiple object relationships from a person.
-      example:
-        type: person
+    object_identifiers:
+      x-scalar-ignore: true
+      type: object
+      properties:
         identifiers:
-          id: '42'
-        action: delete_relationships
-        cio_relationships:
-        - identifiers:
-            object_type_id: '1'
-            object_id: acme
-      allOf:
-      - $ref: '#/components/schemas/person_common'
-      - type: object
-        required:
-        - action
-        - cio_relationships
-        properties:
-          action:
-            type: string
-            description: This operation deletes an object relationship from one or more people.
-            enum:
-            - delete_relationships
-          cio_relationships:
-            $ref: '#/components/schemas/object_relationships'
+          description: The identifiers for a particular object. You can use either the `object_type_id` and `object_id` (where `object_type_id` represents the type of object and the `object_id` is the individual identifier for the object) or the `cio_object_id`.
+          oneOf:
+          - title: Object ID
+            type: object
+            required:
+            - object_type_id
+            - object_id
+            properties:
+              object_type_id:
+                $ref: '#/components/schemas/object_type_id'
+              object_id:
+                type: string
+                description: The unique identifier for an object. If you use an `object_id` that already exists, we'll update the object accordingly.
+                example: acme
+          - title: CIO Object ID
+            type: object
+            required:
+            - cio_object_id
+            properties:
+              cio_object_id:
+                type: string
+                description: A unique value that Customer.io sets for an object when you create it. This ID is immutable.
+                example: obb7fd050101
+    not_nullable_email_address:
+      x-scalar-ignore: true
+      type: string
+      description: The email address of the customer.
+      example: test@example.com
     person_event:
       title: 'Person: Event'
       description: A custom event attributed to a person. You can use events to trigger campaigns, or reference event information using liquid in your messages.
@@ -1148,34 +900,282 @@ components:
                 type: string
                 format: email
                 description: The address you want to receive replies to, overriding the `reply to` field for emails triggered by the event.
-    object_identifiers:
+    anonymous_id:
+      x-scalar-ignore: true
+      type: string
+      description: An identifier for an anonymous event, like a cookie. If set as an attribute on a person, any events bearing the same anonymous value are associated with this person. This value must be unique and is not reusable.
+    device_object_common:
       x-scalar-ignore: true
       type: object
+      description: Device information common to the v1 and v2 APIs.
+      required:
+      - platform
       properties:
+        last_used:
+          type: integer
+          format: unix timestamp
+          description: The `timestamp` when you last identified this device. If you don't pass a timestamp when you add or update a device, we use the time of the request itself. Our SDKs identify a device when a person launches their app.
+        platform:
+          type: string
+          enum:
+          - ios
+          - android
+          description: The device/messaging platform.
+        attributes:
+          type: object
+          description: Attributes that you can reference to segment your audience—like a person's attributes, but specific to a device. These can be either the attributes defined below or custom key-value attributes.
+          properties:
+            device_os:
+              type: string
+              description: The operating system, including the version, on the device.
+            device_model:
+              type: string
+              description: The model of the device a person uses.
+            app_version:
+              type: string
+              description: The version of your app that a customer uses. You might target app versions to let people know when they need to update, or expose them to new features when they do.
+            cio_sdk_version:
+              type: string
+              description: The version of the Customer.io SDK in the app.
+            _last_status:
+              type: string
+              readOnly: true
+              description: The delivery status of the last message sent to the device—sent, bounced, or suppressed. An empty string indicates that that the device hasn't received a push yet.
+              enum:
+              - ''
+              - bounced
+              - sent
+              - suppressed
+            device_locale:
+              type: string
+              description: The device's [IETF language code](/journeys/channels/localization/getting-started/#supported-languages), such as `en-MX` or `es-ES`.
+            push_enabled:
+              type: string
+              description: If `"true"`, the device is opted-in and can receive push notifications.
+              enum:
+              - 'true'
+              - 'false'
+          additionalProperties:
+            x-additionalPropertiesName: Custom Device Attributes
+            description: Custom properties that you want to associate with the device.
+            type: string
+    object_operations:
+      x-scalar-ignore: true
+      title: Object operations
+      example:
+        type: object
         identifiers:
-          description: The identifiers for a particular object. You can use either the `object_type_id` and `object_id` (where `object_type_id` represents the type of object and the `object_id` is the individual identifier for the object) or the `cio_object_id`.
-          oneOf:
-          - title: Object ID
+          object_type_id: '1'
+          object_id: acme
+        action: identify
+        attributes:
+          name: Acme Corp
+      oneOf:
+      - $ref: '#/components/schemas/object_identify'
+      - $ref: '#/components/schemas/object_identify_anonymous'
+      - $ref: '#/components/schemas/object_delete'
+      - $ref: '#/components/schemas/object_add_relationships'
+      - $ref: '#/components/schemas/object_delete_relationships'
+      discriminator:
+        propertyName: action
+    person_page:
+      title: 'Person: Page view'
+      description: A web "pageview" event attributed to a person. Our `screen` and `page` event types are more specific than our standard `event`, and help you track and target people based on the pages people visit in your mobile app or website.
+      example:
+        type: person
+        identifiers:
+          id: '42'
+        action: page
+        name: /pricing
+        attributes:
+          referrer: https://example.com
+      allOf:
+      - $ref: '#/components/schemas/person_common'
+      - type: object
+        required:
+        - action
+        - name
+        properties:
+          action:
+            type: string
+            description: A web "pageview" event attributed to a person. Our `screen` and `page` event types are more specific than our standard `event`, and help you track and target people based on the pages people visit in your mobile app or website.
+            enum:
+            - page
+          id:
+            type: string
+            format: ULID
+            description: A valid ULID used to deduplicate events. Note - our Python and Ruby libraries do not pass this id.
+          name:
+            type: string
+            description: The name of the page or page path that a person visited. This is how you'll find and select page view events in Customer.io.
+          timestamp:
+            type: integer
+            description: The Unix timestamp when the event happened.
+          attributes:
+            type: object
+            description: Additional information that you might want to reference in a message using liquid or use to set attributes on the identified person.
+            properties:
+              path:
+                type: string
+                description: The path portion of the page's URL. Equivalent to the canonical `path` which defaults to `location.pathname` from the DOM API.
+              referrer:
+                type: string
+                description: The previous page's full URL. Equivalent to `document.referrer` from the DOM API.
+              search:
+                type: string
+                description: The query string portion of the page's URL. Equivalent to `location.search` from the DOM API.
+              title:
+                type: string
+                description: The page's title. Equivalent to `document.title` from the DOM API.
+              url:
+                type: string
+                description: A page's full URL. We first look for the canonical URL. If the canonical URL is not provided, we'll use `location.href` from the DOM API.
+              keywords:
+                type: array
+                description: Page-content keywords, typically like HTML meta keywords. Mainly for publishers with pageview tracking; not collected automatically.
+                items:
+                  type: string
+            additionalProperties:
+              x-additionalPropertiesName: liquid merge data
+              description: Insert key-values that you want to reference in your message here.
+    person_add_device:
+      title: 'Person: Add device'
+      description: Assign devices to a person.
+      example:
+        type: person
+        identifiers:
+          id: '42'
+        action: add_device
+        device:
+          token: a83b219c-e756-4c5b-a8e3-d1a5c5b2f3c1
+          platform: ios
+          last_used: 1713484800
+      allOf:
+      - $ref: '#/components/schemas/person_common'
+      - type: object
+        required:
+        - action
+        - device
+        properties:
+          action:
+            type: string
+            description: Add a mobile device to a person's profile.
+            enum:
+            - add_device
+          device:
+            description: Device properties collected by [Customer.io SDKs](/integrations/sdk/) unless `autoTrackDeviceAttributes` is disabled. You can reference them outside `attributes` in segments.
+            allOf:
+            - type: object
+              required:
+              - token
+              properties:
+                token:
+                  description: The device token.
+                  type: string
+            - $ref: '#/components/schemas/device_object_common'
+    identify_person:
+      title: 'Person: Identify'
+      description: Add or update a person.
+      example:
+        type: person
+        identifiers:
+          id: '42'
+        action: identify
+        attributes:
+          first_name: Jane
+          last_name: Doe
+          plan: premium
+      allOf:
+      - $ref: '#/components/schemas/person_common'
+      - type: object
+        required:
+        - action
+        properties:
+          action:
+            type: string
+            description: Indicates that the operation will `identify` the the item of the specified `type`.
+            enum:
+            - identify
+          timestamp:
+            type: integer
+            description: The Unix timestamp for when the attribute update occurred. This can be used to control the order of attribute updates when multiple requests are sent in rapid succession.
+            example: 1772013598
+          attributes:
+            type: object
+            description: Attributes that you want to add or update for this person. You can pass properties that aren't defined below to set custom attributes; the defined properties are reserved in the Customer.io Track API.
+            properties:
+              cio_subscription_preferences:
+                $ref: '#/components/schemas/cio_subscription_preferences'
+              _update:
+                type: boolean
+                default: false
+                description: If `true`, update only existing people and prevent accidental profile creation. If no person matches the identifiers, the request does nothing.
+            additionalProperties:
+              x-additionalPropertiesName: additional attributes
+              description: Custom properties that you want to set as attributes on this person.
+          cio_relationships:
+            $ref: '#/components/schemas/object_relationships'
+    person_delete_device:
+      title: 'Person: Delete device'
+      description: Delete devices that belong to a person.
+      example:
+        type: person
+        identifiers:
+          id: '42'
+        action: delete_device
+        device:
+          token: a83b219c-e756-4c5b-a8e3-d1a5c5b2f3c1
+      allOf:
+      - $ref: '#/components/schemas/person_common'
+      - type: object
+        required:
+        - action
+        - device
+        properties:
+          action:
+            type: string
+            description: Delete a device from a person's profile.
+            enum:
+            - delete_device
+          device:
+            description: The device you want to remove.
             type: object
             required:
-            - object_type_id
-            - object_id
+            - token
             properties:
-              object_type_id:
-                $ref: '#/components/schemas/object_type_id'
-              object_id:
+              token:
+                description: The token of the device you want to remove.
                 type: string
-                description: The unique identifier for an object. If you use an `object_id` that already exists, we'll update the object accordingly.
-                example: acme
-          - title: CIO Object ID
-            type: object
-            required:
-            - cio_object_id
-            properties:
-              cio_object_id:
-                type: string
-                description: A unique value that Customer.io sets for an object when you create it. This ID is immutable.
-                example: obb7fd050101
+    person_operations:
+      x-scalar-ignore: true
+      title: Person operations
+      example:
+        type: person
+        identifiers:
+          id: '42'
+        action: identify
+        attributes:
+          first_name: Jane
+      oneOf:
+      - $ref: '#/components/schemas/identify_person'
+      - $ref: '#/components/schemas/person_delete'
+      - $ref: '#/components/schemas/person_event'
+      - $ref: '#/components/schemas/person_screen'
+      - $ref: '#/components/schemas/person_page'
+      - $ref: '#/components/schemas/person_add_relationships'
+      - $ref: '#/components/schemas/person_delete_relationships'
+      - $ref: '#/components/schemas/person_add_device'
+      - $ref: '#/components/schemas/person_delete_device'
+      - $ref: '#/components/schemas/person_merge'
+      - $ref: '#/components/schemas/person_suppress'
+      - $ref: '#/components/schemas/person_unsuppress'
+      discriminator:
+        propertyName: action
+  responses:
+    '200':
+      description: A successful request returns an empty object response.
+    '401':
+      description: Unauthorized request. Make sure that you provided the right credentials.
   securitySchemes:
     Tracking-API-Key:
       type: http

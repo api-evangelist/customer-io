@@ -358,183 +358,7 @@ paths:
         label: JSON
         source: '{}'
 components:
-  responses:
-    '401':
-      description: Unauthorized request. Make sure that you provided the right credentials.
-    '400':
-      description: Invalid or malformed request.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              meta:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    description: An array of errors.
-                    items:
-                      type: string
-                      description: Error descriptions.
-    '200':
-      description: A successful request returns an empty object response.
   schemas:
-    track-metrics:
-      x-scalar-ignore: true
-      description: The base properties shared across multiple metric types.
-      type: object
-      required:
-      - delivery_id
-      properties:
-        delivery_id:
-          type: string
-          description: The CIO-Delivery-ID from the notification that you want to associate the `event` with.
-          example: RPILAgUBcRhIBqSfeiIwdIYJKxTY
-        timestamp:
-          type: integer
-          format: unix timestamp
-          description: The unix timestamp when the event occurred.
-          example: 1613063089
-    recipient:
-      x-scalar-ignore: true
-      description: The recipient address for an action.
-      type: string
-      example: '{{customer.email}}'
-    anonymousEventsRequest:
-      x-scalar-ignore: true
-      description: An event attributed to an unknown person. If you provide an `anonymous_id` with the event, you can associate the event with a person later (using the anonymous ID).
-      oneOf:
-      - title: Standard anonymous event
-        type: object
-        required:
-        - name
-        properties:
-          anonymous_id:
-            $ref: '#/components/schemas/anonymous_id'
-          name:
-            type: string
-            description: The name of the event. This is how you'll reference the event in campaigns or segments.
-          id:
-            $ref: '#/components/schemas/dedupe_id'
-          type:
-            type: string
-            description: Sets the event type. If your event isn't a `page` or `screen` type event, we automatically set this property to `event`.
-            enum:
-            - event
-            - page
-            - screen
-          timestamp:
-            type: integer
-            format: unix timestamp
-            description: 'The unix timestamp when the event took place. If you don''t provide this value, we use the date-time when we receive the event.
-
-              '
-          data:
-            type: object
-            description: Additional event data you can reference in Liquid or use to set customer attributes. You can include `from_address` and `reply_to`, but an event only triggers a campaign if you associate it with a person within 72 hours.
-            additionalProperties:
-              x-additionalPropertiesName: liquid merge data
-              description: Insert key-values that you want to reference in messages or convert to attributes if/when you associate this event with a person.
-            properties:
-              from_address:
-                $ref: '#/components/schemas/from_address'
-              reply_to:
-                $ref: '#/components/schemas/reply_to_settable'
-        example:
-          name: watched_video
-          anonymous_id: abc123
-          data:
-            video: intro-to-platform
-      - title: Page view
-        type: object
-        required:
-        - name
-        - type
-        properties:
-          anonymous_id:
-            $ref: '#/components/schemas/anonymous_id'
-          name:
-            type: string
-            description: The name of the event. In general, this should be the URL of the page a person visited, making it easy to segment your audience or trigger campaigns using this event. Make sure you trim leading and trailing spaces from this field.
-          id:
-            $ref: '#/components/schemas/dedupe_id'
-          type:
-            type: string
-            description: Indicates that the event represents a page view. See ["page view" events](/integrations/data-in/connections/javascript/legacy-js/events/#page-view-events), for more information.
-            enum:
-            - page
-          timestamp:
-            type: integer
-            format: unix timestamp
-            description: 'The unix timestamp when the event took place. If you don''t provide this value, we use the date-time when we receive the event.
-
-              '
-          data:
-            type: object
-            description: Additional information that you might want to reference in a message using liquid or use to set attributes on your customer (referenced by `customer_id`).
-            additionalProperties:
-              x-additionalPropertiesName: liquid merge data
-              description: Insert key-values that you want to reference in messages or convert to attributes if/when you associate this event with a person.
-        example:
-          name: https://mysite.com/page
-          type: page
-          anonymous_id: abc123
-          data:
-            first_name: Person
-      - title: Mobile screen view
-        type: object
-        required:
-        - name
-        - type
-        properties:
-          anonymous_id:
-            $ref: '#/components/schemas/anonymous_id'
-          name:
-            type: string
-            description: The screen or deep link path the person viewed, so you can segment your audience or trigger campaigns from this event. Trim any leading and trailing spaces.
-          id:
-            $ref: '#/components/schemas/dedupe_id'
-          type:
-            type: string
-            description: Indicates that the event represents a mobile screen view. You can also capture screen events directly with [our iOS SDK](/integrations/sdk/ios/track-events/#screen-view-events).
-            enum:
-            - screen
-          timestamp:
-            type: integer
-            format: unix timestamp
-            description: 'The unix timestamp when the event took place. If you don''t provide this value, we use the date-time when we receive the event.
-
-              '
-          data:
-            type: object
-            description: Additional information that you might want to reference in a message using liquid or use to set attributes on your customer (referenced by `customer_id`).
-            additionalProperties:
-              x-additionalPropertiesName: liquid merge data
-              description: Insert key-values that you want to reference in messages or convert to attributes if/when you associate this event with a person.
-        example:
-          name: homepage
-          type: screen
-          anonymous_id: abc123
-    reply_to_settable:
-      x-scalar-ignore: true
-      type: string
-      description: The address that receives replies for the message, if applicable.
-      example: replyto@example.com
-    dedupe_id:
-      x-scalar-ignore: true
-      type: string
-      format: ulid
-      description: A [ULID](https://github.com/ulid/spec) we use to deduplicate events. If an event repeats a value we've already received, we ignore the duplicate. Our Python and Ruby libraries don't pass this ID.
-    from_address:
-      x-scalar-ignore: true
-      type: string
-      format: email
-      description: The address you want to trigger messages from, overriding the `from` field in emails triggered by the event.
-    anonymous_id:
-      x-scalar-ignore: true
-      type: string
-      description: An identifier for an anonymous event, like a cookie. If set as an attribute on a person, any events bearing the same anonymous value are associated with this person. This value must be unique and is not reusable.
     eventsRequest:
       x-scalar-ignore: true
       oneOf:
@@ -650,6 +474,161 @@ components:
           type: screen
           data:
             from: push-notification
+    anonymousEventsRequest:
+      x-scalar-ignore: true
+      description: An event attributed to an unknown person. If you provide an `anonymous_id` with the event, you can associate the event with a person later (using the anonymous ID).
+      oneOf:
+      - title: Standard anonymous event
+        type: object
+        required:
+        - name
+        properties:
+          anonymous_id:
+            $ref: '#/components/schemas/anonymous_id'
+          name:
+            type: string
+            description: The name of the event. This is how you'll reference the event in campaigns or segments.
+          id:
+            $ref: '#/components/schemas/dedupe_id'
+          type:
+            type: string
+            description: Sets the event type. If your event isn't a `page` or `screen` type event, we automatically set this property to `event`.
+            enum:
+            - event
+            - page
+            - screen
+          timestamp:
+            type: integer
+            format: unix timestamp
+            description: 'The unix timestamp when the event took place. If you don''t provide this value, we use the date-time when we receive the event.
+
+              '
+          data:
+            type: object
+            description: Additional event data you can reference in Liquid or use to set customer attributes. You can include `from_address` and `reply_to`, but an event only triggers a campaign if you associate it with a person within 72 hours.
+            additionalProperties:
+              x-additionalPropertiesName: liquid merge data
+              description: Insert key-values that you want to reference in messages or convert to attributes if/when you associate this event with a person.
+            properties:
+              from_address:
+                $ref: '#/components/schemas/from_address'
+              reply_to:
+                $ref: '#/components/schemas/reply_to_settable'
+        example:
+          name: watched_video
+          anonymous_id: abc123
+          data:
+            video: intro-to-platform
+      - title: Page view
+        type: object
+        required:
+        - name
+        - type
+        properties:
+          anonymous_id:
+            $ref: '#/components/schemas/anonymous_id'
+          name:
+            type: string
+            description: The name of the event. In general, this should be the URL of the page a person visited, making it easy to segment your audience or trigger campaigns using this event. Make sure you trim leading and trailing spaces from this field.
+          id:
+            $ref: '#/components/schemas/dedupe_id'
+          type:
+            type: string
+            description: Indicates that the event represents a page view. See ["page view" events](/integrations/data-in/connections/javascript/legacy-js/events/#page-view-events), for more information.
+            enum:
+            - page
+          timestamp:
+            type: integer
+            format: unix timestamp
+            description: 'The unix timestamp when the event took place. If you don''t provide this value, we use the date-time when we receive the event.
+
+              '
+          data:
+            type: object
+            description: Additional information that you might want to reference in a message using liquid or use to set attributes on your customer (referenced by `customer_id`).
+            additionalProperties:
+              x-additionalPropertiesName: liquid merge data
+              description: Insert key-values that you want to reference in messages or convert to attributes if/when you associate this event with a person.
+        example:
+          name: https://mysite.com/page
+          type: page
+          anonymous_id: abc123
+          data:
+            first_name: Person
+      - title: Mobile screen view
+        type: object
+        required:
+        - name
+        - type
+        properties:
+          anonymous_id:
+            $ref: '#/components/schemas/anonymous_id'
+          name:
+            type: string
+            description: The screen or deep link path the person viewed, so you can segment your audience or trigger campaigns from this event. Trim any leading and trailing spaces.
+          id:
+            $ref: '#/components/schemas/dedupe_id'
+          type:
+            type: string
+            description: Indicates that the event represents a mobile screen view. You can also capture screen events directly with [our iOS SDK](/integrations/sdk/ios/track-events/#screen-view-events).
+            enum:
+            - screen
+          timestamp:
+            type: integer
+            format: unix timestamp
+            description: 'The unix timestamp when the event took place. If you don''t provide this value, we use the date-time when we receive the event.
+
+              '
+          data:
+            type: object
+            description: Additional information that you might want to reference in a message using liquid or use to set attributes on your customer (referenced by `customer_id`).
+            additionalProperties:
+              x-additionalPropertiesName: liquid merge data
+              description: Insert key-values that you want to reference in messages or convert to attributes if/when you associate this event with a person.
+        example:
+          name: homepage
+          type: screen
+          anonymous_id: abc123
+    anonymous_id:
+      x-scalar-ignore: true
+      type: string
+      description: An identifier for an anonymous event, like a cookie. If set as an attribute on a person, any events bearing the same anonymous value are associated with this person. This value must be unique and is not reusable.
+    reply_to_settable:
+      x-scalar-ignore: true
+      type: string
+      description: The address that receives replies for the message, if applicable.
+      example: replyto@example.com
+    dedupe_id:
+      x-scalar-ignore: true
+      type: string
+      format: ulid
+      description: A [ULID](https://github.com/ulid/spec) we use to deduplicate events. If an event repeats a value we've already received, we ignore the duplicate. Our Python and Ruby libraries don't pass this ID.
+    track-metrics:
+      x-scalar-ignore: true
+      description: The base properties shared across multiple metric types.
+      type: object
+      required:
+      - delivery_id
+      properties:
+        delivery_id:
+          type: string
+          description: The CIO-Delivery-ID from the notification that you want to associate the `event` with.
+          example: RPILAgUBcRhIBqSfeiIwdIYJKxTY
+        timestamp:
+          type: integer
+          format: unix timestamp
+          description: The unix timestamp when the event occurred.
+          example: 1613063089
+    recipient:
+      x-scalar-ignore: true
+      description: The recipient address for an action.
+      type: string
+      example: '{{customer.email}}'
+    from_address:
+      x-scalar-ignore: true
+      type: string
+      format: email
+      description: The address you want to trigger messages from, overriding the `from` field in emails triggered by the event.
   parameters:
     trackEvent_customer_id:
       name: identifier
@@ -678,6 +657,27 @@ components:
 
             '
           example: cio_03000001
+  responses:
+    '401':
+      description: Unauthorized request. Make sure that you provided the right credentials.
+    '400':
+      description: Invalid or malformed request.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              meta:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    description: An array of errors.
+                    items:
+                      type: string
+                      description: Error descriptions.
+    '200':
+      description: A successful request returns an empty object response.
   securitySchemes:
     Tracking-API-Key:
       type: http

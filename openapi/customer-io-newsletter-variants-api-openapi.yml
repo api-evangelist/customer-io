@@ -2627,6 +2627,46 @@ paths:
         source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/newsletters/%7Bnewsletter_id%7D/test_group/%7Btest_group_id%7D/language/%7Blanguage%7D\"\n\n\treq, _ := http.NewRequest(\"DELETE\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
 components:
   schemas:
+    updatePushContent:
+      title: Push
+      description: Update the contents of a push notification newsletter variant.
+      allOf:
+      - type: object
+        properties:
+          type:
+            x-scalar-ignore: true
+            description: Channel type for a newsletter or newsletter content variant.
+            type: string
+            enum:
+            - email
+            - webhook
+            - twilio
+            - push
+            - in_app
+            - inbox
+            readOnly: true
+            example: email
+          deduplicate_id:
+            x-scalar-ignore: true
+            type: string
+            readOnly: true
+            description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+            example: 15:1492548073
+      - type: object
+        properties:
+          type:
+            type: string
+            enum:
+            - push
+            readOnly: true
+          subject:
+            type: string
+            description: The title of the push notification.
+            example: 24-hour flash sale!
+          body:
+            type: string
+            description: The body of the push notification.
+            example: Get 30% off everything. Tap to shop now.
     updateSmsContent:
       title: SMS
       description: Update the contents of an SMS newsletter variant.
@@ -2663,6 +2703,58 @@ components:
             type: string
             description: The body of the SMS message.
             example: Hi {{ customer.first_name }}, check out our latest deals!
+    updateWebhookContent:
+      title: Webhook
+      description: Update the contents of a webhook newsletter variant.
+      allOf:
+      - type: object
+        properties:
+          type:
+            x-scalar-ignore: true
+            description: Channel type for a newsletter or newsletter content variant.
+            type: string
+            enum:
+            - email
+            - webhook
+            - twilio
+            - push
+            - in_app
+            - inbox
+            readOnly: true
+            example: email
+          deduplicate_id:
+            x-scalar-ignore: true
+            type: string
+            readOnly: true
+            description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
+            example: 15:1492548073
+      - type: object
+        properties:
+          type:
+            type: string
+            enum:
+            - webhook
+            readOnly: true
+          body:
+            type: string
+            description: The body content of the webhook request.
+            example: '{"channel":"#marketing","text":"Newsletter sent to {{ customer.email }}"}'
+          headers:
+            x-scalar-ignore: true
+            description: Headers you want to add or update. Names and values must be strings, with no non-ASCII characters or spaces. You can't overwrite reserved headers.
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the header.
+                value:
+                  type: string
+                  description: The value of the header.
+              example:
+              - name: X-Mailgun-Tag
+                value: my-cool-tag
     updateInboxContent:
       title: Inbox message
       description: Update the contents of an inbox message newsletter variant.
@@ -2709,46 +2801,6 @@ components:
 
               '
             example: '{"topics": ["general", "updates"], "type": "notification", "expiration": {"type": "relative", "value": "30", "unit": "days"}, "properties": {"title": "Welcome!", "message": "Thanks for signing up", "link": "https://customer.io"}}'
-    updatePushContent:
-      title: Push
-      description: Update the contents of a push notification newsletter variant.
-      allOf:
-      - type: object
-        properties:
-          type:
-            x-scalar-ignore: true
-            description: Channel type for a newsletter or newsletter content variant.
-            type: string
-            enum:
-            - email
-            - webhook
-            - twilio
-            - push
-            - in_app
-            - inbox
-            readOnly: true
-            example: email
-          deduplicate_id:
-            x-scalar-ignore: true
-            type: string
-            readOnly: true
-            description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
-            example: 15:1492548073
-      - type: object
-        properties:
-          type:
-            type: string
-            enum:
-            - push
-            readOnly: true
-          subject:
-            type: string
-            description: The title of the push notification.
-            example: 24-hour flash sale!
-          body:
-            type: string
-            description: The body of the push notification.
-            example: Get 30% off everything. Tap to shop now.
     updateEmailContent:
       title: Email
       description: 'Update the contents of an email newsletter variant. You can set the sender with `from_id`. If you don''t provide it, the existing sender is preserved.
@@ -2820,58 +2872,6 @@ components:
           recipient:
             type: string
             description: The recipient address for the newsletter. By default, it's `{{customer.email}}`.
-    updateWebhookContent:
-      title: Webhook
-      description: Update the contents of a webhook newsletter variant.
-      allOf:
-      - type: object
-        properties:
-          type:
-            x-scalar-ignore: true
-            description: Channel type for a newsletter or newsletter content variant.
-            type: string
-            enum:
-            - email
-            - webhook
-            - twilio
-            - push
-            - in_app
-            - inbox
-            readOnly: true
-            example: email
-          deduplicate_id:
-            x-scalar-ignore: true
-            type: string
-            readOnly: true
-            description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
-            example: 15:1492548073
-      - type: object
-        properties:
-          type:
-            type: string
-            enum:
-            - webhook
-            readOnly: true
-          body:
-            type: string
-            description: The body content of the webhook request.
-            example: '{"channel":"#marketing","text":"Newsletter sent to {{ customer.email }}"}'
-          headers:
-            x-scalar-ignore: true
-            description: Headers you want to add or update. Names and values must be strings, with no non-ASCII characters or spaces. You can't overwrite reserved headers.
-            type: array
-            items:
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: The name of the header.
-                value:
-                  type: string
-                  description: The value of the header.
-              example:
-              - name: X-Mailgun-Tag
-                value: my-cool-tag
   securitySchemes:
     Bearer-Auth:
       type: http

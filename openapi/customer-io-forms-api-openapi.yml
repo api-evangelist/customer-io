@@ -135,13 +135,6 @@ paths:
         source: "{\n  \"data\": {\n    \"email\": \"cool.person@example.com\",\n    \"first_name\": \"cool\",\n    \"last_name\": \"person\",\n    \"fav_food\": \"pizza\"\n  }\n}"
 components:
   schemas:
-    email_address:
-      x-scalar-ignore: true
-      type:
-      - string
-      - 'null'
-      description: The email address of the customer.
-      example: test@example.com
     customer_id:
       x-scalar-ignore: true
       type:
@@ -149,6 +142,13 @@ components:
       - 'null'
       description: The ID of a customer profile, analogous to a "person" in the UI. If your workspace supports multiple identifiers (email and ID), this value can be null.
       example: '42'
+    email_address:
+      x-scalar-ignore: true
+      type:
+      - string
+      - 'null'
+      description: The email address of the customer.
+      example: test@example.com
   securitySchemes:
     Tracking-API-Key:
       type: http

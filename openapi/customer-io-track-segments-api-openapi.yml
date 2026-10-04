@@ -132,27 +132,6 @@ paths:
         label: JSON
         source: "{\n  \"ids\": [\n    \"customer_id1\",\n    \"customer_id2\"\n  ]\n}"
 components:
-  responses:
-    '401':
-      description: Unauthorized request. Make sure that you provided the right credentials.
-    '400':
-      description: Invalid or malformed request.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              meta:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    description: An array of errors.
-                    items:
-                      type: string
-                      description: Error descriptions.
-    '200':
-      description: A successful request returns an empty object response.
   parameters:
     id_type_segment:
       name: id_type
@@ -174,6 +153,27 @@ components:
       schema:
         type: integer
         format: int32
+  responses:
+    '401':
+      description: Unauthorized request. Make sure that you provided the right credentials.
+    '400':
+      description: Invalid or malformed request.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              meta:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    description: An array of errors.
+                    items:
+                      type: string
+                      description: Error descriptions.
+    '200':
+      description: A successful request returns an empty object response.
   securitySchemes:
     Tracking-API-Key:
       type: http

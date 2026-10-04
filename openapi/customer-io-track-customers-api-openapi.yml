@@ -621,48 +621,17 @@ paths:
         label: JSON
         source: "{\n  \"primary\": {\n    \"email\": \"cool.person@company.com\"\n  },\n  \"secondary\": {\n    \"email\": \"cperson@gmail.com\"\n  }\n}"
 components:
-  responses:
-    '401':
-      description: Unauthorized request. Make sure that you provided the right credentials.
-    '400':
-      description: Invalid or malformed request.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              meta:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    description: An array of errors.
-                    items:
-                      type: string
-                      description: Error descriptions.
-    '200':
-      description: A successful request returns an empty object response.
   schemas:
-    object_type_id:
-      x-scalar-ignore: true
-      type: string
-      description: The object type an object belongs to—like "Companies" or "Accounts". Object type IDs are string-formatted integers that begin at `1` and increment for each new type.
-      example: '1'
-    relationship_attributes:
-      x-scalar-ignore: true
-      type: object
-      description: 'The attributes associated with a relationship. Passing null or an empty string removes the attribute from the relationship.
-
-        '
-      additionalProperties:
-        x-additionalPropertiesName: Relationship Attributes
-      example:
-        role: admin
     cio_id:
       x-scalar-ignore: true
       type: string
       description: A unique identifier set by Customer.io, used to reference a person if you want to update their identifiers.
       example: a3000001
+    not_nullable_email_address:
+      x-scalar-ignore: true
+      type: string
+      description: The email address of the customer.
+      example: test@example.com
     device_object:
       x-scalar-ignore: true
       description: Device properties collected by [Customer.io SDKs](/integrations/sdk/) unless `autoTrackDeviceAttributes` is disabled. You can use these properties in segments and Liquid.
@@ -675,72 +644,11 @@ components:
             description: The device token.
             type: string
       - $ref: '#/components/schemas/device_object_common'
-    not_nullable_email_address:
+    object_type_id:
       x-scalar-ignore: true
       type: string
-      description: The email address of the customer.
-      example: test@example.com
-    v1_cio_relationships:
-      x-scalar-ignore: true
-      type: object
-      description: Describes relationships to an entity—a non-person object in Customer.io, like a company, educational course, job board, etc.
-      properties:
-        action:
-          type: string
-          description: This determines whether the `relationships` array adds relationships to a person or removes them from a person.
-          enum:
-          - add_relationships
-          - delete_relationships
-        relationships:
-          $ref: '#/components/schemas/object_relationships'
-    object_identifiers:
-      x-scalar-ignore: true
-      type: object
-      properties:
-        identifiers:
-          description: The identifiers for a particular object. You can use either the `object_type_id` and `object_id` (where `object_type_id` represents the type of object and the `object_id` is the individual identifier for the object) or the `cio_object_id`.
-          oneOf:
-          - title: Object ID
-            type: object
-            required:
-            - object_type_id
-            - object_id
-            properties:
-              object_type_id:
-                $ref: '#/components/schemas/object_type_id'
-              object_id:
-                type: string
-                description: The unique identifier for an object. If you use an `object_id` that already exists, we'll update the object accordingly.
-                example: acme
-          - title: CIO Object ID
-            type: object
-            required:
-            - cio_object_id
-            properties:
-              cio_object_id:
-                type: string
-                description: A unique value that Customer.io sets for an object when you create it. This ID is immutable.
-                example: obb7fd050101
-    anonymous_id:
-      x-scalar-ignore: true
-      type: string
-      description: An identifier for an anonymous event, like a cookie. If set as an attribute on a person, any events bearing the same anonymous value are associated with this person. This value must be unique and is not reusable.
-    object_relationships:
-      x-scalar-ignore: true
-      type: array
-      description: Each object in the array represents a relationship you want to add to, or remove from, a person.
-      items:
-        allOf:
-        - $ref: '#/components/schemas/object_identifiers'
-        - type: object
-          properties:
-            relationship_attributes:
-              $ref: '#/components/schemas/relationship_attributes'
-    not_nullable_customer_id:
-      x-scalar-ignore: true
-      type: string
-      description: The ID of a customer profile, analogous to a "person" in the UI.
-      example: '42'
+      description: The object type an object belongs to—like "Companies" or "Accounts". Object type IDs are string-formatted integers that begin at `1` and increment for each new type.
+      example: '1'
     device_object_common:
       x-scalar-ignore: true
       type: object
@@ -796,7 +704,85 @@ components:
             x-additionalPropertiesName: Custom Device Attributes
             description: Custom properties that you want to associate with the device.
             type: string
+    anonymous_id:
+      x-scalar-ignore: true
+      type: string
+      description: An identifier for an anonymous event, like a cookie. If set as an attribute on a person, any events bearing the same anonymous value are associated with this person. This value must be unique and is not reusable.
+    relationship_attributes:
+      x-scalar-ignore: true
+      type: object
+      description: 'The attributes associated with a relationship. Passing null or an empty string removes the attribute from the relationship.
+
+        '
+      additionalProperties:
+        x-additionalPropertiesName: Relationship Attributes
+      example:
+        role: admin
+    not_nullable_customer_id:
+      x-scalar-ignore: true
+      type: string
+      description: The ID of a customer profile, analogous to a "person" in the UI.
+      example: '42'
+    v1_cio_relationships:
+      x-scalar-ignore: true
+      type: object
+      description: Describes relationships to an entity—a non-person object in Customer.io, like a company, educational course, job board, etc.
+      properties:
+        action:
+          type: string
+          description: This determines whether the `relationships` array adds relationships to a person or removes them from a person.
+          enum:
+          - add_relationships
+          - delete_relationships
+        relationships:
+          $ref: '#/components/schemas/object_relationships'
+    object_relationships:
+      x-scalar-ignore: true
+      type: array
+      description: Each object in the array represents a relationship you want to add to, or remove from, a person.
+      items:
+        allOf:
+        - $ref: '#/components/schemas/object_identifiers'
+        - type: object
+          properties:
+            relationship_attributes:
+              $ref: '#/components/schemas/relationship_attributes'
+    object_identifiers:
+      x-scalar-ignore: true
+      type: object
+      properties:
+        identifiers:
+          description: The identifiers for a particular object. You can use either the `object_type_id` and `object_id` (where `object_type_id` represents the type of object and the `object_id` is the individual identifier for the object) or the `cio_object_id`.
+          oneOf:
+          - title: Object ID
+            type: object
+            required:
+            - object_type_id
+            - object_id
+            properties:
+              object_type_id:
+                $ref: '#/components/schemas/object_type_id'
+              object_id:
+                type: string
+                description: The unique identifier for an object. If you use an `object_id` that already exists, we'll update the object accordingly.
+                example: acme
+          - title: CIO Object ID
+            type: object
+            required:
+            - cio_object_id
+            properties:
+              cio_object_id:
+                type: string
+                description: A unique value that Customer.io sets for an object when you create it. This ID is immutable.
+                example: obb7fd050101
   parameters:
+    delivery_id:
+      name: delivery_id
+      description: The delivery resulting in a request to unsubscribe.
+      in: path
+      required: true
+      schema:
+        type: string
     device_id:
       name: device_id
       in: path
@@ -834,13 +820,27 @@ components:
 
             '
           example: cio_03000001
-    delivery_id:
-      name: delivery_id
-      description: The delivery resulting in a request to unsubscribe.
-      in: path
-      required: true
-      schema:
-        type: string
+  responses:
+    '401':
+      description: Unauthorized request. Make sure that you provided the right credentials.
+    '400':
+      description: Invalid or malformed request.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              meta:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    description: An array of errors.
+                    items:
+                      type: string
+                      description: Error descriptions.
+    '200':
+      description: A successful request returns an empty object response.
   securitySchemes:
     Tracking-API-Key:
       type: http
