@@ -1,0 +1,12 @@
+{
+ "url": "https://docs.customer.io/files/pipelines.json",
+ "requested_url": "https://docs.customer.io/files/pipelines.json",
+ "status": 200,
+ "content_type": "application/json",
+ "bytes": 1540966,
+ "sha256": "9195a7b1d76721c4b7dfe561395b4d66cafb13c7a7a8742fb40c350915f67681",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "equivalent",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the provider's current document describes the same operations (Jaccard 1.0), but the bytes differ, so the archive is an earlier or reformatted copy."
+}
