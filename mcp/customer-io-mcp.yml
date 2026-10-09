@@ -127,3 +127,24 @@ crosswalk: mcp/customer-io-tool-crosswalk.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
+rfc9728:
+  endpoint: https://mcp.customer.io/mcp
+  metadata_url: https://mcp.customer.io/.well-known/oauth-protected-resource
+  discovered_via: WWW-Authenticate resource_metadata on an anonymous POST initialize
+  fetched: '2026-09-25'
+  http_status: 200
+  content_type: application/json
+  document:
+    resource: https://mcp.customer.io/mcp
+    authorization_servers:
+    - https://mcp.customer.io
+    scopes_supported:
+    - configure
+    - read
+    - read:sensitive
+    - write
+    - write:live
+    bearer_methods_supported:
+    - header
+    resource_name: Customer.io MCP
+    resource_documentation: https://docs.customer.io/ai/mcp-server

@@ -1,4 +1,4 @@
-generated: '2026-09-16'
+generated: '2026-09-23'
 method: generated
 source: openapi/customer-io-activities-api-openapi.yml, openapi/customer-io-alias-api-openapi.yml,
   openapi/customer-io-assets-api-openapi.yml, openapi/customer-io-batch-api-openapi.yml, openapi/customer-io-broadcasts-api-openapi.yml,
@@ -25,11 +25,11 @@ description: Recommended x-agentic-access execution contracts, classified heuris
 summary:
   operations: 191
   by_action_class:
-    connected: 99
-    acting: 92
+    connected: 102
+    acting: 89
   by_consequence:
-    read: 99
-    write: 81
+    read: 102
+    write: 78
     physical: 11
   human_in_the_loop_required: 0
 operations:
@@ -623,18 +623,12 @@ operations:
   method: post
   operationId: getPeopleFilter
   x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
+    action-class: connected
+    consequence: read
+    subject: optional
     token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
+      max-ttl: 3600
+    audit: none
 - path: /v1/customers/{customer_id}/attributes
   method: get
   operationId: getPersonAttributes
@@ -659,18 +653,12 @@ operations:
   method: post
   operationId: getPeopleById
   x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
+    action-class: connected
+    consequence: read
+    subject: optional
     token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
+      max-ttl: 3600
+    audit: none
 - path: /v1/customers/{customer_id}/segments
   method: get
   operationId: getPersonSegments
@@ -1609,18 +1597,12 @@ operations:
   method: post
   operationId: getObjectsFilter
   x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
+    action-class: connected
+    consequence: read
+    subject: optional
     token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
+      max-ttl: 3600
+    audit: none
 - path: /v1/objects/{object_type_id}/{object_id}/relationships
   method: get
   operationId: getObjectRelationships
