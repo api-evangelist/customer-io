@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/customer-io/main/json-schema/customer-io-delivery-operations-schema.json",
+  "title": "Delivery: Event",
+  "description": "The \"delivery\" type lets you attribute metrics to messages that don't self-report back to Customer.io, like push and in-app notifications.",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/customer-io-track-v2-api-openapi.yml#/components/schemas/delivery_operations",
+  "type": "object",
+  "required": [
+    "type",
+    "action",
+    "identifiers",
+    "name",
+    "attributes"
+  ],
+  "properties": {
+    "type": {
+      "type": "string",
+      "description": "The \"delivery\" type lets you attribute metrics to messages that don't self-report back to Customer.io, like push and in-app notifications.",
+      "enum": [
+        "delivery"
+      ]
+    },
+    "action": {
+      "type": "string",
+      "description": "An `event` action indicates a delivery event. Use the `name` to determine the specific metric that you want to attribute to this delivery.",
+      "enum": [
+        "event"
+      ]
+    },
+    "identifiers": {
+      "type": "object",
+      "description": "Contains identifiers for the delivery itself.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The `delivery_id` for the delivery that you want to attribute metrics to."
+        }
+      }
+    },
+    "name": {
+      "type": "string",
+      "description": "The name of the metric you want to attribute to this \"delivery\".",
+      "enum": [
+        "opened",
+        "converted",
+        "delivered"
+      ]
+    },
+    "attributes": {
+      "type": "object",
+      "required": [
+        "device_token"
+      ],
+      "description": "Contains information about the delivery and the individual who received the message.",
+      "properties": {
+        "device_token": {
+          "type": "string",
+          "description": "The device that received the message."
+        }
+      }
+    }
+  }
+}

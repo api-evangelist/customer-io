@@ -1,20 +1,11 @@
 generated: '2026-08-13'
 method: searched
-source: >-
-  https://docs.customer.io/ai/cli/get-started.md and
-  https://docs.customer.io/ai/cli/reference.md
+source: https://docs.customer.io/ai/cli/get-started.md and https://docs.customer.io/ai/cli/reference.md
 provider: Customer.io
 providerId: customer-io
 name: Customer.io CLI
 binary: cio
-description: >-
-  An LLM-first command-line client for the Journeys App API and the CDP Data
-  Pipelines API. Customer.io designed it for coding agents rather than humans:
-  every command emits structured JSON, every endpoint is self-describing through
-  `cio schema`, and the tool ships an installable Agent Skill (`cio skills
-  install`) that teaches an assistant how to drive it. Customer.io's own docs
-  recommend the CLI over the MCP server for terminal-based agents, because it
-  reaches the full API surface without any MCP setup.
+description: 'An LLM-first command-line client for the Journeys App API and the CDP Data Pipelines API. Customer.io designed it for coding agents rather than humans: every command emits structured JSON, every endpoint is self-describing through `cio schema`, and the tool ships an installable Agent Skill (`cio skills install`) that teaches an assistant how to drive it. Customer.io''s own docs recommend the CLI over the MCP server for terminal-based agents, because it reaches the full API surface without any MCP setup.'
 repository: https://github.com/customerio/cli
 package: '@customerio/cli'
 version: 0.0.20
@@ -26,16 +17,12 @@ install:
   command: go install github.com/customerio/cli@latest
 - method: skills
   command: cio skills install
-  note: >-
-    Writes a bootstrap Agent Skill globally or into the current project; the
-    remaining skills are served on demand so they stay current with Customer.io.
+  note: Writes a bootstrap Agent Skill globally or into the current project; the remaining skills are served on demand so they stay current with Customer.io.
 authentication:
   credential: service account token
   prefix: sa_live_
   create_at: https://fly.customer.io/settings/api_credentials?keyType=service_accounts
-  exchange: >-
-    The CLI trades the sa_live_ token for a short-lived JWT and refreshes it
-    automatically.
+  exchange: The CLI trades the sa_live_ token for a short-lived JWT and refreshes it automatically.
   resolution_order:
   - --token flag
   - CIO_TOKEN environment variable
@@ -46,13 +33,9 @@ authentication:
   - cio auth status
   token_types:
   - name: User service account
-    note: >-
-      Tied to a person; inherits that person's role. May be marked read-only at
-      creation, permanently restricting it to GET.
+    note: Tied to a person; inherits that person's role. May be marked read-only at creation, permanently restricting it to GET.
   - name: System service account
-    note: >-
-      Not tied to a person; assigned a role that applies across every workspace
-      in the account.
+    note: Not tied to a person; assigned a role that applies across every workspace in the account.
 command_groups:
 - group: auth
   commands:
@@ -65,45 +48,32 @@ command_groups:
   - cio skills install
   - cio skills list
   - cio skills read <skill_name>
-  purpose: >-
-    Install and read Customer.io-maintained agent skills — the multi-step
-    workflow instructions an assistant follows before calling the API.
+  purpose: Install and read Customer.io-maintained agent skills — the multi-step workflow instructions an assistant follows before calling the API.
 - group: schema
   commands:
   - cio schema
   - cio schema <resource>
   - cio schema <resource>.<endpoint>
-  purpose: >-
-    Discover the API without leaving the terminal. `cio schema` lists resources,
-    `cio schema campaigns` lists that resource's endpoints, and `cio schema
-    campaigns.list` returns the full endpoint definition.
+  purpose: Discover the API without leaving the terminal. `cio schema` lists resources, `cio schema campaigns` lists that resource's endpoints, and `cio schema campaigns.list` returns the full endpoint definition.
 - group: api
   commands:
   - cio api <path> --params '{...}'
   - cio api <path> --json '{...}'
   - cio api <path> -X DELETE
-  purpose: >-
-    Call any endpoint. Defaults to GET; passing --json infers POST. Path
-    placeholders are filled from --params.
+  purpose: Call any endpoint. Defaults to GET; passing --json infers POST. Path placeholders are filled from --params.
 key_flows:
 - name: Agent onboarding
   steps:
   - npm install -g @customerio/cli
   - cio skills install
   - open the coding assistant in the project and prompt it in natural language
-  note: >-
-    Customer.io ships sub-skills for full account onboarding and SDK
-    integration, so the same entry point covers signup, domain setup, sending a
-    first email, and wiring an SDK into application code.
+  note: Customer.io ships sub-skills for full account onboarding and SDK integration, so the same entry point covers signup, domain setup, sending a first email, and wiring an SDK into application code.
 - name: Safe write
   steps:
   - cio schema <resource>.<endpoint>
   - cio api ... --json '{...}' --dry-run
   - cio api ... --json '{...}'
-  note: >-
-    --dry-run resolves and validates the URL, method and body locally without
-    executing, which is how an agent catches a missing path parameter before it
-    becomes a 4xx.
+  note: --dry-run resolves and validates the URL, method and body locally without executing, which is how an agent catches a missing path parameter before it becomes a 4xx.
 flags:
 - flag: --token
   env: CIO_TOKEN
@@ -140,10 +110,24 @@ exit_codes:
   meaning: Authorization error
 - code: 5
   meaning: API error (4xx/5xx)
-docs:
-  get_started: https://docs.customer.io/ai/cli/get-started/
-  reference: https://docs.customer.io/ai/cli/reference/
-  service_accounts: https://docs.customer.io/ai/cli/service-accounts/
+docs: https://docs.customer.io/ai/cli/reference/
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
+docs_pages:
+  get_started: https://docs.customer.io/ai/cli/get-started/
+  reference: https://docs.customer.io/ai/cli/reference/
+  service_accounts: https://docs.customer.io/ai/cli/service-accounts/
+commands:
+- cio auth login
+- cio auth login --with-token
+- cio auth status
+- cio skills install
+- cio skills list
+- cio skills read <skill_name>
+- cio schema
+- cio schema <resource>
+- cio schema <resource>.<endpoint>
+- cio api <path> --params '{...}'
+- cio api <path> --json '{...}'
+- cio api <path> -X DELETE

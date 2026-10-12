@@ -1,0 +1,68 @@
+arazzo: 1.0.1
+info:
+  title: 'Customer.io Calendly: create Customer.io events for Calendly meetings'
+  summary: Lists invitees of a Calendly scheduled event and records a meeting event
+    on each invitee in Customer.
+  description: Lists invitees of a Calendly scheduled event and records a meeting
+    event on each invitee in Customer.io. Mirrors the Zapier template "Create Customer.io
+    events for new Calendly meetings".
+  version: 1.0.0
+sourceDescriptions:
+- name: calendlyInvitees
+  url: https://raw.githubusercontent.com/api-evangelist/calendly/refs/heads/main/openapi/calendly-invitees-api-openapi.yml
+  type: openapi
+- name: customerIoTrackEvents
+  url: https://raw.githubusercontent.com/api-evangelist/customer-io/refs/heads/main/openapi/customer-io-track-events-api-openapi.yml
+  type: openapi
+workflows:
+- workflowId: calendly-invitees-to-events
+  summary: 'Customer.io Calendly: create Customer.io events for Calendly meetings'
+  description: Lists invitees of a Calendly scheduled event and records a meeting
+    event on each invitee in Customer.io. Mirrors the Zapier template "Create Customer.io
+    events for new Calendly meetings".
+  inputs:
+    type: object
+    properties:
+      event_uuid:
+        type: string
+  steps:
+  - stepId: list-invitees
+    description: List invitees for the scheduled event.
+    operationId: $sourceDescriptions.calendlyInvitees.listEventInvitees
+    parameters:
+    - name: event_uuid
+      in: path
+      value: $inputs.event_uuid
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      invitees: $response.body#/collection
+      first_email: $response.body#/collection/0/email
+  - stepId: track-event
+    description: Record a calendly_meeting_scheduled event on the invitee.
+    operationId: $sourceDescriptions.customerIoTrackEvents.track
+    parameters:
+    - name: identifier
+      in: path
+      value: $steps.list-invitees.outputs.first_email
+    requestBody:
+      contentType: application/json
+      payload:
+        name: calendly_meeting_scheduled
+        data:
+          event_uuid: $inputs.event_uuid
+    successCriteria:
+    - condition: $statusCode == 200
+  outputs:
+    invitees: $steps.list-invitees.outputs.invitees
+x-integration:
+  partner: calendly
+  edge_evidence: https://zapier.com/apps/customerio/integrations
+  edge_type: marketplace
+  method: generated
+  generated: '2026-10-12'
+  generator: enrichment pipeline local-v5 (provider-integrations-arazzo)
+  guessed_steps:
+  - step: list-invitees
+    cause: partner-contract
+    why: Invitee.email assumed from the Invitee schema name; not verified field-by-field.

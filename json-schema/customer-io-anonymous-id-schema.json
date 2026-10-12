@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/customer-io/main/json-schema/customer-io-anonymous-id-schema.json",
+  "title": "anonymous_id",
+  "description": "An identifier for an anonymous event, like a cookie. If set as an attribute on a person, any events bearing the same anonymous value are associated with this person. This value must be unique and is not reusable.",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/customer-io-track-customers-api-openapi.yml#/components/schemas/anonymous_id",
+  "x-scalar-ignore": true,
+  "type": "string"
+}

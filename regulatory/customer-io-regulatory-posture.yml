@@ -1,0 +1,30 @@
+generated: '2026-10-12'
+method: searched
+source: https://customer.io/legal/sub-processors
+signals:
+  subprocessors:
+    url: https://customer.io/legal/sub-processors
+    evidence:
+    - source: https://customer.io/legal/sub-processors
+      http_status: 200
+      fetched: '2026-10-12'
+      quote: 'Current Revised October 2026 Below is a list of subprocessors we work with and the purpose for why we use their services.'
+    note: Dated table naming each subprocessor with purpose and location (e.g. Amazon Web Services, Cloud Hosting, USA, EU), split into infrastructure and AI-feature subprocessors.
+  data_subject_request:
+    url: https://customer.io/legal/personal-information-rights-request
+    channel: web form
+    evidence:
+    - source: https://customer.io/legal/personal-information-rights-request
+      http_status: 200
+      fetched: '2026-10-12'
+      quote: 'Customer.io respects your privacy rights and will respond to all requests as required by law. We ask that you complete this form so that we have a written record of your request and that we can promptly respond.'
+    note: No response period is stated on the page, so none is recorded.
+checked:
+- url: https://customer.io/legal/subprocessors
+  status: 404
+- url: https://customer.io/accessibility
+  status: 404
+- url: https://customer.io/legal/dpa
+  status: 200
+- url: https://customer.io/legal/privacy-policy
+  status: 200

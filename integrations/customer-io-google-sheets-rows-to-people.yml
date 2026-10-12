@@ -1,0 +1,70 @@
+arazzo: 1.0.1
+info:
+  title: 'Customer.io Google Sheets: create or update people from sheet rows'
+  summary: Reads a range of rows from a Google Sheet and identifies each row as a
+    person in Customer.
+  description: Reads a range of rows from a Google Sheet and identifies each row as
+    a person in Customer.io. Mirrors the Zapier template "Use new rows from Google
+    Sheets to create or update customers in Customer.io".
+  version: 1.0.0
+sourceDescriptions:
+- name: googleSheetsValues
+  url: https://raw.githubusercontent.com/api-evangelist/google-sheets/refs/heads/main/openapi/google-sheets-values-api-openapi.yml
+  type: openapi
+- name: customerIoTrackCustomers
+  url: https://raw.githubusercontent.com/api-evangelist/customer-io/refs/heads/main/openapi/customer-io-track-customers-api-openapi.yml
+  type: openapi
+workflows:
+- workflowId: google-sheets-rows-to-people
+  summary: 'Customer.io Google Sheets: create or update people from sheet rows'
+  description: Reads a range of rows from a Google Sheet and identifies each row as
+    a person in Customer.io. Mirrors the Zapier template "Use new rows from Google
+    Sheets to create or update customers in Customer.io".
+  inputs:
+    type: object
+    properties:
+      spreadsheet_id:
+        type: string
+      range:
+        type: string
+      email:
+        type: string
+        description: Email column value from the row being processed.
+  steps:
+  - stepId: read-rows
+    description: Read the values in the range.
+    operationId: $sourceDescriptions.googleSheetsValues.getValues
+    parameters:
+    - name: spreadsheetId
+      in: path
+      value: $inputs.spreadsheet_id
+    - name: range
+      in: path
+      value: $inputs.range
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      values: $response.body#/values
+  - stepId: identify-person
+    description: Create or update the person in Customer.io (Track API identify).
+    operationId: $sourceDescriptions.customerIoTrackCustomers.identify
+    parameters:
+    - name: identifier
+      in: path
+      value: $inputs.email
+    requestBody:
+      contentType: application/json
+      payload:
+        email: $inputs.email
+    successCriteria:
+    - condition: $statusCode == 200
+  outputs:
+    values: $steps.read-rows.outputs.values
+x-integration:
+  partner: google-sheets
+  edge_evidence: https://zapier.com/apps/customerio/integrations
+  edge_type: marketplace
+  method: generated
+  generated: '2026-10-12'
+  generator: enrichment pipeline local-v5 (provider-integrations-arazzo)
+  guessed_steps: []

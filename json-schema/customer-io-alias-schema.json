@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/customer-io/main/json-schema/customer-io-alias-schema.json",
+  "title": "alias",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/customer-io-alias-api-openapi.yml#/components/schemas/alias",
+  "x-scalar-ignore": true,
+  "type": "object",
+  "required": [
+    "previousId",
+    "userId"
+  ],
+  "properties": {
+    "type": {
+      "type": "string",
+      "readOnly": true,
+      "enum": [
+        "alias"
+      ],
+      "description": "The event type. This is set automatically by the request method/endpoint."
+    },
+    "previousId": {
+      "type": "string",
+      "description": "The anonymousId or userId value that you want to merge into the canonical profile."
+    },
+    "userId": {
+      "type": "string",
+      "description": "The userId that you want to keep. This is required if you haven't already identified someone with one of our web or server-side libraries.\n"
+    }
+  }
+}

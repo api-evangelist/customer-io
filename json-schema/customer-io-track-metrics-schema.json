@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/customer-io/main/json-schema/customer-io-track-metrics-schema.json",
+  "title": "track-metrics",
+  "description": "The base properties shared across multiple metric types.",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/customer-io-track-events-api-openapi.yml#/components/schemas/track-metrics",
+  "x-scalar-ignore": true,
+  "type": "object",
+  "required": [
+    "delivery_id"
+  ],
+  "properties": {
+    "delivery_id": {
+      "type": "string",
+      "description": "The CIO-Delivery-ID from the notification that you want to associate the `event` with."
+    },
+    "timestamp": {
+      "type": "integer",
+      "format": "unix timestamp",
+      "description": "The unix timestamp when the event occurred."
+    }
+  }
+}

@@ -1,11 +1,10 @@
+name: Customer.io API Plans
 specification: API Commons Plans
 specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
-generated: '2026-08-13'
+generated: '2026-10-12'
 method: searched
-source: >-
-  https://customer.io/pricing and
-  https://docs.customer.io/accounts/billing/builder-plan.md
+source: https://customer.io/pricing
 plan_count: 4
 provider: Customer.io
 providerId: customer-io
@@ -19,102 +18,16 @@ tags:
 - CDP
 - Transactional
 - Plans
-description: >-
-  Customer.io uses platform subscription tiers (Essentials and Premium) priced
-  primarily on the number of profiles (people plus objects) in the workspace,
-  with bundled email volume and overage rates for additional profiles, emails,
-  and AI credits. The same API surface (Track, App / Transactional, Pipelines)
-  is available across paid plans; pricing is on the platform, not metered
-  per-API-call. An Enterprise tier with custom pricing covers dedicated
-  infrastructure and support.
-notes: >-
-  Prices captured from the public customer.io/pricing page and are subject to
-  change; verify the live pricing page and per-region terms during
-  reconciliation. Profile counts, bundled volumes, and overage rates can change.
+description: Customer.io uses platform subscription tiers (Essentials and Premium) priced primarily on the number of profiles (people plus objects) in the workspace, with bundled email volume and overage rates for additional profiles, emails, and AI credits. The same API surface (Track, App / Transactional, Pipelines) is available across paid plans; pricing is on the platform, not metered per-API-call. An Enterprise tier with custom pricing covers dedicated infrastructure and support.
+notes: Prices captured from the public customer.io/pricing page and are subject to change; verify the live pricing page and per-region terms during reconciliation. Profile counts, bundled volumes, and overage rates can change.
 sources:
 - https://customer.io/pricing
 - https://docs.customer.io
 plans:
-- id: customerio-builder
-  name: Builder
-  type: pay-as-you-go
-  currency: USD
-  source: https://docs.customer.io/accounts/billing/builder-plan/
-  description: >-
-    Pay-as-you-go messaging infrastructure with no monthly fee and no trial
-    period. Free to set up and test; you add funds starting at $10 when you are
-    ready to send to real customers. Customer.io positions it explicitly for
-    early-stage developers, mobile developers testing push, and AI-native
-    builders driving the platform through the CLI or MCP server rather than a
-    GUI. Transactional messages and one-time broadcasts only — behavioural
-    automations require Essentials.
-  entries:
-  - label: Base Subscription
-    name: base_subscription
-    type: flat
-    metric: subscription
-    limit: 0
-    timeFrame: month
-    geo: global
-    unit: 1
-    price: $0/month — no subscription
-    userMultiplied: false
-  - label: Minimum Funding
-    name: minimum_funding
-    type: prepaid
-    metric: credit
-    limit: 1
-    timeFrame: once
-    geo: global
-    unit: 1
-    price: $10 minimum to go live
-    userMultiplied: false
-  - label: Messages
-    name: messages
-    type: usage
-    metric: messages
-    limit: -1
-    timeFrame: month
-    geo: global
-    unit: 1000
-    price: $0.40 per 1,000 messages
-    userMultiplied: false
-  - label: Verified Recipients Before Funding
-    name: verified_recipients
-    type: included
-    metric: recipients
-    limit: 10
-    timeFrame: month
-    geo: global
-    unit: 1
-    price: free
-    userMultiplied: false
-  - label: Sending Domains
-    name: sending_domains
-    type: included
-    metric: domains
-    limit: 2
-    timeFrame: month
-    geo: global
-    unit: 1
-    price: included
-    userMultiplied: false
-  elements:
-  - name: App / Transactional API
-  - name: Track API
-  - name: Pipelines / CDP API
-  - name: Customer.io CLI
-  - name: Customer.io MCP
-  - name: One-time broadcasts
-  - name: API-triggered broadcasts
 - id: customerio-essentials
   name: Essentials
   type: subscription
-  description: >-
-    Entry platform tier starting at $100/month, bundling a base profile
-    allotment and email volume with the visual workflow builder, core AI Agent
-    skills, and basic data integrations. Additional usage is billed at overage
-    rates.
+  description: Entry platform tier starting at $100/month, bundling a base profile allotment and email volume with the visual workflow builder, core AI Agent skills, and basic data integrations. Additional usage is billed at overage rates.
   entries:
   - label: Base Subscription
     name: base_subscription
@@ -183,14 +96,12 @@ plans:
   - name: Visual Workflow Builder
   - name: AI Agent (core skills)
   - name: Basic Data Integrations
+  price_text: starts at $ 100 per month
+  price: 100
 - id: customerio-premium
   name: Premium
   type: subscription
-  description: >-
-    Higher tier starting at $1,000/month (billed yearly) with everything in
-    Essentials plus more object types, elevated AI Agent limits with custom
-    skills, Daily Routines, premium support with onboarding, HIPAA compliance,
-    and premium data integrations. Profile and email volume are custom.
+  description: Higher tier starting at $1,000/month (billed yearly) with everything in Essentials plus more object types, elevated AI Agent limits with custom skills, Daily Routines, premium support with onboarding, HIPAA compliance, and premium data integrations. Profile and email volume are custom.
   entries:
   - label: Base Subscription
     name: base_subscription
@@ -230,13 +141,12 @@ plans:
   - name: HIPAA Compliance
   - name: Premium Data Integrations
   - name: Premium Support
+  price_text: starts at $ 1,000 per month
+  price: 1000
 - id: customerio-enterprise
   name: Enterprise
   type: enterprise
-  description: >-
-    Custom pricing for organizations requiring dedicated infrastructure,
-    advanced security and compliance, and dedicated support. Contact Customer.io
-    sales.
+  description: Custom pricing for organizations requiring dedicated infrastructure, advanced security and compliance, and dedicated support. Contact Customer.io sales.
   entries:
   - label: Enterprise Agreement
     name: enterprise
@@ -252,15 +162,14 @@ plans:
   - name: Dedicated Infrastructure
   - name: Custom Volume Pricing
   - name: Dedicated Support
+  price_text: Let's talk
+  price: Contact sales
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
-
 x-ported-from: customerio
 x-ported: '2026-08-04'
-x-ported-note: >-
-  Carried over from the retired duplicate `customerio` during the
-  duplicate-provider merge. Content unchanged; provider identity repointed.
+x-ported-note: Carried over from the retired duplicate `customerio` during the duplicate-provider merge. Content unchanged; provider identity repointed.
 x-canonical:
   generated: '2026-10-08'
   vocabulary: all/0-working/economics/plans-canonical.yml
@@ -314,3 +223,9 @@ x-canonical:
     - negotiated
     periods:
     - year
+delivery:
+  delivery: managed
+audience: business-product
+pricing_basis: tiered-subscription
+published: true
+note: '2026-10-12: Builder tier removed — it no longer appears on customer.io/pricing and docs.customer.io/accounts/billing/builder-plan.md now returns 404. Premium is billed yearly per the page.'

@@ -1,0 +1,355 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/customer-io/main/json-schema/customer-io-transformers-schema.json",
+  "title": "Transformers",
+  "description": "Automate repetitive actions like removing white space and inlining CSS with [transformers](/journeys/design-studio/emails/code-editor/overview/#transformers).",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/customer-io-journeys-api-openapi.yml#/components/schemas/Transformers",
+  "type": "object",
+  "properties": {
+    "url_parameters": {
+      "type": "object",
+      "description": "Appends query string parameters to all absolute URLs in `<a>` and VML elements. Useful for adding UTM tracking or other analytics parameters. Skips `mailto:`, `tel:`, and `sms:` links. Elements marked with `data-ignore-params` are excluded.\n",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable URL parameter injection.\n",
+          "default": false
+        },
+        "parameters": {
+          "type": "array",
+          "description": "List of parameters to append to URLs.\n",
+          "default": [],
+          "items": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string",
+                "description": "Parameter name.\n"
+              },
+              "value": {
+                "type": "string",
+                "description": "Parameter value. May contain template variables.\n"
+              },
+              "url_encode": {
+                "type": "boolean",
+                "description": "URL-encode the value before appending it to the URL.\n"
+              }
+            }
+          }
+        }
+      }
+    },
+    "css_variables": {
+      "type": "object",
+      "description": "Resolves CSS custom properties (`var(--name)`) into their computed values. Required for email clients that do not support CSS custom properties (most email clients). Variables declared in one `<style>` tag are available in subsequent `<style>` tags.\n",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable CSS variable resolution.\n",
+          "default": false
+        },
+        "preserve": {
+          "type": "boolean",
+          "description": "Keep original custom property declarations (`--name: value`) alongside the resolved values.\n",
+          "default": false
+        }
+      }
+    },
+    "css_inliner": {
+      "type": "object",
+      "description": "Moves CSS from `<style>` tags into inline `style` attributes on each element. Essential for email clients with limited `<style>` support (for example, older Gmail and some Outlook versions). Uses the `juice` library. Elements in `<style>` tags marked with `data-ignore-inlining` are skipped.\n",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable CSS inlining.\n",
+          "default": false
+        },
+        "apply_style_tags": {
+          "type": "boolean",
+          "description": "Inline styles from `<style>` tags.\n",
+          "default": true
+        },
+        "preserve_important": {
+          "type": "boolean",
+          "description": "Preserve `!important` declarations in inlined styles.\n",
+          "default": false
+        },
+        "remove_style_tags": {
+          "type": "boolean",
+          "description": "Remove `<style>` tags after inlining their rules.\n",
+          "default": true
+        },
+        "preserve_font_faces": {
+          "type": "boolean",
+          "description": "Keep `@font-face` rules in `<style>` (cannot be inlined).\n",
+          "default": true
+        },
+        "preserve_media_queries": {
+          "type": "boolean",
+          "description": "Keep `@media` rules in `<style>` (cannot be inlined).\n",
+          "default": true
+        },
+        "preserve_keyframes": {
+          "type": "boolean",
+          "description": "Keep `@keyframes` rules in `<style>` (cannot be inlined).\n",
+          "default": true
+        },
+        "preserve_pseudos": {
+          "type": "boolean",
+          "description": "Keep pseudo-selector rules (for example, `:hover`) in `<style>` (cannot be inlined).\n",
+          "default": true
+        },
+        "inline_pseudo_elements": {
+          "type": "boolean",
+          "description": "Attempt to inline pseudo-element (`::before`, `::after`) styles.\n",
+          "default": false
+        },
+        "apply_html_attributes": {
+          "type": "object",
+          "description": "Controls adding redundant HTML attributes alongside inlined CSS to different HTML elements.\n",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable adding redundant HTML attributes.\n",
+              "default": true
+            },
+            "apply_width_attributes": {
+              "type": "boolean",
+              "description": "Add redundant HTML `width` attributes alongside inlined CSS `width` on `<table>`, `<td>`, `<th>`, and `<img>` elements. Only applies to `px` values (and `%` on table elements). Needed for email clients that ignore CSS width (for example, older Outlook).\n",
+              "default": true
+            },
+            "apply_height_attributes": {
+              "type": "boolean",
+              "description": "Add redundant HTML `height` attributes alongside inlined CSS `height` on `<table>`, `<td>`, `<th>`, and `<img>` elements. Only applies to `px` values (and `%` on table elements). Needed for email clients that ignore CSS height.\n",
+              "default": true
+            },
+            "apply_table_element_attributes": {
+              "type": "boolean",
+              "description": "Add redundant HTML attributes on table elements (`<table>`, `<th>`, `<tr>`, `<td>`, `<caption>`, `<colgroup>`, `<col>`, `<thead>`, `<tbody>`, `<tfoot>`): `background-color` → `bgcolor`, `background-image` → `background`, `text-align` → `align`, `vertical-align` → `valign`.\n",
+              "default": true
+            }
+          }
+        }
+      }
+    },
+    "accessibility": {
+      "type": "object",
+      "description": "Applies a set of accessibility improvements to the email HTML. When no `language` is set, this falls back to the `lang` attribute on the `<html>` tag, or `\"und\"` (undetermined). The `dir` attribute is automatically derived from the language using RTL detection.\n",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable accessibility fixes.\n",
+          "default": false
+        },
+        "language": {
+          "type": "string",
+          "description": "Language code (for example, `\"en\"`, `\"fr\"`, or `\"ar\"`) used for `lang` and `dir` attributes.\n",
+          "default": ""
+        },
+        "add_lang_to_html": {
+          "type": "boolean",
+          "description": "Add `lang` attribute to the `<html>` element if not already present.\n",
+          "default": true
+        },
+        "add_dir_to_html": {
+          "type": "boolean",
+          "description": "Add `dir` attribute (`ltr`, `rtl`, or `auto`) to the `<html>` element if not already present.\n",
+          "default": true
+        },
+        "add_lang_to_content": {
+          "type": "boolean",
+          "description": "Add `lang` attribute to direct children of `<body>`.\n",
+          "default": true
+        },
+        "add_dir_to_content": {
+          "type": "boolean",
+          "description": "Add `dir` attribute to direct children of `<body>`.\n",
+          "default": true
+        },
+        "add_role_to_tables": {
+          "type": "boolean",
+          "description": "Add `role=\"presentation\"` to all `<table>` elements without an existing `role`, so screen readers skip table semantics for layout tables.\n",
+          "default": true
+        },
+        "add_vml_alt_text": {
+          "type": "boolean",
+          "description": "Add `alt` attribute to VML elements (used by Outlook’s Word rendering engine), derived from the element’s text content.\n",
+          "default": true
+        },
+        "add_empty_alt_to_images": {
+          "type": "boolean",
+          "description": "Add `alt=\"\"` to `<img>` elements missing an `alt` attribute, preventing screen readers from reading the file name.\n",
+          "default": true
+        },
+        "add_title_to_head": {
+          "type": "boolean",
+          "description": "Add a `<title>` tag to `<head>` using the email subject line (creates or replaces if empty).\n",
+          "default": true
+        },
+        "remove_button_role_from_links": {
+          "type": "boolean",
+          "description": "Remove `role=\"button\"` from `<a>` tags to restore proper link semantics for screen readers.\n",
+          "default": true
+        },
+        "remove_zoom_meta_tag": {
+          "type": "boolean",
+          "description": "Remove viewport `<meta>` tags that restrict zoom (`user-scalable=0`, `user-scalable=no`, `maximum-scale=1`, or `maximum-scale=2`).\n",
+          "default": true
+        }
+      }
+    },
+    "formatter": {
+      "type": "object",
+      "description": "Controls the output formatting of the final HTML. Only one mode (`prettify` or `minify`) can be active at a time. Set to `\"none\"` to skip formatting entirely.\n",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Formatting mode to apply.\n",
+          "enum": [
+            "none",
+            "prettify",
+            "minify"
+          ],
+          "default": "none"
+        },
+        "prettify": {
+          "type": "object",
+          "description": "Options used when `type` is `\"prettify\"`. Produces human-readable, indented HTML output.\n",
+          "properties": {
+            "indent_character": {
+              "type": "string",
+              "description": "Character used for indentation.\n",
+              "enum": [
+                "spaces",
+                "tabs"
+              ],
+              "default": "spaces"
+            },
+            "indent_size": {
+              "type": "integer",
+              "description": "Number of indent characters per level.\n",
+              "default": 2
+            },
+            "wrap_attributes": {
+              "type": "boolean",
+              "description": "Wrap HTML attributes onto separate lines (`force-expand-multiline` mode).\n",
+              "default": false
+            }
+          }
+        },
+        "minify": {
+          "type": "object",
+          "description": "Options used when `type` is `\"minify\"`. Reduces file size by stripping whitespace and comments.\n",
+          "properties": {
+            "remove_line_breaks": {
+              "type": "boolean",
+              "description": "Remove all line breaks from the output.\n",
+              "default": false
+            },
+            "line_length_limit": {
+              "type": "integer",
+              "description": "Maximum characters per line before inserting a line break.\n",
+              "default": 500
+            },
+            "remove_indentations": {
+              "type": "boolean",
+              "description": "Remove leading whitespace indentation.\n",
+              "default": true
+            },
+            "remove_html_comments": {
+              "type": "string",
+              "description": "HTML comment removal level. `\"0\"` keeps all comments, `\"1\"` removes non-conditional comments (preserves MSO conditionals like `<!--[if mso]>`), and `\"2\"` removes all comments including conditional.\n",
+              "enum": [
+                "0",
+                "1",
+                "2"
+              ],
+              "default": "0"
+            },
+            "remove_css_comments": {
+              "type": "boolean",
+              "description": "Remove CSS comments (`/* ... */`) from `<style>` blocks.\n",
+              "default": true
+            }
+          }
+        }
+      }
+    },
+    "prevent_widows": {
+      "type": "object",
+      "description": "Replaces the last space in text blocks with a non-breaking space (`&nbsp;`) to prevent a single word from wrapping onto its own line (a “widow”). Only processes text nodes in the `<body>` and skips `<script>`, `<style>`, `<noscript>`, `<svg>`, and `<head>` elements. Preserves Liquid template tags (`{{ }} ` and `{% %}`).\n",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable widow word prevention.\n",
+          "default": false
+        }
+      }
+    },
+    "encode_entities": {
+      "type": "object",
+      "description": "Encodes special characters (for example, `©`, `™`, and `—`) as their HTML entity equivalents. Improves rendering consistency across email clients with varying character encoding support. Only processes text nodes in the `<body>` and skips `<script>`, `<style>`, `<noscript>`, `<svg>`, and `<head>` elements. Preserves Liquid template tags and avoids double-encoding existing entities.\n",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable HTML entity encoding.\n",
+          "default": false
+        }
+      }
+    },
+    "remove_unused_css": {
+      "type": "object",
+      "description": "Scans the HTML and removes any CSS selectors from `<style>` tags that are not referenced in the document. Reduces file size and helps avoid Gmail’s 102 KB clipping limit. HTML and CSS comments are always preserved by this step (comment removal is handled separately by the formatter object).\n",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable unused CSS removal.\n",
+          "default": false
+        },
+        "whitelist": {
+          "type": "array",
+          "description": "CSS selectors to always keep, even if they are not found in the HTML.\n  - .ReadMsgBody\n  - .ExternalClass\n  - .aBn\n  - .a6S\n  - .im\n  - .yshortcuts\n  - \"#outlook\"\n  - .MsoHyperlink\n  - .MsoHyperlinkFollowed\n",
+          "items": {
+            "type": "string",
+            "description": "A CSS selector to always keep.\n"
+          }
+        },
+        "backend_markers": {
+          "type": "array",
+          "description": "Template syntax delimiters (e.g., Liquid, Handlebars) that the CSS parser should skip over to avoid treating template expressions as invalid CSS.\n",
+          "default": [
+            {
+              "heads": "",
+              "tails": ""
+            },
+            {
+              "heads": "{%",
+              "tails": "%}"
+            }
+          ],
+          "items": {
+            "type": "object",
+            "properties": {
+              "heads": {
+                "type": "string",
+                "description": "Opening delimiter.\n"
+              },
+              "tails": {
+                "type": "string",
+                "description": "Closing delimiter.\n"
+              }
+            }
+          }
+        },
+        "uglify": {
+          "type": "boolean",
+          "description": "Shorten (uglify) CSS class names to reduce file size.\n",
+          "default": false
+        }
+      }
+    }
+  }
+}

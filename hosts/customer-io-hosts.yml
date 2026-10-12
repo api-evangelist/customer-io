@@ -1,0 +1,215 @@
+generated: '2026-10-12'
+method: derived
+source: the pre-flight dossier, apis.yml pointers, spec servers, well-known, vendors -- nothing fetched here
+generator: derive-hosts.py
+summary:
+  hosts: 17
+  own: 13
+  other_domain: 2
+  platform: 2
+  roles:
+  - api
+  - identity
+  - other
+  - portal
+  - source
+  - status
+  - website
+hosts:
+- host: academy.customer.io
+  found_by:
+  - pointer
+  - probed
+  - site-links
+  types:
+  - Academy
+  serves: []
+  registrable_domain: customer.io
+  role: other
+  relation: own
+- host: api-eu.customer.io
+  found_by:
+  - contract-discovery
+  types: []
+  serves: []
+  registrable_domain: customer.io
+  role: other
+  relation: own
+- host: api.customer.io
+  found_by:
+  - apis[]
+  - probed
+  - contract-discovery
+  - well-known
+  types: []
+  serves:
+  - api
+  registrable_domain: customer.io
+  role: api
+  relation: own
+- host: api.customerio.com
+  found_by:
+  - contract-discovery
+  types: []
+  serves: []
+  registrable_domain: customerio.com
+  role: api
+  relation: other-domain
+- host: app.customer.io
+  found_by:
+  - probed
+  - site-links
+  types: []
+  serves: []
+  registrable_domain: customer.io
+  role: other
+  relation: own
+- host: cdp-eu.customer.io
+  found_by:
+  - contract-discovery
+  types: []
+  serves: []
+  registrable_domain: customer.io
+  role: other
+  relation: own
+- host: cdp.customer.io
+  found_by:
+  - apis[]
+  - probed
+  - well-known
+  types: []
+  serves:
+  - api
+  registrable_domain: customer.io
+  role: other
+  relation: own
+- host: customer.io
+  found_by:
+  - pointer
+  - probed
+  - well-known
+  - vendor-detect
+  types:
+  - Website
+  - Integrations
+  - Security
+  - Support
+  - Blog
+  - Pricing
+  - TermsOfService
+  - PrivacyPolicy
+  serves:
+  - hosting
+  vendor: vercel
+  registrable_domain: customer.io
+  role: website
+  relation: own
+- host: docs.customer.io
+  found_by:
+  - pointer
+  - apis[]
+  - probed
+  - site-links
+  - namespace-probe
+  - docs-index
+  - spec-found
+  - well-known
+  - vendor-detect
+  types:
+  - Documentation
+  - LlmsText
+  - DeveloperPortal
+  - APIReference
+  - GettingStarted
+  serves:
+  - docs
+  - spec
+  - hosting
+  title: Customer.io Documentation - Customer.io Documentation
+  status: 200
+  vendor: netlify
+  registrable_domain: customer.io
+  role: portal
+  relation: own
+- host: fly.customer.io
+  found_by:
+  - pointer
+  - probed
+  - site-links
+  - docs-index
+  types:
+  - SignUp
+  - Login
+  serves:
+  - docs
+  registrable_domain: customer.io
+  role: identity
+  relation: own
+- host: github.com
+  found_by:
+  - pointer
+  types:
+  - GitHubOrganization
+  serves: []
+  registrable_domain: github.com
+  role: source
+  relation: platform
+- host: mcp-eu.customer.io
+  found_by:
+  - probed
+  - well-known
+  types: []
+  serves: []
+  registrable_domain: customer.io
+  role: other
+  relation: own
+- host: mcp.customer.io
+  found_by:
+  - apis[]
+  - probed
+  - well-known
+  types: []
+  serves:
+  - api
+  registrable_domain: customer.io
+  role: other
+  relation: own
+- host: status.customerio.com
+  found_by:
+  - pointer
+  - probed
+  - well-known
+  types:
+  - StatusPage
+  serves: []
+  registrable_domain: customerio.com
+  role: status
+  relation: other-domain
+- host: track-eu.customer.io
+  found_by:
+  - contract-discovery
+  types: []
+  serves: []
+  registrable_domain: customer.io
+  role: other
+  relation: own
+- host: track.customer.io
+  found_by:
+  - apis[]
+  - probed
+  - well-known
+  types: []
+  serves:
+  - api
+  registrable_domain: customer.io
+  role: other
+  relation: own
+- host: www.linkedin.com
+  found_by:
+  - pointer
+  types:
+  - LinkedIn
+  serves: []
+  registrable_domain: linkedin.com
+  role: other
+  relation: platform

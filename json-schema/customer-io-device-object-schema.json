@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/customer-io/main/json-schema/customer-io-device-object-schema.json",
+  "title": "device_object",
+  "description": "Device properties collected by [Customer.io SDKs](/integrations/sdk/) unless `autoTrackDeviceAttributes` is disabled. You can use these properties in segments and Liquid.",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/customer-io-track-customers-api-openapi.yml#/components/schemas/device_object",
+  "x-scalar-ignore": true,
+  "allOf": [
+    {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "description": "The device token.",
+          "type": "string"
+        }
+      }
+    },
+    {
+      "$ref": "#/$defs/device_object_common"
+    }
+  ],
+  "$defs": {
+    "device_object_common": {
+      "x-scalar-ignore": true,
+      "type": "object",
+      "description": "Device information common to the v1 and v2 APIs.",
+      "required": [
+        "platform"
+      ],
+      "properties": {
+        "last_used": {
+          "type": "integer",
+          "format": "unix timestamp",
+          "description": "The `timestamp` when you last identified this device. If you don't pass a timestamp when you add or update a device, we use the time of the request itself. Our SDKs identify a device when a person launches their app."
+        },
+        "platform": {
+          "type": "string",
+          "enum": [
+            "ios",
+            "android"
+          ],
+          "description": "The device/messaging platform."
+        },
+        "attributes": {
+          "type": "object",
+          "description": "Attributes that you can reference to segment your audience—like a person's attributes, but specific to a device. These can be either the attributes defined below or custom key-value attributes.",
+          "properties": {
+            "device_os": {
+              "type": "string",
+              "description": "The operating system, including the version, on the device."
+            },
+            "device_model": {
+              "type": "string",
+              "description": "The model of the device a person uses."
+            },
+            "app_version": {
+              "type": "string",
+              "description": "The version of your app that a customer uses. You might target app versions to let people know when they need to update, or expose them to new features when they do."
+            },
+            "cio_sdk_version": {
+              "type": "string",
+              "description": "The version of the Customer.io SDK in the app."
+            },
+            "_last_status": {
+              "type": "string",
+              "readOnly": true,
+              "description": "The delivery status of the last message sent to the device—sent, bounced, or suppressed. An empty string indicates that that the device hasn't received a push yet.",
+              "enum": [
+                "",
+                "bounced",
+                "sent",
+                "suppressed"
+              ]
+            },
+            "device_locale": {
+              "type": "string",
+              "description": "The device's [IETF language code](/journeys/channels/localization/getting-started/#supported-languages), such as `en-MX` or `es-ES`."
+            },
+            "push_enabled": {
+              "type": "string",
+              "description": "If `\"true\"`, the device is opted-in and can receive push notifications.",
+              "enum": [
+                "true",
+                "false"
+              ]
+            }
+          },
+          "additionalProperties": {
+            "x-additionalPropertiesName": "Custom Device Attributes",
+            "description": "Custom properties that you want to associate with the device.",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

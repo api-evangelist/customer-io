@@ -1,0 +1,72 @@
+arazzo: 1.0.1
+info:
+  title: 'Customer.io Mailchimp: send Mailchimp unsubscribes to Customer.io'
+  summary: Lists unsubscribed members of a Mailchimp audience and marks each person
+    unsubscribed in Customer.
+  description: Lists unsubscribed members of a Mailchimp audience and marks each person
+    unsubscribed in Customer.io via identify. Mirrors the Zapier template "Send unsubscribed
+    email addresses from MailChimp to Customer.io".
+  version: 1.0.0
+sourceDescriptions:
+- name: mailchimpLists
+  url: https://raw.githubusercontent.com/api-evangelist/mailchimp/refs/heads/main/openapi/mailchimp-lists-api-openapi.yml
+  type: openapi
+- name: customerIoTrackCustomers
+  url: https://raw.githubusercontent.com/api-evangelist/customer-io/refs/heads/main/openapi/customer-io-track-customers-api-openapi.yml
+  type: openapi
+workflows:
+- workflowId: mailchimp-unsubscribes-to-people
+  summary: 'Customer.io Mailchimp: send Mailchimp unsubscribes to Customer.io'
+  description: Lists unsubscribed members of a Mailchimp audience and marks each person
+    unsubscribed in Customer.io via identify. Mirrors the Zapier template "Send unsubscribed
+    email addresses from MailChimp to Customer.io".
+  inputs:
+    type: object
+    properties:
+      list_id:
+        type: string
+      email:
+        type: string
+  steps:
+  - stepId: list-unsubscribed
+    description: List members with status unsubscribed.
+    operationId: $sourceDescriptions.mailchimpLists.getListsIdMembers
+    parameters:
+    - name: list_id
+      in: path
+      value: $inputs.list_id
+    - name: status
+      in: query
+      value: unsubscribed
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      members: $response.body#/members
+  - stepId: identify-person
+    description: Create or update the person in Customer.io (Track API identify).
+    operationId: $sourceDescriptions.customerIoTrackCustomers.identify
+    parameters:
+    - name: identifier
+      in: path
+      value: $inputs.email
+    requestBody:
+      contentType: application/json
+      payload:
+        email: $inputs.email
+        unsubscribed: true
+    successCriteria:
+    - condition: $statusCode == 200
+  outputs:
+    members: $steps.list-unsubscribed.outputs.members
+x-integration:
+  partner: mailchimp
+  edge_evidence: https://zapier.com/apps/customerio/integrations
+  edge_type: marketplace
+  method: generated
+  generated: '2026-10-12'
+  generator: enrichment pipeline local-v5 (provider-integrations-arazzo)
+  guessed_steps:
+  - step: identify-person
+    cause: provider-contract
+    why: The identify request body is free-form attributes; the spec does not enumerate
+      unsubscribed as a reserved attribute.

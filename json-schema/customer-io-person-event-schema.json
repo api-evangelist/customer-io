@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/customer-io/main/json-schema/customer-io-person-event-schema.json",
+  "title": "Person: Event",
+  "description": "A custom event attributed to a person. You can use events to trigger campaigns, or reference event information using liquid in your messages.",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/customer-io-track-v2-api-openapi.yml#/components/schemas/person_event",
+  "allOf": [
+    {
+      "$ref": "#/$defs/person_common"
+    },
+    {
+      "type": "object",
+      "required": [
+        "action",
+        "name"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "description": "A custom event attributed to the specified person.",
+          "enum": [
+            "event"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "format": "ULID",
+          "description": "A valid ULID used to deduplicate events. Note - our Python and Ruby libraries do not pass this id."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the event. This is how you'll find your event in Customer.io or select it when using events as campaign triggers."
+        },
+        "timestamp": {
+          "type": "integer",
+          "description": "The Unix timestamp when the event happened."
+        },
+        "attributes": {
+          "type": "object",
+          "description": "Additional information that you might want to reference in a message using liquid or use to set attributes on the identified person.\n",
+          "additionalProperties": {
+            "x-additionalPropertiesName": "liquid merge data",
+            "description": "Insert key-values that you want to reference in your message here."
+          },
+          "properties": {
+            "recipient": {
+              "type": "string",
+              "format": "email",
+              "description": "The email address of the person associated with the event, overriding the `to` field in emails triggered by the event."
+            },
+            "from_address": {
+              "type": "string",
+              "format": "email",
+              "description": "The address you want to trigger messages from, overriding the `from` field in emails triggered by the event."
+            },
+            "reply_to": {
+              "type": "string",
+              "format": "email",
+              "description": "The address you want to receive replies to, overriding the `reply to` field for emails triggered by the event."
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "cio_id": {
+      "x-scalar-ignore": true,
+      "type": "string",
+      "description": "A unique identifier set by Customer.io, used to reference a person if you want to update their identifiers."
+    },
+    "not_nullable_customer_id": {
+      "x-scalar-ignore": true,
+      "type": "string",
+      "description": "The ID of a customer profile, analogous to a \"person\" in the UI."
+    },
+    "not_nullable_email_address": {
+      "x-scalar-ignore": true,
+      "type": "string",
+      "description": "The email address of the customer."
+    },
+    "person_common": {
+      "x-scalar-ignore": true,
+      "type": "object",
+      "required": [
+        "type",
+        "identifiers"
+      ],
+      "properties": {
+        "type": {
+          "description": "The operation modifies a person in Customer.io",
+          "type": "string",
+          "enum": [
+            "person"
+          ]
+        },
+        "identifiers": {
+          "description": "The person you want to perform an action for—one of `id`, `email`, `phone`, or `cio_id`. You cannot pass multiple identifiers. You can use `email` and `phone` only if they're enabled as identifiers in your [workspace settings](/accounts/workspaces/overview/#migrate-workspace).",
+          "oneOf": [
+            {
+              "title": "id",
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "$ref": "#/$defs/not_nullable_customer_id"
+                }
+              }
+            },
+            {
+              "title": "email",
+              "type": "object",
+              "required": [
+                "email"
+              ],
+              "properties": {
+                "email": {
+                  "$ref": "#/$defs/not_nullable_email_address"
+                }
+              }
+            },
+            {
+              "title": "phone",
+              "type": "object",
+              "required": [
+                "phone"
+              ],
+              "properties": {
+                "phone": {
+                  "type": "string",
+                  "description": "A person's phone number, in [E.164 format](https://en.wikipedia.org/wiki/E.164) (a leading `+` followed by up to 15 digits). Available only when `phone` is enabled as an identifier in your workspace."
+                }
+              }
+            },
+            {
+              "title": "cio_id",
+              "type": "object",
+              "required": [
+                "cio_id"
+              ],
+              "properties": {
+                "cio_id": {
+                  "$ref": "#/$defs/cio_id"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

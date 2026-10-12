@@ -1,0 +1,125 @@
+generated: '2026-10-12'
+method: searched
+source:
+- https://zapier.com/apps/customer-io/integrations
+- https://zapier.com/apps/customer/integrations
+- https://n8n.io/integrations/customer-io/
+- https://n8n.io/integrations/customer/
+- https://composio.dev/toolkits/customer-io
+- https://monid.ai/tools/customer-io
+checked:
+- https://composio.dev/toolkits/customer-io
+- https://customer.io/integrations
+- https://monid.ai/tools/customer-io
+- https://n8n.io/integrations/customer-io/
+- https://n8n.io/integrations/customer/
+- https://n8n.io/integrations/customerio/
+- https://www.make.com/en/integrations/customer-io
+- https://zapier.com/apps/customer-io/integrations
+- https://zapier.com/apps/customer/integrations
+- https://zapier.com/apps/customerio/integrations
+summary: null
+marketplace_apps: []
+edges:
+- partner_name: Amazon S3
+  partner: amazon-s3
+  partner_match: name-exact
+  type: claimed
+  evidence: https://customer.io/integrations
+  direction: unknown
+  relationship: file-exchange
+  use_case: Stream messages, people and metrics data from Customer.io to Amazon S3
+- partner_name: Amplitude
+  partner: amplitude
+  partner_match: name-exact
+  type: claimed
+  evidence: https://customer.io/integrations
+  direction: unknown
+  relationship: event
+  use_case: null
+- partner_name: Branch
+  partner: null
+  partner_match: null
+  type: claimed
+  evidence: https://customer.io/integrations
+  direction: unknown
+  relationship: embedded
+  use_case: Email-to-app linking
+- partner_name: Salesforce
+  partner: salesforce
+  partner_match: name-exact
+  type: claimed
+  evidence: https://customer.io/integrations
+  direction: unknown
+  relationship: workflow
+  use_case: Sync customer data and trigger campaigns on CRM updates
+- partner_name: Facebook Lead Ads
+  partner: facebook
+  partner_match: name-exact
+  type: claimed
+  evidence: https://customer.io/integrations
+  direction: unknown
+  relationship: workflow
+  use_case: null
+- partner_name: Mixpanel
+  partner: mixpanel
+  partner_match: name-exact
+  type: claimed
+  evidence: https://customer.io/integrations
+  direction: unknown
+  relationship: event
+  use_case: null
+- partner_name: Snowflake
+  partner: snowflake
+  partner_match: name-exact
+  type: claimed
+  evidence: https://customer.io/integrations
+  direction: unknown
+  relationship: file-exchange
+  use_case: Warehouse sync via Amazon S3 or GCP storage
+- partner_name: Typeform
+  partner: typeform
+  partner_match: name-exact
+  type: claimed
+  evidence: https://customer.io/integrations
+  direction: unknown
+  relationship: workflow
+  use_case: Add people and trigger campaigns from form submissions
+- partner_name: Segment
+  partner: segment
+  partner_match: name-exact
+  type: claimed
+  evidence: https://customer.io/integrations
+  direction: unknown
+  relationship: event
+  use_case: Destination and source for event and attribute data
+templates: []
+skips:
+- label: Amplitude
+  cause: catalog
+  why: Event-stream/destination relationship, not an API-to-API workflow; deferred this run (8-per-run cap reached
+    on templates first).
+- label: Salesforce
+  cause: catalog
+  why: Customer.io-built CRM sync; deferred this run, Zapier templates prioritised.
+- label: Facebook Lead Ads
+  cause: catalog
+  why: all/facebook holds the Graph API; Lead Ads lead retrieval not confirmed in the catalog spec.
+- label: Mixpanel
+  cause: catalog
+  why: Analytics event relationship; deferred this run.
+- label: Typeform
+  cause: partner-contract
+  why: The catalog Typeform spec has form CRUD (listForms/getForm) but no responses operation to read submissions.
+- label: Segment
+  cause: catalog
+  why: Segment is a source/destination connector (event relationship), not a request workflow; deferred.
+- label: LinkedIn Ads
+  cause: catalog
+  why: all/linkedin-ads not verified to hold a lead-gen form responses operation.
+- label: Google Ads
+  cause: catalog
+  why: Lead form retrieval operation not located in the catalog Google Ads spec this run.
+note: Featured integrations read from the rendered customer.io/integrations page; Zapier app slug is customerio
+  (the sweep tried customer-io). make.com answered 403 to our fetch. Branch is not linked to all/branch (that repo
+  is ourbranch.com, an insurer).

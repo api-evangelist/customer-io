@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/customer-io/main/json-schema/customer-io-person-merge-schema.json",
+  "title": "Person: Merge",
+  "description": "Merges `secondary` into `primary`, then deletes `secondary`. The operation is not reversible, and `primary` must already exist. See [merging duplicate people](/journeys/people/manage/merge-people/).",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/customer-io-track-v2-api-openapi.yml#/components/schemas/person_merge",
+  "type": "object",
+  "required": [
+    "type",
+    "primary",
+    "secondary",
+    "action"
+  ],
+  "properties": {
+    "type": {
+      "description": "The operation modifies a person in Customer.io",
+      "type": "string",
+      "enum": [
+        "person"
+      ]
+    },
+    "action": {
+      "type": "string",
+      "description": "Merges `secondary` into `primary`, then deletes `secondary`. Not reversible; see [merging duplicate people](/journeys/people/manage/merge-people/).",
+      "enum": [
+        "merge"
+      ]
+    },
+    "primary": {
+      "description": "The person who remains after the merge, identified by `id`, `email`, or `cio_id`. If email identifiers are disabled in [workspace settings](https://fly.customer.io/workspaces/last/settings/edit), use `id` or `cio_id`.",
+      "oneOf": [
+        {
+          "title": "id",
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/not_nullable_customer_id"
+            }
+          }
+        },
+        {
+          "title": "email",
+          "type": "object",
+          "required": [
+            "email"
+          ],
+          "properties": {
+            "email": {
+              "$ref": "#/$defs/not_nullable_email_address"
+            }
+          }
+        },
+        {
+          "title": "cio_id",
+          "type": "object",
+          "required": [
+            "cio_id"
+          ],
+          "properties": {
+            "cio_id": {
+              "$ref": "#/$defs/cio_id"
+            }
+          }
+        }
+      ]
+    },
+    "secondary": {
+      "description": "The person deleted after the merge, identified by `id`, `email`, or `cio_id`. If email identifiers are disabled in [workspace settings](https://fly.customer.io/workspaces/last/settings/edit), use `id` or `cio_id`.",
+      "oneOf": [
+        {
+          "title": "id",
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/not_nullable_customer_id"
+            }
+          }
+        },
+        {
+          "title": "email",
+          "type": "object",
+          "required": [
+            "email"
+          ],
+          "properties": {
+            "email": {
+              "$ref": "#/$defs/not_nullable_email_address"
+            }
+          }
+        },
+        {
+          "title": "cio_id",
+          "type": "object",
+          "required": [
+            "cio_id"
+          ],
+          "properties": {
+            "cio_id": {
+              "$ref": "#/$defs/cio_id"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "cio_id": {
+      "x-scalar-ignore": true,
+      "type": "string",
+      "description": "A unique identifier set by Customer.io, used to reference a person if you want to update their identifiers."
+    },
+    "not_nullable_customer_id": {
+      "x-scalar-ignore": true,
+      "type": "string",
+      "description": "The ID of a customer profile, analogous to a \"person\" in the UI."
+    },
+    "not_nullable_email_address": {
+      "x-scalar-ignore": true,
+      "type": "string",
+      "description": "The email address of the customer."
+    }
+  }
+}

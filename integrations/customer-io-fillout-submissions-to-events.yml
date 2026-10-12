@@ -1,0 +1,75 @@
+arazzo: 1.0.1
+info:
+  title: 'Customer.io Fillout: create Customer.io events from Fillout submissions'
+  summary: Lists submissions for a Fillout form and records each one as an event on
+    the person in Customer.
+  description: Lists submissions for a Fillout form and records each one as an event
+    on the person in Customer.io. Mirrors the Zapier template "Create new events in
+    Customer.io from new submissions in Fillout Forms".
+  version: 1.0.0
+sourceDescriptions:
+- name: filloutForms
+  url: https://raw.githubusercontent.com/api-evangelist/fillout/refs/heads/main/openapi/fillout-forms-api-openapi.yml
+  type: openapi
+- name: customerIoTrackEvents
+  url: https://raw.githubusercontent.com/api-evangelist/customer-io/refs/heads/main/openapi/customer-io-track-events-api-openapi.yml
+  type: openapi
+workflows:
+- workflowId: fillout-submissions-to-events
+  summary: 'Customer.io Fillout: create Customer.io events from Fillout submissions'
+  description: Lists submissions for a Fillout form and records each one as an event
+    on the person in Customer.io. Mirrors the Zapier template "Create new events in
+    Customer.io from new submissions in Fillout Forms".
+  inputs:
+    type: object
+    properties:
+      form_id:
+        type: string
+      after_date:
+        type: string
+      email:
+        type: string
+  steps:
+  - stepId: list-submissions
+    description: List submissions for the form after a date.
+    operationId: $sourceDescriptions.filloutForms.getAllSubmissions
+    parameters:
+    - name: formId
+      in: path
+      value: $inputs.form_id
+    - name: afterDate
+      in: query
+      value: $inputs.after_date
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      responses: $response.body#/responses
+  - stepId: track-event
+    description: Record a form_submitted event on the person.
+    operationId: $sourceDescriptions.customerIoTrackEvents.track
+    parameters:
+    - name: identifier
+      in: path
+      value: $inputs.email
+    requestBody:
+      contentType: application/json
+      payload:
+        name: fillout_form_submitted
+        data:
+          form_id: $inputs.form_id
+    successCriteria:
+    - condition: $statusCode == 200
+  outputs:
+    responses: $steps.list-submissions.outputs.responses
+x-integration:
+  partner: fillout
+  edge_evidence: https://zapier.com/apps/customerio/integrations
+  edge_type: marketplace
+  method: generated
+  generated: '2026-10-12'
+  generator: enrichment pipeline local-v5 (provider-integrations-arazzo)
+  guessed_steps:
+  - step: list-submissions
+    cause: partner-contract
+    why: Output path /responses assumed from SubmissionsResponse; not re-verified
+      against the schema properties.

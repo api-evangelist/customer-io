@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/customer-io/main/json-schema/customer-io-v1-cio-relationships-schema.json",
+  "title": "v1_cio_relationships",
+  "description": "Describes relationships to an entity—a non-person object in Customer.io, like a company, educational course, job board, etc.",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/customer-io-track-customers-api-openapi.yml#/components/schemas/v1_cio_relationships",
+  "x-scalar-ignore": true,
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "description": "This determines whether the `relationships` array adds relationships to a person or removes them from a person.",
+      "enum": [
+        "add_relationships",
+        "delete_relationships"
+      ]
+    },
+    "relationships": {
+      "$ref": "#/$defs/object_relationships"
+    }
+  },
+  "$defs": {
+    "object_identifiers": {
+      "x-scalar-ignore": true,
+      "type": "object",
+      "properties": {
+        "identifiers": {
+          "description": "The identifiers for a particular object. You can use either the `object_type_id` and `object_id` (where `object_type_id` represents the type of object and the `object_id` is the individual identifier for the object) or the `cio_object_id`.",
+          "oneOf": [
+            {
+              "title": "Object ID",
+              "type": "object",
+              "required": [
+                "object_type_id",
+                "object_id"
+              ],
+              "properties": {
+                "object_type_id": {
+                  "$ref": "#/$defs/object_type_id"
+                },
+                "object_id": {
+                  "type": "string",
+                  "description": "The unique identifier for an object. If you use an `object_id` that already exists, we'll update the object accordingly."
+                }
+              }
+            },
+            {
+              "title": "CIO Object ID",
+              "type": "object",
+              "required": [
+                "cio_object_id"
+              ],
+              "properties": {
+                "cio_object_id": {
+                  "type": "string",
+                  "description": "A unique value that Customer.io sets for an object when you create it. This ID is immutable."
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "object_relationships": {
+      "x-scalar-ignore": true,
+      "type": "array",
+      "description": "Each object in the array represents a relationship you want to add to, or remove from, a person.",
+      "items": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/object_identifiers"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "relationship_attributes": {
+                "$ref": "#/$defs/relationship_attributes"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "object_type_id": {
+      "x-scalar-ignore": true,
+      "type": "string",
+      "description": "The object type an object belongs to—like \"Companies\" or \"Accounts\". Object type IDs are string-formatted integers that begin at `1` and increment for each new type."
+    },
+    "relationship_attributes": {
+      "x-scalar-ignore": true,
+      "type": "object",
+      "description": "The attributes associated with a relationship. Passing null or an empty string removes the attribute from the relationship.\n",
+      "additionalProperties": {
+        "x-additionalPropertiesName": "Relationship Attributes"
+      }
+    }
+  }
+}

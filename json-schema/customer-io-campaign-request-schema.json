@@ -1,0 +1,938 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/customer-io/main/json-schema/customer-io-campaign-request-schema.json",
+  "title": "campaignRequest",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/customer-io-journeys-api-openapi.yml#/components/schemas/campaignRequest",
+  "x-scalar-ignore": true,
+  "oneOf": [
+    {
+      "title": "Default audience",
+      "description": "Send your broadcast to the default set of recipients defined in the UI.",
+      "allOf": [
+        {
+          "$ref": "#/$defs/commonTriggerProps"
+        }
+      ]
+    },
+    {
+      "title": "Custom recipients",
+      "description": "Send your broadcast to a group of people defined by a set of conditions.",
+      "allOf": [
+        {
+          "type": "object",
+          "required": [
+            "recipients"
+          ],
+          "properties": {
+            "recipients": {
+              "description": "A filter defining the group of people that you want to send the broadcast to.",
+              "$ref": "#/$defs/audienceFilter"
+            }
+          }
+        },
+        {
+          "$ref": "#/$defs/commonTriggerProps"
+        },
+        {
+          "$ref": "#/$defs/triggerFilterProp"
+        }
+      ]
+    },
+    {
+      "title": "Emails",
+      "description": "An array of emails you want to send the broadcast to. These addresses must already exist; your request cannot create a new person.",
+      "allOf": [
+        {
+          "type": "object",
+          "required": [
+            "emails"
+          ],
+          "properties": {
+            "emails": {
+              "description": "An array of email addresses you want to send the broadcast to. These addresses must already exist; your request cannot create a new person.",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "email"
+              }
+            }
+          }
+        },
+        {
+          "$ref": "#/$defs/commonTriggerProps"
+        },
+        {
+          "$ref": "#/$defs/triggerFilterProp"
+        }
+      ]
+    },
+    {
+      "title": "IDs",
+      "description": "An array of customer ids that you want to send the broadcast to. These IDs must already exist; your request cannot create a new person.",
+      "allOf": [
+        {
+          "type": "object",
+          "required": [
+            "ids"
+          ],
+          "properties": {
+            "ids": {
+              "description": "An array of IDs you want to send a broadcast to. **NOTE**: If your workspace identifies people by `email`, don't use this option. Identify your audience by `emails` instead.\n",
+              "type": "array",
+              "maxItems": 10000,
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "$ref": "#/$defs/commonTriggerProps"
+        },
+        {
+          "$ref": "#/$defs/triggerFilterProp"
+        }
+      ]
+    },
+    {
+      "title": "User Maps",
+      "description": "An array of JSON objects containing `id` or `email` keys and a `data` key. Each object represents a person you want to send the broadcast to and data you want to personalize their message with using liquid.",
+      "allOf": [
+        {
+          "type": "object",
+          "required": [
+            "per_user_data"
+          ],
+          "properties": {
+            "per_user_data": {
+              "description": "The people you want to send a broadcast to, with custom data to personalize each message. Each person must already exist in your workspace—a broadcast trigger can't create people.",
+              "type": "array",
+              "maxItems": 10000,
+              "items": {
+                "oneOf": [
+                  {
+                    "title": "ids",
+                    "type": "object",
+                    "required": [
+                      "id"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "The ID of the recipient."
+                      },
+                      "data": {
+                        "type": "object",
+                        "description": "Merge data associated with the recipient.",
+                        "additionalProperties": {
+                          "x-additionalPropertiesName": "Liquid merge data",
+                          "description": "Insert key-values that you want to reference in your message here."
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "title": "emails",
+                    "type": "object",
+                    "required": [
+                      "email"
+                    ],
+                    "properties": {
+                      "email": {
+                        "type": "string",
+                        "description": "The email address of the recipient. This address must be unique in your workspace. If more than one person has the same `email` attribute, your request will produce an error."
+                      },
+                      "data": {
+                        "description": "Merge data associated with the recipient.",
+                        "type": "object",
+                        "additionalProperties": {
+                          "x-additionalPropertiesName": "Liquid merge data",
+                          "description": "Insert key-values that you want to reference in your message here."
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "$ref": "#/$defs/commonTriggerProps"
+        },
+        {
+          "$ref": "#/$defs/triggerFilterProp"
+        }
+      ]
+    },
+    {
+      "title": "Data file URL",
+      "description": "The URL of a data file with one JSON object per line, using either `id` and `data` or `email` and `data`. The people you reference must already exist in your workspace. The file may be gzip-compressed to reduce transfer size (recommended for large files); if compressed, it must use gzip and the hosting server must return a `Content-Encoding` header set to `gzip` when the file is downloaded.",
+      "allOf": [
+        {
+          "type": "object",
+          "required": [
+            "data_file_url"
+          ],
+          "properties": {
+            "data_file_url": {
+              "description": "The URL of a JSON Lines file with one person per line, using `id` and `data` or `email` and `data`. The people you reference must already exist in your workspace. The file may be gzip-compressed to reduce transfer size (recommended for large files); if compressed, it must use gzip and the hosting server must return a `Content-Encoding` header set to `gzip` when the file is downloaded.",
+              "type": "string",
+              "format": "url"
+            }
+          }
+        },
+        {
+          "$ref": "#/$defs/commonTriggerProps"
+        },
+        {
+          "$ref": "#/$defs/triggerFilterProp"
+        }
+      ]
+    }
+  ],
+  "$defs": {
+    "andAudienceFilter": {
+      "x-scalar-ignore": true,
+      "title": "and",
+      "type": "object",
+      "properties": {
+        "and": {
+          "type": "array",
+          "description": "Match *all* conditions to return results.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "or": {
+                "type": "array",
+                "description": "Returns results matching *any* conditions.",
+                "items": {
+                  "$ref": "#/$defs/simpleAudienceFilter"
+                }
+              },
+              "not": {
+                "description": "Returns people who don't match the condition inside it. `not` takes a single object, not an array. That object can be one condition, or an `and` or `or` group when you want to exclude people who match a combination of conditions.",
+                "oneOf": [
+                  {
+                    "title": "and",
+                    "type": "object",
+                    "properties": {
+                      "and": {
+                        "type": "array",
+                        "description": "Match *all* conditions to return results.",
+                        "items": {
+                          "$ref": "#/$defs/simpleAudienceFilter"
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "title": "or",
+                    "type": "object",
+                    "properties": {
+                      "or": {
+                        "type": "array",
+                        "description": "Match *any* condition to return results.",
+                        "items": {
+                          "$ref": "#/$defs/simpleAudienceFilter"
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "title": "segment",
+                    "type": "object",
+                    "properties": {
+                      "segment": {
+                        "$ref": "#/$defs/segmentAudienceFilter"
+                      }
+                    }
+                  },
+                  {
+                    "title": "attribute",
+                    "type": "object",
+                    "properties": {
+                      "attribute": {
+                        "$ref": "#/$defs/attributeAudienceFilter"
+                      }
+                    }
+                  }
+                ]
+              },
+              "segment": {
+                "$ref": "#/$defs/segmentAudienceFilter"
+              },
+              "attribute": {
+                "$ref": "#/$defs/attributeAudienceFilter"
+              }
+            }
+          }
+        }
+      }
+    },
+    "andTriggerFilter": {
+      "x-scalar-ignore": true,
+      "title": "and",
+      "type": "object",
+      "properties": {
+        "and": {
+          "type": "array",
+          "description": "Returns results matching *all* conditions.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "or": {
+                "type": "array",
+                "description": "Returns results matching *any* conditions.",
+                "items": {
+                  "$ref": "#/$defs/simpleTriggerFilter"
+                }
+              },
+              "not": {
+                "$ref": "#/$defs/nestedNotTriggerFilter"
+              },
+              "segment": {
+                "$ref": "#/$defs/segmentAudienceFilter"
+              },
+              "attribute": {
+                "$ref": "#/$defs/attributeAudienceFilter"
+              },
+              "device_attribute": {
+                "$ref": "#/$defs/deviceAttributeTriggerFilter"
+              }
+            }
+          }
+        }
+      }
+    },
+    "attributeAudienceFilter": {
+      "x-scalar-ignore": true,
+      "title": "attribute",
+      "description": "Filter your audience by attribute.",
+      "type": "object",
+      "required": [
+        "field",
+        "operator"
+      ],
+      "properties": {
+        "field": {
+          "type": "string",
+          "description": "The name of the attribute you want to filter against."
+        },
+        "operator": {
+          "type": "string",
+          "description": "Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.",
+          "enum": [
+            "eq",
+            "exists"
+          ]
+        },
+        "value": {
+          "type": "string",
+          "description": "The value you want to match for this attribute. You must include a value if you use the `eq` operator."
+        },
+        "inverse": {
+          "type": "boolean",
+          "default": false,
+          "description": "Set to `true` to match people who *don't* meet the condition."
+        }
+      }
+    },
+    "attributeTriggerCondition": {
+      "x-scalar-ignore": true,
+      "title": "attribute",
+      "description": "Filter for people who have a profile attribute or a profile attribute value.",
+      "type": "object",
+      "properties": {
+        "attribute": {
+          "$ref": "#/$defs/attributeAudienceFilter"
+        }
+      }
+    },
+    "audienceFilter": {
+      "x-scalar-ignore": true,
+      "title": "Audience Filter",
+      "description": "Use `and`, `or`, and `not` to combine segment and attribute conditions. The top-level object accepts one property; nest groups for complex filters.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/andAudienceFilter"
+        },
+        {
+          "$ref": "#/$defs/orAudienceFilter"
+        },
+        {
+          "$ref": "#/$defs/notAudienceFilter"
+        },
+        {
+          "title": "segment",
+          "description": "Filter for people who belong to a segment.",
+          "type": "object",
+          "properties": {
+            "segment": {
+              "$ref": "#/$defs/segmentAudienceFilter"
+            }
+          }
+        },
+        {
+          "title": "audience",
+          "type": "object",
+          "description": "filter for people who have an attribute or an attribute value.",
+          "properties": {
+            "attribute": {
+              "$ref": "#/$defs/attributeAudienceFilter"
+            }
+          }
+        }
+      ]
+    },
+    "commonTriggerProps": {
+      "x-scalar-ignore": true,
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "description": "Contains information you want to use to populate your broadcast.",
+          "additionalProperties": {
+            "x-additionalPropertiesName": "Broadcast liquid data",
+            "description": "Insert key-values that you want to reference in your message here."
+          }
+        },
+        "email_add_duplicates": {
+          "type": "boolean",
+          "default": false,
+          "description": "an email address associated with more than one profile id is an error."
+        },
+        "email_ignore_missing": {
+          "type": "boolean",
+          "default": false,
+          "description": "If false, a missing email causes the broadcast to error and fail. If true, the broadcast will skip over any people in your audience who don't have emails, and continue sending to the rest of your audience."
+        },
+        "id_ignore_missing": {
+          "type": "boolean",
+          "default": false,
+          "description": "If false, a missing customer ID causes the broadcast to error and fail. If true, the broadcast will skip over any people in your audience who don't have IDs, and continue sending to the rest of your audience."
+        },
+        "scheduled_at": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647,
+          "description": "Unix timestamp (in seconds) when the broadcast will send. Omit it or set it to `0` to send right away. We reject a timestamp more than 5 minutes in the past. Scheduling also changes when we work out your audience: `ids`, `emails`, `per_user_data`, and `data_file_url` set a fixed audience when you make this request, while a `recipients` filter runs when the send fires.\n"
+        },
+        "expires_after": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2592000,
+          "description": "Number of seconds after the send starts that the broadcast should stop sending. Omit or set to `0` if you don't want the broadcast to expire. If the broadcast expires before it finishes sending, Customer.io discards the messages that haven't gone out yet instead of delivering them late. The window runs from `scheduled_at` when you schedule the send, and from the time we receive this request when you don't.\n"
+        }
+      }
+    },
+    "complexAudienceFilter": {
+      "x-scalar-ignore": true,
+      "title": "People Filter",
+      "type": "object",
+      "description": "Filter people with `and`, `or`, and `not` groups made from `segment` and `attribute` conditions.",
+      "properties": {
+        "and": {
+          "type": "array",
+          "description": "Returns results matching *all* conditions.",
+          "items": {
+            "$ref": "#/$defs/simpleAudienceFilter"
+          }
+        },
+        "or": {
+          "type": "array",
+          "description": "Returns results matching *any* conditions.",
+          "items": {
+            "$ref": "#/$defs/simpleAudienceFilter"
+          }
+        },
+        "not": {
+          "description": "Returns people who don't match conditions. `not` takes a single object, not an array. That object can be one condition, or an `and` or `or` group when you want to exclude people who match a combination of conditions.",
+          "oneOf": [
+            {
+              "title": "and",
+              "type": "object",
+              "properties": {
+                "and": {
+                  "type": "array",
+                  "description": "Match *all* conditions to return results.",
+                  "items": {
+                    "$ref": "#/$defs/simpleAudienceFilter"
+                  }
+                }
+              }
+            },
+            {
+              "title": "or",
+              "type": "object",
+              "properties": {
+                "or": {
+                  "type": "array",
+                  "description": "Match *any* condition to return results.",
+                  "items": {
+                    "$ref": "#/$defs/simpleAudienceFilter"
+                  }
+                }
+              }
+            },
+            {
+              "title": "segment",
+              "type": "object",
+              "properties": {
+                "segment": {
+                  "$ref": "#/$defs/segmentAudienceFilter"
+                }
+              }
+            },
+            {
+              "title": "attribute",
+              "type": "object",
+              "properties": {
+                "attribute": {
+                  "$ref": "#/$defs/attributeAudienceFilter"
+                }
+              }
+            }
+          ]
+        },
+        "segment": {
+          "$ref": "#/$defs/segmentAudienceFilter"
+        },
+        "attribute": {
+          "$ref": "#/$defs/attributeAudienceFilter"
+        }
+      }
+    },
+    "complexTriggerFilter": {
+      "x-scalar-ignore": true,
+      "title": "Filter",
+      "type": "object",
+      "description": "Filter people with `and`, `or`, and `not` groups made from `segment`, `attribute`, and `device_attribute` conditions.",
+      "properties": {
+        "and": {
+          "type": "array",
+          "description": "Returns results matching *all* conditions.",
+          "items": {
+            "$ref": "#/$defs/simpleTriggerFilter"
+          }
+        },
+        "or": {
+          "type": "array",
+          "description": "Returns results matching *any* conditions.",
+          "items": {
+            "$ref": "#/$defs/simpleTriggerFilter"
+          }
+        },
+        "not": {
+          "$ref": "#/$defs/nestedNotTriggerFilter"
+        },
+        "segment": {
+          "$ref": "#/$defs/segmentAudienceFilter"
+        },
+        "attribute": {
+          "$ref": "#/$defs/attributeAudienceFilter"
+        },
+        "device_attribute": {
+          "$ref": "#/$defs/deviceAttributeTriggerFilter"
+        }
+      }
+    },
+    "deviceAttributeTriggerCondition": {
+      "x-scalar-ignore": true,
+      "title": "device attribute",
+      "description": "Filter for people who have a device, or a device with a particular attribute value.",
+      "type": "object",
+      "properties": {
+        "device_attribute": {
+          "$ref": "#/$defs/deviceAttributeTriggerFilter"
+        }
+      }
+    },
+    "deviceAttributeTriggerFilter": {
+      "x-scalar-ignore": true,
+      "title": "device attribute",
+      "description": "Filter your audience by the devices people have. We match a person if any of their devices meets the condition. To match people who have any device at all, set `field` to `id` and `operator` to `exists`.",
+      "type": "object",
+      "required": [
+        "field",
+        "operator"
+      ],
+      "properties": {
+        "field": {
+          "type": "string",
+          "description": "The name of the device attribute you want to filter against. Use `id` to match people who have a device."
+        },
+        "operator": {
+          "type": "string",
+          "description": "Determine how to evaluate criteria against the field—`exists` returns results if a person has a device with the attribute; `eq` returns results if a person has a device with the attribute and the attribute has the `value` you specify.",
+          "enum": [
+            "eq",
+            "exists"
+          ]
+        },
+        "value": {
+          "type": "string",
+          "description": "The value you want to match for this device attribute. You must include a value if you use the `eq` operator."
+        },
+        "inverse": {
+          "type": "boolean",
+          "default": false,
+          "description": "Set to `true` to match people who *don't* have a device meeting the condition."
+        }
+      }
+    },
+    "nestedNotTriggerFilter": {
+      "x-scalar-ignore": true,
+      "title": "not",
+      "description": "Returns people who don't match the condition inside it. `not` takes a single object, not an array. That object can be one condition, or an `and` or `or` group when you want to exclude people who match a combination of conditions.",
+      "oneOf": [
+        {
+          "title": "and",
+          "type": "object",
+          "properties": {
+            "and": {
+              "type": "array",
+              "description": "Match *all* conditions to return results.",
+              "items": {
+                "$ref": "#/$defs/simpleTriggerFilter"
+              }
+            }
+          }
+        },
+        {
+          "title": "or",
+          "type": "object",
+          "properties": {
+            "or": {
+              "type": "array",
+              "description": "Match *any* condition to return results.",
+              "items": {
+                "$ref": "#/$defs/simpleTriggerFilter"
+              }
+            }
+          }
+        },
+        {
+          "$ref": "#/$defs/segmentTriggerCondition"
+        },
+        {
+          "$ref": "#/$defs/attributeTriggerCondition"
+        },
+        {
+          "$ref": "#/$defs/deviceAttributeTriggerCondition"
+        }
+      ]
+    },
+    "notAudienceFilter": {
+      "x-scalar-ignore": true,
+      "title": "not",
+      "description": "Returns people who don't match the condition inside it. `not` takes a single object, not an array. That object can be one condition, or an `and` or `or` group when you want to exclude people who match a combination of conditions.",
+      "oneOf": [
+        {
+          "title": "and",
+          "type": "object",
+          "properties": {
+            "and": {
+              "type": "array",
+              "description": "Match *all* conditions to return results.",
+              "items": {
+                "$ref": "#/$defs/complexAudienceFilter"
+              }
+            }
+          }
+        },
+        {
+          "title": "or",
+          "type": "object",
+          "properties": {
+            "or": {
+              "type": "array",
+              "description": "Match *any* condition to return results.",
+              "items": {
+                "$ref": "#/$defs/complexAudienceFilter"
+              }
+            }
+          }
+        },
+        {
+          "title": "segment",
+          "type": "object",
+          "properties": {
+            "segment": {
+              "$ref": "#/$defs/segmentAudienceFilter"
+            }
+          }
+        },
+        {
+          "title": "attribute",
+          "type": "object",
+          "properties": {
+            "attribute": {
+              "$ref": "#/$defs/attributeAudienceFilter"
+            }
+          }
+        }
+      ]
+    },
+    "notTriggerFilter": {
+      "x-scalar-ignore": true,
+      "title": "not",
+      "description": "Returns people who don't match the condition inside it. `not` takes a single object, not an array. That object can be one condition, or an `and` or `or` group when you want to exclude people who match a combination of conditions.",
+      "oneOf": [
+        {
+          "title": "and",
+          "type": "object",
+          "properties": {
+            "and": {
+              "type": "array",
+              "description": "Match *all* conditions to return results.",
+              "items": {
+                "$ref": "#/$defs/complexTriggerFilter"
+              }
+            }
+          }
+        },
+        {
+          "title": "or",
+          "type": "object",
+          "properties": {
+            "or": {
+              "type": "array",
+              "description": "Match *any* condition to return results.",
+              "items": {
+                "$ref": "#/$defs/complexTriggerFilter"
+              }
+            }
+          }
+        },
+        {
+          "$ref": "#/$defs/segmentTriggerCondition"
+        },
+        {
+          "$ref": "#/$defs/attributeTriggerCondition"
+        },
+        {
+          "$ref": "#/$defs/deviceAttributeTriggerCondition"
+        }
+      ]
+    },
+    "orAudienceFilter": {
+      "x-scalar-ignore": true,
+      "title": "or",
+      "type": "object",
+      "properties": {
+        "or": {
+          "type": "array",
+          "description": "Match *any* condition to return results.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "and": {
+                "type": "array",
+                "description": "Returns results matching *all* conditions.",
+                "items": {
+                  "$ref": "#/$defs/simpleAudienceFilter"
+                }
+              },
+              "not": {
+                "description": "Returns people who don't match the condition inside it. `not` takes a single object, not an array. That object can be one condition, or an `and` or `or` group when you want to exclude people who match a combination of conditions.",
+                "oneOf": [
+                  {
+                    "title": "and",
+                    "type": "object",
+                    "properties": {
+                      "and": {
+                        "type": "array",
+                        "description": "Match *all* conditions to return results.",
+                        "items": {
+                          "$ref": "#/$defs/simpleAudienceFilter"
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "title": "or",
+                    "type": "object",
+                    "properties": {
+                      "or": {
+                        "type": "array",
+                        "description": "Match *any* condition to return results.",
+                        "items": {
+                          "$ref": "#/$defs/simpleAudienceFilter"
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "title": "segment",
+                    "type": "object",
+                    "properties": {
+                      "segment": {
+                        "$ref": "#/$defs/segmentAudienceFilter"
+                      }
+                    }
+                  },
+                  {
+                    "title": "attribute",
+                    "type": "object",
+                    "properties": {
+                      "attribute": {
+                        "$ref": "#/$defs/attributeAudienceFilter"
+                      }
+                    }
+                  }
+                ]
+              },
+              "segment": {
+                "$ref": "#/$defs/segmentAudienceFilter"
+              },
+              "attribute": {
+                "$ref": "#/$defs/attributeAudienceFilter"
+              }
+            }
+          }
+        }
+      }
+    },
+    "orTriggerFilter": {
+      "x-scalar-ignore": true,
+      "title": "or",
+      "type": "object",
+      "properties": {
+        "or": {
+          "type": "array",
+          "description": "Returns results matching *any* conditions.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "and": {
+                "type": "array",
+                "description": "Returns results matching *all* conditions.",
+                "items": {
+                  "$ref": "#/$defs/simpleTriggerFilter"
+                }
+              },
+              "not": {
+                "$ref": "#/$defs/nestedNotTriggerFilter"
+              },
+              "segment": {
+                "$ref": "#/$defs/segmentAudienceFilter"
+              },
+              "attribute": {
+                "$ref": "#/$defs/attributeAudienceFilter"
+              },
+              "device_attribute": {
+                "$ref": "#/$defs/deviceAttributeTriggerFilter"
+              }
+            }
+          }
+        }
+      }
+    },
+    "segmentAudienceFilter": {
+      "x-scalar-ignore": true,
+      "title": "segment",
+      "type": "object",
+      "description": "Provide the `id` of a segment containing people you want to search for.",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "The ID of the segment you want to return people from."
+        },
+        "inverse": {
+          "type": "boolean",
+          "default": false,
+          "description": "Set to `true` to match people who *aren't* in the segment."
+        }
+      }
+    },
+    "segmentTriggerCondition": {
+      "x-scalar-ignore": true,
+      "title": "segment",
+      "description": "Filter for people who belong to a segment.",
+      "type": "object",
+      "properties": {
+        "segment": {
+          "$ref": "#/$defs/segmentAudienceFilter"
+        }
+      }
+    },
+    "simpleAudienceFilter": {
+      "x-scalar-ignore": true,
+      "anyOf": [
+        {
+          "title": "segment",
+          "description": "Filter for people who belong to a segment.",
+          "type": "object",
+          "properties": {
+            "segment": {
+              "$ref": "#/$defs/segmentAudienceFilter"
+            }
+          }
+        },
+        {
+          "title": "audience",
+          "type": "object",
+          "description": "filter for people who have an attribute or an attribute value.",
+          "properties": {
+            "attribute": {
+              "$ref": "#/$defs/attributeAudienceFilter"
+            }
+          }
+        }
+      ]
+    },
+    "simpleTriggerFilter": {
+      "x-scalar-ignore": true,
+      "anyOf": [
+        {
+          "$ref": "#/$defs/segmentTriggerCondition"
+        },
+        {
+          "$ref": "#/$defs/attributeTriggerCondition"
+        },
+        {
+          "$ref": "#/$defs/deviceAttributeTriggerCondition"
+        }
+      ]
+    },
+    "triggerFilter": {
+      "x-scalar-ignore": true,
+      "title": "Filter",
+      "description": "Use `and`, `or`, and `not` to combine segment, attribute, and device attribute conditions. The top-level object accepts one property; nest groups for complex filters.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/andTriggerFilter"
+        },
+        {
+          "$ref": "#/$defs/orTriggerFilter"
+        },
+        {
+          "$ref": "#/$defs/notTriggerFilter"
+        },
+        {
+          "$ref": "#/$defs/segmentTriggerCondition"
+        },
+        {
+          "$ref": "#/$defs/attributeTriggerCondition"
+        },
+        {
+          "$ref": "#/$defs/deviceAttributeTriggerCondition"
+        }
+      ]
+    },
+    "triggerFilterProp": {
+      "x-scalar-ignore": true,
+      "type": "object",
+      "properties": {
+        "filter": {
+          "description": "Narrows your audience to the people who also match one or more conditions. Use it to send to \"these people, but only the ones who…\". For example, you can send a push broadcast to a list of IDs (recipients) and skip the people who don't have a device (filter).\n\nWe check `filter` when the broadcast sends. An empty `ids`, `emails`, or `per_user_data` list falls back to the broadcast's saved audience, which you can't narrow, so sending `filter` with an empty list returns a `422`. The filter doesn't raise the limits on your list: we look up every identifier you send before we apply it.\n",
+          "$ref": "#/$defs/triggerFilter"
+        }
+      }
+    }
+  }
+}

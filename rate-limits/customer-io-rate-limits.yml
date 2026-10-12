@@ -1,13 +1,12 @@
+name: Customer.io API Rate Limits
 specification: API Commons Rate Limits
 specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
 provider: Customer.io
 providerId: customer-io
-generated: '2026-08-13'
+generated: '2026-10-12'
 method: searched
-source: >-
-  https://docs.customer.io/integrations/api/customerio-apis.md and the 429
-  response descriptions in https://docs.customer.io/files/journeys-app.json
+source: https://docs.customer.io/integrations/api/customerio-apis.md
 limit_count: 6
 created: '2026-06-20'
 modified: '2026-08-13'
@@ -21,19 +20,8 @@ tags:
 - Rate Limiting
 - Quotas
 - Throttling
-description: >-
-  Customer.io applies per-endpoint rate limits that differ by API surface. The
-  Track (Behavioral Tracking) API has a fair-use limit of 100 requests per
-  second for both live integrations and historical backfill, applying to v1 and
-  v2. On the App API most requests are limited to 10 requests per second, with
-  API-triggered broadcasts limited to 1 request every 10 seconds and
-  transactional messages allowed up to 100 requests per second. The Pipelines /
-  CDP API enforces payload-size limits of 64 KB per single request and 1 MB per
-  batch request.
-notes: >-
-  Limits captured from Customer.io API reference documentation and are subject
-  to change; verify the current published limits during reconciliation.
-  Exceeding limits returns HTTP 429.
+description: Customer.io applies per-endpoint rate limits that differ by API surface. The Track (Behavioral Tracking) API has a fair-use limit of 100 requests per second for both live integrations and historical backfill, applying to v1 and v2. On the App API most requests are limited to 10 requests per second, with API-triggered broadcasts limited to 1 request every 10 seconds and transactional messages allowed up to 100 requests per second. The Pipelines / CDP API enforces payload-size limits of 64 KB per single request and 1 MB per batch request.
+notes: Limits captured from Customer.io API reference documentation and are subject to change; verify the current published limits during reconciliation. Exceeding limits returns HTTP 429.
 sources:
 - https://docs.customer.io/integrations/api/track/
 - https://docs.customer.io/integrations/api/app/
@@ -45,37 +33,58 @@ headers:
   request: []
   response: []
   retry_after: false
-  evidence: >-
-    Checked 2026-08-13 against all four published OpenAPI documents and the API
-    overview documentation. No X-RateLimit-*, no RateLimit-*, no Retry-After —
-    the 429 responses in journeys-app.json carry no schema and no headers block
-    at all, on 116 of 166 operations. A client cannot read its remaining budget
-    or a recommended wait; it can only observe rejection and back off blind.
-  impact: >-
-    This is the single largest runtime-semantics gap in the Customer.io surface.
-    The limits are published as prose in the docs but are invisible at runtime,
-    which is exactly backwards for an agent.
+  evidence: Checked 2026-08-13 against all four published OpenAPI documents and the API overview documentation. No X-RateLimit-*, no RateLimit-*, no Retry-After — the 429 responses in journeys-app.json carry no schema and no headers block at all, on 116 of 166 operations. A client cannot read its remaining budget or a recommended wait; it can only observe rejection and back off blind.
+  impact: This is the single largest runtime-semantics gap in the Customer.io surface. The limits are published as prose in the docs but are invisible at runtime, which is exactly backwards for an agent.
 limits:
-- name: Track API (Behavioral Tracking)
+- name: Track and Pipelines APIs
   scope: account
-  metric: requests
-  limit: 100/second
-  notes: Fair-use limit for live integrations and historical backfill; applies to v1 and v2.
-- name: App API (general)
+  limit_text: 3,000 requests per 3 seconds. This is a soft limit.
+  max: 3000
+  window: 3 seconds
+  kind: soft
+  note: Not strictly enforced; exceeding it does not return a 429.
+- name: App API
   scope: account
-  metric: requests
-  limit: 10/second
-  notes: Default limit for most App API endpoints.
-- name: App API (API-triggered broadcast)
+  limit_text: 10 requests per second.
+  max: 10
+  window: 1 second
+  limit: 10
+  status_on_exhaustion: 429
+  headers:
+  - Retry-After
+- name: Transactional messages
   scope: account
-  metric: requests
-  limit: 1 per 10 seconds
-  notes: Broadcast trigger endpoint is heavily throttled.
-- name: App API (Transactional)
+  limit_text: Transactional sends go through the same ingress as the Track and Pipelines APIs and share their soft limit.
+  max: 3000
+  window: 3 seconds
+  kind: soft
+  endpoint: /integrations/api/app/tag/send-messages/
+- name: API-triggered broadcasts
   scope: account
-  metric: requests
-  limit: 100/second
-  notes: Transactional email/push/sms/in-app send endpoints.
+  limit_text: 1 request every 10 seconds.
+  max: 1
+  window: 10 seconds
+  endpoint: triggerBroadcast
+  status_on_exhaustion: 429
+  headers:
+  - Retry-After
+policies:
+- name: Per-Endpoint Limits
+  description: Limits are enforced per endpoint category rather than a single global account limit.
+- name: Backoff Strategy
+  description: Clients should implement exponential backoff with jitter and honor Retry-After on HTTP 429 responses.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
+x-ported-from: customerio
+x-ported: '2026-08-04'
+x-ported-note: Carried over from the retired duplicate `customerio` during the duplicate-provider merge. Content unchanged; provider identity repointed.
+signaling:
+  status: 429
+  headers:
+  - Retry-After
+  limit_text: For the App API, requests over the rate limit return a `429` response with a `Retry-After` header.
+payload_limits:
 - name: Pipelines API (single request)
   scope: request
   metric: bytes
@@ -86,17 +95,4 @@ limits:
   metric: bytes
   limit: 1 MB
   notes: Maximum size of a batch request.
-policies:
-- name: Per-Endpoint Limits
-  description: Limits are enforced per endpoint category rather than a single global account limit.
-- name: Backoff Strategy
-  description: Clients should implement exponential backoff with jitter and honor Retry-After on HTTP 429 responses.
-maintainers:
-- FN: Kin Lane
-  email: kin@apievangelist.com
-
-x-ported-from: customerio
-x-ported: '2026-08-04'
-x-ported-note: >-
-  Carried over from the retired duplicate `customerio` during the
-  duplicate-provider merge. Content unchanged; provider identity repointed.
+note: 'Rewritten 2026-10-12 from the current docs: the Track API limit is now stated as 3,000 requests per 3 seconds (was recorded as 100/second). Pipelines payload size limits from the prior pass kept under payload_limits.'
