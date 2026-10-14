@@ -10,11 +10,14 @@ source:
 checked:
 - https://composio.dev/toolkits/customer-io
 - https://customer.io/integrations
+- https://docs.mparticle.com/integrations/customerio/audience/
+- https://hightouch.com/docs/destinations/customerio
 - https://monid.ai/tools/customer-io
 - https://n8n.io/integrations/customer-io/
 - https://n8n.io/integrations/customer/
 - https://n8n.io/integrations/customerio/
 - https://www.make.com/en/integrations/customer-io
+- https://www.twilio.com/docs/segment/connections/destinations/catalog/actions-customerio
 - https://zapier.com/apps/customer-io/integrations
 - https://zapier.com/apps/customer/integrations
 - https://zapier.com/apps/customerio/integrations
@@ -93,6 +96,96 @@ edges:
   direction: unknown
   relationship: event
   use_case: Destination and source for event and attribute data
+- partner_name: Twilio Segment
+  partner: segment
+  partner_match: aggregator
+  marketplace: coverage
+  channel: partner-built
+  direction: partner-built
+  type: coverage
+  relationship: connector-coverage
+  evidence: https://www.twilio.com/docs/segment/connections/destinations/catalog/actions-customerio
+  coverage_role:
+  - destination
+  - source
+  cdp_signals:
+    destination:
+      catalog_entries:
+      - actions-customerio
+      - customer-io
+      status: PUBLIC
+      partner_owned: true
+      connection_modes:
+      - cloud:mobile
+      - cloud:server
+      - cloud:web
+      - device:web
+      accepted_methods:
+      - Group
+      - Identify
+      - Page
+      - Track
+      component_owners:
+      - PARTNER
+      - SEGMENT
+    source:
+      catalog_entries:
+      - customer-io
+  detected_by: sweep-cdp.py
+  first_seen: '2026-10-14'
+- partner_name: mParticle
+  partner: mparticle
+  partner_match: aggregator
+  marketplace: coverage
+  channel: partner-built
+  direction: partner-built
+  type: coverage
+  relationship: connector-coverage
+  evidence: https://docs.mparticle.com/integrations/customerio/audience/
+  coverage_role:
+  - destination
+  - source
+  cdp_signals:
+    destination:
+      catalog_entries:
+      - customerio
+      integration_types:
+      - audience
+      - event
+    source:
+      catalog_entries:
+      - customerio
+      integration_types:
+      - feed
+  detected_by: sweep-cdp.py
+  first_seen: '2026-10-14'
+- partner_name: Hightouch
+  partner: hightouch
+  partner_match: aggregator
+  marketplace: coverage
+  channel: partner-built
+  direction: partner-built
+  type: coverage
+  relationship: connector-coverage
+  evidence: https://hightouch.com/docs/destinations/customerio
+  coverage_role:
+  - destination
+  cdp_signals:
+    destination:
+      catalog_entries:
+      - customerio
+      status: released
+      sync_types:
+      - Customers
+      - Events
+      - Objects
+      - Segments
+      sync_modes:
+      - insert
+      - update
+      - upsert
+  detected_by: sweep-cdp.py
+  first_seen: '2026-10-14'
 templates: []
 skips:
 - label: Amplitude
