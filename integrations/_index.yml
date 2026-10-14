@@ -102,12 +102,12 @@
   label: Twilio Segment
   partner: segment
   partner_name: Twilio Segment
-  type: coverage
-  marketplace: coverage
+  type: marketplace
+  marketplace: segment-partner-destinations
   channel: partner-built
   evidence: https://www.twilio.com/docs/segment/connections/destinations/catalog/actions-customerio
   source: edge
-  relationship: connector-coverage
+  relationship: platform-app
   status: not-a-workflow
   arazzo: null
 - slug: customer-io-mparticle
@@ -132,5 +132,18 @@
   evidence: https://hightouch.com/docs/destinations/customerio
   source: edge
   relationship: connector-coverage
+  status: not-a-workflow
+  arazzo: null
+- slug: customer-io-okta-own
+  label: Okta (own)
+  partner: okta
+  partner_name: Okta (own)
+  category: Single Sign-On
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://www.okta.com/integrations/customerio/
+  source: edge
+  relationship: platform-app
   status: not-a-workflow
   arazzo: null
