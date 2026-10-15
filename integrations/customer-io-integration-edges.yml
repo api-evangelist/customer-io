@@ -22,6 +22,7 @@ checked:
 - https://zapier.com/apps/customer/integrations
 - https://zapier.com/apps/customerio/integrations
 - okta/integrations/okta-integration-edges.yml
+- stripe/integrations/stripe-integration-edges.yml
 summary: null
 marketplace_apps: []
 edges:
@@ -209,6 +210,23 @@ edges:
   features:
   - OIDC
   - SWA
+- partner_name: Stripe (own)
+  partner: stripe
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://marketplace.stripe.com/apps/cio-provisioning-test
+  mirror_of: stripe/integrations/stripe-integration-edges.yml
+  apps:
+  - customerio
+  listing_count: 1
+  detected: '2026-10-15'
+  detected_by: mirror-platform-listings.py
+  category: developer_tools, marketing
 templates: []
 skips:
 - label: Amplitude
