@@ -1,9 +1,13 @@
 openapi: 3.2.0
 info:
   version: 1.0.0
-  title: Customer.io App Live Notifications API
-  description: Our App API provides ways to trigger messages and retrieve information about people, campaigns, broadcasts, and more.
+  title: Customer.io Journeys API Reference Live Notifications API
+  description: Customer.io provides REST APIs to send real-time customer data, retrieve data from your account, and trigger messages.
 servers:
+- url: https://track.customer.io
+  description: The base URL for the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+- url: https://track-eu.customer.io
+  description: The base URL for the Track API (EU region). Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
 - url: https://api.customer.io
   description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
 - url: https://api-eu.customer.io
@@ -15,7 +19,9 @@ paths:
   /v1/live_notifications/start:
     servers:
     - url: https://api.customer.io
-      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
     post:
       summary: Start a live notification
       operationId: startLiveNotification
@@ -24,7 +30,10 @@ paths:
       description: 'Start a live notification for a profile. Customer.io mints an `instance_id` for the new activity and returns it. You''ll use this ID to update, end, or check the status of the activity.
 
 
-        On iOS, this delivers a push-to-start event through APNs, so the person''s device must have a registered push-to-start token for the `notification_type` (the SDK registers one automatically when your app registers the activity type). Push-to-start requires iOS 17.2 or later. iOS starts also require a `push_payload.alert` with a title and body.'
+        On iOS, this delivers a push-to-start event through APNs, so the person''s device must have a registered push-to-start token for the `notification_type` (the SDK registers one automatically when your app registers the activity type). Push-to-start requires iOS 17.2 or later. iOS starts also require a `push_payload.alert` with a title and body.
+
+
+        On Android, this delivers an FCM data message, which the SDK renders without your app being open.'
       tags:
       - Live Notifications
       requestBody:
@@ -73,86 +82,22 @@ paths:
                     '
                 attributes:
                   minProperties: 1
-                  description: Static fields set once at start. They can't change after you start the activity. The attributes' shape depends on your `notification_type`. For iOS or a free form Android activity, pick the free form variant. For other Android notification types, pick the matching variant below. See the [payload reference](/messaging/channels/live-notifications/payload-reference/) for details.
-                  anyOf:
-                  - x-scalar-ignore: true
-                    title: Free-form (iOS or Android custom type)
-                    type: object
-                    description: Your own static fields. On iOS, field names must match the `ActivityAttributes` type in your app. For Android custom types, fields pass through to your app's renderer as-is.
-                    additionalProperties: true
-                  - x-scalar-ignore: true
-                    title: Multi-step tracker
-                    type: object
-                    description: 'Static fields for a multi-step tracker template. `notification_type`: `io.customer.livenotifications.segments`.'
-                    required:
-                    - header
-                    properties:
-                      header:
-                        type: string
-                        description: Top-row label
-                  - x-scalar-ignore: true
-                    title: Countdown timer
-                    type: object
-                    description: 'Static fields for the countdown timer template. `notification_type`: `io.customer.livenotifications.countdowntimer`.'
-                    required:
-                    - header
-                    properties:
-                      header:
-                        type: string
-                        description: Top-row label of the notification.
-                content_state:
-                  minProperties: 1
-                  description: 'The initial dynamic content for the activity. [The shape depends on your `notification_type`](/messaging/channels/live-notifications/payload-reference/#android-built-in-template-fields)—pick the matching variant below. Date fields are epoch seconds.
+                  description: 'Static fields used to create the activity—an order number, a flight''s origin and destination, or the teams in a match. On iOS they can''t change after start. On Android, include the static fields your renderer needs on update and end calls too, because the SDK renders from a merged payload. The shape depends on your `notification_type`: pick the free form variant for iOS or a free form Android activity, or the matching bundled-template variant below. Template fields are documented for [iOS](/integrations/sdk/ios/live-activities/reference/#built-in-templates) and [Android](/integrations/sdk/android/live-notifications/reference/#built-in-templates).
 
                     '
                   anyOf:
-                  - x-scalar-ignore: true
-                    title: Free-form (iOS or Android custom type)
-                    type: object
-                    description: Your own dynamic fields. On iOS, field names must match your `ContentState` type. For Android custom types, fields pass through to your app's renderer as-is. Date fields are epoch seconds.
-                    additionalProperties: true
-                  - x-scalar-ignore: true
-                    title: Multi-step tracker
-                    type: object
-                    description: 'Dynamic fields for the multi-step tracker template. `notification_type`: `io.customer.livenotifications.segments`.'
-                    required:
-                    - status
-                    - segmentsTotal
-                    - segmentsComplete
-                    properties:
-                      status:
-                        type: string
-                        description: Primary status line, like `Out for delivery`.
-                      substatus:
-                        type: string
-                        description: Secondary line under the status.
-                      segmentsTotal:
-                        type: integer
-                        minimum: 1
-                        maximum: 20
-                        description: The total number of segments in the progress bar. Values above 20 are capped at 20.
-                      segmentsComplete:
-                        type: integer
-                        description: How many segments are filled; the remainder render as incomplete. Values above segmentsTotal are capped at segmentsTotal.
-                      trailingText:
-                        type: string
-                        description: Short text on the Dynamic Island trailing edge, e.g. \"5 min\". Keep it brief; the trailing region is narrow.
-                  - x-scalar-ignore: true
-                    title: Countdown timer
-                    type: object
-                    description: 'Dynamic fields for the countdown timer template. `notification_type`: `io.customer.livenotifications.countdowntimer`.'
-                    required:
-                    - title
-                    properties:
-                      title:
-                        type: string
-                        description: Primary status line.
-                      statusMessage:
-                        type: string
-                        description: Secondary line under the title.
-                      endTime:
-                        type: integer
-                        description: Countdown target, in whole seconds since 1970 UTC. A time in the future renders a live countdown; omit it to render no timer. The countdown does not clear itself when it reaches zero — it rests at \"0:00\" until you send an update with a finished title and no endTime.
+                  - $ref: '#/components/schemas/liveNotificationFreeFormAttributes'
+                  - $ref: '#/components/schemas/SegmentsAttributes'
+                  - $ref: '#/components/schemas/CountdownTimerAttributes'
+                content_state:
+                  minProperties: 1
+                  description: 'The initial dynamic content for the activity—the status, score, or ETA the device renders. Send the complete state on every call; partial updates aren''t supported. The shape depends on your `notification_type`: pick the free form variant for iOS or a free form Android activity, or the matching bundled-template variant below. Date fields are epoch seconds.
+
+                    '
+                  anyOf:
+                  - $ref: '#/components/schemas/liveNotificationFreeFormContentState'
+                  - $ref: '#/components/schemas/SegmentsContentState'
+                  - $ref: '#/components/schemas/CountdownTimerContentState'
                 push_payload:
                   type: object
                   description: The alert shown when the activity starts. Required for iOS.
@@ -195,70 +140,12 @@ paths:
           description: The request was malformed—a missing required field, an invalid platform, more or fewer than one identifier, or a missing iOS alert.
         '404':
           description: Live notifications aren't enabled for this workspace.
-      x-codeSamples:
-      - lang: json
-        label: JSON
-        source: "{\n  \"identifiers\": {},\n  \"notification_type\": \"string\",\n  \"attributes\": {},\n  \"content_state\": {}\n}"
-      - lang: Shell + Curl
-        source: "curl --request POST \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/live_notifications/start \\\n  --header 'content-type: application/json' \\\n  --data '{\"identifiers\":{\"id\":\"string\",\"email\":\"string\",\"phone\":\"string\",\"internal\":\"string\"},\"notification_type\":\"string\",\"device_id\":\"string\",\"platform\":\"ios\",\"app_identifier\":\"string\",\"attributes\":{},\"content_state\":{},\"push_payload\":{\"alert\":{\"title\":\"string\",\"body\":\"string\",\"sound\":\"string\"}},\"deep_link\":\"string\",\"expiration\":0}'"
-      - lang: Node + Native
-        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"POST\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/live_notifications/start\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({\n  identifiers: {id: 'string', email: 'string', phone: 'string', internal: 'string'},\n  notification_type: 'string',\n  device_id: 'string',\n  platform: 'ios',\n  app_identifier: 'string',\n  attributes: {},\n  content_state: {},\n  push_payload: {alert: {title: 'string', body: 'string', sound: 'string'}},\n  deep_link: 'string',\n  expiration: 0\n}));\nreq.end();"
-      - lang: Ruby + Native
-        source: 'require ''uri''
-
-          require ''net/http''
-
-          require ''openssl''
-
-
-          url = URI("https://api.customer.io/v1/live_notifications/start")
-
-
-          http = Net::HTTP.new(url.host, url.port)
-
-          http.use_ssl = true
-
-          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-
-          request = Net::HTTP::Post.new(url)
-
-          request["content-type"] = ''application/json''
-
-          request.body = "{\"identifiers\":{\"id\":\"string\",\"email\":\"string\",\"phone\":\"string\",\"internal\":\"string\"},\"notification_type\":\"string\",\"device_id\":\"string\",\"platform\":\"ios\",\"app_identifier\":\"string\",\"attributes\":{},\"content_state\":{},\"push_payload\":{\"alert\":{\"title\":\"string\",\"body\":\"string\",\"sound\":\"string\"}},\"deep_link\":\"string\",\"expiration\":0}"
-
-
-          response = http.request(request)
-
-          puts response.read_body'
-      - lang: Python + Python3
-        source: 'import http.client
-
-
-          conn = http.client.HTTPSConnection("api.customer.io")
-
-
-          payload = "{\"identifiers\":{\"id\":\"string\",\"email\":\"string\",\"phone\":\"string\",\"internal\":\"string\"},\"notification_type\":\"string\",\"device_id\":\"string\",\"platform\":\"ios\",\"app_identifier\":\"string\",\"attributes\":{},\"content_state\":{},\"push_payload\":{\"alert\":{\"title\":\"string\",\"body\":\"string\",\"sound\":\"string\"}},\"deep_link\":\"string\",\"expiration\":0}"
-
-
-          headers = { ''content-type'': "application/json" }
-
-
-          conn.request("POST", "/v1/live_notifications/start", payload, headers)
-
-
-          res = conn.getresponse()
-
-          data = res.read()
-
-
-          print(data.decode("utf-8"))'
-      - lang: Go + Native
-        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/live_notifications/start\"\n\n\tpayload := strings.NewReader(\"{\\\"identifiers\\\":{\\\"id\\\":\\\"string\\\",\\\"email\\\":\\\"string\\\",\\\"phone\\\":\\\"string\\\",\\\"internal\\\":\\\"string\\\"},\\\"notification_type\\\":\\\"string\\\",\\\"device_id\\\":\\\"string\\\",\\\"platform\\\":\\\"ios\\\",\\\"app_identifier\\\":\\\"string\\\",\\\"attributes\\\":{},\\\"content_state\\\":{},\\\"push_payload\\\":{\\\"alert\\\":{\\\"title\\\":\\\"string\\\",\\\"body\\\":\\\"string\\\",\\\"sound\\\":\\\"string\\\"}},\\\"deep_link\\\":\\\"string\\\",\\\"expiration\\\":0}\")\n\n\treq, _ := http.NewRequest(\"POST\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
   /v1/live_notifications/update:
     servers:
     - url: https://api.customer.io
-      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
     post:
       summary: Update a live notification
       operationId: updateLiveNotification
@@ -289,53 +176,9 @@ paths:
                   minProperties: 1
                   description: The complete new content state for the activity. The content state's shape depends on the activity's `notification_type`. For iOS or a free form Android activity, pick the free form variant. For other Android notification types, pick the matching variant below. Date fields are epoch seconds.
                   anyOf:
-                  - x-scalar-ignore: true
-                    title: Free-form (iOS or Android custom type)
-                    type: object
-                    description: Your own dynamic fields. On iOS, field names must match your `ContentState` type. For Android custom types, fields pass through to your app's renderer as-is. Date fields are epoch seconds.
-                    additionalProperties: true
-                  - x-scalar-ignore: true
-                    title: Multi-step tracker
-                    type: object
-                    description: 'Dynamic fields for the multi-step tracker template. `notification_type`: `io.customer.livenotifications.segments`.'
-                    required:
-                    - status
-                    - segmentsTotal
-                    - segmentsComplete
-                    properties:
-                      status:
-                        type: string
-                        description: Primary status line, like `Out for delivery`.
-                      substatus:
-                        type: string
-                        description: Secondary line under the status.
-                      segmentsTotal:
-                        type: integer
-                        minimum: 1
-                        maximum: 20
-                        description: The total number of segments in the progress bar. Values above 20 are capped at 20.
-                      segmentsComplete:
-                        type: integer
-                        description: How many segments are filled; the remainder render as incomplete. Values above segmentsTotal are capped at segmentsTotal.
-                      trailingText:
-                        type: string
-                        description: Short text on the Dynamic Island trailing edge, e.g. \"5 min\". Keep it brief; the trailing region is narrow.
-                  - x-scalar-ignore: true
-                    title: Countdown timer
-                    type: object
-                    description: 'Dynamic fields for the countdown timer template. `notification_type`: `io.customer.livenotifications.countdowntimer`.'
-                    required:
-                    - title
-                    properties:
-                      title:
-                        type: string
-                        description: Primary status line.
-                      statusMessage:
-                        type: string
-                        description: Secondary line under the title.
-                      endTime:
-                        type: integer
-                        description: Countdown target, in whole seconds since 1970 UTC. A time in the future renders a live countdown; omit it to render no timer. The countdown does not clear itself when it reaches zero — it rests at \"0:00\" until you send an update with a finished title and no endTime.
+                  - $ref: '#/components/schemas/liveNotificationFreeFormContentState'
+                  - $ref: '#/components/schemas/SegmentsContentState'
+                  - $ref: '#/components/schemas/CountdownTimerContentState'
                 attributes:
                   type: object
                   description: Static activity fields, for renderers that need them alongside the content state. On iOS, attributes can't change after start.
@@ -377,70 +220,12 @@ paths:
           description: The request was malformed, `instance_id` isn't a valid ULID, or a `push_payload.alert` was missing a `title` or `body`.
         '404':
           description: Live notifications aren't enabled for this workspace.
-      x-codeSamples:
-      - lang: json
-        label: JSON
-        source: "{\n  \"instance_id\": \"string\",\n  \"content_state\": {}\n}"
-      - lang: Shell + Curl
-        source: "curl --request POST \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/live_notifications/update \\\n  --header 'content-type: application/json' \\\n  --data '{\"instance_id\":\"string\",\"content_state\":{},\"attributes\":{},\"push_payload\":{\"alert\":{\"title\":\"string\",\"body\":\"string\",\"sound\":\"string\"}},\"deep_link\":\"string\"}'"
-      - lang: Node + Native
-        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"POST\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/live_notifications/update\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({\n  instance_id: 'string',\n  content_state: {},\n  attributes: {},\n  push_payload: {alert: {title: 'string', body: 'string', sound: 'string'}},\n  deep_link: 'string'\n}));\nreq.end();"
-      - lang: Ruby + Native
-        source: 'require ''uri''
-
-          require ''net/http''
-
-          require ''openssl''
-
-
-          url = URI("https://api.customer.io/v1/live_notifications/update")
-
-
-          http = Net::HTTP.new(url.host, url.port)
-
-          http.use_ssl = true
-
-          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-
-          request = Net::HTTP::Post.new(url)
-
-          request["content-type"] = ''application/json''
-
-          request.body = "{\"instance_id\":\"string\",\"content_state\":{},\"attributes\":{},\"push_payload\":{\"alert\":{\"title\":\"string\",\"body\":\"string\",\"sound\":\"string\"}},\"deep_link\":\"string\"}"
-
-
-          response = http.request(request)
-
-          puts response.read_body'
-      - lang: Python + Python3
-        source: 'import http.client
-
-
-          conn = http.client.HTTPSConnection("api.customer.io")
-
-
-          payload = "{\"instance_id\":\"string\",\"content_state\":{},\"attributes\":{},\"push_payload\":{\"alert\":{\"title\":\"string\",\"body\":\"string\",\"sound\":\"string\"}},\"deep_link\":\"string\"}"
-
-
-          headers = { ''content-type'': "application/json" }
-
-
-          conn.request("POST", "/v1/live_notifications/update", payload, headers)
-
-
-          res = conn.getresponse()
-
-          data = res.read()
-
-
-          print(data.decode("utf-8"))'
-      - lang: Go + Native
-        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/live_notifications/update\"\n\n\tpayload := strings.NewReader(\"{\\\"instance_id\\\":\\\"string\\\",\\\"content_state\\\":{},\\\"attributes\\\":{},\\\"push_payload\\\":{\\\"alert\\\":{\\\"title\\\":\\\"string\\\",\\\"body\\\":\\\"string\\\",\\\"sound\\\":\\\"string\\\"}},\\\"deep_link\\\":\\\"string\\\"}\")\n\n\treq, _ := http.NewRequest(\"POST\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
   /v1/live_notifications/end:
     servers:
     - url: https://api.customer.io
-      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
     post:
       summary: End a live notification
       operationId: endLiveNotification
@@ -466,53 +251,9 @@ paths:
                 content_state:
                   description: The final content state to show before the activity ends. Defaults to the last state you sent. The content state's shape depends on the activity's `notification_type`. For iOS or a free form Android activity, pick the free form variant. For other Android notification types, pick the matching variant below.
                   anyOf:
-                  - x-scalar-ignore: true
-                    title: Free-form (iOS or Android custom type)
-                    type: object
-                    description: Your own dynamic fields. On iOS, field names must match your `ContentState` type. For Android custom types, fields pass through to your app's renderer as-is. Date fields are epoch seconds.
-                    additionalProperties: true
-                  - x-scalar-ignore: true
-                    title: Multi-step tracker
-                    type: object
-                    description: 'Dynamic fields for the multi-step tracker template. `notification_type`: `io.customer.livenotifications.segments`.'
-                    required:
-                    - status
-                    - segmentsTotal
-                    - segmentsComplete
-                    properties:
-                      status:
-                        type: string
-                        description: Primary status line, like `Out for delivery`.
-                      substatus:
-                        type: string
-                        description: Secondary line under the status.
-                      segmentsTotal:
-                        type: integer
-                        minimum: 1
-                        maximum: 20
-                        description: The total number of segments in the progress bar. Values above 20 are capped at 20.
-                      segmentsComplete:
-                        type: integer
-                        description: How many segments are filled; the remainder render as incomplete. Values above segmentsTotal are capped at segmentsTotal.
-                      trailingText:
-                        type: string
-                        description: Short text on the Dynamic Island trailing edge, e.g. \"5 min\". Keep it brief; the trailing region is narrow.
-                  - x-scalar-ignore: true
-                    title: Countdown timer
-                    type: object
-                    description: 'Dynamic fields for the countdown timer template. `notification_type`: `io.customer.livenotifications.countdowntimer`.'
-                    required:
-                    - title
-                    properties:
-                      title:
-                        type: string
-                        description: Primary status line.
-                      statusMessage:
-                        type: string
-                        description: Secondary line under the title.
-                      endTime:
-                        type: integer
-                        description: Countdown target, in whole seconds since 1970 UTC. A time in the future renders a live countdown; omit it to render no timer. The countdown does not clear itself when it reaches zero — it rests at \"0:00\" until you send an update with a finished title and no endTime.
+                  - $ref: '#/components/schemas/liveNotificationFreeFormContentState'
+                  - $ref: '#/components/schemas/SegmentsContentState'
+                  - $ref: '#/components/schemas/CountdownTimerContentState'
                 attributes:
                   type: object
                   description: Static activity fields, for renderers that need them alongside the content state.
@@ -554,70 +295,12 @@ paths:
           description: The request was malformed, `instance_id` isn't a valid ULID, or a `push_payload.alert` was missing a `title` or `body`.
         '404':
           description: Live notifications aren't enabled for this workspace.
-      x-codeSamples:
-      - lang: json
-        label: JSON
-        source: "{\n  \"instance_id\": \"string\"\n}"
-      - lang: Shell + Curl
-        source: "curl --request POST \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/live_notifications/end \\\n  --header 'content-type: application/json' \\\n  --data '{\"instance_id\":\"string\",\"content_state\":{},\"attributes\":{},\"push_payload\":{\"alert\":{\"title\":\"string\",\"body\":\"string\",\"sound\":\"string\"}},\"deep_link\":\"string\"}'"
-      - lang: Node + Native
-        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"POST\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/live_notifications/end\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({\n  instance_id: 'string',\n  content_state: {},\n  attributes: {},\n  push_payload: {alert: {title: 'string', body: 'string', sound: 'string'}},\n  deep_link: 'string'\n}));\nreq.end();"
-      - lang: Ruby + Native
-        source: 'require ''uri''
-
-          require ''net/http''
-
-          require ''openssl''
-
-
-          url = URI("https://api.customer.io/v1/live_notifications/end")
-
-
-          http = Net::HTTP.new(url.host, url.port)
-
-          http.use_ssl = true
-
-          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-
-          request = Net::HTTP::Post.new(url)
-
-          request["content-type"] = ''application/json''
-
-          request.body = "{\"instance_id\":\"string\",\"content_state\":{},\"attributes\":{},\"push_payload\":{\"alert\":{\"title\":\"string\",\"body\":\"string\",\"sound\":\"string\"}},\"deep_link\":\"string\"}"
-
-
-          response = http.request(request)
-
-          puts response.read_body'
-      - lang: Python + Python3
-        source: 'import http.client
-
-
-          conn = http.client.HTTPSConnection("api.customer.io")
-
-
-          payload = "{\"instance_id\":\"string\",\"content_state\":{},\"attributes\":{},\"push_payload\":{\"alert\":{\"title\":\"string\",\"body\":\"string\",\"sound\":\"string\"}},\"deep_link\":\"string\"}"
-
-
-          headers = { ''content-type'': "application/json" }
-
-
-          conn.request("POST", "/v1/live_notifications/end", payload, headers)
-
-
-          res = conn.getresponse()
-
-          data = res.read()
-
-
-          print(data.decode("utf-8"))'
-      - lang: Go + Native
-        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/live_notifications/end\"\n\n\tpayload := strings.NewReader(\"{\\\"instance_id\\\":\\\"string\\\",\\\"content_state\\\":{},\\\"attributes\\\":{},\\\"push_payload\\\":{\\\"alert\\\":{\\\"title\\\":\\\"string\\\",\\\"body\\\":\\\"string\\\",\\\"sound\\\":\\\"string\\\"}},\\\"deep_link\\\":\\\"string\\\"}\")\n\n\treq, _ := http.NewRequest(\"POST\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
   /v1/live_notifications/{instance_id}:
     servers:
     - url: https://api.customer.io
-      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
     get:
       summary: Get a live notification's status
       operationId: getLiveNotification
@@ -706,55 +389,96 @@ paths:
           description: '`instance_id` isn''t a valid ULID.'
         '404':
           description: The activity wasn't found—a recently started one may not be processed yet—or live notifications aren't enabled for this workspace.
-      x-codeSamples:
-      - lang: Shell + Curl
-        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/live_notifications/{instance_id}"
-      - lang: Node + Native
-        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/live_notifications/%7Binstance_id%7D\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
-      - lang: Ruby + Native
-        source: 'require ''uri''
-
-          require ''net/http''
-
-          require ''openssl''
-
-
-          url = URI("https://api.customer.io/v1/live_notifications/%7Binstance_id%7D")
-
-
-          http = Net::HTTP.new(url.host, url.port)
-
-          http.use_ssl = true
-
-          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-
-          request = Net::HTTP::Get.new(url)
-
-
-          response = http.request(request)
-
-          puts response.read_body'
-      - lang: Python + Python3
-        source: 'import http.client
-
-
-          conn = http.client.HTTPSConnection("api.customer.io")
-
-
-          conn.request("GET", "/v1/live_notifications/%7Binstance_id%7D")
-
-
-          res = conn.getresponse()
-
-          data = res.read()
-
-
-          print(data.decode("utf-8"))'
-      - lang: Go + Native
-        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/live_notifications/%7Binstance_id%7D\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
 components:
+  schemas:
+    liveNotificationFreeFormAttributes:
+      x-scalar-ignore: true
+      title: Free-form (iOS or Android custom type)
+      type: object
+      description: Your own static fields. On iOS, field names must match the `ActivityAttributes` type in your app. For Android custom types, fields pass through to your app's renderer as-is.
+      additionalProperties: true
+    SegmentsContentState:
+      x-scalar-ignore: true
+      title: Multi-step tracker
+      type: object
+      description: 'Dynamic fields for the multi-step tracker template. `notification_type`: `io.customer.livenotifications.segments`.'
+      required:
+      - status
+      - segmentsTotal
+      - segmentsComplete
+      properties:
+        status:
+          type: string
+          description: Primary status line, like `Out for delivery`.
+        substatus:
+          type: string
+          description: Secondary line under the status.
+        segmentsTotal:
+          type: integer
+          minimum: 1
+          maximum: 20
+          description: The total number of segments in the progress bar. Values above 20 are capped at 20.
+        segmentsComplete:
+          type: integer
+          description: How many segments are filled; the remainder render as incomplete. Values above segmentsTotal are capped at segmentsTotal.
+        trailingText:
+          type: string
+          description: Short text on the Dynamic Island trailing edge, e.g. \"5 min\". Keep it brief; the trailing region is narrow.
+    liveNotificationFreeFormContentState:
+      x-scalar-ignore: true
+      title: Free-form (iOS or Android custom type)
+      type: object
+      description: Your own dynamic fields. On iOS, field names must match your `ContentState` type. For Android custom types, fields pass through to your app's renderer as-is. Date fields are epoch seconds.
+      additionalProperties: true
+    SegmentsAttributes:
+      x-scalar-ignore: true
+      title: Multi-step tracker
+      type: object
+      description: 'Static fields for a multi-step tracker template. `notification_type`: `io.customer.livenotifications.segments`.'
+      required:
+      - header
+      properties:
+        header:
+          type: string
+          description: Top-row label
+    CountdownTimerAttributes:
+      x-scalar-ignore: true
+      title: Countdown timer
+      type: object
+      description: 'Static fields for the countdown timer template. `notification_type`: `io.customer.livenotifications.countdowntimer`.'
+      required:
+      - header
+      properties:
+        header:
+          type: string
+          description: Top-row label of the notification.
+    CountdownTimerContentState:
+      x-scalar-ignore: true
+      title: Countdown timer
+      type: object
+      description: 'Dynamic fields for the countdown timer template. `notification_type`: `io.customer.livenotifications.countdowntimer`.'
+      required:
+      - title
+      properties:
+        title:
+          type: string
+          description: Primary status line.
+        statusMessage:
+          type: string
+          description: Secondary line under the title.
+        endTime:
+          type: integer
+          description: Countdown target, in whole seconds since 1970 UTC. A time in the future renders a live countdown; omit it to render no timer. The countdown does not clear itself when it reaches zero — it rests at \"0:00\" until you send an update with a finished title and no endTime.
   securitySchemes:
+    Tracking-API-Key:
+      type: http
+      scheme: basic
+      description: 'The Track API uses a basic authentication scheme. Your credentials are your **Site ID** and your **API key**, **Base-64 encoded** in the format `site_id:api_key`.
+
+
+        You can find your Site ID and API key on the [Track API Keys page](https://fly.customer.io/settings/api_credentials).
+
+        '
     Bearer-Auth:
       type: http
       scheme: bearer
@@ -769,7 +493,7 @@ components:
       type: http
       scheme: bearer
       bearerFormat: sa_live_
-      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
+      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/whatsapp`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
 
 
         Service-account tokens are intended for testing and one-off sends—for example, using the Customer.io CLI with an AI agent like Claude to verify that a transactional message renders correctly before wiring it into your production backend. **For the production integration that triggers the message from your application, use an App API Key instead**: it''s workspace-scoped, easier to rotate, and has a smaller blast radius.
@@ -781,4 +505,62 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
-      description: API key passed as a Bearer token
+      description: API key passed as a Bearer token.
+x-tagGroups:
+- name: Track API v2
+  tags:
+  - track_v2
+  - Object Schemas
+  - Person Schemas
+  - Deliveries
+- name: Track API
+  tags:
+  - trackOverview
+  - trackJsOrBackend
+  - trackLimit
+  - trackRegion
+  - Track Customers
+  - Track Events
+  - Forms
+  - Track Segments
+  - Track v1 Overview
+- name: App API
+  tags:
+  - appOverview
+  - appLimit
+  - appAuth
+  - Activities
+  - Automations
+  - Broadcasts
+  - Collections
+  - Customers
+  - Data Index
+  - ESP Suppression
+  - Exports
+  - Imports
+  - Info
+  - Live Notifications
+  - Messages
+  - Newsletters
+  - Opt-outs
+  - Reporting Webhooks
+  - Segments
+  - Sender Identities
+  - Snippets
+  - Subscription Center
+  - Transactional
+  - Workspaces
+  - Send Messages
+  - Objects
+  - Newsletter Variants
+  - Newsletter Metrics
+  - Assets
+- name: Design Studio API
+  tags:
+  - Folders
+  - Components
+  - Emails
+  - Email link and publish
+  - Email testing
+  - SMS
+  - SMS link and publish

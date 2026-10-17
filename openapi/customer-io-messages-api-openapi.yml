@@ -1,9 +1,13 @@
 openapi: 3.2.0
 info:
   version: 1.0.0
-  title: Customer.io App Messages API
-  description: Our App API provides ways to trigger messages and retrieve information about people, campaigns, broadcasts, and more.
+  title: Customer.io Journeys API Reference Messages API
+  description: Customer.io provides REST APIs to send real-time customer data, retrieve data from your account, and trigger messages.
 servers:
+- url: https://track.customer.io
+  description: The base URL for the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+- url: https://track-eu.customer.io
+  description: The base URL for the Track API (EU region). Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
 - url: https://api.customer.io
   description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
 - url: https://api-eu.customer.io
@@ -15,101 +19,21 @@ paths:
   /v1/messages:
     servers:
     - url: https://api.customer.io
-      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
     parameters:
-    - name: start
-      in: query
-      required: false
-      description: The token for the page of results you want to return. Responses contain a `next` property. Use this property as the `start` value to return the next page of results.
-      schema:
-        type: string
-    - name: limit
-      in: query
-      required: false
-      description: The maximum number of results you want to retrieve per page.
-      schema:
-        type: integer
-        default: 50
-        maximum: 1000
-    - name: type
-      in: query
-      required: false
-      description: The type of item you want to return metrics for. When empty, the response contains metrics for all possible types.
-      schema:
-        type: string
-        enum:
-        - email
-        - webhook
-        - twilio
-        - whatsapp
-        - slack
-        - push
-        - in_app
-        - live_notification
-    - name: metric
-      in: query
-      required: false
-      description: Determines the metric(s) you want to return.
-      schema:
-        type: string
-        enum:
-        - attempted
-        - sent
-        - delivered
-        - opened
-        - clicked
-        - converted
-        - bounced
-        - spammed
-        - unsubscribed
-        - dropped
-        - failed
-        - undeliverable
-    - name: drafts
-      in: query
-      required: false
-      description: If true, your request returns drafts rather than active/sent messages.
-      schema:
-        type: boolean
-    - name: campaign_id
-      in: query
-      required: false
-      description: The campaign you want to filter for.
-      schema:
-        type: integer
-    - name: newsletter_id
-      in: query
-      required: false
-      description: The newsletter you want to filter for.
-      schema:
-        type: integer
-    - name: action_id
-      in: query
-      required: false
-      description: The action you want to filter for.
-      schema:
-        type: integer
-    - name: start_ts
-      in: query
-      required: false
-      description: The beginning timestamp for your query.
-      schema:
-        type: integer
-        format: unix timestamp
-    - name: end_ts
-      in: query
-      required: false
-      description: The ending timestamp for your query.
-      schema:
-        type: integer
-        format: unix timestamp
-    - name: get_tracked_responses
-      in: query
-      required: false
-      description: If true, the response includes `tracked_responses` for each message—an object containing tracked response option names for in-app survey responses.
-      schema:
-        type: boolean
-        default: false
+    - $ref: '#/components/parameters/start'
+    - $ref: '#/components/parameters/limit-50-1000'
+    - $ref: '#/components/parameters/metricType'
+    - $ref: '#/components/parameters/metric'
+    - $ref: '#/components/parameters/drafts'
+    - $ref: '#/components/parameters/campaign_id_query'
+    - $ref: '#/components/parameters/newsletter_id_query'
+    - $ref: '#/components/parameters/action_id_query'
+    - $ref: '#/components/parameters/start_ts'
+    - $ref: '#/components/parameters/end_ts'
+    - $ref: '#/components/parameters/get_tracked_responses'
     get:
       summary: List messages
       operationId: listMessages
@@ -133,247 +57,7 @@ paths:
                     type: array
                     description: Each object in the array describes an individual message delivery. The object contains keys for all possible parents of the message (`newsletter_id`, `broadcast_id`, etc) but only the parents of the delivery are populated. Other parent IDs are null.
                     items:
-                      x-scalar-ignore: true
-                      description: Describes an individual message delivery. The object contains keys for all possible parents of the message (`newsletter_id`, `broadcast_id`, etc) but only the parents of the delivery are populated. Other parent IDs are null.
-                      allOf:
-                      - x-scalar-ignore: true
-                        type: object
-                        description: Describes an individual message delivery. The object contains keys for all possible parents of the message (`newsletter_id`, `broadcast_id`, etc) but only the parents of the delivery are populated. Other parent IDs are null.
-                        properties:
-                          id:
-                            x-scalar-ignore: true
-                            description: The identifier for a delivery—the instance of a message intended for an individual recipient.
-                            type: string
-                            readOnly: true
-                            example: dgOq6QWq6QUBAAF4_CGoeVX7mFkDbRFu7ek=
-                          deduplicate_id:
-                            x-scalar-ignore: true
-                            type: string
-                            readOnly: true
-                            description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
-                            example: 15:1492548073
-                          message_template_id:
-                            x-scalar-ignore: true
-                            description: The identifier of the message template used to create a message.
-                            type: integer
-                            readOnly: true
-                            deprecated: true
-                          customer_id:
-                            x-scalar-ignore: true
-                            type:
-                            - string
-                            - 'null'
-                            description: The ID of a customer profile, analogous to a "person" in the UI. If your workspace supports multiple identifiers (email and ID), this value can be null.
-                            example: '42'
-                          customer_identifiers:
-                            x-scalar-ignore: true
-                            type: object
-                            description: Identifiers for the person in a response—`id`, `cio_id`, and `email`. Unset `id` or `email` values are `null`. We recommend this object over the less descriptive `customer_id`. This object doesn't include `phone`, even if your workspace uses phone numbers as an identifier; look for the person's `phone` attribute instead.
-                            required:
-                            - email
-                            - id
-                            - cio_id
-                            properties:
-                              email:
-                                type:
-                                - string
-                                - 'null'
-                                format: email
-                                description: A person's email address, if set.
-                                example: test@example.com
-                              id:
-                                type:
-                                - string
-                                - 'null'
-                                description: A person's unique ID, if set. This is the same as the `customer_id` if present.
-                                example: 2
-                              cio_id:
-                                x-scalar-ignore: true
-                                type: string
-                                description: A unique identifier set by Customer.io, used to reference a person if you want to update their identifiers.
-                                example: a3000001
-                          recipient:
-                            x-scalar-ignore: true
-                            description: The recipient address for an action.
-                            type: string
-                            example: '{{customer.email}}'
-                          subject:
-                            x-scalar-ignore: true
-                            type: string
-                            description: The subject line for an `email` action.
-                            example: Did you get that thing I sent you?
-                          metrics:
-                            x-scalar-ignore: true
-                            type: object
-                            description: Metrics for an individual instance of a message; each item in the object represents the timestamp when a message achieved a particular metric. This object only contains metrics that have been recorded.
-                            properties:
-                              bounced:
-                                type: integer
-                                description: The timestamp when the message `bounced`.
-                              clicked:
-                                type: integer
-                                description: The timestamp when the message was `clicked`.
-                              human_clicked:
-                                type: integer
-                                description: The number of `clicked` messages excluding machine clicks. This metric is reliable starting April 20, 2025. [Learn more](/journeys/metrics/analytics/#delivery-metrics).
-                              prefetch_clicked:
-                                type: integer
-                                description: The number of `clicked` messages attributed to machines. This metric is reliable starting April 20, 2025.
-                              converted:
-                                type: integer
-                                description: The timestamp when the message was `converted`.
-                              created:
-                                type: integer
-                                description: The timestamp when the message was `created`.
-                              delivered:
-                                type: integer
-                                description: The timestamp when the message was `delivered`.
-                              drafted:
-                                type: integer
-                                description: The timestamp when the message was `drafted`.
-                              dropped:
-                                type: integer
-                                description: The timestamp when the message was `dropped`.
-                              failed:
-                                type: integer
-                                description: The timestamp when the message `failed`.
-                              opened:
-                                type: integer
-                                description: The timestamp when the message was `opened`.
-                              human_opened:
-                                type: integer
-                                description: The number of `opened` messages excluding machine opens. This metric is reliable starting March 20, 2025. [Learn more](/journeys/metrics/analytics/#delivery-metrics).
-                              prefetch_opened:
-                                type: integer
-                                description: The number of `opened` messages attributed to machines. This metric is reliable starting March 20, 2025.
-                              sent:
-                                type: integer
-                                description: The timestamp when the message was `sent`.
-                              spammed:
-                                type: integer
-                                description: The timestamp when the message was marked as spam.
-                              undeliverable:
-                                type: integer
-                                description: The timestamp when the message became `undeliverable`.
-                              unsubscribed:
-                                type: integer
-                                description: The timestamp when a person unsubscribed based on this message.
-                          created:
-                            x-scalar-ignore: true
-                            type: integer
-                            format: unix timestamp
-                            description: The date time when the referenced ID was created.
-                            example: 1552341937
-                            readOnly: true
-                          failure_message:
-                            type:
-                            - string
-                            - 'null'
-                            description: Explains why a message failed, if applicable.
-                          campaign_id:
-                            oneOf:
-                            - x-scalar-ignore: true
-                              description: The identifier for a campaign.
-                              type: integer
-                              example: 5
-                            - type: 'null'
-                          action_id:
-                            x-scalar-ignore: true
-                            description: The identifier for an action.
-                            type: integer
-                            readOnly: true
-                            example: 96
-                          parent_action_id:
-                            x-scalar-ignore: true
-                            type: integer
-                            description: The ID of the parent action, if the action occurred within a campaign and has a parent (like a randomized split, etc).
-                            example: 1
-                            readOnly: true
-                          newsletter_id:
-                            oneOf:
-                            - x-scalar-ignore: true
-                              description: The identifier for a newsletter.
-                              type: integer
-                              example: 10
-                            - type: 'null'
-                          content_id:
-                            x-scalar-ignore: true
-                            description: The identifier for a message in a newsletter. Newsletters can have multiple content IDs (for multi-language messages or A/B tests).
-                            type: integer
-                            readOnly: true
-                            example: 1
-                          broadcast_id:
-                            oneOf:
-                            - x-scalar-ignore: true
-                              type: integer
-                              description: The identifier for a broadcast.
-                              example: 2
-                            - type: 'null'
-                          trigger_event_id:
-                            x-scalar-ignore: true
-                            type: string
-                            description: The id of the event that triggered an event-triggered campaign (not an API-triggered broadcast).
-                            example: 21E4C3CT6YDC7Y4N7FE1GWWABC
-                          forgotten:
-                            type: boolean
-                            description: If true message contents are not retained by Customer.io.
-                          tracked_responses:
-                            type: object
-                            description: Tracked in-app survey responses, keyed by response option name. Present only when `get_tracked_responses` is `true`.
-                            additionalProperties:
-                              type: object
-                              properties:
-                                id:
-                                  type: integer
-                                  description: The identifier for the tracked response.
-                                ts:
-                                  type: integer
-                                  description: A unix timestamp representing when the response was tracked.
-                            example:
-                              cool-button:
-                                id: 1
-                                ts: 1715769600
-                              cool-button-2:
-                                id: 2
-                                ts: 1715769600
-                      - type: object
-                        properties:
-                          type:
-                            x-scalar-ignore: true
-                            description: The type of message or action for a delivery, campaign action, or related object. Includes channels that newsletters do not support (for example, `slack` and `whatsapp`).
-                            type: string
-                            enum:
-                            - email
-                            - webhook
-                            - twilio
-                            - push
-                            - in_app
-                            - slack
-                            - whatsapp
-                            - live_notification
-                            readOnly: true
-                            example: email
-                      example:
-                        id: ag1q6QWq6QUBAAF4_CGoeVX7mFkDbRFu7ek=
-                        deduplicate_id: ag1q6QWq6QUBAAF4_CGoeVX7mFkDbRFu7ek=:1619137768
-                        msg_template_id: 43
-                        action_id: 215
-                        parent_action_id: null
-                        customer_id: null
-                        recipient: person@example.com
-                        subject: Did you get that thing I sent you?
-                        metrics:
-                          delivered: 1619137768
-                          sent: 1619137768
-                        created: 1619137767
-                        failure_message: null
-                        newsletter_id: null
-                        content_id: null
-                        campaign_id: 23
-                        broadcast_id: null
-                        trigger_event_id: null
-                        type: email
-                        forgotten: false
+                      $ref: '#/components/schemas/messageObject'
               examples:
                 email:
                   summary: An email message
@@ -433,72 +117,16 @@ paths:
         '400':
           description: The request was malformed.
         '429':
-          description: Your request is over the 10-per-second limit.
-      x-codeSamples:
-      - lang: Shell + Curl
-        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/messages"
-      - lang: Node + Native
-        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/messages\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
-      - lang: Ruby + Native
-        source: 'require ''uri''
-
-          require ''net/http''
-
-          require ''openssl''
-
-
-          url = URI("https://api.customer.io/v1/messages")
-
-
-          http = Net::HTTP.new(url.host, url.port)
-
-          http.use_ssl = true
-
-          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-
-          request = Net::HTTP::Get.new(url)
-
-
-          response = http.request(request)
-
-          puts response.read_body'
-      - lang: Python + Python3
-        source: 'import http.client
-
-
-          conn = http.client.HTTPSConnection("api.customer.io")
-
-
-          conn.request("GET", "/v1/messages")
-
-
-          res = conn.getresponse()
-
-          data = res.read()
-
-
-          print(data.decode("utf-8"))'
-      - lang: Go + Native
-        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/messages\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+          $ref: '#/components/responses/429'
   /v1/messages/{message_id}:
     servers:
     - url: https://api.customer.io
-      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
     parameters:
-    - name: message_id
-      in: path
-      required: true
-      description: The identifier of a message.
-      schema:
-        type: string
-    - name: get_tracked_responses
-      in: query
-      required: false
-      description: If true, the response includes `tracked_responses` for each message—an object containing tracked response option names for in-app survey responses.
-      schema:
-        type: boolean
-        default: false
+    - $ref: '#/components/parameters/message_id'
+    - $ref: '#/components/parameters/get_tracked_responses'
     get:
       summary: Get a message
       operationId: getMessage
@@ -517,247 +145,7 @@ paths:
                 description: Describes an individual message delivery. The object contains keys for all possible parents of the message (`newsletter_id`, `broadcast_id`, etc) but only the parents of the delivery are populated. Other parent IDs are null.
                 properties:
                   message:
-                    x-scalar-ignore: true
-                    description: Describes an individual message delivery. The object contains keys for all possible parents of the message (`newsletter_id`, `broadcast_id`, etc) but only the parents of the delivery are populated. Other parent IDs are null.
-                    allOf:
-                    - x-scalar-ignore: true
-                      type: object
-                      description: Describes an individual message delivery. The object contains keys for all possible parents of the message (`newsletter_id`, `broadcast_id`, etc) but only the parents of the delivery are populated. Other parent IDs are null.
-                      properties:
-                        id:
-                          x-scalar-ignore: true
-                          description: The identifier for a delivery—the instance of a message intended for an individual recipient.
-                          type: string
-                          readOnly: true
-                          example: dgOq6QWq6QUBAAF4_CGoeVX7mFkDbRFu7ek=
-                        deduplicate_id:
-                          x-scalar-ignore: true
-                          type: string
-                          readOnly: true
-                          description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
-                          example: 15:1492548073
-                        message_template_id:
-                          x-scalar-ignore: true
-                          description: The identifier of the message template used to create a message.
-                          type: integer
-                          readOnly: true
-                          deprecated: true
-                        customer_id:
-                          x-scalar-ignore: true
-                          type:
-                          - string
-                          - 'null'
-                          description: The ID of a customer profile, analogous to a "person" in the UI. If your workspace supports multiple identifiers (email and ID), this value can be null.
-                          example: '42'
-                        customer_identifiers:
-                          x-scalar-ignore: true
-                          type: object
-                          description: Identifiers for the person in a response—`id`, `cio_id`, and `email`. Unset `id` or `email` values are `null`. We recommend this object over the less descriptive `customer_id`. This object doesn't include `phone`, even if your workspace uses phone numbers as an identifier; look for the person's `phone` attribute instead.
-                          required:
-                          - email
-                          - id
-                          - cio_id
-                          properties:
-                            email:
-                              type:
-                              - string
-                              - 'null'
-                              format: email
-                              description: A person's email address, if set.
-                              example: test@example.com
-                            id:
-                              type:
-                              - string
-                              - 'null'
-                              description: A person's unique ID, if set. This is the same as the `customer_id` if present.
-                              example: 2
-                            cio_id:
-                              x-scalar-ignore: true
-                              type: string
-                              description: A unique identifier set by Customer.io, used to reference a person if you want to update their identifiers.
-                              example: a3000001
-                        recipient:
-                          x-scalar-ignore: true
-                          description: The recipient address for an action.
-                          type: string
-                          example: '{{customer.email}}'
-                        subject:
-                          x-scalar-ignore: true
-                          type: string
-                          description: The subject line for an `email` action.
-                          example: Did you get that thing I sent you?
-                        metrics:
-                          x-scalar-ignore: true
-                          type: object
-                          description: Metrics for an individual instance of a message; each item in the object represents the timestamp when a message achieved a particular metric. This object only contains metrics that have been recorded.
-                          properties:
-                            bounced:
-                              type: integer
-                              description: The timestamp when the message `bounced`.
-                            clicked:
-                              type: integer
-                              description: The timestamp when the message was `clicked`.
-                            human_clicked:
-                              type: integer
-                              description: The number of `clicked` messages excluding machine clicks. This metric is reliable starting April 20, 2025. [Learn more](/journeys/metrics/analytics/#delivery-metrics).
-                            prefetch_clicked:
-                              type: integer
-                              description: The number of `clicked` messages attributed to machines. This metric is reliable starting April 20, 2025.
-                            converted:
-                              type: integer
-                              description: The timestamp when the message was `converted`.
-                            created:
-                              type: integer
-                              description: The timestamp when the message was `created`.
-                            delivered:
-                              type: integer
-                              description: The timestamp when the message was `delivered`.
-                            drafted:
-                              type: integer
-                              description: The timestamp when the message was `drafted`.
-                            dropped:
-                              type: integer
-                              description: The timestamp when the message was `dropped`.
-                            failed:
-                              type: integer
-                              description: The timestamp when the message `failed`.
-                            opened:
-                              type: integer
-                              description: The timestamp when the message was `opened`.
-                            human_opened:
-                              type: integer
-                              description: The number of `opened` messages excluding machine opens. This metric is reliable starting March 20, 2025. [Learn more](/journeys/metrics/analytics/#delivery-metrics).
-                            prefetch_opened:
-                              type: integer
-                              description: The number of `opened` messages attributed to machines. This metric is reliable starting March 20, 2025.
-                            sent:
-                              type: integer
-                              description: The timestamp when the message was `sent`.
-                            spammed:
-                              type: integer
-                              description: The timestamp when the message was marked as spam.
-                            undeliverable:
-                              type: integer
-                              description: The timestamp when the message became `undeliverable`.
-                            unsubscribed:
-                              type: integer
-                              description: The timestamp when a person unsubscribed based on this message.
-                        created:
-                          x-scalar-ignore: true
-                          type: integer
-                          format: unix timestamp
-                          description: The date time when the referenced ID was created.
-                          example: 1552341937
-                          readOnly: true
-                        failure_message:
-                          type:
-                          - string
-                          - 'null'
-                          description: Explains why a message failed, if applicable.
-                        campaign_id:
-                          oneOf:
-                          - x-scalar-ignore: true
-                            description: The identifier for a campaign.
-                            type: integer
-                            example: 5
-                          - type: 'null'
-                        action_id:
-                          x-scalar-ignore: true
-                          description: The identifier for an action.
-                          type: integer
-                          readOnly: true
-                          example: 96
-                        parent_action_id:
-                          x-scalar-ignore: true
-                          type: integer
-                          description: The ID of the parent action, if the action occurred within a campaign and has a parent (like a randomized split, etc).
-                          example: 1
-                          readOnly: true
-                        newsletter_id:
-                          oneOf:
-                          - x-scalar-ignore: true
-                            description: The identifier for a newsletter.
-                            type: integer
-                            example: 10
-                          - type: 'null'
-                        content_id:
-                          x-scalar-ignore: true
-                          description: The identifier for a message in a newsletter. Newsletters can have multiple content IDs (for multi-language messages or A/B tests).
-                          type: integer
-                          readOnly: true
-                          example: 1
-                        broadcast_id:
-                          oneOf:
-                          - x-scalar-ignore: true
-                            type: integer
-                            description: The identifier for a broadcast.
-                            example: 2
-                          - type: 'null'
-                        trigger_event_id:
-                          x-scalar-ignore: true
-                          type: string
-                          description: The id of the event that triggered an event-triggered campaign (not an API-triggered broadcast).
-                          example: 21E4C3CT6YDC7Y4N7FE1GWWABC
-                        forgotten:
-                          type: boolean
-                          description: If true message contents are not retained by Customer.io.
-                        tracked_responses:
-                          type: object
-                          description: Tracked in-app survey responses, keyed by response option name. Present only when `get_tracked_responses` is `true`.
-                          additionalProperties:
-                            type: object
-                            properties:
-                              id:
-                                type: integer
-                                description: The identifier for the tracked response.
-                              ts:
-                                type: integer
-                                description: A unix timestamp representing when the response was tracked.
-                          example:
-                            cool-button:
-                              id: 1
-                              ts: 1715769600
-                            cool-button-2:
-                              id: 2
-                              ts: 1715769600
-                    - type: object
-                      properties:
-                        type:
-                          x-scalar-ignore: true
-                          description: The type of message or action for a delivery, campaign action, or related object. Includes channels that newsletters do not support (for example, `slack` and `whatsapp`).
-                          type: string
-                          enum:
-                          - email
-                          - webhook
-                          - twilio
-                          - push
-                          - in_app
-                          - slack
-                          - whatsapp
-                          - live_notification
-                          readOnly: true
-                          example: email
-                    example:
-                      id: ag1q6QWq6QUBAAF4_CGoeVX7mFkDbRFu7ek=
-                      deduplicate_id: ag1q6QWq6QUBAAF4_CGoeVX7mFkDbRFu7ek=:1619137768
-                      msg_template_id: 43
-                      action_id: 215
-                      parent_action_id: null
-                      customer_id: null
-                      recipient: person@example.com
-                      subject: Did you get that thing I sent you?
-                      metrics:
-                        delivered: 1619137768
-                        sent: 1619137768
-                      created: 1619137767
-                      failure_message: null
-                      newsletter_id: null
-                      content_id: null
-                      campaign_id: 23
-                      broadcast_id: null
-                      trigger_event_id: null
-                      type: email
-                      forgotten: false
+                    $ref: '#/components/schemas/messageObject'
               examples:
                 email:
                   summary: An email message
@@ -817,65 +205,15 @@ paths:
         '404':
           description: The message does not exist.
         '429':
-          description: Your request is over the 10-per-second limit.
-      x-codeSamples:
-      - lang: Shell + Curl
-        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/messages/{message_id}"
-      - lang: Node + Native
-        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/messages/%7Bmessage_id%7D\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
-      - lang: Ruby + Native
-        source: 'require ''uri''
-
-          require ''net/http''
-
-          require ''openssl''
-
-
-          url = URI("https://api.customer.io/v1/messages/%7Bmessage_id%7D")
-
-
-          http = Net::HTTP.new(url.host, url.port)
-
-          http.use_ssl = true
-
-          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-
-          request = Net::HTTP::Get.new(url)
-
-
-          response = http.request(request)
-
-          puts response.read_body'
-      - lang: Python + Python3
-        source: 'import http.client
-
-
-          conn = http.client.HTTPSConnection("api.customer.io")
-
-
-          conn.request("GET", "/v1/messages/%7Bmessage_id%7D")
-
-
-          res = conn.getresponse()
-
-          data = res.read()
-
-
-          print(data.decode("utf-8"))'
-      - lang: Go + Native
-        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/messages/%7Bmessage_id%7D\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+          $ref: '#/components/responses/429'
   /v1/messages/{message_id}/archived_message:
     servers:
     - url: https://api.customer.io
-      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
     parameters:
-    - name: message_id
-      in: path
-      required: true
-      description: The identifier of a message.
-      schema:
-        type: string
+    - $ref: '#/components/parameters/message_id'
     get:
       summary: Get an archived message
       operationId: getArchivedMessage
@@ -887,6 +225,11 @@ paths:
       responses:
         '200':
           description: Returns the archived message object.
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
           content:
             application/json:
               schema:
@@ -894,146 +237,604 @@ paths:
                 description: Describes an archived message delivery.
                 properties:
                   archived_message:
-                    x-scalar-ignore: true
-                    description: 'An archived message, including a complete message body.
-
-                      '
-                    type: object
-                    properties:
-                      id:
-                        x-scalar-ignore: true
-                        description: The identifier for a delivery—the instance of a message intended for an individual recipient.
-                        type: string
-                        readOnly: true
-                        example: dgOq6QWq6QUBAAF4_CGoeVX7mFkDbRFu7ek=
-                      body:
-                        type: string
-                        description: The body of the variant. You cannot modify the body if you created it with our drag-and-drop editor.
-                        example: <!DOCTYPE html><html><head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/><h1>Hello World</h1>\n\n</body></html>
-                      from:
-                        x-scalar-ignore: true
-                        type: string
-                        description: The address that the message is from, relevant if the action `type` is `email`.
-                        readOnly: true
-                        example: sentFrom@example.com
-                      reply_to:
-                        x-scalar-ignore: true
-                        type: string
-                        description: The address that receives replies for the message, if applicable.
-                        readOnly: true
-                        example: replyto@example.com
-                      recipient:
-                        description: The recipient address for an action.
-                        type: string
-                        example: person@example.com
-                      subject:
-                        x-scalar-ignore: true
-                        type: string
-                        description: The subject line for an `email` action.
-                        example: Did you get that thing I sent you?
-                      cc:
-                        x-scalar-ignore: true
-                        readOnly: true
-                        description: The carbon-copy address(es) for this action.
-                        type: string
-                      bcc:
-                        x-scalar-ignore: true
-                        readOnly: true
-                        description: The blind-copy address(es) for this action.
-                        type: string
-                      fake_bcc:
-                        x-scalar-ignore: true
-                        readOnly: true
-                        type: boolean
-                        description: 'If true, rather than sending true copies to BCC addresses, Customer.io sends a copy of the message with the subject line containing the recipient address(es).
-
-                          '
-                      preheader_text:
-                        x-scalar-ignore: true
-                        type: string
-                        description: '[Also known as "preview text"](/journeys/channels/email/headers/custom-preheader-text/), this is the small block of text shown in an email inbox next to or underneath the subject line.
-
-                          '
-                      url:
-                        x-scalar-ignore: true
-                        type: string
-                        description: The URL of a webhook or action.
-                        example: https://example.com/webhook
-                      request_method:
-                        x-scalar-ignore: true
-                        type: string
-                        description: The method used in conjunction with a webhook `url`.
-                        enum:
-                        - GET
-                        - POST
-                        - PUT
-                        - DELETE
-                        - PATCH
-                        example: POST
-                      headers:
-                        x-scalar-ignore: true
-                        description: A JSON string containing header objects with `name` and `value`. Names and values must be strings, with no non-ASCII characters or spaces. You can't overwrite reserved headers.
-                        type: string
-                        format: json
-                        example: '[{"name":"X-Mailgun-Tag","value":"my-cool-tag"},{"name":"X-Custom-Header","value":"custom-value"}]'
-                      forgotten:
-                        x-scalar-ignore: true
-                        type: boolean
-                        description: If true, Customer.io does not retain the message content.
-                        example: false
+                    $ref: '#/components/schemas/archivedMessageObject'
         '404':
           description: The message does not exist.
         '429':
-          description: Your request is over the 10-per-second limit.
-      x-codeSamples:
-      - lang: Shell + Curl
-        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/messages/{message_id}/archived_message"
-      - lang: Node + Native
-        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/messages/%7Bmessage_id%7D/archived_message\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
-      - lang: Ruby + Native
-        source: 'require ''uri''
-
-          require ''net/http''
-
-          require ''openssl''
-
-
-          url = URI("https://api.customer.io/v1/messages/%7Bmessage_id%7D/archived_message")
-
-
-          http = Net::HTTP.new(url.host, url.port)
-
-          http.use_ssl = true
-
-          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-
-          request = Net::HTTP::Get.new(url)
-
-
-          response = http.request(request)
-
-          puts response.read_body'
-      - lang: Python + Python3
-        source: 'import http.client
-
-
-          conn = http.client.HTTPSConnection("api.customer.io")
-
-
-          conn.request("GET", "/v1/messages/%7Bmessage_id%7D/archived_message")
-
-
-          res = conn.getresponse()
-
-          data = res.read()
-
-
-          print(data.decode("utf-8"))'
-      - lang: Go + Native
-        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/messages/%7Bmessage_id%7D/archived_message\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+          $ref: '#/components/responses/429-archived'
 components:
+  schemas:
+    reply_to:
+      x-scalar-ignore: true
+      type: string
+      description: The address that receives replies for the message, if applicable.
+      readOnly: true
+      example: replyto@example.com
+    cio_id:
+      x-scalar-ignore: true
+      type: string
+      description: A unique identifier set by Customer.io, used to reference a person if you want to update their identifiers.
+      example: a3000001
+    customer_id:
+      x-scalar-ignore: true
+      type:
+      - string
+      - 'null'
+      description: The ID of a customer profile, analogous to a "person" in the UI. If your workspace supports multiple identifiers (email and ID), this value can be null.
+      example: '42'
+    messageObject:
+      x-scalar-ignore: true
+      description: Describes an individual message delivery. The object contains keys for all possible parents of the message (`newsletter_id`, `broadcast_id`, etc) but only the parents of the delivery are populated. Other parent IDs are null.
+      allOf:
+      - $ref: '#/components/schemas/messageObjectBase'
+      - type: object
+        properties:
+          type:
+            $ref: '#/components/schemas/messageType'
+      example:
+        id: ag1q6QWq6QUBAAF4_CGoeVX7mFkDbRFu7ek=
+        deduplicate_id: ag1q6QWq6QUBAAF4_CGoeVX7mFkDbRFu7ek=:1619137768
+        msg_template_id: 43
+        action_id: 215
+        parent_action_id: null
+        customer_id: null
+        recipient: person@example.com
+        subject: Did you get that thing I sent you?
+        metrics:
+          delivered: 1619137768
+          sent: 1619137768
+        created: 1619137767
+        failure_message: null
+        newsletter_id: null
+        content_id: null
+        campaign_id: 23
+        broadcast_id: null
+        trigger_event_id: null
+        type: email
+        forgotten: false
+    forgotten:
+      x-scalar-ignore: true
+      type: boolean
+      description: If true, Customer.io does not retain the message content.
+      example: false
+    content_id:
+      x-scalar-ignore: true
+      description: The identifier for a message in a one-time send. One-time sends can have multiple content IDs (for multi-language messages or A/B tests).
+      type: integer
+      readOnly: true
+      example: 1
+    preheader_text:
+      x-scalar-ignore: true
+      type: string
+      description: '[Also known as "preview text"](/journeys/channels/email/headers/custom-preheader-text/), this is the small block of text shown in an email inbox next to or underneath the subject line.
+
+        '
+    customer_identifiers:
+      x-scalar-ignore: true
+      type: object
+      description: Identifiers for the person in a response—`id`, `cio_id`, and `email`. Unset `id` or `email` values are `null`. We recommend this object over the less descriptive `customer_id`. This object doesn't include `phone`, even if your workspace uses phone numbers as an identifier; look for the person's `phone` attribute instead.
+      required:
+      - email
+      - id
+      - cio_id
+      properties:
+        email:
+          type:
+          - string
+          - 'null'
+          format: email
+          description: A person's email address, if set.
+          example: test@example.com
+        id:
+          type:
+          - string
+          - 'null'
+          description: A person's unique ID, if set. This is the same as the `customer_id` if present.
+          example: 2
+        cio_id:
+          $ref: '#/components/schemas/cio_id'
+    from:
+      x-scalar-ignore: true
+      type: string
+      description: The address that the message is from, relevant if the action `type` is `email`.
+      readOnly: true
+      example: sentFrom@example.com
+    subject:
+      x-scalar-ignore: true
+      type: string
+      description: The subject line for an `email` action.
+      example: Did you get that thing I sent you?
+    action_id:
+      x-scalar-ignore: true
+      description: The identifier for an action.
+      type: integer
+      readOnly: true
+      example: 96
+    messageMetrics:
+      x-scalar-ignore: true
+      type: object
+      description: Metrics for an individual instance of a message; each item in the object represents the timestamp when a message achieved a particular metric. This object only contains metrics that have been recorded.
+      properties:
+        bounced:
+          type: integer
+          description: The timestamp when the message `bounced`.
+        clicked:
+          type: integer
+          description: The timestamp when the message was `clicked`.
+        human_clicked:
+          type: integer
+          description: The number of `clicked` messages excluding machine clicks. This metric is reliable starting April 20, 2025. [Learn more](/messaging/metrics/analytics/#delivery-metrics).
+        prefetch_clicked:
+          type: integer
+          description: The number of `clicked` messages attributed to machines. This metric is reliable starting April 20, 2025.
+        converted:
+          type: integer
+          description: The timestamp when the message was `converted`.
+        created:
+          type: integer
+          description: The timestamp when the message was `created`.
+        delivered:
+          type: integer
+          description: The timestamp when the message was `delivered`.
+        drafted:
+          type: integer
+          description: The timestamp when the message was `drafted`.
+        dropped:
+          type: integer
+          description: The timestamp when the message was `dropped`.
+        failed:
+          type: integer
+          description: The timestamp when the message `failed`.
+        opened:
+          type: integer
+          description: The timestamp when the message was `opened`.
+        human_opened:
+          type: integer
+          description: The number of `opened` messages excluding machine opens. This metric is reliable starting March 20, 2025. [Learn more](/messaging/metrics/analytics/#delivery-metrics).
+        prefetch_opened:
+          type: integer
+          description: The number of `opened` messages attributed to machines. This metric is reliable starting March 20, 2025.
+        sent:
+          type: integer
+          description: The timestamp when the message was `sent`.
+        spammed:
+          type: integer
+          description: The timestamp when the message was marked as spam.
+        undeliverable:
+          type: integer
+          description: The timestamp when the message became `undeliverable`.
+        unsubscribed:
+          type: integer
+          description: The timestamp when a person unsubscribed based on this message.
+    message_template_id:
+      x-scalar-ignore: true
+      description: The identifier of the message template used to create a message.
+      type: integer
+      readOnly: true
+      deprecated: true
+    parent_action_id:
+      x-scalar-ignore: true
+      type: integer
+      description: The ID of the parent action, if the action occurred within an automation and has a parent (like a randomized split, etc).
+      example: 1
+      readOnly: true
+    appApiError:
+      x-scalar-ignore: true
+      type: object
+      description: An array/list of failures where each entry is a separate failure reason.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: One entry for each reason the request failed.
+          items:
+            type: object
+            required:
+            - detail
+            - status
+            properties:
+              detail:
+                type: string
+                description: What went wrong, in plain text. Most messages end with a support reference you can use if you need to contact support.
+                example: bad request (reference a1b2c3)
+              status:
+                type: string
+                description: The HTTP status code as a string.
+                example: '400'
+              code:
+                type: string
+                description: A stable identifier for the failure, on the errors that carry one. Use this rather than the text in `detail` if you need to identify the error programmatically.
+                example: invalid_credentials
+              source:
+                type: object
+                description: The part of the request that the error refers to.
+                properties:
+                  pointer:
+                    type: string
+                    description: A JSON pointer to the part of the request body that the error refers to.
+                    example: /data/attributes/email
+              meta:
+                type: object
+                additionalProperties: true
+                description: Extra context (if available).
+    cc:
+      x-scalar-ignore: true
+      readOnly: true
+      description: The carbon-copy address(es) for this action.
+      type: string
+    headers:
+      x-scalar-ignore: true
+      description: A JSON string containing header objects with `name` and `value`. Names and values must be strings, with no non-ASCII characters or spaces. You can't overwrite reserved headers.
+      type: string
+      format: json
+      example: '[{"name":"X-Mailgun-Tag","value":"my-cool-tag"},{"name":"X-Custom-Header","value":"custom-value"}]'
+    messageObjectBase:
+      x-scalar-ignore: true
+      type: object
+      description: Describes an individual message delivery. The object contains keys for all possible parents of the message (`newsletter_id`, `broadcast_id`, etc) but only the parents of the delivery are populated. Other parent IDs are null.
+      properties:
+        id:
+          $ref: '#/components/schemas/message_id'
+        deduplicate_id:
+          $ref: '#/components/schemas/deduplicate_id'
+        message_template_id:
+          $ref: '#/components/schemas/message_template_id'
+        customer_id:
+          $ref: '#/components/schemas/customer_id'
+        customer_identifiers:
+          $ref: '#/components/schemas/customer_identifiers'
+        recipient:
+          $ref: '#/components/schemas/recipient'
+        subject:
+          $ref: '#/components/schemas/subject'
+        metrics:
+          $ref: '#/components/schemas/messageMetrics'
+        created:
+          $ref: '#/components/schemas/created'
+        failure_message:
+          type:
+          - string
+          - 'null'
+          description: Explains why a message failed, if applicable.
+        campaign_id:
+          oneOf:
+          - $ref: '#/components/schemas/campaign_id'
+          - type: 'null'
+        action_id:
+          $ref: '#/components/schemas/action_id'
+        parent_action_id:
+          $ref: '#/components/schemas/parent_action_id'
+        newsletter_id:
+          oneOf:
+          - $ref: '#/components/schemas/newsletter_id'
+          - type: 'null'
+        content_id:
+          $ref: '#/components/schemas/content_id'
+        broadcast_id:
+          oneOf:
+          - $ref: '#/components/schemas/broadcast_id'
+          - type: 'null'
+        trigger_event_id:
+          $ref: '#/components/schemas/trigger_event_id'
+        forgotten:
+          type: boolean
+          description: If true message contents are not retained by Customer.io.
+        tracked_responses:
+          type: object
+          description: Tracked in-app survey responses, keyed by response option name. Present only when `get_tracked_responses` is `true`.
+          additionalProperties:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: The identifier for the tracked response.
+              ts:
+                type: integer
+                description: A unix timestamp representing when the response was tracked.
+          example:
+            cool-button:
+              id: 1
+              ts: 1715769600
+            cool-button-2:
+              id: 2
+              ts: 1715769600
+    messageType:
+      x-scalar-ignore: true
+      description: The type of message or action for a delivery, automation action, or related object. Includes channels that one-time sends do not support (for example, `slack` and `whatsapp`).
+      type: string
+      enum:
+      - email
+      - webhook
+      - twilio
+      - push
+      - in_app
+      - slack
+      - whatsapp
+      - live_notification
+      readOnly: true
+      example: email
+    archivedMessageObject:
+      x-scalar-ignore: true
+      description: 'An archived message, including a complete message body.
+
+        '
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/message_id'
+        body:
+          type: string
+          description: The body of the variant. You cannot modify the body if you created it with our drag-and-drop editor.
+          example: <!DOCTYPE html><html><head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/><h1>Hello World</h1>\n\n</body></html>
+        from:
+          $ref: '#/components/schemas/from'
+        reply_to:
+          $ref: '#/components/schemas/reply_to'
+        recipient:
+          description: The recipient address for an action.
+          type: string
+          example: person@example.com
+        subject:
+          $ref: '#/components/schemas/subject'
+        cc:
+          $ref: '#/components/schemas/cc'
+        bcc:
+          $ref: '#/components/schemas/bcc'
+        fake_bcc:
+          $ref: '#/components/schemas/fake_bcc'
+        preheader_text:
+          $ref: '#/components/schemas/preheader_text'
+        url:
+          $ref: '#/components/schemas/url'
+        request_method:
+          $ref: '#/components/schemas/request_method'
+        headers:
+          $ref: '#/components/schemas/headers'
+        forgotten:
+          $ref: '#/components/schemas/forgotten'
+    bcc:
+      x-scalar-ignore: true
+      readOnly: true
+      description: The blind-copy address(es) for this action.
+      type: string
+    campaign_id:
+      x-scalar-ignore: true
+      description: The identifier for an automation.
+      type: integer
+      example: 5
+    deduplicate_id:
+      x-scalar-ignore: true
+      type: string
+      readOnly: true
+      description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Automations, Deliveries, Exports, Identities, One-time sends, Segments, and Templates), and the timestamp is the last time the object was updated.
+      example: 15:1492548073
+    newsletter_id:
+      x-scalar-ignore: true
+      description: The identifier for a one-time send.
+      type: integer
+      example: 10
+    url:
+      x-scalar-ignore: true
+      type: string
+      description: The URL of a webhook or action.
+      example: https://example.com/webhook
+    fake_bcc:
+      x-scalar-ignore: true
+      readOnly: true
+      type: boolean
+      description: 'If true, rather than sending true copies to BCC addresses, Customer.io sends a copy of the message with the subject line containing the recipient address(es).
+
+        '
+    trigger_event_id:
+      x-scalar-ignore: true
+      type: string
+      description: The id of the event that triggered an event-triggered automation (not an API-triggered broadcast).
+      example: 21E4C3CT6YDC7Y4N7FE1GWWABC
+    request_method:
+      x-scalar-ignore: true
+      type: string
+      description: The method used in conjunction with a webhook `url`.
+      enum:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - PATCH
+      example: POST
+    broadcast_id:
+      x-scalar-ignore: true
+      type: integer
+      description: The identifier for a broadcast.
+      example: 2
+    recipient:
+      x-scalar-ignore: true
+      description: The recipient address for an action.
+      type: string
+      example: '{{customer.email}}'
+    created:
+      x-scalar-ignore: true
+      type: integer
+      format: unix timestamp
+      description: The date time when the referenced ID was created.
+      example: 1552341937
+      readOnly: true
+    message_id:
+      x-scalar-ignore: true
+      description: The identifier for a delivery—the instance of a message intended for an individual recipient.
+      type: string
+      readOnly: true
+      example: dgOq6QWq6QUBAAF4_CGoeVX7mFkDbRFu7ek=
+  headers:
+    X-RateLimit-Remaining:
+      description: How many requests are left in today's quota for this endpoint. Endpoints with a daily quota set it on every response, not only on a 429, so you can slow down before you run out.
+      schema:
+        type: integer
+        example: 97
+    Retry-After:
+      description: How many seconds you must wait before you send another request. This header is present when you are rate limited by a per-second limit. If you hit a daily quota, this header is not set.
+      schema:
+        type: integer
+        minimum: 1
+        example: 1
+    X-RateLimit-Limit:
+      description: How many requests the daily quota on this endpoint allows.
+      schema:
+        type: integer
+        example: 100
+  parameters:
+    end_ts:
+      name: end_ts
+      in: query
+      required: false
+      description: The ending timestamp for your query.
+      schema:
+        type: integer
+        format: unix timestamp
+    newsletter_id_query:
+      name: newsletter_id
+      in: query
+      required: false
+      description: The one-time send you want to filter for.
+      schema:
+        type: integer
+    campaign_id_query:
+      name: campaign_id
+      in: query
+      required: false
+      description: The automation you want to filter for.
+      schema:
+        type: integer
+    drafts:
+      name: drafts
+      in: query
+      required: false
+      description: If true, your request returns drafts rather than active/sent messages.
+      schema:
+        type: boolean
+    message_id:
+      name: message_id
+      in: path
+      required: true
+      description: The identifier of a message.
+      schema:
+        type: string
+    metric:
+      name: metric
+      in: query
+      required: false
+      description: Determines the metric(s) you want to return.
+      schema:
+        type: string
+        enum:
+        - attempted
+        - sent
+        - delivered
+        - opened
+        - clicked
+        - converted
+        - bounced
+        - spammed
+        - unsubscribed
+        - dropped
+        - failed
+        - undeliverable
+    start:
+      name: start
+      in: query
+      required: false
+      description: The token for the page of results you want to return. Responses contain a `next` property. Use this property as the `start` value to return the next page of results.
+      schema:
+        type: string
+    get_tracked_responses:
+      name: get_tracked_responses
+      in: query
+      required: false
+      description: If true, the response includes `tracked_responses` for each message—an object containing tracked response option names for in-app survey responses.
+      schema:
+        type: boolean
+        default: false
+    start_ts:
+      name: start_ts
+      in: query
+      required: false
+      description: The beginning timestamp for your query.
+      schema:
+        type: integer
+        format: unix timestamp
+    limit-50-1000:
+      name: limit
+      in: query
+      required: false
+      description: The maximum number of results you want to retrieve per page.
+      schema:
+        type: integer
+        default: 50
+        maximum: 1000
+    metricType:
+      name: type
+      in: query
+      required: false
+      description: The type of item you want to return metrics for. When empty, the response contains metrics for all possible types.
+      schema:
+        type: string
+        enum:
+        - email
+        - webhook
+        - twilio
+        - whatsapp
+        - slack
+        - push
+        - in_app
+        - live_notification
+    action_id_query:
+      name: action_id
+      in: query
+      required: false
+      description: The action you want to filter for.
+      schema:
+        type: integer
+  responses:
+    429-archived:
+      description: Your request is over one of the limits on this endpoint. The per-second limit sets `Retry-After`. The daily quota doesn't, because the wait is until the next day. `X-RateLimit-Remaining` tells you how much of today's quota is left.
+      headers:
+        Retry-After:
+          $ref: '#/components/headers/Retry-After'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/X-RateLimit-Limit'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/X-RateLimit-Remaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/appApiError'
+          example:
+            errors:
+            - detail: rate limited to 100 request(s) per day (reference a1b2c3)
+              status: '429'
+    '429':
+      description: Your request is over the 10-per-second limit. `Retry-After` tells you how many seconds you must wait before you send the next request.
+      headers:
+        Retry-After:
+          $ref: '#/components/headers/Retry-After'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/appApiError'
+          example:
+            errors:
+            - detail: rate limited to 10 requests per 1s (reference a1b2c3)
+              status: '429'
   securitySchemes:
+    Tracking-API-Key:
+      type: http
+      scheme: basic
+      description: 'The Track API uses a basic authentication scheme. Your credentials are your **Site ID** and your **API key**, **Base-64 encoded** in the format `site_id:api_key`.
+
+
+        You can find your Site ID and API key on the [Track API Keys page](https://fly.customer.io/settings/api_credentials).
+
+        '
     Bearer-Auth:
       type: http
       scheme: bearer
@@ -1048,7 +849,7 @@ components:
       type: http
       scheme: bearer
       bearerFormat: sa_live_
-      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
+      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/whatsapp`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
 
 
         Service-account tokens are intended for testing and one-off sends—for example, using the Customer.io CLI with an AI agent like Claude to verify that a transactional message renders correctly before wiring it into your production backend. **For the production integration that triggers the message from your application, use an App API Key instead**: it''s workspace-scoped, easier to rotate, and has a smaller blast radius.
@@ -1060,4 +861,62 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
-      description: API key passed as a Bearer token
+      description: API key passed as a Bearer token.
+x-tagGroups:
+- name: Track API v2
+  tags:
+  - track_v2
+  - Object Schemas
+  - Person Schemas
+  - Deliveries
+- name: Track API
+  tags:
+  - trackOverview
+  - trackJsOrBackend
+  - trackLimit
+  - trackRegion
+  - Track Customers
+  - Track Events
+  - Forms
+  - Track Segments
+  - Track v1 Overview
+- name: App API
+  tags:
+  - appOverview
+  - appLimit
+  - appAuth
+  - Activities
+  - Automations
+  - Broadcasts
+  - Collections
+  - Customers
+  - Data Index
+  - ESP Suppression
+  - Exports
+  - Imports
+  - Info
+  - Live Notifications
+  - Messages
+  - Newsletters
+  - Opt-outs
+  - Reporting Webhooks
+  - Segments
+  - Sender Identities
+  - Snippets
+  - Subscription Center
+  - Transactional
+  - Workspaces
+  - Send Messages
+  - Objects
+  - Newsletter Variants
+  - Newsletter Metrics
+  - Assets
+- name: Design Studio API
+  tags:
+  - Folders
+  - Components
+  - Emails
+  - Email link and publish
+  - Email testing
+  - SMS
+  - SMS link and publish

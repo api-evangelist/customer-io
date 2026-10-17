@@ -1,22 +1,28 @@
 openapi: 3.2.0
 info:
   version: 1.0.0
-  title: Customer.io Track Track Customers API
-  description: '# Overview
-
-
-    Our Track API provides ways to send real-time customer data to your Customer.io workspace including customer identification and event tracking.'
+  title: Customer.io Journeys API Reference Track Customers API
+  description: Customer.io provides REST APIs to send real-time customer data, retrieve data from your account, and trigger messages.
 servers:
 - url: https://track.customer.io
   description: The base URL for the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
 - url: https://track-eu.customer.io
   description: The base URL for the Track API (EU region). Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+- url: https://api.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+- url: https://api-eu.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
 tags:
 - name: Track Customers
   x-displayName: Customers
   description: Add, modify, suppress, or unsuppress people (referred to as "customers" in our APIs). You can also use these endpoints to set attributes on people.
 paths:
   /api/v1/customers/{identifier}:
+    servers:
+    - url: https://track.customer.io
+      description: The base URL for the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+    - url: https://track-eu.customer.io
+      description: The base URL for the Track API (EU region). Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
     put:
       operationId: identify
       tags:
@@ -104,7 +110,7 @@ paths:
                       description: Contains active topics in your workspace, named `topic_<id>`.
                       additionalProperties:
                         x-additionalPropertiesName: topic_<id>
-                        description: Each property is a boolean named `topic_<id>`. Topic `id` values begin at `1` and increment for each new topic. You can find your topic ids in [Workspace Settings](https://fly.customer.io/workspaces/last/settings/subscription_center/topics) or by querying our [App API](https://customer.io/api/app/#operation/getTopics). For each boolean, `true` means that a person is subscribed to the topic; false means they are unsubscribed. An empty or missing value reverts to the default preference for the topic (opt-in or opt-out).
+                        description: Each property is a boolean named `topic_<id>`. Topic `id` values begin at `1` and increment for each new topic. You can find your topic ids in [Workspace Settings](https://fly.customer.io/workspaces/last/settings/subscription_center/topics) or by querying our [App API](/integrations/api/app/tag/subscription-center/getTopics/). For each boolean, `true` means that a person is subscribed to the topic; false means they are unsubscribed. An empty or missing value reverts to the default preference for the topic (opt-in or opt-out).
                         type: boolean
             example:
               email: customer@example.com
@@ -135,11 +141,8 @@ paths:
         '401':
           $ref: '#/components/responses/401'
       x-codeSamples:
-      - lang: json
-        label: JSON
-        source: "{\n  \"email\": \"customer@example.com\",\n  \"created_at\": 1361205308,\n  \"first_name\": \"Bob\",\n  \"plan\": \"basic\",\n  \"cio_relationships\": {\n    \"action\": \"add_relationships\",\n    \"relationships\": [\n      {\n        \"identifiers\": {\n          \"object_type_id\": \"1\",\n          \"object_id\": \"01H5Q5SZVQDJ71SBME2SMDXS88\"\n        },\n        \"relationship_attributes\": {\n          \"role\": \"admin\"\n        }\n      },\n      {\n        \"identifiers\": {\n          \"object_type_id\": \"2\",\n          \"object_id\": \"1171SBME\"\n        },\n        \"relationship_attributes\": {\n          \"role\": \"viewer\"\n        }\n      }\n    ]\n  },\n  \"cio_subscription_preferences\": {\n    \"topics\": {\n      \"topic_1\": true,\n      \"topic_2\": true,\n      \"topic_3\": false\n    }\n  }\n}"
       - label: Node.js (SDK)
-        lang: javascript + Node.js
+        lang: javascript
         source: "const { TrackClient, RegionUS } = require('customerio-node');\nlet cio = new TrackClient(siteId, apiKey, { region: RegionUS });\n\ncio.identify(5, {\n  email: 'customer@example.com',\n  created_at: 1361205308,\n  first_name: 'Bob',\n  plan: 'basic'\n});\n"
       - label: Ruby (SDK)
         lang: ruby
@@ -180,7 +183,7 @@ paths:
           $ref: '#/components/responses/401'
       x-codeSamples:
       - label: Node.js (SDK)
-        lang: javascript + Node.js
+        lang: javascript
         source: 'const { TrackClient, RegionUS } = require(''customerio-node'');
 
           let cio = new TrackClient(siteId, apiKey, { region: RegionUS });
@@ -219,6 +222,11 @@ paths:
   /api/v1/customers/{identifier}/devices:
     parameters:
     - $ref: '#/components/parameters/track_customer_id'
+    servers:
+    - url: https://track.customer.io
+      description: The base URL for the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+    - url: https://track-eu.customer.io
+      description: The base URL for the Track API (EU region). Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
     put:
       operationId: add_device
       summary: Add or update a customer device
@@ -249,9 +257,6 @@ paths:
         '401':
           $ref: '#/components/responses/401'
       x-codeSamples:
-      - lang: json
-        label: JSON
-        source: "{\n  \"device\": {\n    \"id\": \"string\",\n    \"platform\": \"ios\"\n  }\n}"
       - label: Node.js (SDK)
         lang: javascript
         source: 'const { TrackClient, RegionUS } = require(''customerio-node'');
@@ -264,7 +269,8 @@ paths:
           cio.addDevice(5, "device_id", "ios", { primary: true });
 
           '
-      - lang: Ruby
+      - label: Ruby (SDK)
+        lang: ruby
         source: '$customerio = Customerio::Client.new("YOUR SITE ID", "YOUR API SECRET KEY", region: Customerio::Regions::US)
 
 
@@ -275,7 +281,8 @@ paths:
           $customerio.add_device(5, "my_android_device_id", "android")
 
           '
-      - lang: Python (3)
+      - label: Python (SDK)
+        lang: python
         source: 'from customerio import CustomerIO, Regions
 
           cio = CustomerIO(site_id, api_key, region=Regions.US)
@@ -286,12 +293,18 @@ paths:
           cio.add_device(customer_id="1", device_id=''device_hash'', platform=''ios'', last_used=1514764800})
 
           '
-      - lang: Go
+      - label: Go (SDK)
+        lang: go
         source: "track := customerio.NewTrackClient(\"YOUR SITE ID\", \"YOUR API SECRET KEY\", customerio.WithRegion(customerio.RegionUS))\n\n// Depending on your workspace settings, the id (5) may be an email address.\nif err := track.AddDevice(\"5\", \"messaging token\", \"android\", map[string]interface{}{\n  \"last_used\": time.Now().Unix(),\n}) err != nil {\n  // do something with error\n}\n"
   /api/v1/customers/{identifier}/devices/{device_id}:
     parameters:
     - $ref: '#/components/parameters/track_customer_id'
     - $ref: '#/components/parameters/device_id'
+    servers:
+    - url: https://track.customer.io
+      description: The base URL for the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+    - url: https://track-eu.customer.io
+      description: The base URL for the Track API (EU region). Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
     delete:
       operationId: delete_device
       summary: Delete a customer device
@@ -337,7 +350,8 @@ paths:
           cio.deleteDevice(5, "device_token")
 
           '
-      - lang: Ruby
+      - label: Ruby (SDK)
+        lang: ruby
         source: '$customerio = Customerio::Client.new("YOUR SITE ID", "YOUR API SECRET KEY", region: Customerio::Regions::US)
 
 
@@ -346,7 +360,8 @@ paths:
           $customerio.delete_device(5, "my_device_token")
 
           '
-      - lang: Python (3)
+      - label: Python (SDK)
+        lang: python
         source: 'from customerio import CustomerIO, Regions
 
           cio = CustomerIO(site_id, api_key, region=Regions.US)
@@ -357,11 +372,17 @@ paths:
           cio.delete_device(customer_id="5", device_id=''device_hash'')
 
           '
-      - lang: Go
+      - label: Go (SDK)
+        lang: go
         source: "track := customerio.NewTrackClient(\"YOUR SITE ID\", \"YOUR API SECRET KEY\", customerio.WithRegion(customerio.RegionUS))\n\n// Depending on your workspace settings, the id (5) may be an email address.\nif err := track.DeleteDevice(\"5\", \"messaging-token\"); err != nil {\n  // do something with error\n}\n"
   /api/v1/customers/{identifier}/suppress:
     parameters:
     - $ref: '#/components/parameters/track_customer_id'
+    servers:
+    - url: https://track.customer.io
+      description: The base URL for the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+    - url: https://track-eu.customer.io
+      description: The base URL for the Track API (EU region). Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
     post:
       operationId: suppress
       summary: Suppress a customer profile
@@ -400,7 +421,8 @@ paths:
           cio.suppress(5)
 
           '
-      - lang: Ruby
+      - label: Ruby (SDK)
+        lang: ruby
         source: '$customerio = Customerio::Client.new("YOUR SITE ID", "YOUR API SECRET KEY", region: Customerio::Regions::US)
 
 
@@ -409,7 +431,8 @@ paths:
           $customerio.suppress(5)
 
           '
-      - lang: Python (3)
+      - label: Python (SDK)
+        lang: python
         source: 'from customerio import CustomerIO, Regions
 
           cio = CustomerIO(site_id, api_key, region=Regions.US)
@@ -423,6 +446,11 @@ paths:
   /api/v1/customers/{identifier}/unsuppress:
     parameters:
     - $ref: '#/components/parameters/track_customer_id'
+    servers:
+    - url: https://track.customer.io
+      description: The base URL for the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+    - url: https://track-eu.customer.io
+      description: The base URL for the Track API (EU region). Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
     post:
       operationId: unsuppress
       summary: Unsuppress a customer profile
@@ -443,7 +471,8 @@ paths:
         '401':
           $ref: '#/components/responses/401'
       x-codeSamples:
-      - lang: Ruby
+      - label: Ruby (SDK)
+        lang: ruby
         source: '$customerio = Customerio::Client.new("YOUR SITE ID", "YOUR API SECRET KEY", region: Customerio::Regions::US)
 
 
@@ -452,7 +481,8 @@ paths:
           $customerio.unsuppress(5)
 
           '
-      - lang: Python (3)
+      - label: Python (SDK)
+        lang: python
         source: 'from customerio import CustomerIO, Regions
 
           cio = CustomerIO(site_id, api_key, region=Regions.US)
@@ -466,6 +496,11 @@ paths:
   /unsubscribe/{delivery_id}:
     parameters:
     - $ref: '#/components/parameters/delivery_id'
+    servers:
+    - url: https://track.customer.io
+      description: The base URL for the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+    - url: https://track-eu.customer.io
+      description: The base URL for the Track API (EU region). Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
     post:
       operationId: unsubscribe
       summary: Custom unsubscribe handling
@@ -500,11 +535,12 @@ paths:
           $ref: '#/components/responses/200'
         '400':
           description: The `delivery_id` format is incorrect or the request is malformed.
-      x-codeSamples:
-      - lang: json
-        label: JSON
-        source: '{}'
   /api/v1/merge_customers:
+    servers:
+    - url: https://track.customer.io
+      description: The base URL for the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+    - url: https://track-eu.customer.io
+      description: The base URL for the Track API (EU region). Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
     post:
       operationId: merge
       tags:
@@ -523,13 +559,13 @@ paths:
 
         * Attributes that are not set, or are empty, on the primary.
 
-        * The most recent 30-days of event history. Events merged from the secondary person cannot trigger campaigns.
+        * The most recent 30-days of event history. Events merged from the secondary person cannot trigger automations.
 
         * Manual segments that the primary person did not already belong to.
 
         * Message delivery history.
 
-        * Campaign journeys that the primary person has not entered. If the secondary person has started a journey that the primary person has not, the primary person continues on that campaign journey after the merge. If the secondary person has completed journeys that the primary person has not, the primary person gains these historical journeys after the merge. This may be important for determining entry (or re-entry) criteria for subsequent campaigns, segments, etc.'
+        * Automation journeys that the primary person has not entered. If the secondary person has started a journey that the primary person has not, the primary person continues on that automation journey after the merge. If the secondary person has completed journeys that the primary person has not, the primary person gains these historical journeys after the merge. This may be important for determining entry (or re-entry) criteria for subsequent automations, segments, etc.'
       servers:
       - url: https://track.customer.io
         description: This endpoint is a part of the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
@@ -616,22 +652,56 @@ paths:
                         description: Describes the error that caused your request to fail.
         '401':
           $ref: '#/components/responses/401'
-      x-codeSamples:
-      - lang: json
-        label: JSON
-        source: "{\n  \"primary\": {\n    \"email\": \"cool.person@company.com\"\n  },\n  \"secondary\": {\n    \"email\": \"cperson@gmail.com\"\n  }\n}"
 components:
   schemas:
+    object_identifiers:
+      x-scalar-ignore: true
+      type: object
+      properties:
+        identifiers:
+          description: The identifiers for a particular object. You can use either the `object_type_id` and `object_id` (where `object_type_id` represents the type of object and the `object_id` is the individual identifier for the object) or the `cio_object_id`.
+          oneOf:
+          - title: Object ID
+            type: object
+            required:
+            - object_type_id
+            - object_id
+            properties:
+              object_type_id:
+                $ref: '#/components/schemas/object_type_id'
+              object_id:
+                type: string
+                description: The unique identifier for an object. If you use an `object_id` that already exists, we'll update the object accordingly.
+                example: acme
+          - title: CIO Object ID
+            type: object
+            required:
+            - cio_object_id
+            properties:
+              cio_object_id:
+                type: string
+                description: A unique value that Customer.io sets for an object when you create it. This ID is immutable.
+                example: obb7fd050101
+    relationship_attributes:
+      x-scalar-ignore: true
+      type: object
+      description: 'The attributes associated with a relationship. Passing null or an empty string removes the attribute from the relationship.
+
+        '
+      additionalProperties:
+        x-additionalPropertiesName: Relationship Attributes
+      example:
+        role: admin
     cio_id:
       x-scalar-ignore: true
       type: string
       description: A unique identifier set by Customer.io, used to reference a person if you want to update their identifiers.
       example: a3000001
-    not_nullable_email_address:
+    not_nullable_customer_id:
       x-scalar-ignore: true
       type: string
-      description: The email address of the customer.
-      example: test@example.com
+      description: The ID of a customer profile, analogous to a "person" in the UI.
+      example: '42'
     device_object:
       x-scalar-ignore: true
       description: Device properties collected by [Customer.io SDKs](/integrations/sdk/) unless `autoTrackDeviceAttributes` is disabled. You can use these properties in segments and Liquid.
@@ -649,6 +719,23 @@ components:
       type: string
       description: The object type an object belongs to—like "Companies" or "Accounts". Object type IDs are string-formatted integers that begin at `1` and increment for each new type.
       example: '1'
+    anonymous_id:
+      x-scalar-ignore: true
+      type: string
+      description: An identifier for an anonymous event, like a cookie. If set as an attribute on a person, any events bearing the same anonymous value are associated with this person. This value must be unique and is not reusable.
+    v1_cio_relationships:
+      x-scalar-ignore: true
+      type: object
+      description: Describes relationships to an entity—a non-person object in Customer.io, like a company, educational course, job board, etc.
+      properties:
+        action:
+          type: string
+          description: This determines whether the `relationships` array adds relationships to a person or removes them from a person.
+          enum:
+          - add_relationships
+          - delete_relationships
+        relationships:
+          $ref: '#/components/schemas/object_relationships'
     device_object_common:
       x-scalar-ignore: true
       type: object
@@ -679,6 +766,9 @@ components:
             app_version:
               type: string
               description: The version of your app that a customer uses. You might target app versions to let people know when they need to update, or expose them to new features when they do.
+            app_identifier:
+              type: string
+              description: The app that the device belongs to—the **Bundle ID / App identifier** you entered with that app's push credentials. If you have more than one app, we use this attribute to send push notifications to the right app. A device without an app identifier receives push notifications you send to your [default app](/messaging/channels/push/getting-started/#the-default-app).
             cio_sdk_version:
               type: string
               description: The version of the Customer.io SDK in the app.
@@ -704,38 +794,6 @@ components:
             x-additionalPropertiesName: Custom Device Attributes
             description: Custom properties that you want to associate with the device.
             type: string
-    anonymous_id:
-      x-scalar-ignore: true
-      type: string
-      description: An identifier for an anonymous event, like a cookie. If set as an attribute on a person, any events bearing the same anonymous value are associated with this person. This value must be unique and is not reusable.
-    relationship_attributes:
-      x-scalar-ignore: true
-      type: object
-      description: 'The attributes associated with a relationship. Passing null or an empty string removes the attribute from the relationship.
-
-        '
-      additionalProperties:
-        x-additionalPropertiesName: Relationship Attributes
-      example:
-        role: admin
-    not_nullable_customer_id:
-      x-scalar-ignore: true
-      type: string
-      description: The ID of a customer profile, analogous to a "person" in the UI.
-      example: '42'
-    v1_cio_relationships:
-      x-scalar-ignore: true
-      type: object
-      description: Describes relationships to an entity—a non-person object in Customer.io, like a company, educational course, job board, etc.
-      properties:
-        action:
-          type: string
-          description: This determines whether the `relationships` array adds relationships to a person or removes them from a person.
-          enum:
-          - add_relationships
-          - delete_relationships
-        relationships:
-          $ref: '#/components/schemas/object_relationships'
     object_relationships:
       x-scalar-ignore: true
       type: array
@@ -747,49 +805,12 @@ components:
           properties:
             relationship_attributes:
               $ref: '#/components/schemas/relationship_attributes'
-    object_identifiers:
+    not_nullable_email_address:
       x-scalar-ignore: true
-      type: object
-      properties:
-        identifiers:
-          description: The identifiers for a particular object. You can use either the `object_type_id` and `object_id` (where `object_type_id` represents the type of object and the `object_id` is the individual identifier for the object) or the `cio_object_id`.
-          oneOf:
-          - title: Object ID
-            type: object
-            required:
-            - object_type_id
-            - object_id
-            properties:
-              object_type_id:
-                $ref: '#/components/schemas/object_type_id'
-              object_id:
-                type: string
-                description: The unique identifier for an object. If you use an `object_id` that already exists, we'll update the object accordingly.
-                example: acme
-          - title: CIO Object ID
-            type: object
-            required:
-            - cio_object_id
-            properties:
-              cio_object_id:
-                type: string
-                description: A unique value that Customer.io sets for an object when you create it. This ID is immutable.
-                example: obb7fd050101
+      type: string
+      description: The email address of the customer.
+      example: test@example.com
   parameters:
-    delivery_id:
-      name: delivery_id
-      description: The delivery resulting in a request to unsubscribe.
-      in: path
-      required: true
-      schema:
-        type: string
-    device_id:
-      name: device_id
-      in: path
-      required: true
-      description: The ID of the device you want to perform an operation against.
-      schema:
-        type: string
     track_customer_id:
       name: identifier
       required: true
@@ -797,7 +818,7 @@ components:
       description: 'The unique value representing a person. The values you use to identify a person may be an `id`, `email` address, or the `cio_id` (when updating people), depending on your workspace settings. When you reference people by `cio_id`, you must prefix the value with `cio_`.
 
 
-        You can''t reference a person by their `phone` number here. We determine the identifier type from the shape of the value, so a phone number in the path is treated as an `id`. To identify people by phone number, use the [Track v2 API](/api/track/#tag/track_v2).
+        You can''t reference a person by their `phone` number here. We determine the identifier type from the shape of the value, so a phone number in the path is treated as an `id`. To identify people by phone number, use the [Track v2 API](/integrations/api/track/tag/track_v2/).
 
         '
       schema:
@@ -813,13 +834,27 @@ components:
         - title: cio_id
           type: string
           format: cio_[a-zA-Z0-9]*
-          description: 'A canonical identifier assigned by Customer.io when you add a person. When referencing a person by this value, you must prefix the value with `cio_`. You can [look up a person using the App API](#tag/Customers) to find their `cio_id`.
+          description: 'A canonical identifier assigned by Customer.io when you add a person. When referencing a person by this value, you must prefix the value with `cio_`. You can [look up a person using the App API](/integrations/api/app/tag/customers/) to find their `cio_id`.
 
 
             You must use this value to update a person''s other identifiers—their `id` or `email`, unless you enable your workspace''s [Allow updates to email using ID](/accounts/workspaces#update-email-with-id) setting.
 
             '
           example: cio_03000001
+    delivery_id:
+      name: delivery_id
+      description: The delivery resulting in a request to unsubscribe.
+      in: path
+      required: true
+      schema:
+        type: string
+    device_id:
+      name: device_id
+      in: path
+      required: true
+      description: The ID of the device you want to perform an operation against.
+      schema:
+        type: string
   responses:
     '401':
       description: Unauthorized request. Make sure that you provided the right credentials.
@@ -851,3 +886,88 @@ components:
         You can find your Site ID and API key on the [Track API Keys page](https://fly.customer.io/settings/api_credentials).
 
         '
+    Bearer-Auth:
+      type: http
+      scheme: bearer
+      description: 'The App API uses a bearer authentication scheme.
+
+
+        You can generate a bearer token, known as an **App API Key**, with a defined scope in [your account settings](https://fly.customer.io/settings/api_credentials?keyType=app). [Learn more about bearer authorization in Customer.io](/accounts/settings/managing-credentials).
+
+        '
+    ServiceAccount-Auth:
+      x-scalar-ignore: true
+      type: http
+      scheme: bearer
+      bearerFormat: sa_live_
+      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/whatsapp`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
+
+
+        Service-account tokens are intended for testing and one-off sends—for example, using the Customer.io CLI with an AI agent like Claude to verify that a transactional message renders correctly before wiring it into your production backend. **For the production integration that triggers the message from your application, use an App API Key instead**: it''s workspace-scoped, easier to rotate, and has a smaller blast radius.
+
+
+        Service-account tokens are server-side credentials. Treat them like any API key—keep them in environment variables or a secret manager, and never embed them in client-side code, mobile apps, or other untrusted contexts.
+
+        '
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: API key passed as a Bearer token.
+x-tagGroups:
+- name: Track API v2
+  tags:
+  - track_v2
+  - Object Schemas
+  - Person Schemas
+  - Deliveries
+- name: Track API
+  tags:
+  - trackOverview
+  - trackJsOrBackend
+  - trackLimit
+  - trackRegion
+  - Track Customers
+  - Track Events
+  - Forms
+  - Track Segments
+  - Track v1 Overview
+- name: App API
+  tags:
+  - appOverview
+  - appLimit
+  - appAuth
+  - Activities
+  - Automations
+  - Broadcasts
+  - Collections
+  - Customers
+  - Data Index
+  - ESP Suppression
+  - Exports
+  - Imports
+  - Info
+  - Live Notifications
+  - Messages
+  - Newsletters
+  - Opt-outs
+  - Reporting Webhooks
+  - Segments
+  - Sender Identities
+  - Snippets
+  - Subscription Center
+  - Transactional
+  - Workspaces
+  - Send Messages
+  - Objects
+  - Newsletter Variants
+  - Newsletter Metrics
+  - Assets
+- name: Design Studio API
+  tags:
+  - Folders
+  - Components
+  - Emails
+  - Email link and publish
+  - Email testing
+  - SMS
+  - SMS link and publish

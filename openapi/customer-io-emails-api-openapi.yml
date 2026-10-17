@@ -1,0 +1,1819 @@
+openapi: 3.2.0
+info:
+  version: 1.0.0
+  title: Customer.io Journeys API Reference Emails API
+  description: Customer.io provides REST APIs to send real-time customer data, retrieve data from your account, and trigger messages.
+servers:
+- url: https://track.customer.io
+  description: The base URL for the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+- url: https://track-eu.customer.io
+  description: The base URL for the Track API (EU region). Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+- url: https://api.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+- url: https://api-eu.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+tags:
+- name: Emails
+  description: Create and manage the emails you build in Design Studio, along with their translations and versions.
+paths:
+  /v1/design_studio/emails:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for the Design Studio API. These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for the Design Studio API (EU region). These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    get:
+      tags:
+      - Emails
+      summary: List emails
+      description: Returns a paginated list of emails and a separate array of folders that the emails belong to.
+      operationId: listEmails
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/ParentFolderID'
+      - $ref: '#/components/parameters/DirectDescendantsOnly'
+      - $ref: '#/components/parameters/SortBy'
+      - $ref: '#/components/parameters/SortOrder'
+      - $ref: '#/components/parameters/CreatedBefore'
+      - $ref: '#/components/parameters/CreatedAfter'
+      - $ref: '#/components/parameters/UpdatedBefore'
+      - $ref: '#/components/parameters/UpdatedAfter'
+      - name: is_template
+        description: Filter by whether the email is a template
+        in: query
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+          - any
+          default: any
+      - name: has_translations
+        description: Filter by whether the email has translations
+        in: query
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+          - any
+          default: any
+      - name: is_linked
+        description: Filter by whether the email is linked to a workflow (automation, broadcast, etc).
+        in: query
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+          - any
+          default: any
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  emails:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EmailSummary'
+                  folders:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Folder'
+                  meta:
+                    $ref: '#/components/schemas/ListMeta'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                errors:
+                - detail: invalid query parameter
+                  status: '400'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags:
+      - Emails
+      summary: Create an email
+      description: Create an email. Note, you can create an email without filling out all required fields for sending. You can fill in the envelope, like a to and from address, with this method, but that's not required until you link it to a workflow like an automation.
+      operationId: createEmail
+      security:
+      - Bearer-Auth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailCreate'
+      responses:
+        '200':
+          description: Email created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    $ref: '#/components/schemas/Email'
+        '400':
+          description: "Bad request. Possible reasons:\n  - Missing or invalid name\n  - Missing content or any required content sub-field\n  - Unknown JSON field in content, envelope, or transformers\n  - from_id or reply_to_id does not reference an existing identity\n  - parent_folder_id is an empty string\n"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/design_studio/emails/{id}:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for the Design Studio API. These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for the Design Studio API (EU region). These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    get:
+      tags:
+      - Emails
+      summary: Get an email
+      description: Returns a single email including content, envelope details, and transformers. This endpoint returns only default emails; see Email translations to access language variants.
+      operationId: getEmail
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - $ref: '#/components/parameters/email_id'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    $ref: '#/components/schemas/Email'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags:
+      - Emails
+      summary: Update an email
+      description: 'Update part of an email: an email''s name, template status, folder, content, envelope, or transformers. Note, this does not publish your email; if the email is linked to a workflow like an automation, you still need to click publish to make the changes live.'
+      operationId: updateEmail
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - $ref: '#/components/parameters/email_id'
+      requestBody:
+        required: true
+        description: You must provide a body with at least one of the following properties. Omitting a field leaves it unchanged.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailUpdate'
+      responses:
+        '204':
+          description: Email updated, no content returned
+        '400':
+          description: "Bad request. Possible reasons:\n  - No fields provided\n  - Invalid name\n  - Unknown JSON field in content, envelope, or transformers\n  - from_id or reply_to_id does not reference an existing identity\n  - parent_folder_id is an empty string\n"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags:
+      - Emails
+      summary: Delete an email
+      description: Delete an email. You cannot delete an email that is linked to a workflow (automation, broadcast, etc). This deletes the email and all translations.
+      operationId: deleteEmail
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - $ref: '#/components/parameters/email_id'
+      responses:
+        '204':
+          description: Email deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Email is linked to a journey and cannot be deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                errors:
+                - detail: cannot delete email because it is linked
+                  status: '409'
+  /v1/design_studio/emails/{id}/languages:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for the Design Studio API. These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for the Design Studio API (EU region). These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    get:
+      tags:
+      - Emails
+      summary: List email translations
+      description: Returns all translations for an email. Each translation contains the email's content, envelope, and transformers for a specific language.
+      operationId: listEmailTranslations
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - $ref: '#/components/parameters/email_id'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email_translations:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EmailTranslation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags:
+      - Emails
+      summary: Create an email translation
+      description: Creates a new translation for an email. If content, envelope, and/or transformers are omitted, the values are copied from the default (parent) email.
+      operationId: createEmailTranslation
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - $ref: '#/components/parameters/email_id'
+      requestBody:
+        required: true
+        description: "How content is inherited from the default, parent email:\n  - If both `content` and `envelope` are omitted: envelope (including subject and preheader) is copied verbatim from the parent email\n  - If `content` is provided but `envelope` is omitted: the envelope is reconstructed from the parent’s envelope settings, using the new subject and preheader\n  - If `envelope` is provided but `content` is omitted: the provided envelope is used with the parent’s subject and preheader\n  - HTML, AMP, and text body fields are always copied from parent if `content` is omitted\n"
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - language
+              properties:
+                language:
+                  type: string
+                  description: A [language code](/journeys/channels/localization/attribute/#supported-languages) that corresponds to the language of the translation
+                  example: es
+                content:
+                  $ref: '#/components/schemas/EmailContent'
+                envelope:
+                  $ref: '#/components/schemas/EmailEnvelopeInput'
+                transformers:
+                  $ref: '#/components/schemas/Transformers'
+      responses:
+        '200':
+          description: Translation created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email_translation:
+                    $ref: '#/components/schemas/EmailTranslation'
+        '400':
+          description: "Bad request. Possible reasons:\n  - Missing language\n  - Invalid language code\n  - Missing required content sub-field when content is provided\n  - Unknown JSON field in content, envelope, or transformers\n  - from_id or reply_to_id does not reference an existing identity\n"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /v1/design_studio/emails/{id}/languages/{language}:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for the Design Studio API. These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for the Design Studio API (EU region). These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    get:
+      tags:
+      - Emails
+      summary: Get an email translation
+      description: Returns a single email translation by language code, including content, envelope, and transformers.
+      operationId: getEmailTranslation
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - $ref: '#/components/parameters/email_id'
+      - $ref: '#/components/parameters/Language'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email_translation:
+                    $ref: '#/components/schemas/EmailTranslation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags:
+      - Emails
+      summary: Update an email translation
+      description: 'Update part of an email translation: the content, envelope, or transformers for a specific email translation. Note, this does not publish your email; if the email is linked to a workflow like an automation, you still need to click publish to make the changes live.'
+      operationId: updateEmailTranslation
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - $ref: '#/components/parameters/email_id'
+      - $ref: '#/components/parameters/Language'
+      requestBody:
+        required: true
+        description: You must provide a body with at least one of the following properties. Omitting a field leaves it unchanged.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  $ref: '#/components/schemas/EmailContent'
+                envelope:
+                  $ref: '#/components/schemas/EmailEnvelopeInput'
+                transformers:
+                  $ref: '#/components/schemas/Transformers'
+      responses:
+        '204':
+          description: Translation updated
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags:
+      - Emails
+      summary: Delete an email translation
+      description: Delete a specific language translation from an email. This fails if the email is linked to a workflow (automation, broadcast, etc).
+      operationId: deleteEmailTranslation
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - $ref: '#/components/parameters/email_id'
+      - $ref: '#/components/parameters/Language'
+      responses:
+        '204':
+          description: Translation deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /v1/design_studio/emails/{id}/versions:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for the Design Studio API. These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for the Design Studio API (EU region). These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    get:
+      tags:
+      - Emails
+      summary: List email versions
+      description: 'Returns an email''s saved versions, newest first. A version is a named checkpoint of the email''s content and envelope.
+
+        - Design Studio creates a version automatically every time you publish the email.
+
+        - You can save a version manually with Save an email version.
+
+
+        Pass `start_date` to filter for versions created after a certain time. Or pass `start_date` and `end_date` together to filter for versions created in a certain time range.
+
+
+        You can retrieve your email''s UUID through List emails. If your email has language variants, *List emails* only returns the UUID for the default language. Use this default ID to retrieve variant IDs through List email translations.'
+      operationId: listVersions
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - $ref: '#/components/parameters/email_variant_id'
+      - name: start_date
+        in: query
+        description: Return versions created at or after this time. Must be a unix timestamp.
+        schema:
+          type: integer
+          format: Unix timestamp
+        example: 1773856017
+      - name: end_date
+        in: query
+        description: Return versions created at or before this time. Must be a unix timestamp. Requires `start_date`.
+        schema:
+          type: integer
+          format: Unix timestamp
+        example: 1773856017
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  versions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/VersionSummary'
+        '400':
+          description: 'Bad request. Possible reasons include `:id` is not a valid UUID, the node is not an `EMAIL` type, or you passed `end_date` without `start_date`.
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Possible reasons include the email node doesn't exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+      - Emails
+      summary: Save an email version
+      description: 'Saves a version of the email''s current content, envelope, and any component dependencies it references.
+
+
+        If you need to revert to a previous version, use Restore an email version.
+
+
+        If the email is identical to the most recent version, this returns that version with `"created": false` instead of saving a duplicate. If the code of a referenced custom component changes, you can save a new version of the email with the latest component changes; however, the code diff in Design Studio will show no change because the component code isn''t compiled in that view.'
+      operationId: saveVersion
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - $ref: '#/components/parameters/email_variant_id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              properties:
+                name:
+                  type: string
+                  description: Name for the version, shown in the [version history list](/integrations/api/design-studio/tag/emails/listVersions/).
+                  minLength: 1
+                  maxLength: 100
+                  example: Before holiday redesign
+                description:
+                  type: string
+                  description: Note about the version.
+      responses:
+        '200':
+          description: Returns the new version saved, or the latest version if nothing changed.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version:
+                    $ref: '#/components/schemas/VersionSummary'
+                  created:
+                    type: boolean
+                    description: '`false` when the email and its dependencies matched the most recent version exactly, so no new version was saved. `true` when this call created a new version.
+
+                      '
+        '400':
+          description: 'Bad request. Possible reasons include `:id` is not a valid UUID or `name` is missing.
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 'Possible reasons include the email node doesn''t exist.
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/design_studio/emails/{id}/versions/{version_id}:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for the Design Studio API. These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for the Design Studio API (EU region). These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    get:
+      tags:
+      - Emails
+      summary: Get an email version
+      description: Returns a snapshot of the version's content including the code for any custom components referenced in the email (see `dependencies` for more).
+      operationId: getVersion
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - $ref: '#/components/parameters/email_variant_id'
+      - $ref: '#/components/parameters/version_id'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version:
+                    $ref: '#/components/schemas/VersionSummary'
+                  node:
+                    $ref: '#/components/schemas/VersionNode'
+                  dependencies:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/VersionDependencyNode'
+        '400':
+          description: 'Bad request. Possible reasons include `:id` is not a valid UUID, the node is not an email, or `version_id` is not a valid UUID.
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 'Possible reasons include the email node or version doesn''t exist.
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+      - Emails
+      summary: Delete an email version
+      description: Deletes a version. You can't delete a version that Design Studio created automatically during a publish.
+      operationId: deleteVersion
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - $ref: '#/components/parameters/email_variant_id'
+      - $ref: '#/components/parameters/version_id'
+      responses:
+        '204':
+          description: Version deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 'Possible reasons include the email node or version doesn''t exist or the version belongs to a different node.
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: The version was created automatically during a publish and can't be deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                errors:
+                - detail: cannot delete a version created on publish
+                  status: 409
+  /v1/design_studio/emails/{id}/versions/{version_id}/restore:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for the Design Studio API. These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for the Design Studio API (EU region). These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    post:
+      tags:
+      - Emails
+      summary: Restore an email version
+      description: 'Returns the email to a saved version. This restores only the email itself; if the code for a referenced custom component changed since this version was saved, the latest component code renders in Design Studio, not the original.
+
+
+        This only edits the draft in Design Studio. If you already linked the email to a workflow, you need to publish it to push the restored content live.'
+      operationId: restoreVersion
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - $ref: '#/components/parameters/email_variant_id'
+      - $ref: '#/components/parameters/version_id'
+      responses:
+        '200':
+          description: Version restored
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  node_id:
+                    type: string
+                    format: uuid
+                    description: The UUID of the restored email node.
+                  version_id:
+                    type: string
+                    format: uuid
+                    description: The UUID of the version that was restored.
+                  restored_node_ids:
+                    type: array
+                    items:
+                      type: string
+                      format: uuid
+                    description: The nodes whose content was rolled back. Always just the email node itself—component dependencies aren't restored.
+                example:
+                  node_id: 123e4567-e89b-12d3-a456-426614174000
+                  version_id: fc70fa5f-5fed-49c1-be48-6508aa9875c1
+                  restored_node_ids:
+                  - 123e4567-e89b-12d3-a456-426614174000
+        '400':
+          description: 'Bad request. Possible reasons include `:id` or `version_id` is not a valid UUID.
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 'Possible reasons include the email node or version doesn''t exist or the version belongs to a different node.
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  parameters:
+    version_id:
+      name: version_id
+      in: path
+      required: true
+      description: The UUID of the version.
+      schema:
+        type: string
+        format: uuid
+    CreatedAfter:
+      name: created_after
+      in: query
+      schema:
+        type: integer
+        format: Unix timestamp
+      description: Return records created after this time. Must be a unix timestamp.
+      example: 1773856017
+    UpdatedBefore:
+      name: updated_before
+      in: query
+      schema:
+        type: integer
+        format: Unix timestamp
+      description: Return records updated before this time. Must be a unix timestamp.
+      example: 1773856017
+    Page:
+      name: page
+      in: query
+      description: The page number of results you want to display. Use with `limit`.
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    email_variant_id:
+      name: id
+      in: path
+      required: true
+      description: 'The UUID of the email. If your email has translations, this is the ID of a specific language variant.
+
+        '
+      schema:
+        type: string
+        format: uuid
+    DirectDescendantsOnly:
+      name: direct_descendants_only
+      in: query
+      description: When `true`, the response includes only the immediate children of the parent folder. When `false`, it includes the parent folder's entire subtree.
+      schema:
+        type: boolean
+        default: false
+    SortBy:
+      name: sort_by
+      in: query
+      schema:
+        type: string
+        enum:
+        - created
+        - updated
+        - name
+        default: created
+    Limit:
+      name: limit
+      in: query
+      description: The maximum number of results per page.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 10000
+        default: 1000
+    ParentFolderID:
+      name: parent_folder_id
+      in: query
+      schema:
+        type: string
+        format: uuid
+      description: 'Filter by parent folder. Must reference an existing folder. If not set, the response filters by the root level directory.
+
+
+        To list only items in the root folder, leave `parent_folder_id` unset and only set `direct_descendants_only` to `true`.
+
+        '
+    CreatedBefore:
+      name: created_before
+      in: query
+      schema:
+        type: integer
+        format: Unix timestamp
+      description: Return records created before this time. Must be a unix timestamp.
+      example: 1773856017
+    email_id:
+      name: id
+      in: path
+      required: true
+      description: The id of the email. If your email has multiple languages, you must provide the ID of the **default** language template. This links the workflow to all of the language variants for the template.
+      schema:
+        type: string
+        format: uuid
+    Language:
+      name: language
+      in: path
+      required: true
+      schema:
+        type: string
+      description: A [language code](/journeys/channels/localization/attribute/#supported-languages) that indicates the language of your translated email
+    UpdatedAfter:
+      name: updated_after
+      in: query
+      schema:
+        type: integer
+        format: Unix timestamp
+      description: Return records updated after this time. Must be a unix timestamp.
+      example: 1773856017
+    SortOrder:
+      name: sort_order
+      in: query
+      schema:
+        type: string
+        enum:
+        - asc
+        - desc
+        default: asc
+  schemas:
+    Email:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the email.
+          example: sdflkj345
+        name:
+          type: string
+          description: Display name of the email.
+        is_template:
+          type: boolean
+          description: Whether the email is a reusable template.
+        is_linked:
+          type: boolean
+          description: 'Whether the email is currently linked to a workflow (automation, broadcast, etc).
+
+            '
+        parent_folder_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: 'UUID of the parent folder, or `null` if the email is in your root directory.
+
+            '
+        available_languages:
+          type: array
+          items:
+            type: string
+          description: List of [language codes](/journeys/channels/localization/attribute/#supported-languages) that reflect the languages this default email has been translated to.
+          example:
+          - en
+          - es
+        created:
+          type: integer
+          format: int64
+          description: Unix timestamp of when the email was created.
+          example: 1773856017
+        updated:
+          type: integer
+          format: int64
+          description: Unix timestamp of the last update to the email.
+          example: 1773856017
+        content:
+          $ref: '#/components/schemas/EmailContent'
+        envelope:
+          $ref: '#/components/schemas/EmailEnvelope'
+        transformers:
+          $ref: '#/components/schemas/Transformers'
+    EmailHeader:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+    EmailEnvelopeInput:
+      type: object
+      description: The envelope of your email, like from and to addresses.
+      properties:
+        from_id:
+          type:
+          - integer
+          - 'null'
+          description: 'Sender identity ID. Must reference an existing identity. You can find this in *Workspace Settings > Email* under your From Addresses.
+
+            '
+        reply_to_id:
+          type:
+          - integer
+          - 'null'
+          format: int64
+          description: 'Reply-to identity ID. Must reference an existing identity from *Workspace Settings > Email* under your From Addresses.
+
+            '
+        recipient:
+          type: string
+          description: 'Recipient email address. Defaults to `{{customer.email}}`` if not set.
+
+            '
+        bcc:
+          type: string
+          description: BCC email address.
+        fake_bcc:
+          type: boolean
+          description: Whether to use fake BCC. Defaults to true if not provided.
+        headers:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailHeader'
+          description: 'Custom headers. Each item: { "name": "string", "value": "string" }.
+
+            '
+    Folder:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of folder
+        name:
+          type: string
+          description: The name of the folder.
+        parent_folder_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: The ID of the parent folder. Returns `null` if there is no parent, which means the folder is in the root directory.
+        created:
+          type: integer
+          format: Unix timestamp
+          description: Timestamp of when the folder was created.
+        updated:
+          type: integer
+          format: Unix timestamp
+          description: Timestamp of last update to the folder.
+      example:
+        id: 123e4567-e89b-12d3-a456-426614174000
+        name: Product Announcements
+        parent_folder_id: null
+        created: 1714732800
+        updated: 1714732800
+    VersionDependencyNode:
+      type: object
+      description: The code of the referenced custom component(s) in the node version.
+      properties:
+        node_id:
+          type: string
+          format: uuid
+          description: UUID of the component node.
+        node_type:
+          type: string
+          enum:
+          - COMPONENT
+          description: Always `COMPONENT`.
+        name:
+          type: string
+          description: Display name of the component in Design Studio.
+        component_name:
+          type:
+          - string
+          - 'null'
+          description: The component tag name when you saved this version.
+        content:
+          type: string
+          description: HTML content as of the snapshot.
+      example:
+        node_id: 1abcbb4e-402e-949e-f6732f333
+        node_type: COMPONENT
+        name: Footer
+        component_name: footer
+        content: <script>...</script><template>...</template>
+    EmailUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Display name of the email.
+        is_template:
+          type: boolean
+          description: Whether the email is a reusable template.
+        parent_folder_id:
+          $ref: '#/components/schemas/parent_folder_id'
+        content:
+          $ref: '#/components/schemas/EmailContent'
+        envelope:
+          $ref: '#/components/schemas/EmailEnvelopeInput'
+        transformers:
+          $ref: '#/components/schemas/Transformers'
+    EmailTranslation:
+      type: object
+      properties:
+        language_group_id:
+          type: string
+          format: uuid
+          description: ID of the parent email that groups all translations. Same as the id in the path parameter.
+        language:
+          type: string
+          description: The [language code](/journeys/channels/localization/attribute/#supported-languages) of the translation
+          example: fr
+        is_template:
+          type: boolean
+          description: Whether the translation is a template
+        is_linked:
+          type: boolean
+          description: Whether the translation is linked to a workflow (automation, broadcast, etc)
+        parent_folder_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: UUID of the parent folder, or `null` if the email is in your root directory.
+        available_languages:
+          type: array
+          items:
+            type: string
+          description: List of [language codes](/journeys/channels/localization/attribute/#supported-languages) that reflect the languages this default email has been translated to.
+          example:
+          - en
+          - es
+        created:
+          type: integer
+          description: Unix timestamp of when the translation was created.
+          example: 1773856017
+        updated:
+          type: integer
+          description: Unix timestamp of the last update to the translation.
+          example: 1773856017
+        content:
+          $ref: '#/components/schemas/EmailContent'
+        envelope:
+          $ref: '#/components/schemas/EmailEnvelope'
+        transformers:
+          $ref: '#/components/schemas/Transformers'
+    VersionSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: UUID of the version.
+        node_id:
+          type: string
+          format: uuid
+          description: UUID of the email node this version belongs to.
+        node_type:
+          type: string
+          enum:
+          - EMAIL
+          description: Always `"EMAIL"`.
+        name:
+          type: string
+          description: Name given to the version when it was saved.
+        description:
+          type: string
+          description: Explanatory text you provided when creating a version. Omitted if no description.
+        created:
+          type: integer
+          format: Unix timestamp
+          description: The date-time the version was created.
+        created_on_publish:
+          type: boolean
+          description: '`false` if you [saved the email](/integrations/api/design-studio/tag/emails/saveVersion/). `true` if  Design Studio created this version automatically when you [published the email](/integrations/api/design-studio/tag/email-email-link-and-publish/publishEmail/). You can''t delete versions generated by Design Studio.
+
+            '
+        feedback:
+          type: boolean
+          description: '`true` is you saved this version by creating a [round of feedback in Design Studio](/messaging/design-studio/collaboration/feedback/).
+
+            '
+      example:
+        id: 8f14e45f-ceea-4c67-9814-b8f0e0e1a6f0
+        node_id: 1a0cbb4e-09d3-402e-949e-f6732f021650
+        node_type: EMAIL
+        name: Before holiday redesign
+        created: 1773856017
+        created_on_publish: false
+        feedback: false
+    VersionNode:
+      type: object
+      description: The content and settings stored in the version.
+      properties:
+        node_id:
+          type: string
+          format: uuid
+          description: UUID of the node.
+        node_type:
+          type: string
+          enum:
+          - EMAIL
+          description: Always `EMAIL` for the node.
+        name:
+          type: string
+          description: Display name of the email in Design Studio. If the version is a language variant, the title ends in the language code like "Onboarding email (fr)".
+        content:
+          type: string
+          description: HTML content as of the snapshot. For the content of any referenced custom component, see `dependencies`.
+        text:
+          type: string
+          description: Plain text body as of the snapshot. Omitted if the email had none.
+        amp:
+          type: string
+          description: AMP HTML body as of the snapshot. Omitted if the email had none.
+        subject:
+          type: string
+          description: Email subject line.
+        preheader_text:
+          type: string
+          description: Preview text as of the snapshot. Omitted if the email had none.
+        envelope:
+          $ref: '#/components/schemas/EmailEnvelope'
+        transformers:
+          $ref: '#/components/schemas/Transformers'
+      example:
+        node_id: 1a0cbb4e-09d3-402e-949e-f6732f021650
+        node_type: EMAIL
+        name: Onboarding phase 1
+        content: <x-base>...</x-base>
+        subject: Welcome to Design Studio!
+        preheader_text: Get started in minutes
+        envelope:
+          from_id: 1
+          from: Customer.io <noreply@example.com>
+          reply_to_id: null
+          reply_to: ''
+          bcc: ''
+          fake_bcc: true
+          headers: []
+          recipient: '{{customer.email}}'
+        transformers:
+          prevent_widows:
+            enabled: false
+    Error:
+      type: object
+      description: An error response containing one or more error details.
+      properties:
+        errors:
+          type: array
+          description: A list of errors that occurred while processing the request.
+          items:
+            type: object
+            properties:
+              detail:
+                type: string
+                description: A human-readable description of the error.
+              status:
+                type: string
+                description: The HTTP status code for this error, as a string.
+              source:
+                type: object
+                description: The request field that caused the error. Validation errors (`422`) include it.
+                properties:
+                  pointer:
+                    type: string
+                    description: The path to the field that failed, like `/data/attributes/content`.
+              meta:
+                type: object
+                description: Additional detail about the error, when there is any. A failed publish uses this to list Liquid errors per language.
+    parent_folder_id:
+      type:
+      - string
+      - 'null'
+      format: uuid
+      description: 'The UUID of the parent folder.
+
+
+        Omit if you want no change to where the folder or file is located. Include `null` to move it to your root directory. Or add the UUID of another folder to move it there.
+
+        '
+    EmailContent:
+      type: object
+      description: The content of your email.
+      properties:
+        subject:
+          type: string
+          description: Email subject line.
+        preheader_text:
+          type: string
+          description: Preview text.
+        html:
+          type: string
+          description: HTML body.
+        amp:
+          type: string
+          description: AMP HTML body.
+        text:
+          type: string
+          description: Plain text body.
+    EmailCreate:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Display name of the email.
+        is_template:
+          type: boolean
+          default: false
+          description: Whether the email is a reusable template.
+        parent_folder_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: UUID of the parent folder. Omit or pass `null` to create at root.
+        content:
+          $ref: '#/components/schemas/EmailContent'
+        envelope:
+          $ref: '#/components/schemas/EmailEnvelopeInput'
+        transformers:
+          $ref: '#/components/schemas/Transformers'
+    EmailEnvelope:
+      type: object
+      properties:
+        from_id:
+          type:
+          - integer
+          - 'null'
+          description: 'Sender identity ID.
+
+            '
+        from:
+          type: string
+          description: The sender address associated with the from_id.
+        reply_to_id:
+          type:
+          - integer
+          - 'null'
+          description: 'Reply-to identity ID. This matches one of the ids in *Workspace Settings > Email*.
+
+            '
+        reply_to:
+          type: string
+          description: The reply-to address associated with the reply_to_id.
+        bcc:
+          type: string
+          description: BCC email address.
+        fake_bcc:
+          type: boolean
+          description: Whether to use fake BCC. Defaults to true if not provided.
+        headers:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailHeader'
+          description: 'Custom headers. Each item: { "name": "string", "value": "string" }.
+
+            '
+        recipient:
+          type: string
+          description: Recipient expression. Defaults to {{customer.email}} if not set.
+    EmailSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of email
+          example: sdflkj345
+        name:
+          type: string
+          description: The name of the email
+        is_template:
+          type: boolean
+          description: Whether the email is a template
+        is_linked:
+          type: boolean
+          description: Whether the email is linked to a workflow (automation, broadcast, etc)
+        has_translations:
+          type: boolean
+          description: Whether the email has translations
+        parent_folder_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: The ID of the parent folder. Returns `null` if there is no parent, which means the folder is in the root directory.
+          example: 123e4567-e89b-12d3-a456-426614174000
+        created:
+          type: integer
+          format: Unix timestamp
+          description: Timestamp of when the email was created.
+          example: 1714732800
+        updated:
+          type: integer
+          format: Unix timestamp
+          description: Timestamp of last update to the email.
+          example: 1714732800
+    Transformers:
+      type: object
+      description: Automate repetitive actions like removing white space and inlining CSS with [transformers](/journeys/design-studio/emails/code-editor/overview/#transformers).
+      properties:
+        url_parameters:
+          type: object
+          description: 'Appends query string parameters to all absolute URLs in `<a>` and VML elements. Useful for adding UTM tracking or other analytics parameters. Skips `mailto:`, `tel:`, and `sms:` links. Elements marked with `data-ignore-params` are excluded.
+
+            '
+          properties:
+            enabled:
+              type: boolean
+              description: 'Enable URL parameter injection.
+
+                '
+              default: false
+            parameters:
+              type: array
+              description: 'List of parameters to append to URLs.
+
+                '
+              default: []
+              items:
+                type: object
+                properties:
+                  key:
+                    type: string
+                    description: 'Parameter name.
+
+                      '
+                  value:
+                    type: string
+                    description: 'Parameter value. May contain template variables.
+
+                      '
+                  url_encode:
+                    type: boolean
+                    description: 'URL-encode the value before appending it to the URL.
+
+                      '
+        css_variables:
+          type: object
+          description: 'Resolves CSS custom properties (`var(--name)`) into their computed values. Required for email clients that do not support CSS custom properties (most email clients). Variables declared in one `<style>` tag are available in subsequent `<style>` tags.
+
+            '
+          properties:
+            enabled:
+              type: boolean
+              description: 'Enable CSS variable resolution.
+
+                '
+              default: false
+            preserve:
+              type: boolean
+              description: 'Keep original custom property declarations (`--name: value`) alongside the resolved values.
+
+                '
+              default: false
+        css_inliner:
+          type: object
+          description: 'Moves CSS from `<style>` tags into inline `style` attributes on each element. Essential for email clients with limited `<style>` support (for example, older Gmail and some Outlook versions). Uses the `juice` library. Elements in `<style>` tags marked with `data-ignore-inlining` are skipped.
+
+            '
+          properties:
+            enabled:
+              type: boolean
+              description: 'Enable CSS inlining.
+
+                '
+              default: false
+            apply_style_tags:
+              type: boolean
+              description: 'Inline styles from `<style>` tags.
+
+                '
+              default: true
+            preserve_important:
+              type: boolean
+              description: 'Preserve `!important` declarations in inlined styles.
+
+                '
+              default: false
+            remove_style_tags:
+              type: boolean
+              description: 'Remove `<style>` tags after inlining their rules.
+
+                '
+              default: true
+            preserve_font_faces:
+              type: boolean
+              description: 'Keep `@font-face` rules in `<style>` (cannot be inlined).
+
+                '
+              default: true
+            preserve_media_queries:
+              type: boolean
+              description: 'Keep `@media` rules in `<style>` (cannot be inlined).
+
+                '
+              default: true
+            preserve_keyframes:
+              type: boolean
+              description: 'Keep `@keyframes` rules in `<style>` (cannot be inlined).
+
+                '
+              default: true
+            preserve_pseudos:
+              type: boolean
+              description: 'Keep pseudo-selector rules (for example, `:hover`) in `<style>` (cannot be inlined).
+
+                '
+              default: true
+            inline_pseudo_elements:
+              type: boolean
+              description: 'Attempt to inline pseudo-element (`::before`, `::after`) styles.
+
+                '
+              default: false
+            apply_html_attributes:
+              type: object
+              description: 'Controls adding redundant HTML attributes alongside inlined CSS to different HTML elements.
+
+                '
+              properties:
+                enabled:
+                  type: boolean
+                  description: 'Enable adding redundant HTML attributes.
+
+                    '
+                  default: true
+                apply_width_attributes:
+                  type: boolean
+                  description: 'Add redundant HTML `width` attributes alongside inlined CSS `width` on `<table>`, `<td>`, `<th>`, and `<img>` elements. Only applies to `px` values (and `%` on table elements). Needed for email clients that ignore CSS width (for example, older Outlook).
+
+                    '
+                  default: true
+                apply_height_attributes:
+                  type: boolean
+                  description: 'Add redundant HTML `height` attributes alongside inlined CSS `height` on `<table>`, `<td>`, `<th>`, and `<img>` elements. Only applies to `px` values (and `%` on table elements). Needed for email clients that ignore CSS height.
+
+                    '
+                  default: true
+                apply_table_element_attributes:
+                  type: boolean
+                  description: 'Add redundant HTML attributes on table elements (`<table>`, `<th>`, `<tr>`, `<td>`, `<caption>`, `<colgroup>`, `<col>`, `<thead>`, `<tbody>`, `<tfoot>`): `background-color` → `bgcolor`, `background-image` → `background`, `text-align` → `align`, `vertical-align` → `valign`.
+
+                    '
+                  default: true
+        accessibility:
+          type: object
+          description: 'Applies a set of accessibility improvements to the email HTML. When no `language` is set, this falls back to the `lang` attribute on the `<html>` tag, or `"und"` (undetermined). The `dir` attribute is automatically derived from the language using RTL detection.
+
+            '
+          properties:
+            enabled:
+              type: boolean
+              description: 'Enable accessibility fixes.
+
+                '
+              default: false
+            language:
+              type: string
+              description: 'Language code (for example, `"en"`, `"fr"`, or `"ar"`) used for `lang` and `dir` attributes.
+
+                '
+              default: ''
+            add_lang_to_html:
+              type: boolean
+              description: 'Add `lang` attribute to the `<html>` element if not already present.
+
+                '
+              default: true
+            add_dir_to_html:
+              type: boolean
+              description: 'Add `dir` attribute (`ltr`, `rtl`, or `auto`) to the `<html>` element if not already present.
+
+                '
+              default: true
+            add_lang_to_content:
+              type: boolean
+              description: 'Add `lang` attribute to direct children of `<body>`.
+
+                '
+              default: true
+            add_dir_to_content:
+              type: boolean
+              description: 'Add `dir` attribute to direct children of `<body>`.
+
+                '
+              default: true
+            add_role_to_tables:
+              type: boolean
+              description: 'Add `role="presentation"` to all `<table>` elements without an existing `role`, so screen readers skip table semantics for layout tables.
+
+                '
+              default: true
+            add_vml_alt_text:
+              type: boolean
+              description: 'Add `alt` attribute to VML elements (used by Outlook’s Word rendering engine), derived from the element’s text content.
+
+                '
+              default: true
+            add_empty_alt_to_images:
+              type: boolean
+              description: 'Add `alt=""` to `<img>` elements missing an `alt` attribute, preventing screen readers from reading the file name.
+
+                '
+              default: true
+            add_title_to_head:
+              type: boolean
+              description: 'Add a `<title>` tag to `<head>` using the email subject line (creates or replaces if empty).
+
+                '
+              default: true
+            remove_button_role_from_links:
+              type: boolean
+              description: 'Remove `role="button"` from `<a>` tags to restore proper link semantics for screen readers.
+
+                '
+              default: true
+            remove_zoom_meta_tag:
+              type: boolean
+              description: 'Remove viewport `<meta>` tags that restrict zoom (`user-scalable=0`, `user-scalable=no`, `maximum-scale=1`, or `maximum-scale=2`).
+
+                '
+              default: true
+        formatter:
+          type: object
+          description: 'Controls the output formatting of the final HTML. Only one mode (`prettify` or `minify`) can be active at a time. Set to `"none"` to skip formatting entirely.
+
+            '
+          properties:
+            type:
+              type: string
+              description: 'Formatting mode to apply.
+
+                '
+              enum:
+              - none
+              - prettify
+              - minify
+              default: none
+            prettify:
+              type: object
+              description: 'Options used when `type` is `"prettify"`. Produces human-readable, indented HTML output.
+
+                '
+              properties:
+                indent_character:
+                  type: string
+                  description: 'Character used for indentation.
+
+                    '
+                  enum:
+                  - spaces
+                  - tabs
+                  default: spaces
+                indent_size:
+                  type: integer
+                  description: 'Number of indent characters per level.
+
+                    '
+                  default: 2
+                wrap_attributes:
+                  type: boolean
+                  description: 'Wrap HTML attributes onto separate lines (`force-expand-multiline` mode).
+
+                    '
+                  default: false
+            minify:
+              type: object
+              description: 'Options used when `type` is `"minify"`. Reduces file size by stripping whitespace and comments.
+
+                '
+              properties:
+                remove_line_breaks:
+                  type: boolean
+                  description: 'Remove all line breaks from the output.
+
+                    '
+                  default: false
+                line_length_limit:
+                  type: integer
+                  description: 'Maximum characters per line before inserting a line break.
+
+                    '
+                  default: 500
+                remove_indentations:
+                  type: boolean
+                  description: 'Remove leading whitespace indentation.
+
+                    '
+                  default: true
+                remove_html_comments:
+                  type: string
+                  description: 'HTML comment removal level. `"0"` keeps all comments, `"1"` removes non-conditional comments (preserves MSO conditionals like `<!--[if mso]>`), and `"2"` removes all comments including conditional.
+
+                    '
+                  enum:
+                  - '0'
+                  - '1'
+                  - '2'
+                  default: '0'
+                remove_css_comments:
+                  type: boolean
+                  description: 'Remove CSS comments (`/* ... */`) from `<style>` blocks.
+
+                    '
+                  default: true
+        prevent_widows:
+          type: object
+          description: 'Replaces the last space in text blocks with a non-breaking space (`&nbsp;`) to prevent a single word from wrapping onto its own line (a “widow”). Only processes text nodes in the `<body>` and skips `<script>`, `<style>`, `<noscript>`, `<svg>`, and `<head>` elements. Preserves Liquid template tags (`{{ }} ` and `{% %}`).
+
+            '
+          properties:
+            enabled:
+              type: boolean
+              description: 'Enable widow word prevention.
+
+                '
+              default: false
+        encode_entities:
+          type: object
+          description: 'Encodes special characters (for example, `©`, `™`, and `—`) as their HTML entity equivalents. Improves rendering consistency across email clients with varying character encoding support. Only processes text nodes in the `<body>` and skips `<script>`, `<style>`, `<noscript>`, `<svg>`, and `<head>` elements. Preserves Liquid template tags and avoids double-encoding existing entities.
+
+            '
+          properties:
+            enabled:
+              type: boolean
+              description: 'Enable HTML entity encoding.
+
+                '
+              default: false
+        remove_unused_css:
+          type: object
+          description: 'Scans the HTML and removes any CSS selectors from `<style>` tags that are not referenced in the document. Reduces file size and helps avoid Gmail’s 102 KB clipping limit. HTML and CSS comments are always preserved by this step (comment removal is handled separately by the formatter object).
+
+            '
+          properties:
+            enabled:
+              type: boolean
+              description: 'Enable unused CSS removal.
+
+                '
+              default: false
+            whitelist:
+              type: array
+              description: "CSS selectors to always keep, even if they are not found in the HTML.\n  - .ReadMsgBody\n  - .ExternalClass\n  - .aBn\n  - .a6S\n  - .im\n  - .yshortcuts\n  - \"#outlook\"\n  - .MsoHyperlink\n  - .MsoHyperlinkFollowed\n"
+              items:
+                type: string
+                description: 'A CSS selector to always keep.
+
+                  '
+            backend_markers:
+              type: array
+              description: 'Template syntax delimiters (e.g., Liquid, Handlebars) that the CSS parser should skip over to avoid treating template expressions as invalid CSS.
+
+                '
+              default:
+              - heads: ''
+                tails: ''
+              - heads: '{%'
+                tails: '%}'
+              items:
+                type: object
+                properties:
+                  heads:
+                    type: string
+                    description: 'Opening delimiter.
+
+                      '
+                  tails:
+                    type: string
+                    description: 'Closing delimiter.
+
+                      '
+            uglify:
+              type: boolean
+              description: 'Shorten (uglify) CSS class names to reduce file size.
+
+                '
+              default: false
+    ListMeta:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            page:
+              type: integer
+              description: The page number of results you're on.
+            limit:
+              type: integer
+              description: The number of results per page.
+            total:
+              type: integer
+              description: The total number of folders.
+        filters:
+          type: object
+          description: The filters applied in your request.
+          example:
+            parent_folder_id: 123e4567-e89b-12d3-a456-426614174000
+            direct_descendants_only: true
+            sort_by: created
+            sort_order: desc
+            created_before: 1714732800
+            created_after: null
+            updated_before: null
+            updated_after: null
+  responses:
+    BadRequest:
+      description: The request is invalid due to malformed parameters, missing required fields, or constraint violations.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Conflict - linked resource or other constraint violation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+            - detail: a constraint violation prevents this operation
+              status: '409'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+            - detail: resource not found
+              status: '404'
+    Unauthorized:
+      description: Authentication failed due to a missing or invalid API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+            - detail: unauthorized
+              status: '401'
+  securitySchemes:
+    Tracking-API-Key:
+      type: http
+      scheme: basic
+      description: 'The Track API uses a basic authentication scheme. Your credentials are your **Site ID** and your **API key**, **Base-64 encoded** in the format `site_id:api_key`.
+
+
+        You can find your Site ID and API key on the [Track API Keys page](https://fly.customer.io/settings/api_credentials).
+
+        '
+    Bearer-Auth:
+      type: http
+      scheme: bearer
+      description: 'The App API uses a bearer authentication scheme.
+
+
+        You can generate a bearer token, known as an **App API Key**, with a defined scope in [your account settings](https://fly.customer.io/settings/api_credentials?keyType=app). [Learn more about bearer authorization in Customer.io](/accounts/settings/managing-credentials).
+
+        '
+    ServiceAccount-Auth:
+      x-scalar-ignore: true
+      type: http
+      scheme: bearer
+      bearerFormat: sa_live_
+      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/whatsapp`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
+
+
+        Service-account tokens are intended for testing and one-off sends—for example, using the Customer.io CLI with an AI agent like Claude to verify that a transactional message renders correctly before wiring it into your production backend. **For the production integration that triggers the message from your application, use an App API Key instead**: it''s workspace-scoped, easier to rotate, and has a smaller blast radius.
+
+
+        Service-account tokens are server-side credentials. Treat them like any API key—keep them in environment variables or a secret manager, and never embed them in client-side code, mobile apps, or other untrusted contexts.
+
+        '
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: API key passed as a Bearer token.
+x-tagGroups:
+- name: Track API v2
+  tags:
+  - track_v2
+  - Object Schemas
+  - Person Schemas
+  - Deliveries
+- name: Track API
+  tags:
+  - trackOverview
+  - trackJsOrBackend
+  - trackLimit
+  - trackRegion
+  - Track Customers
+  - Track Events
+  - Forms
+  - Track Segments
+  - Track v1 Overview
+- name: App API
+  tags:
+  - appOverview
+  - appLimit
+  - appAuth
+  - Activities
+  - Automations
+  - Broadcasts
+  - Collections
+  - Customers
+  - Data Index
+  - ESP Suppression
+  - Exports
+  - Imports
+  - Info
+  - Live Notifications
+  - Messages
+  - Newsletters
+  - Opt-outs
+  - Reporting Webhooks
+  - Segments
+  - Sender Identities
+  - Snippets
+  - Subscription Center
+  - Transactional
+  - Workspaces
+  - Send Messages
+  - Objects
+  - Newsletter Variants
+  - Newsletter Metrics
+  - Assets
+- name: Design Studio API
+  tags:
+  - Folders
+  - Components
+  - Emails
+  - Email link and publish
+  - Email testing
+  - SMS
+  - SMS link and publish

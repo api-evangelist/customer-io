@@ -1,0 +1,641 @@
+openapi: 3.2.0
+info:
+  version: 1.0.0
+  title: Customer.io Journeys API Reference SMS API
+  description: Customer.io provides REST APIs to send real-time customer data, retrieve data from your account, and trigger messages.
+servers:
+- url: https://track.customer.io
+  description: The base URL for the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+- url: https://track-eu.customer.io
+  description: The base URL for the Track API (EU region). Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+- url: https://api.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+- url: https://api-eu.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+tags:
+- name: SMS
+  description: Create and manage the SMS messages you write in Design Studio.
+paths:
+  /v1/design_studio/sms:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for the Design Studio API. These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for the Design Studio API (EU region). These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    get:
+      tags:
+      - SMS
+      summary: List SMS
+      operationId: listSms
+      description: Returns a paginated list of your SMS messages and a separate array of the folders they belong to. Each item in the list is a summary; to see an SMS's content, recipient, and sender, get the SMS.
+      parameters:
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/ParentFolderID'
+      - $ref: '#/components/parameters/DirectDescendantsOnly'
+      - $ref: '#/components/parameters/SortBy'
+      - $ref: '#/components/parameters/SortOrder'
+      - $ref: '#/components/parameters/CreatedBefore'
+      - $ref: '#/components/parameters/CreatedAfter'
+      - $ref: '#/components/parameters/UpdatedBefore'
+      - $ref: '#/components/parameters/UpdatedAfter'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sms:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The UUID of the SMS.
+                        name:
+                          type: string
+                          description: The friendly name your team sees for the SMS in Design Studio.
+                          example: Order shipped
+                        is_linked:
+                          type: boolean
+                          description: Whether you've linked the SMS to a workflow, like a transactional message, a one-time send, or an automation action.
+                        parent_folder_id:
+                          type:
+                          - string
+                          - 'null'
+                          format: uuid
+                          description: UUID of the folder that contains the SMS, or `null` if the SMS is at the root level.
+                        created:
+                          type: integer
+                          format: int64
+                          description: When you created the SMS, as a Unix timestamp in seconds.
+                          example: 1790000000
+                        updated:
+                          type: integer
+                          format: int64
+                          description: When the SMS last changed, as a Unix timestamp in seconds.
+                          example: 1790000000
+                  folders:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Folder'
+                  meta:
+                    $ref: '#/components/schemas/ListMeta'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags:
+      - SMS
+      summary: Create an SMS
+      operationId: createSms
+      description: 'This endpoint creates an SMS message in Design Studio. After you create an SMS, link it to a workflow. If you make updates after linking the message, make sure you publish changes to send the latest content to your audience.
+
+
+        Not all accounts are set up to create SMS through Design Studio. Learn more about your options.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              - content
+              properties:
+                name:
+                  type: string
+                  description: A friendly name for the SMS. Your team sees this name in Design Studio, so pick one that helps them find the message.
+                  minLength: 1
+                  maxLength: 191
+                  pattern: ^[^/\x00-\x1F\x7F]+$
+                  example: Order shipped
+                parent_folder_id:
+                  type:
+                  - string
+                  - 'null'
+                  format: uuid
+                  description: UUID of the folder to create the SMS in. Omit or pass `null` to create the SMS at the root level. You can [list folders](/integrations/api/design-studio/tag/folders/listFolders/) to find the UUID of the folder you want.
+                content:
+                  type: string
+                  minLength: 1
+                  description: The message, written as SMS markup. Put your message text in an `<x-sms-body>` element inside an `<x-sms>` element; the text can include liquid. To send an image as an MMS, add an `<x-sms-media>` element inside `<x-sms>` with `type="image"` and an `href` set to the image URL or to liquid that resolves to one. Each message can have one image. See [SMS building blocks](/messaging/channels/sms/send-messages/#sms-building-blocks) for line breaks, special characters, and the HTML you can't use.
+                  example: <x-sms><x-sms-body>Hi {{customer.first_name}}, your order has shipped.</x-sms-body><x-sms-media type="image" href="https://example.com/order.png"/></x-sms>
+                recipient:
+                  type: string
+                  description: Liquid that resolves to the phone number of the person you're messaging, like `{{customer.phone}}`. Customer.io evaluates it against that person's profile when it sends the message. If you leave it empty, Customer.io uses `{{customer.phone}}`. Don't set a static phone number here; if you do, every send of this message goes to that one number instead of to each person.
+                  example: '{{customer.phone}}'
+                sender_id:
+                  type:
+                  - integer
+                  - 'null'
+                  format: int64
+                  description: The ID of the sender identity to send the SMS from. You can [list sender identities](/integrations/api/app/tag/sender-identities/listSenders/) to find the ID you want. You can create an SMS without a sender, but you need to set one before you can publish it.
+                  example: 2
+      responses:
+        '200':
+          description: SMS created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sms:
+                    $ref: '#/components/schemas/Sms'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          description: 'The `content` isn''t valid SMS markup, or the liquid in `content` or `recipient` isn''t valid. Markup fails when it doesn''t parse, when `<x-sms-body>` is empty, or when text sits inside an unsupported tag like `<b>`. Each error''s `source.pointer` names the field that failed, as `/data/attributes/content` or `/data/attributes/recipient`. Customer.io checks liquid syntax only, so a variable your profiles don''t have yet renders as empty rather than failing.
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/design_studio/sms/{id}:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for the Design Studio API. These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for the Design Studio API (EU region). These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    get:
+      tags:
+      - SMS
+      summary: Get an SMS
+      operationId: getSms
+      description: Returns a single SMS, including its content, recipient, and sender.
+      parameters:
+      - $ref: '#/components/parameters/sms_id'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sms:
+                    $ref: '#/components/schemas/Sms'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags:
+      - SMS
+      summary: Update an SMS
+      operationId: updateSms
+      description: 'Update an SMS''s name, folder, content, recipient, or sender. You only need to send the fields you want to change; Customer.io keeps the current value of any field you leave out.
+
+
+        If the SMS is linked to a workflow, you need to publish your changes so your audience receives the latest content.'
+      parameters:
+      - $ref: '#/components/parameters/sms_id'
+      requestBody:
+        required: true
+        description: Send at least one of these properties.
+        content:
+          application/json:
+            schema:
+              type: object
+              minProperties: 1
+              properties:
+                name:
+                  type: string
+                  description: A new friendly name for the SMS.
+                  minLength: 1
+                  maxLength: 191
+                  pattern: ^[^/\x00-\x1F\x7F]+$
+                  example: Order shipped
+                parent_folder_id:
+                  type:
+                  - string
+                  - 'null'
+                  format: uuid
+                  description: UUID of the folder you want to move the SMS into. Pass `null` to move the SMS to the root level.
+                content:
+                  type: string
+                  description: The new message, written as SMS markup. See the `content` field on [Create an SMS](/integrations/api/design-studio/tag/sms/createSms/) for the format. If you pass an empty string, Customer.io clears the content, and you'll need to add content again before you can publish the SMS.
+                  example: <x-sms><x-sms-body>Hi {{customer.first_name}}, your order is out for delivery.</x-sms-body></x-sms>
+                recipient:
+                  type: string
+                  description: New liquid that resolves to the phone number of the person you're messaging, like `{{customer.phone}}`. If you pass an empty string, Customer.io clears the recipient and sends to `{{customer.phone}}`.
+                  example: '{{customer.phone}}'
+                sender_id:
+                  type:
+                  - integer
+                  - 'null'
+                  format: int64
+                  description: The ID of the sender identity to send the SMS from. Pass `null` to clear the sender; you'll need to set one again before you can publish the SMS.
+                  example: 2
+      responses:
+        '204':
+          description: SMS updated, no content returned
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          description: 'The `content` has invalid SMS markup, or the liquid in `content` or `recipient` is invalid. Customer.io only checks the fields you send. Each error''s `source.pointer` names the field that failed, as `/data/attributes/content` or `/data/attributes/recipient`.
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+      - SMS
+      summary: Delete an SMS
+      operationId: deleteSms
+      description: Delete an SMS. You can't delete an SMS that's linked to a workflow, like a transactional message, a one-time send, or an automation action.
+      parameters:
+      - $ref: '#/components/parameters/sms_id'
+      responses:
+        '204':
+          description: SMS deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: The SMS is linked to a workflow, so Customer.io doesn't delete it.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                errors:
+                - detail: cannot delete sms because it is linked
+                  status: '409'
+components:
+  parameters:
+    SortBy:
+      name: sort_by
+      in: query
+      schema:
+        type: string
+        enum:
+        - created
+        - updated
+        - name
+        default: created
+    Limit:
+      name: limit
+      in: query
+      description: The maximum number of results per page.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 10000
+        default: 1000
+    UpdatedAfter:
+      name: updated_after
+      in: query
+      schema:
+        type: integer
+        format: Unix timestamp
+      description: Return records updated after this time. Must be a unix timestamp.
+      example: 1773856017
+    CreatedAfter:
+      name: created_after
+      in: query
+      schema:
+        type: integer
+        format: Unix timestamp
+      description: Return records created after this time. Must be a unix timestamp.
+      example: 1773856017
+    UpdatedBefore:
+      name: updated_before
+      in: query
+      schema:
+        type: integer
+        format: Unix timestamp
+      description: Return records updated before this time. Must be a unix timestamp.
+      example: 1773856017
+    Page:
+      name: page
+      in: query
+      description: The page number of results you want to display. Use with `limit`.
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    sms_id:
+      name: id
+      in: path
+      required: true
+      description: The UUID of the SMS.
+      schema:
+        type: string
+        format: uuid
+    ParentFolderID:
+      name: parent_folder_id
+      in: query
+      schema:
+        type: string
+        format: uuid
+      description: 'Filter by parent folder. Must reference an existing folder. If not set, the response filters by the root level directory.
+
+
+        To list only items in the root folder, leave `parent_folder_id` unset and only set `direct_descendants_only` to `true`.
+
+        '
+    CreatedBefore:
+      name: created_before
+      in: query
+      schema:
+        type: integer
+        format: Unix timestamp
+      description: Return records created before this time. Must be a unix timestamp.
+      example: 1773856017
+    DirectDescendantsOnly:
+      name: direct_descendants_only
+      in: query
+      description: When `true`, the response includes only the immediate children of the parent folder. When `false`, it includes the parent folder's entire subtree.
+      schema:
+        type: boolean
+        default: false
+    SortOrder:
+      name: sort_order
+      in: query
+      schema:
+        type: string
+        enum:
+        - asc
+        - desc
+        default: asc
+  schemas:
+    Sms:
+      type: object
+      required:
+      - id
+      - name
+      - is_linked
+      - parent_folder_id
+      - content
+      - recipient
+      - sender_id
+      - created
+      - updated
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The UUID of the SMS.
+        name:
+          type: string
+          description: The friendly name your team sees for the SMS in Design Studio.
+          example: Order shipped
+        is_linked:
+          type: boolean
+          description: Whether you've linked the SMS to a workflow, like a transactional message, a one-time send, or an automation action.
+        parent_folder_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: UUID of the folder that contains the SMS, or `null` if the SMS is at the root level.
+        content:
+          type: string
+          description: The message, written as SMS markup.
+          example: <x-sms><x-sms-body>Hi {{customer.first_name}}, your order has shipped.</x-sms-body></x-sms>
+        recipient:
+          type: string
+          description: Liquid that resolves to the phone number of the person you're messaging. An empty string means Customer.io sends to `{{customer.phone}}`.
+          example: '{{customer.phone}}'
+        sender_id:
+          type:
+          - integer
+          - 'null'
+          format: int64
+          description: The ID of the sender identity the SMS sends from, or `null` if you haven't set a sender.
+          example: 2
+        created:
+          type: integer
+          format: int64
+          description: When you created the SMS, as a Unix timestamp in seconds.
+          example: 1790000000
+        updated:
+          type: integer
+          format: int64
+          description: When the SMS last changed, as a Unix timestamp in seconds.
+          example: 1790000000
+    Error:
+      type: object
+      description: An error response containing one or more error details.
+      properties:
+        errors:
+          type: array
+          description: A list of errors that occurred while processing the request.
+          items:
+            type: object
+            properties:
+              detail:
+                type: string
+                description: A human-readable description of the error.
+              status:
+                type: string
+                description: The HTTP status code for this error, as a string.
+              source:
+                type: object
+                description: The request field that caused the error. Validation errors (`422`) include it.
+                properties:
+                  pointer:
+                    type: string
+                    description: The path to the field that failed, like `/data/attributes/content`.
+              meta:
+                type: object
+                description: Additional detail about the error, when there is any. A failed publish uses this to list Liquid errors per language.
+    ListMeta:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            page:
+              type: integer
+              description: The page number of results you're on.
+            limit:
+              type: integer
+              description: The number of results per page.
+            total:
+              type: integer
+              description: The total number of folders.
+        filters:
+          type: object
+          description: The filters applied in your request.
+          example:
+            parent_folder_id: 123e4567-e89b-12d3-a456-426614174000
+            direct_descendants_only: true
+            sort_by: created
+            sort_order: desc
+            created_before: 1714732800
+            created_after: null
+            updated_before: null
+            updated_after: null
+    Folder:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of folder
+        name:
+          type: string
+          description: The name of the folder.
+        parent_folder_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: The ID of the parent folder. Returns `null` if there is no parent, which means the folder is in the root directory.
+        created:
+          type: integer
+          format: Unix timestamp
+          description: Timestamp of when the folder was created.
+        updated:
+          type: integer
+          format: Unix timestamp
+          description: Timestamp of last update to the folder.
+      example:
+        id: 123e4567-e89b-12d3-a456-426614174000
+        name: Product Announcements
+        parent_folder_id: null
+        created: 1714732800
+        updated: 1714732800
+  responses:
+    BadRequest:
+      description: The request is invalid due to malformed parameters, missing required fields, or constraint violations.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+            - detail: resource not found
+              status: '404'
+    Unauthorized:
+      description: Authentication failed due to a missing or invalid API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+            - detail: unauthorized
+              status: '401'
+  securitySchemes:
+    Tracking-API-Key:
+      type: http
+      scheme: basic
+      description: 'The Track API uses a basic authentication scheme. Your credentials are your **Site ID** and your **API key**, **Base-64 encoded** in the format `site_id:api_key`.
+
+
+        You can find your Site ID and API key on the [Track API Keys page](https://fly.customer.io/settings/api_credentials).
+
+        '
+    Bearer-Auth:
+      type: http
+      scheme: bearer
+      description: 'The App API uses a bearer authentication scheme.
+
+
+        You can generate a bearer token, known as an **App API Key**, with a defined scope in [your account settings](https://fly.customer.io/settings/api_credentials?keyType=app). [Learn more about bearer authorization in Customer.io](/accounts/settings/managing-credentials).
+
+        '
+    ServiceAccount-Auth:
+      x-scalar-ignore: true
+      type: http
+      scheme: bearer
+      bearerFormat: sa_live_
+      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/whatsapp`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
+
+
+        Service-account tokens are intended for testing and one-off sends—for example, using the Customer.io CLI with an AI agent like Claude to verify that a transactional message renders correctly before wiring it into your production backend. **For the production integration that triggers the message from your application, use an App API Key instead**: it''s workspace-scoped, easier to rotate, and has a smaller blast radius.
+
+
+        Service-account tokens are server-side credentials. Treat them like any API key—keep them in environment variables or a secret manager, and never embed them in client-side code, mobile apps, or other untrusted contexts.
+
+        '
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: API key passed as a Bearer token.
+x-tagGroups:
+- name: Track API v2
+  tags:
+  - track_v2
+  - Object Schemas
+  - Person Schemas
+  - Deliveries
+- name: Track API
+  tags:
+  - trackOverview
+  - trackJsOrBackend
+  - trackLimit
+  - trackRegion
+  - Track Customers
+  - Track Events
+  - Forms
+  - Track Segments
+  - Track v1 Overview
+- name: App API
+  tags:
+  - appOverview
+  - appLimit
+  - appAuth
+  - Activities
+  - Automations
+  - Broadcasts
+  - Collections
+  - Customers
+  - Data Index
+  - ESP Suppression
+  - Exports
+  - Imports
+  - Info
+  - Live Notifications
+  - Messages
+  - Newsletters
+  - Opt-outs
+  - Reporting Webhooks
+  - Segments
+  - Sender Identities
+  - Snippets
+  - Subscription Center
+  - Transactional
+  - Workspaces
+  - Send Messages
+  - Objects
+  - Newsletter Variants
+  - Newsletter Metrics
+  - Assets
+- name: Design Studio API
+  tags:
+  - Folders
+  - Components
+  - Emails
+  - Email link and publish
+  - Email testing
+  - SMS
+  - SMS link and publish

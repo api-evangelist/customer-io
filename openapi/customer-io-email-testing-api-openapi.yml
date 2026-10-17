@@ -1,0 +1,1666 @@
+openapi: 3.2.0
+info:
+  version: 1.0.0
+  title: Customer.io Journeys API Reference Email testing API
+  description: Customer.io provides REST APIs to send real-time customer data, retrieve data from your account, and trigger messages.
+servers:
+- url: https://track.customer.io
+  description: The base URL for the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+- url: https://track-eu.customer.io
+  description: The base URL for the Track API (EU region). Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+- url: https://api.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+- url: https://api-eu.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+tags:
+- name: Email testing
+  description: Check an email before you publish or send it.
+paths:
+  /v1/design_studio/emails/{id}/render:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for the Design Studio API. These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for the Design Studio API (EU region). These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    get:
+      tags:
+      - Email testing
+      summary: Render an email
+      description: 'Returns email-ready HTML. Use this endpoint to inspect your compiled markup.
+
+
+        Liquid tags are left intact—`{{customer.first_name}}` stays in the output as written. To evaluate liquid against real profile data instead, use Preview an email.
+
+
+        The render, preview, review, link, and publish endpoints share a rate limit of 5 requests per second per workspace.'
+      operationId: renderEmail
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - $ref: '#/components/parameters/email_variant_id'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailRenderResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: "Possible reasons:\n  - The `design_studio_api_manage` feature isn't enabled for this workspace\n  - The email node doesn't exist\n"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/design_studio/emails/{id}/preview:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for the Design Studio API. These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for the Design Studio API (EU region). These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    post:
+      tags:
+      - Email testing
+      summary: Preview an email
+      description: 'Returns an email with liquid fully evaluated against data you provide. The response includes the final HTML as a recipient would see it, along with liquid errors.
+
+
+        Omit the body or send `{}` to render your fallback values: a variable with a `default` filter renders its fallback, and each variable without one reports an error in the response''s `errors` object.
+
+
+        The render, preview, review, link, and publish endpoints share a rate limit of 5 requests per second per workspace.'
+      operationId: previewEmail
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - $ref: '#/components/parameters/email_variant_id'
+      requestBody:
+        required: false
+        description: All fields are optional.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailPreviewRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailPreviewResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: "Possible reasons:\n  - The `design_studio_api_manage` feature isn't enabled for this workspace\n  - The email node doesn't exist\n"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/design_studio/emails/{id}/test_send:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for the Design Studio API. These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for the Design Studio API (EU region). These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    post:
+      tags:
+      - Email testing
+      summary: Send a test email
+      description: 'Sends a test email to a real inbox through your sending domain using the content saved to Design Studio. The test includes the tracking pixel and link parameters a real send would add, so you can see your email as it would appear in an actual email client. To get the rendered HTML back in the API response instead, use Preview an email.
+
+
+        * **If you already linked the email to a workflow**, then keep in mind that what''s *saved* to Design Studio may differ from what''s *published* to the linked workflow. Make sure you publish your changes when you''re ready to push them to your linked workflow.
+
+
+        * **If your email has translations**, you have to send this request separately for each language variant. Pass the ID of the specific translation you want to test, which you can retrieve from List email translations.
+
+
+        * **If the email contains liquid variables**, you can provide sample data in the request body to check how the liquid renders. Without sample data, the send still succeeds, but each variable renders as an empty string and the response includes a warning. A variable with a fallback filter like `default` renders its fallback instead. A liquid syntax error, like a missing close tag, always fails the request.
+
+
+        Your account has a set number of test emails you can send per day. This endpoint counts towards that quota. Learn more in Plan features.'
+      operationId: testSendEmail
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - $ref: '#/components/parameters/email_variant_id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TestSendEmailRequest'
+            example:
+              to:
+              - pigeon@customer.io
+              - penguin@customer.io
+              customer_id: '5'
+              customer:
+                first_name: Ada
+                vip: gold
+                cio_subscription_preferences: '{"topics":{"topic_2":true}}'
+              prepend_test: true
+      responses:
+        '200':
+          description: Test accepted for delivery
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestSendEmailResponse'
+        '400':
+          description: The ID isn't a valid email node, your account isn't verified yet and `to` holds an address it can't send to, or you've reached your [daily test-send limit](/accounts/billing/plan-features/#general-features).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: The email node doesn't exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                errors:
+                - detail: email not found
+                  status: '404'
+        '422':
+          description: 'A request field is invalid or the email''s liquid didn''t render. Each error''s `source.pointer` names what failed, as `/data/attributes/<name>`. That name isn''t always something you sent: `node_id` points at the email itself, and a liquid error can name `url_params`, `layout`, or `snippets`.
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                errors:
+                - detail: 'to is required: a test send made with an API key has no user to default the recipient to'
+                  status: '422'
+                  source:
+                    pointer: /data/attributes/to
+        '429':
+          $ref: '#/components/responses/TestSendRateLimited'
+  /v1/design_studio/emails/{id}/review:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for the Design Studio API. These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for the Design Studio API (EU region). These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    get:
+      tags:
+      - Email testing
+      summary: Review an email
+      description: 'Checks an email''s saved content for errors and suggests how to improve accessibility, styling, and more. This runs the same process as the *Review* panel in Design Studio and returns a readiness score, a status per check, and how to fix issues.
+
+
+        This endpoint reviews **a single translation** based on the `:id` you pass. Call this endpoint for each language variant to review each translation.
+
+
+        **Checks**
+
+        - `liquid` — Liquid syntax: broken tags, invalid filters, unclosed blocks. Does not report missing variables; use the preview endpoint with sample data to validate variable resolution.
+
+        - `failed-components` — Custom components that fail to compile. Always `skipped` on the API; it''s a browser-runtime-only signal.
+
+        - `source` — Raw markup the editor stores, before liquid rendering. Checks for reserved internal HTML attributes, multiple root elements, and design-token clashes.
+
+        - `links` — Broken URLs, validated over HTTP (capped at 100 links per review).
+
+        - `images` — Broken image URLs and missing alt text (capped at 100 images per review).
+
+        - `accessibility` — WCAG accessibility issues.
+
+        - `spam` — SpamAssassin score.
+
+        - `unsubscribe` — Presence of an unsubscribe link.
+
+        - `implied-links` — Bare URLs or email addresses that should be wrapped in `` tags.
+
+        - `html-clip` — Gmail''s 102 KB clipping threshold.
+
+        - `preheader` — Preheader text presence and quality.
+
+
+        The render, preview, review, link, and publish endpoints share a rate limit of 5 requests per second per workspace.'
+      operationId: reviewEmail
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: 'The UUID of the email node. This can be the default-language node or a specific translation node.
+
+          '
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailReviewResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: "Possible reasons:\n  - The `design_studio_api_manage` feature isn't enabled for this workspace\n  - The email node doesn't exist\n"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/design_studio/inbox_previews/clients:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for the Design Studio API. These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for the Design Studio API (EU region). These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    get:
+      tags:
+      - Email testing
+      summary: List inbox preview options
+      description: 'Returns the catalog of email clients and devices available for inbox previews.
+
+
+        Use the `id` values returned by this endpoint as `client_ids` when you send for an inbox preview.'
+      operationId: listInboxPreviewClients
+      security:
+      - Bearer-Auth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  clients:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/InboxPreviewClient'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/InboxPreviewNotEnabled'
+        '429':
+          $ref: '#/components/responses/InboxPreviewReadRateLimited'
+        '503':
+          $ref: '#/components/responses/InboxPreviewCatalogUnavailable'
+  /v1/design_studio/inbox_previews/credits:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for the Design Studio API. These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for the Design Studio API (EU region). These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    get:
+      tags:
+      - Email testing
+      summary: Get preview credit balance
+      description: 'Returns your account''s credit balance for inbox previews. Your credit balance determines how many previews you can generate in your account.
+
+
+        Learn more about how inbox previews use credits.'
+      operationId: getInboxPreviewCredits
+      security:
+      - Bearer-Auth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  credits:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/InboxPreviewCreditPool'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/InboxPreviewNotEnabled'
+        '429':
+          $ref: '#/components/responses/InboxPreviewReadRateLimited'
+  /v1/design_studio/emails/{id}/inbox_previews:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for the Design Studio API. These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for the Design Studio API (EU region). These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    post:
+      tags:
+      - Email testing
+      summary: Send for inbox previews
+      description: 'Initiate one or more inbox previews for an email. This uses inbox preview credits; check your balance with Get preview credit balance. **Learn how billing for inbox previews work before you call this endpoint.**
+
+
+        Use List emails to get your email''s ID. If the email has translations, call List email translations to get the ID of the language variant you want a preview of.
+
+
+        You can retrieve client IDs from List inbox preview options.
+
+
+        This call does not return the preview file. It returns a `run_id`; poll Get an inbox preview job with it, then fetch each tile''s capture URL from that response.
+
+
+        Submitting the same email, content, and devices again on the same UTC day returns the existing run instead of starting a new one, with `replayed` set to `true` and no second charge. The same happens the next day if that run is still processing, or if a concurrent identical request gets there first. Resubmitting a stuck run is safe and free—it hands you the same run back rather than starting a second one.'
+      operationId: submitInboxPreview
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - $ref: '#/components/parameters/email_variant_id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - client_ids
+              properties:
+                client_ids:
+                  type: array
+                  description: 'The identifiers of the preview options you want. You can retrieve client IDs from [List inbox preview options](/integrations/api/design-studio/tag/email-testing/listInboxPreviewClients/).
+
+                    '
+                  items:
+                    type: string
+                  minItems: 1
+                  maxItems: 150
+                sample_data:
+                  type: object
+                  description: 'Liquid variables to render with, as a JSON object—any shape is accepted, from flat variables like `{"first_name": "Janine"}` to nested ones like `{"customer": {"first_name": "Janine"}}`. Defaults to none, which fails the render on any variable the content needs beyond the ones a preview already sets for you. Set `lax_mode` to render missing variables as blank instead. Limited to 128 KB.
+
+                    '
+                  additionalProperties: true
+                name:
+                  type: string
+                  description: A label for the batch of previews, shown in [preview history](/integrations/api/design-studio/tag/email-testing/listInboxPreviewJobs/).
+                  maxLength: 191
+                lax_mode:
+                  type: boolean
+                  description: Set to `true` to render liquid variables missing from `sample_data` as blank instead of failing the job.
+                  default: false
+              example:
+                client_ids:
+                - android12_gmailapp_pixel6_dm
+                - android12_gmailapp_pixel6_dm_dark
+                sample_data:
+                  customer:
+                    first_name: Janine
+                name: Welcome email previews
+      responses:
+        '200':
+          description: Preview job submitted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  run_id:
+                    type: integer
+                    description: ID of the preview job. Check when it's complete with [Get an inbox preview job](/integrations/api/design-studio/tag/email-testing/getInboxPreviewJob/).
+                  replayed:
+                    type: boolean
+                    description: '`true` when this call returned an existing run instead of starting a new one, and you weren''t charged a second time for it. This happens for an identical request (same email, content, and devices) submitted again on the same UTC day, an identical request from the day before that''s still processing, or a concurrent identical request that got there first. The run may belong to another client in your workspace, including the Journeys UI—`created_at` is that run''s, and a `name` you send is applied to it.
+
+                      '
+              example:
+                run_id: 10
+                replayed: false
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/InboxPreviewNotChargeable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/InboxPreviewSubmitConflict'
+        '422':
+          $ref: '#/components/responses/InboxPreviewInsufficientCredits'
+        '429':
+          $ref: '#/components/responses/InboxPreviewRateLimited'
+        '503':
+          $ref: '#/components/responses/InboxPreviewRenderUnavailable'
+  /v1/design_studio/emails/{id}/inbox_previews/{run_id}:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for the Design Studio API. These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for the Design Studio API (EU region). These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    get:
+      tags:
+      - Email testing
+      summary: Get an inbox preview job
+      description: Returns the status of a preview job submitted with Send for inbox previews, including each preview's settings.
+      operationId: getInboxPreviewJob
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - $ref: '#/components/parameters/email_variant_id'
+      - $ref: '#/components/parameters/run_id'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InboxPreviewJob'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: The job doesn't exist, or inbox previews aren't enabled for your workspace.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          $ref: '#/components/responses/InboxPreviewReadRateLimited'
+  /v1/design_studio/emails/{id}/inbox_previews/{run_id}/captures/{client_id}:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for the Design Studio API. These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for the Design Studio API (EU region). These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    get:
+      tags:
+      - Email testing
+      summary: Get a preview screenshot
+      description: Returns the image bytes for a single preview job, proxied from the vendor. The response's content type matches whatever the vendor sent for that capture, which isn't always PNG, and the `Content-Disposition` filename's extension matches it. You can also use the URL paths in the response of Get an inbox preview job to complete this request.
+      operationId: getInboxPreviewCapture
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - $ref: '#/components/parameters/email_variant_id'
+      - $ref: '#/components/parameters/run_id'
+      - $ref: '#/components/parameters/preview_client_id'
+      - name: variant
+        in: query
+        description: The image to return.
+        schema:
+          type: string
+          enum:
+          - screenshot
+          - thumbnail
+          - full_thumbnail
+          default: screenshot
+      - name: key
+        in: query
+        description: 'Only applies when `variant` is `screenshot`. Match this to a key in that tile''s `screenshots` object from [Get an inbox preview job](/integrations/api/design-studio/tag/email-testing/getInboxPreviewJob/)—most devices only have `default`, but some carry extra vendor-defined captures, like an image-blocking render.
+
+          '
+        schema:
+          type: string
+          default: default
+      responses:
+        '200':
+          description: Image bytes for the requested capture, in whatever format the vendor sent it.
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/gif:
+              schema:
+                type: string
+                format: binary
+            image/webp:
+              schema:
+                type: string
+                format: binary
+            image/svg+xml:
+              schema:
+                type: string
+                format: binary
+            image/avif:
+              schema:
+                type: string
+                format: binary
+            image/bmp:
+              schema:
+                type: string
+                format: binary
+            image/tiff:
+              schema:
+                type: string
+                format: binary
+            image/x-icon:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Invalid `variant` value.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: The capture doesn't exist, is still rendering, bounced, or has expired, or inbox previews aren't enabled for your workspace.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          $ref: '#/components/responses/InboxPreviewReadRateLimited'
+  /v1/design_studio/inbox_previews/jobs:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for the Design Studio API. These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for the Design Studio API (EU region). These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    get:
+      tags:
+      - Email testing
+      summary: List inbox preview history
+      description: Returns a paginated history of inbox preview jobs across your workspace, or for a single email when you pass `node_id`. Only lists runs recent enough for their screenshots to still be viewable—an older run won't appear here even though it still exists.
+      operationId: listInboxPreviewJobs
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - name: node_id
+        in: query
+        description: Filter to preview jobs submitted for a specific email.
+        schema:
+          type: string
+          format: uuid
+      - name: limit
+        in: query
+        description: Number of jobs to return per page.
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 200
+          default: 50
+      - name: cursor
+        in: query
+        description: A pagination cursor returned in the previous page's `meta.pagination.next_cursor`. Omit to return the first page.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  preview_jobs:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/InboxPreviewJobSummary'
+                  meta:
+                    $ref: '#/components/schemas/InboxPreviewJobsMeta'
+              example:
+                preview_jobs:
+                - run_id: 2
+                  node_id: 018fbb92-6d1e-7c33-9c2c-df6a2b5aa931
+                  name: Welcome email previews
+                  node_count: 1
+                  is_processed: true
+                  total_previews_requested: 12
+                  total_previews_cached: 4
+                  total_previews_succeeded: 8
+                  total_previews_bounced: 0
+                  total_previews_ready: 12
+                  created_at: 1773856017
+                  updated_at: 1773856032
+                - run_id: 1
+                  node_id: 018fbb90-1a2f-7e21-8f3d-56b1c0a2e410
+                  name: Order confirmation previews
+                  node_count: 1
+                  is_processed: false
+                  total_previews_requested: 10
+                  total_previews_cached: 2
+                  total_previews_succeeded: 0
+                  total_previews_bounced: 0
+                  total_previews_ready: 2
+                  created_at: 1773855001
+                  updated_at: 1773855950
+                meta:
+                  pagination:
+                    limit: 50
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Inbox previews aren't enabled for your workspace.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          $ref: '#/components/responses/InboxPreviewReadRateLimited'
+components:
+  parameters:
+    run_id:
+      name: run_id
+      in: path
+      required: true
+      description: The ID of the inbox preview job, returned by [Send for inbox previews](/integrations/api/design-studio/tag/email-testing/submitInboxPreview/).
+      schema:
+        type: integer
+    email_variant_id:
+      name: id
+      in: path
+      required: true
+      description: 'The UUID of the email. If your email has translations, this is the ID of a specific language variant.
+
+        '
+      schema:
+        type: string
+        format: uuid
+    preview_client_id:
+      name: client_id
+      in: path
+      required: true
+      description: The device identifier for the capture, matching a value from `client_ids` in the response of [Send for inbox previews](/integrations/api/design-studio/tag/email-testing/submitInboxPreview/).
+      schema:
+        type: string
+  schemas:
+    TestSendEmailRequest:
+      type: object
+      required:
+      - to
+      properties:
+        to:
+          type: array
+          items:
+            type: string
+          description: 'The email addresses you want to send the test to. You can send to up to 25 addresses per request; up to three addresses on a trial account; or a single address (the account owner''s address or your workspace''s delivery address) if your account isn''t verified yet.
+
+            '
+        customer_id:
+          type:
+          - string
+          - 'null'
+          description: 'The person whose profile attributes fill in `customer.*` liquid variables. Pass the person''s `cio_id` or the `id` that identifies them in your workspace. If nobody matches, the request fails. When you omit this field and don''t pass `customer` values, the email renders with empty `customer.*` values and the response includes a warning.
+
+            '
+        customer:
+          type:
+          - object
+          - 'null'
+          description: 'Sample profile attributes for `customer.*` liquid variables, as a flat object of values. Encode a nested value as a JSON string. You can pass this alongside `customer_id`: Customer.io uses the profile''s attributes, and a value here overrides the profile''s value for the same key.
+
+            '
+          additionalProperties: true
+        event:
+          type:
+          - object
+          - 'null'
+          description: 'Sample event data for `event.*` liquid variables. The `event` key references trigger data for event-triggered automations.
+
+            '
+          additionalProperties: true
+        trigger:
+          type:
+          - object
+          - 'null'
+          description: 'Sample trigger data for `trigger.*` liquid variables. The `trigger` key references trigger data for these specific workflows: API-triggered broadcasts or transactional messages.
+
+            '
+          additionalProperties: true
+        lax:
+          type: boolean
+          default: false
+          description: 'Set to `true` to render a liquid variable your sample data doesn''t cover as an empty string rather than failing the request. Only applies when you pass `customer_id` or `customer`; without sample data, the email renders this way anyway and the response includes a warning.
+
+            '
+        prepend_test:
+          type: boolean
+          default: false
+          description: Set to `true` to add `[TEST]` to the start of the subject line.
+        tracked:
+          type: boolean
+          description: 'Set to `true` to add a tracking pixel or `false` to leave it out. If you don''t pass this field, Customer.io uses the tracking setting of the workflow message the email is linked to, and adds the pixel when the email isn''t linked to a workflow message. Customer.io never adds the pixel for unverified accounts.
+
+            '
+    EmailReviewCheckStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - complete
+          - degraded
+          - error
+          - skipped
+          description: '`complete`: findings are authoritative. `degraded`: the check ran on reduced input (for example, some URL validations failed) — its findings aren''t authoritative. `error`: the check couldn''t run and contributed no findings. `skipped`: the check has no server-side signal for API callers.
+
+            '
+        error:
+          type: string
+          description: Present when `status` is `degraded` or `error`. Explains what was missing or what failed.
+    EmailPreviewRequest:
+      type: object
+      properties:
+        customer:
+          type: object
+          description: Customer profile attributes for `{{customer.*}}` variables.
+        event:
+          type: object
+          description: Event attributes for `{{event.*}}`.
+        trigger:
+          type: object
+          description: Trigger data for `{{trigger.*}}`.
+        campaign:
+          type: object
+          description: Campaign metadata for `{{campaign.*}}`.
+        message:
+          type: object
+          description: Message metadata for `{{message.*}}`.
+        journey:
+          type: object
+          description: Journey metadata for `{{journey.*}}`.
+        objects:
+          type: object
+          description: Related objects for `{{objects.*}}`.
+        lax:
+          type: boolean
+          default: false
+          description: 'Set to `true` if you want undefined variables to resolve to an empty string instead of reporting an error; this can help you focus on more important errors when you don''t provide sample data or fallback values. Liquid *syntax* errors (like broken tags and invalid filters) are always reported as errors.
+
+            '
+      example:
+        customer:
+          first_name: Jane
+          email: jane@example.com
+          plan: enterprise
+        event:
+          name: order_completed
+          total: 149.99
+    InboxPreviewCreditPool:
+      type: object
+      description: Credits available for generating inbox previews.
+      properties:
+        tier:
+          type: string
+          enum:
+          - free
+          - paid
+          description: The credit tier this pool belongs to. The [`free` tier](/accounts/billing/inbox-previews/) covers two kinds of pools, the monthly allowance of 25 credits every account gets and any free pools Customer.io support has granted. Because of that, `free` can appear more than once in the response. The `paid` tier covers credits purchased for the account.
+        credits_original:
+          type: integer
+          description: Credits originally granted for a tier.
+        credits_remaining:
+          type: integer
+          description: Credits left to spend from this tier.
+        expires_at:
+          type:
+          - integer
+          - 'null'
+          format: Unix timestamp
+          description: When this pool's credits expire, if ever. Expiry is set per pool, not per tier—a purchased pool typically doesn't expire, but a free pool support granted can carry an expiration date. The monthly allowance's `expires_at` also reads `null` when Customer.io can't resolve your current billing period; that's a transient read issue, not a sign the allowance never expires.
+      example:
+      - tier: free
+        credits_original: 25
+        credits_remaining: 0
+        expires_at: 1715769600
+      - tier: paid
+        credits_original: 100
+        credits_remaining: 90
+        expires_at: null
+    EmailRenderResponse:
+      type: object
+      properties:
+        node_id:
+          type: string
+          format: uuid
+          description: The UUID of the rendered email node.
+        node_type:
+          type: string
+          enum:
+          - EMAIL
+          description: Always `"EMAIL"`.
+        html:
+          type: string
+          description: Full HTML with liquid tags left intact.
+        text:
+          type: string
+          description: Plain text version of the email. Omitted unless you added a plain text version when you [created the email](/integrations/api/design-studio/tag/emails/createEmail/).
+        language:
+          type: string
+          description: Language code if the node is a translation (for example, `"es"`). Omitted for default-language nodes.
+        amp:
+          type: string
+          description: AMP HTML variant. Omitted unless you added an AMP version when you [created the email](/integrations/api/design-studio/tag/emails/createEmail/).
+      example:
+        node_id: 1a0cbb4e-09d3-402e-949e-f6732f021650
+        node_type: EMAIL
+        html: '<!doctype html>
+
+          <html lang="und">...
+
+          <p>{{customer.first_name}}, welcome!</p>
+
+          ...
+
+          </html>'
+        text: <html><head></head><body style="margin:0"><div style="font-size:16px;line-height:1.5;font-family:Arial,Helvetica,sans-serif;white-space:pre-wrap;padding:10px;">{{customer.first_name}}, welcome!</div></body></html>
+    InboxPreviewTile:
+      type: object
+      description: The data for a single preview.
+      properties:
+        client_id:
+          type: string
+          description: The preview identifier, matching a value from `client_ids` in the submit request.
+        display_name:
+          type: string
+          description: Human-readable name of the client and device used to render the preview.
+        os:
+          type: string
+          description: Operating system the client runs on.
+        category:
+          type: string
+          enum:
+          - Mobile
+          - Application
+          - Web
+          description: Client category. `Mobile` is a phone's native mail app, for example the Gmail App on Android devices. `Application` is a desktop native mail app, for example Apple Mail on macOS. `Web` is webmail viewed in a desktop browser, for example Gmail.com in Firefox, and includes a `browser` value.
+        browser:
+          type: string
+          description: Browser used to render the client, when applicable. Populates when `category` is `Web`.
+        status:
+          type: string
+          enum:
+          - Pending
+          - Processing
+          - Complete
+          - Bounced
+          description: The vendor's own status for this device's render. Only `Complete` and `Bounced` are terminal.
+        screenshots:
+          type: object
+          description: Capture URLs keyed by image name—the full-size screenshot under `default`, plus a key per extra image the device renders. This is the only place the full-size URL appears; `thumbnail` and `full_thumbnail` are reduced variants. Omitted unless the render completed.
+          additionalProperties:
+            type: string
+        thumbnail:
+          type: string
+          description: Capture URL for a reduced-size version of the default screenshot. Useful for grid/list views where you don't want to load full-size screenshots. Omitted unless the render completed.
+        full_thumbnail:
+          type: string
+          description: Capture URL for a reduced, full-length version of the default screenshot. Omitted unless the render completed.
+        cached:
+          type: boolean
+          description: Set when the item wasn't newly generated in this preview job because it had already been generated. Omitted when `false`.
+        error:
+          $ref: '#/components/schemas/InboxPreviewError'
+          description: Present on every `Bounced` tile. Absent otherwise.
+    InboxPreviewClient:
+      type: object
+      description: An email client available for inbox previews.
+      properties:
+        id:
+          type: string
+          description: Identifier to pass in `client_ids` when you send for an inbox preview.
+          example: android12_gmailapp_pixel6_dm
+        client:
+          type: string
+          description: Name of the email client and device.
+          example: Gmail App Pixel 6
+        os:
+          type: string
+          description: 'Operating system the client runs on. Look for `(Dark Mode)` if you want to locate preview options for dark mode.
+
+            '
+          example: Android 12 (Dark Mode)
+        category:
+          type: string
+          enum:
+          - Mobile
+          - Application
+          - Web
+          description: 'Where the client renders. `Mobile` is a phone''s native mail app, for example the Gmail App on Android devices. `Application` is a desktop native mail app, for example Apple Mail on macOS. `Web` is webmail viewed in a desktop browser, for example Gmail.com in Firefox, and includes a `browser` value.
+
+            '
+          example: Mobile
+        browser:
+          type: string
+          description: Browser used to render the client. Populates when `category` is `Web`.
+          example: ''
+    EmailPreviewHeaderError:
+      type: object
+      properties:
+        name:
+          type: array
+          items:
+            type: string
+          description: Errors in the header name.
+        value:
+          type: array
+          items:
+            type: string
+          description: Errors in the header value.
+    EmailPreviewResponse:
+      type: object
+      properties:
+        node_id:
+          type: string
+          format: uuid
+          description: The UUID of the previewed email node.
+        node_type:
+          type: string
+          enum:
+          - EMAIL
+          description: Always `"EMAIL"`.
+        language:
+          type: string
+          description: Language code if the node is a translation. Omitted for default-language nodes.
+        subject:
+          type: string
+          description: Evaluated subject line.
+        html:
+          type: string
+          description: Final HTML with Liquid evaluated, the preheader injected, and dangerous tags removed.
+        amp:
+          type: string
+          description: AMP HTML variant with liquid evaluated. Omitted if the email doesn't have an AMP version.
+        text:
+          type: string
+          description: Plain-text body with liquid evaluated. Omitted if the email doesn't have a plain text version.
+        plaintext_body:
+          type: string
+          description: The plain-text part a recipient would get—your plain text version with HTML tags stripped, or text generated from the final HTML if the email doesn't have one. Omitted when empty.
+        from:
+          type: string
+          description: Resolved from address, for example `"Name <email>"`. Omitted when the email doesn't include a from address.
+        preheader_text:
+          type: string
+          description: Evaluated preheader text. Omitted when the email doesn't include preheaders.
+        errors:
+          $ref: '#/components/schemas/EmailPreviewErrors'
+        headers:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailPreviewHeaderError'
+          description: One entry per custom header that has Liquid errors. Omitted when there are none.
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailPreviewLink'
+          description: Every link in the evaluated HTML body, with any per-link problems.
+      example:
+        node_id: 1a0cbb4e-09d3-402e-949e-f6732f021650
+        node_type: EMAIL
+        subject: Order Confirmation
+        html: <!DOCTYPE html>...<p>Purchase info</p>...
+        text: <html><head></head><body style="margin:0"><div style="font-size:16px;line-height:1.5;font-family:Arial,Helvetica,sans-serif;white-space:pre-wrap;padding:10px;">Thanks for your recent purchase!</div></body></html>
+        plaintext_body: Thanks for your recent purchase!
+        from: '"No reply" <noreply@example.com>'
+        errors:
+          subject: []
+          body: []
+          body_amp: []
+          body_plain: []
+          from: []
+          reply_to: []
+          bcc: []
+          cc: []
+          to: []
+          preheader_text: []
+          layout: []
+          message: []
+          snippets: []
+          event: []
+          trigger: []
+        links:
+        - url: https://example.com/orders
+          text: View your order
+          tracked: true
+          errors: []
+    EmailReviewFinding:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identifier for this finding, unique within the response.
+        check:
+          type: string
+          description: Which check produced this finding.
+        severity:
+          type: string
+          enum:
+          - error
+          - warning
+          - tip
+          description: Fix all errors to make sure your recipients get your email and you follow compliance requirements. Review warnings and tips to improve the quality of your email.
+        state:
+          type: string
+          enum:
+          - pass
+          - fail
+          description: Whether this finding represents an issue. Passing findings don't affect the score.
+        title:
+          type: string
+          description: Short human-readable title.
+        summary:
+          type: string
+          description: Location context, for example "In the email body". Omitted when there's no additional context.
+        details:
+          type: string
+          description: Explanation and suggested fix. Omitted when there's nothing more to add beyond the title.
+    Error:
+      type: object
+      description: An error response containing one or more error details.
+      properties:
+        errors:
+          type: array
+          description: A list of errors that occurred while processing the request.
+          items:
+            type: object
+            properties:
+              detail:
+                type: string
+                description: A human-readable description of the error.
+              status:
+                type: string
+                description: The HTTP status code for this error, as a string.
+              source:
+                type: object
+                description: The request field that caused the error. Validation errors (`422`) include it.
+                properties:
+                  pointer:
+                    type: string
+                    description: The path to the field that failed, like `/data/attributes/content`.
+              meta:
+                type: object
+                description: Additional detail about the error, when there is any. A failed publish uses this to list Liquid errors per language.
+    EmailPreviewLink:
+      type: object
+      properties:
+        url:
+          type: string
+          description: The link URL after liquid evaluation.
+        text:
+          type: string
+          description: The link's visible text.
+        tracked:
+          type: boolean
+          description: Whether Customer.io rewrites this link for click tracking when you send the email.
+        errors:
+          type: array
+          items:
+            type: string
+          description: Problems with this link, like a relative URL or liquid tags that were URL-encoded. Empty when the link is fine.
+    TestSendEmailResponse:
+      type: object
+      properties:
+        node_id:
+          type: string
+          format: uuid
+          description: The email node that was tested.
+        node_type:
+          type: string
+          enum:
+          - EMAIL
+          description: The response represents an email.
+        language:
+          type: string
+          description: The language code if the message is a language variant. Omitted for the default-language node.
+        accepted:
+          type: boolean
+          description: Always `true` in a 200 response. Anything that stops the send returns a 4xx instead. Acceptance isn't proof of delivery.
+        to:
+          type: array
+          items:
+            type: string
+          description: The recipients the test was sent to.
+        subject:
+          type: string
+          description: The rendered subject line, including the `[TEST]` prefix if you set `prepend_test`.
+        from:
+          type: string
+          description: 'The rendered `From` header the test was sent with.
+
+            '
+        warnings:
+          type: array
+          items:
+            type: string
+          description: 'The ways this test differs from a real send. Customer.io delivered the email anyway, so read these before you trust what landed in the inbox. You might see that no profile data was available, that context a test send can''t supply rendered as empty strings (like `campaign.*` or `message.*` on an email that isn''t linked to a workflow), that Customer.io ignored a routing key like `recipient` or `from_address` in your `event` or `trigger` data, or that a recipient field in the template failed to render. That last one doesn''t change who got the test: it goes only to the addresses in `to`. Omitted when there''s nothing to report.
+
+            '
+      example:
+        node_id: 1a0cbb4e-09d3-402e-949e-f6732f021650
+        node_type: EMAIL
+        accepted: true
+        to:
+        - pigeon@customer.io
+        - penguin@customer.io
+        subject: '[TEST] Welcome Ada'
+        from: '"No reply" <noreply@customer.io>'
+    InboxPreviewJobsMeta:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            limit:
+              type: integer
+              description: The `limit` used for this page.
+            next_cursor:
+              type: string
+              description: Pass this as `cursor` to fetch the next page. Omitted when there are no more results.
+    InboxPreviewJob:
+      type: object
+      description: The status and results of an Inbox Previews job.
+      properties:
+        run_id:
+          type: integer
+          description: ID of the preview job.
+        name:
+          type: string
+          description: The batch label provided when you sent an email for previews. Empty if none was given.
+        client_ids:
+          type: array
+          description: The device identifiers requested for this job.
+          items:
+            type: string
+        created_at:
+          type: integer
+          format: Unix timestamp
+          description: When you submitted the preview job.
+        updated_at:
+          type: integer
+          format: Unix timestamp
+          description: When the job's status was last updated.
+        is_processed:
+          type: boolean
+          description: '`true` once every device has settled, for the email in the path—a multi-language run reports each of its emails separately, so this doesn''t reflect the whole run when it covers more than one. Poll this field, and see the endpoint description for how often, and for when to give up.
+
+            '
+        total_previews_requested:
+          type: integer
+          description: Previews requested in the job, for the email in the path. On a settled run, this is normally `total_previews_cached` + `total_previews_succeeded` + `total_previews_bounced`.
+        total_previews_cached:
+          type: integer
+          description: Previews served from an earlier run's screenshot. Not charged, and not counted in `total_previews_succeeded`.
+        total_previews_succeeded:
+          type: integer
+          description: Previews this run generated itself, excluding cached ones. A fully cached run reports `0` here even though every tile is `Complete`—compare `total_previews_ready` against `total_previews_requested` instead to track progress.
+        total_previews_bounced:
+          type: integer
+          description: Previews that produced no screenshot, whether the vendor bounced them or they failed on Customer.io's side. Their credits are refunded when the run settles.
+        total_previews_ready:
+          type: integer
+          description: 'How many previews show a screenshot you can fetch, counted from the tiles themselves. This is the progress count to compare against `total_previews_requested`—`total_previews_succeeded` alone reads `0` on a fully cached run. It isn''t the completion signal; `is_processed` is. Because a tile can be served by an earlier screenshot of the same content while this run''s own render is still in flight, this can reach `total_previews_requested` before the run finishes.
+
+            '
+        previews:
+          type: array
+          description: One object per requested preview.
+          items:
+            $ref: '#/components/schemas/InboxPreviewTile'
+    EmailPreviewErrors:
+      type: object
+      description: Per-field Liquid error arrays. All 15 fields are always present; an empty array means no errors for that field.
+      properties:
+        subject:
+          type: array
+          items:
+            type: string
+          description: Subject line Liquid errors.
+        body:
+          type: array
+          items:
+            type: string
+          description: HTML body Liquid errors.
+        body_amp:
+          type: array
+          items:
+            type: string
+          description: AMP body Liquid errors.
+        body_plain:
+          type: array
+          items:
+            type: string
+          description: Plain-text body Liquid errors.
+        from:
+          type: array
+          items:
+            type: string
+          description: From address Liquid errors.
+        reply_to:
+          type: array
+          items:
+            type: string
+          description: Reply-to address Liquid errors.
+        bcc:
+          type: array
+          items:
+            type: string
+          description: BCC field Liquid errors.
+        cc:
+          type: array
+          items:
+            type: string
+          description: CC field Liquid errors.
+        to:
+          type: array
+          items:
+            type: string
+          description: 'Recipient field Liquid errors, for example `"undefined variable: customer.email"`.
+
+            '
+        preheader_text:
+          type: array
+          items:
+            type: string
+          description: Preheader Liquid errors.
+        layout:
+          type: array
+          items:
+            type: string
+          description: Layout template errors.
+        message:
+          type: array
+          items:
+            type: string
+          description: Message-level errors.
+        snippets:
+          type: array
+          items:
+            type: string
+          description: Snippet rendering errors.
+        event:
+          type: array
+          items:
+            type: string
+          description: Event data Liquid errors.
+        trigger:
+          type: array
+          items:
+            type: string
+          description: Trigger data Liquid errors.
+    InboxPreviewJobSummary:
+      type: object
+      description: A summary entry in the inbox previews job history.
+      properties:
+        run_id:
+          type: integer
+          description: ID of the preview job.
+        node_id:
+          type: string
+          format: uuid
+          description: The email node the run covers, or the first of them when it covers several. Under a `node_id` filter, this is the matched node.
+        name:
+          type: string
+          description: The batch label provided when the job was submitted.
+        node_count:
+          type: integer
+          description: How many email nodes the run covers—more than one for a multi-language run. Under a `node_id` filter, how many of them matched.
+        is_processed:
+          type: boolean
+          description: '`true` once every device of every counted node has settled. Under a `node_id` filter, "counted" means the matched nodes only.
+
+            '
+        total_previews_requested:
+          type: integer
+          description: Previews requested across the counted nodes. On a settled run, this is normally `total_previews_cached` + `total_previews_succeeded` + `total_previews_bounced`.
+        total_previews_cached:
+          type: integer
+          description: Previews served from an earlier run's screenshot. Not charged, and not counted in `total_previews_succeeded`.
+        total_previews_succeeded:
+          type: integer
+          description: Previews this run generated itself, as stored when each node settled. Excludes cached ones, and counts only nodes that have settled—so a run still generating reads `0` here even once some devices are done.
+        total_previews_bounced:
+          type: integer
+          description: Previews that produced no screenshot, whether the vendor bounced them or they failed on Customer.io's side, as stored when each node settled. Their credits are refunded.
+        total_previews_ready:
+          type: integer
+          description: '`total_previews_cached` + `total_previews_succeeded`, from the counters stored on the run. The cached half is final as soon as the run exists; the succeeded half counts only nodes that have settled, so a run still generating reads low until `is_processed` is `true`. This list can''t see a tile served by an earlier screenshot of the same content, so it can read lower than [Get an inbox preview job](/integrations/api/design-studio/tag/email-testing/getInboxPreviewJob/) reports for the same run—poll the run for the authoritative count.
+
+            '
+        created_at:
+          type: integer
+          format: Unix timestamp
+          description: When the job was submitted.
+        updated_at:
+          type: integer
+          format: Unix timestamp
+          description: When the job's status was last updated.
+    InboxPreviewError:
+      type: object
+      description: Details for a tile whose rendering failed.
+      properties:
+        type:
+          type: string
+          enum:
+          - bounced
+          - vendor_timeout
+          - client_rejected
+          - vendor_request
+          - abandoned
+          - expired
+          - other
+          description: "Why this device has no screenshot:\n  - `bounced`: the vendor rendered the device and reported a bounce.\n  - `vendor_timeout`: submitted to the vendor, but didn't finish in time.\n  - `client_rejected`: the vendor refused the device id.\n  - `vendor_request`: the submission to the vendor itself failed.\n  - `abandoned`: submitted, but the outcome is unknown.\n  - `expired`: the screenshot rendered successfully but has since aged out of its retention window and is no longer available. Unlike the other types, this isn't a render failure.\n  - `other`: any other cause.\n\nA tile with any of these types (except `expired`) was refunded its credit.\n"
+        message:
+          type: string
+          description: A human-readable explanation, safe to show to a user.
+    EmailReviewScore:
+      type: object
+      description: Readiness score. Omitted when `status` is `render_failed`.
+      properties:
+        score:
+          type: integer
+          description: '0–100 readiness estimate. Starts at 100 and is reduced per failing finding. An error drops the score to 60 or below; fix all errors to make sure your recipients get your email and you follow compliance requirements. See **findings** to locate errors.
+
+            '
+        counts:
+          type: object
+          description: Finding counts by severity across all checks.
+          properties:
+            error:
+              type: integer
+              description: The number of failing `error` findings.
+            warning:
+              type: integer
+              description: The number of failing `warning` findings.
+            tip:
+              type: integer
+              description: The number of failing `tip` findings.
+    EmailReviewResponse:
+      type: object
+      properties:
+        node_id:
+          type: string
+          format: uuid
+          description: The UUID of the reviewed email node.
+        status:
+          type: string
+          enum:
+          - complete
+          - partial
+          - render_failed
+          description: "- `complete`: every check ran to completion. \n- `partial`: at least one check errored, ran on reduced input, or was skipped. `failed-components` is always skipped and doesn't [affect this status. If you get a `partial` status, send the request again after a few seconds to try to get a complete set of findings.\n- `render_failed`: the underlying render failed; no checks ran, `score` is omitted, and `findings` is empty. If it's a timeout, send the request again after a few seconds. If it's a content or compilation error, fix the email before sending the request again.\n"
+        score:
+          $ref: '#/components/schemas/EmailReviewScore'
+        checks:
+          type: object
+          description: Per-check status, keyed by check name. See the endpoint description for the full list of checks.
+          additionalProperties:
+            $ref: '#/components/schemas/EmailReviewCheckStatus'
+        findings:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailReviewFinding'
+      example:
+        node_id: 887d804e-9199-4a65-ae26-315e825344bc
+        status: complete
+        score:
+          score: 86
+          counts:
+            error: 0
+            warning: 1
+            tip: 1
+        checks:
+          liquid:
+            status: complete
+          failed-components:
+            status: skipped
+          source:
+            status: complete
+          links:
+            status: complete
+          images:
+            status: complete
+          accessibility:
+            status: complete
+          spam:
+            status: complete
+          unsubscribe:
+            status: complete
+          implied-links:
+            status: complete
+          html-clip:
+            status: complete
+          preheader:
+            status: complete
+        findings:
+        - id: unsubscribe
+          check: unsubscribe
+          severity: warning
+          state: fail
+          title: No unsubscribe link
+          details: Add {% unsubscribe %} or use {% unsubscribe_url %} as the href.
+        - id: preheader
+          check: preheader
+          severity: tip
+          state: fail
+          title: No preheader text
+          details: Add a short preheader to improve open rates.
+  responses:
+    InboxPreviewSubmitConflict:
+      description: "A retry crossed an interrupted charge for this batch. This means one of two things:\n  - The batch was already charged and settled today.\n  - An earlier attempt at the same batch is still being reconciled.\n\nChange the devices or nodes you're previewing, or retry later. Either way, you weren't double-charged.\n"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+            - detail: this preview batch was already charged and settled today. Change the devices or nodes you are previewing, or try again tomorrow.
+              status: '409'
+    BadRequest:
+      description: The request is invalid due to malformed parameters, missing required fields, or constraint violations.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InboxPreviewNotChargeable:
+      description: Your account can't be charged for inbox preview credits right now. Credits are account-level—every workspace on the account draws from the same pools, so this isn't specific to the workspace in your credentials.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+            - detail: this account cannot be charged for inbox previews
+              status: '403'
+    InboxPreviewInsufficientCredits:
+      description: Not enough inbox preview credits to cover every device in `client_ids`. The message names both figures, so you can size a top-up without a separate call to [Get preview credit balance](/integrations/api/design-studio/tag/email-testing/getInboxPreviewCredits/).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+            - detail: 'insufficient inbox preview credits: this request needs 12, the account has 4 available'
+              status: '422'
+    InboxPreviewNotEnabled:
+      description: Inbox previews aren't enabled for your account.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+            - detail: inbox previews are not enabled for this account
+              status: '404'
+    InboxPreviewReadRateLimited:
+      description: 'Over the App API''s shared limit of 10 requests per second per workspace—the same bucket every call in your workspace that isn''t separately rate limited draws from, writes included. The response carries a `Retry-After` header.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+            - detail: rate limited to 10 requests per second
+              status: '429'
+    InboxPreviewCatalogUnavailable:
+      description: The device catalog is temporarily unavailable. This is transient—retry in a moment.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+            - detail: service unavailable
+              status: '503'
+    TestSendRateLimited:
+      description: 'Rate limited. Every request to this endpoint draws from two buckets: a per-workspace bucket (burst of 20, refilling one every 9 seconds), the same limit the dashboard applies to its own test sends, and a per-IP bucket (burst of 30, refilling one every 10 seconds) that catches one IP address spread across many accounts. Hitting either limit returns this response. The response carries a `Retry-After` header.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+            - detail: rate limited
+              status: '429'
+    InboxPreviewRateLimited:
+      description: 'Rate limited to 5 requests per second per workspace—a bucket shared with the Design Studio link, publish, render, preview, and review endpoints, and tighter than the 10 per second reads get, because each call starts a server-side render before it reaches the vendor. The response carries a `Retry-After` header.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+            - detail: rate limited to 5 requests per second
+              status: '429'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+            - detail: resource not found
+              status: '404'
+    Unauthorized:
+      description: Authentication failed due to a missing or invalid API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+            - detail: unauthorized
+              status: '401'
+    InboxPreviewRenderUnavailable:
+      description: The email or Liquid renderer couldn't be reached. This is transient—retry in a moment.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+            - detail: the email renderer could not be reached; try again in a moment
+              status: '503'
+  securitySchemes:
+    Tracking-API-Key:
+      type: http
+      scheme: basic
+      description: 'The Track API uses a basic authentication scheme. Your credentials are your **Site ID** and your **API key**, **Base-64 encoded** in the format `site_id:api_key`.
+
+
+        You can find your Site ID and API key on the [Track API Keys page](https://fly.customer.io/settings/api_credentials).
+
+        '
+    Bearer-Auth:
+      type: http
+      scheme: bearer
+      description: 'The App API uses a bearer authentication scheme.
+
+
+        You can generate a bearer token, known as an **App API Key**, with a defined scope in [your account settings](https://fly.customer.io/settings/api_credentials?keyType=app). [Learn more about bearer authorization in Customer.io](/accounts/settings/managing-credentials).
+
+        '
+    ServiceAccount-Auth:
+      x-scalar-ignore: true
+      type: http
+      scheme: bearer
+      bearerFormat: sa_live_
+      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/whatsapp`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
+
+
+        Service-account tokens are intended for testing and one-off sends—for example, using the Customer.io CLI with an AI agent like Claude to verify that a transactional message renders correctly before wiring it into your production backend. **For the production integration that triggers the message from your application, use an App API Key instead**: it''s workspace-scoped, easier to rotate, and has a smaller blast radius.
+
+
+        Service-account tokens are server-side credentials. Treat them like any API key—keep them in environment variables or a secret manager, and never embed them in client-side code, mobile apps, or other untrusted contexts.
+
+        '
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: API key passed as a Bearer token.
+x-tagGroups:
+- name: Track API v2
+  tags:
+  - track_v2
+  - Object Schemas
+  - Person Schemas
+  - Deliveries
+- name: Track API
+  tags:
+  - trackOverview
+  - trackJsOrBackend
+  - trackLimit
+  - trackRegion
+  - Track Customers
+  - Track Events
+  - Forms
+  - Track Segments
+  - Track v1 Overview
+- name: App API
+  tags:
+  - appOverview
+  - appLimit
+  - appAuth
+  - Activities
+  - Automations
+  - Broadcasts
+  - Collections
+  - Customers
+  - Data Index
+  - ESP Suppression
+  - Exports
+  - Imports
+  - Info
+  - Live Notifications
+  - Messages
+  - Newsletters
+  - Opt-outs
+  - Reporting Webhooks
+  - Segments
+  - Sender Identities
+  - Snippets
+  - Subscription Center
+  - Transactional
+  - Workspaces
+  - Send Messages
+  - Objects
+  - Newsletter Variants
+  - Newsletter Metrics
+  - Assets
+- name: Design Studio API
+  tags:
+  - Folders
+  - Components
+  - Emails
+  - Email link and publish
+  - Email testing
+  - SMS
+  - SMS link and publish

@@ -1,0 +1,550 @@
+openapi: 3.2.0
+info:
+  version: 1.0.0
+  title: Customer.io Journeys API Reference Email link and publish…
+  description: Customer.io provides REST APIs to send real-time customer data, retrieve data from your account, and trigger messages.
+servers:
+- url: https://track.customer.io
+  description: The base URL for the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+- url: https://track-eu.customer.io
+  description: The base URL for the Track API (EU region). Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+- url: https://api.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+- url: https://api-eu.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+tags:
+- name: Email link and publish
+  description: A Design Studio email doesn't send anything on its own.
+paths:
+  /v1/design_studio/emails/{id}/link:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for the Design Studio API. These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for the Design Studio API (EU region). These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    post:
+      tags:
+      - Email link and publish
+      summary: Link an email to a workflow
+      description: 'Link a Design Studio email to a workflow: a transactional message, a one-time send, an automation, or an API-triggered broadcast. After you link an email, publish it to push the content live.
+
+
+        You can only link an email to one workflow or action at a time. If the workflow or action is already linked to a *different* Design Studio email, the request fails with a `409` unless you pass `"force": true`, which replaces (and unlinks) the other email.'
+      operationId: linkEmail
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - $ref: '#/components/parameters/email_id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LinkRequest'
+      responses:
+        '200':
+          description: Email linked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LinkResponse'
+        '400':
+          description: Bad request. Possible reasons include invalid or missing IDs, attempting to update a translation rather than the default template, or trying to link an email already tied to a workflow.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                errors:
+                - detail: email is already linked to another destination; unlink it first
+                  status: '400'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: 'The destination is already linked to a different Design Studio email. Pass `"force": true` to replace that link.
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                errors:
+                - detail: 'destination is already linked to a different Design Studio email; pass `"force": true` to replace that link.'
+                  status: '409'
+  /v1/design_studio/emails/{id}/publish:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for the Design Studio API. These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for the Design Studio API (EU region). These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    post:
+      tags:
+      - Email link and publish
+      summary: Publish an email
+      description: 'Publish a linked Design Studio email. This pushes its current content to the workflow it''s linked to. You must link an email to a workflow before you can publish it.
+
+
+        Publishing pushes updates to all language variants: the default language and all of the translations. For a single-language email, the publish runs inline and returns `"status": "done"` with the resulting template version mappings. For a multi-language email, the publish may take longer; if it doesn''t finish within the request window, the response returns `"status": "pending"` along with a `publish_id` you can poll with Get publish status.'
+      operationId: publishEmail
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - $ref: '#/components/parameters/email_id'
+      responses:
+        '200':
+          description: 'Publish completed (`done`) or accepted and still running (`pending`).
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublishResponse'
+        '400':
+          description: Bad request. Possible reasons include invalid IDs, the email is not linked to workflow, or a translation uses an unsupported language code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/PublishBackfilling'
+        '422':
+          $ref: '#/components/responses/PublishUnprocessable'
+  /v1/design_studio/emails/{id}/publish_status:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for the Design Studio API. These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for the Design Studio API (EU region). These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    get:
+      tags:
+      - Email link and publish
+      summary: Get publish status
+      description: 'Check the status of a multi-language publish that returned `"status": "pending"`. Pass the `publish_id` from the Publish an email response. When the publish is still running, the response returns `"status": "pending"`; when it finishes, it returns `"status": "done"` with the template version mappings.
+
+
+        If the publish fails, this endpoint returns an error rather than a status. You get the same error a single-language publish returns inline—a `422` for liquid errors, a `409` when the destination automation is backfilling, and so on.'
+      operationId: getPublishStatus
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - $ref: '#/components/parameters/email_id'
+      - name: publish_id
+        in: query
+        required: true
+        description: The publish ID returned when a multi-language publish is pending.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Current publish status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublishStatusResponse'
+        '400':
+          description: "Bad request. Possible reasons:\n  - `publish_id` is missing or invalid\n  - The publish failed while rendering the content, usually because of invalid markup\n"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Possible reason includes the automation, template, or email targeted by the publish job no longer exists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                errors:
+                - detail: publish job not found
+                  status: '404'
+        '409':
+          $ref: '#/components/responses/PublishBackfilling'
+        '422':
+          $ref: '#/components/responses/PublishUnprocessable'
+  /v1/design_studio/emails/{id}/unpublished_changes:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for the Design Studio API. These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for the Design Studio API (EU region). These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    get:
+      tags:
+      - Email link and publish
+      summary: Check for unpublished changes
+      description: 'Check whether a linked email, or any of its translations, has content changes that haven''t been published yet. Use this to decide whether you need to publish before changes go live.
+
+
+        Returns `false` for emails that aren''t linked to a workflow or that have no pending changes.'
+      operationId: checkUnpublishedChanges
+      security:
+      - Bearer-Auth: []
+      parameters:
+      - $ref: '#/components/parameters/email_id'
+      responses:
+        '200':
+          description: Returns whether the email has unpublished changes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnpublishedChangesResponse'
+        '400':
+          description: "Bad request. Possible reasons:\n  - Missing or invalid email (node) ID\n"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  responses:
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+            - detail: resource not found
+              status: '404'
+    PublishUnprocessable:
+      description: "The content or its destination can't be published as-is. Possible reasons:\n  - The content has Liquid errors. The `meta` object lists them per language.\n  - The destination won't accept content because it's archived, stopping, or being deleted.\n  - The destination is linked to different Design Studio content than the item you're publishing.\n  - The workspace has no language attribute configured, which multi-language publishing needs.\n  - The language group is over the limit of 50 variants.\n"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+            - detail: liquid validation failed
+              status: '422'
+              meta:
+                es:
+                - unexpected end of liquid tag
+    PublishBackfilling:
+      description: 'The destination automation is backfilling and can''t accept content right now. This clears on its own—wait a moment and publish again.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+            - detail: campaign is backfilling, please try publishing again in a moment
+              status: '409'
+    Unauthorized:
+      description: Authentication failed due to a missing or invalid API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+            - detail: unauthorized
+              status: '401'
+  schemas:
+    Error:
+      type: object
+      description: An error response containing one or more error details.
+      properties:
+        errors:
+          type: array
+          description: A list of errors that occurred while processing the request.
+          items:
+            type: object
+            properties:
+              detail:
+                type: string
+                description: A human-readable description of the error.
+              status:
+                type: string
+                description: The HTTP status code for this error, as a string.
+              source:
+                type: object
+                description: The request field that caused the error. Validation errors (`422`) include it.
+                properties:
+                  pointer:
+                    type: string
+                    description: The path to the field that failed, like `/data/attributes/content`.
+              meta:
+                type: object
+                description: Additional detail about the error, when there is any. A failed publish uses this to list Liquid errors per language.
+    PublishStatusResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: '`pending` while the publish is still running; `done` when it has finished.
+
+            '
+          enum:
+          - pending
+          - done
+        mappings:
+          type: array
+          description: The template versions created by the publish. Present when `status` is `done`.
+          items:
+            $ref: '#/components/schemas/PublishMapping'
+      example:
+        status: done
+        mappings:
+        - node_id: 123e4567-e89b-12d3-a456-426614174000
+          template_id: 987654
+          version_id: v_01H8XK
+          language: ''
+    LinkTargetResponse:
+      type: object
+      description: The workflow linked to the message. The response returns `campaign_action` for an automation or an API-triggered broadcast.
+      required:
+      - type
+      properties:
+        type:
+          type: string
+          description: 'The type of workflow linked.
+
+            '
+          enum:
+          - transactional_message
+          - newsletter
+          - campaign_action
+        transactional_message_id:
+          type: integer
+          description: The ID of the transactional message linked.
+        newsletter_id:
+          type: integer
+          description: The ID of the one-time send linked.
+        action_id:
+          type: integer
+          description: The ID of the action in the automation or API-triggered broadcast that was linked.
+      example:
+        type: campaign_action
+        action_id: 42
+    PublishResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: 'Returns `done` when the publish process finished within the request window. Returns `pending` when publish is still running for a multi-language email (poll with `publish_id`).
+
+            '
+          enum:
+          - done
+          - pending
+        mappings:
+          type: array
+          description: The template versions created by the publish. Present when `status` is `done`.
+          items:
+            $ref: '#/components/schemas/PublishMapping'
+        publish_id:
+          type: string
+          description: An opaque ID to poll for completion with [Get publish status](/integrations/api/design-studio/tag/email-email-link-and-publish/getPublishStatus/). Present when `status` is `pending`.
+      example:
+        status: done
+        mappings:
+        - node_id: 123e4567-e89b-12d3-a456-426614174000
+          template_id: 987654
+          version_id: v_01H8XK
+          language: ''
+    LinkTarget:
+      type: object
+      description: The workflow to link the content to.
+      required:
+      - type
+      properties:
+        type:
+          type: string
+          description: 'The kind of workflow to link. Provide the matching ID field for the type you choose. Use `campaign_action` for an automation or API-triggered broadcast.
+
+            '
+          enum:
+          - transactional_message
+          - newsletter
+          - campaign_action
+        transactional_message_id:
+          type: integer
+          description: The ID of the transactional message to link your content to. Required when `type` is `transactional_message`.
+        newsletter_id:
+          type: integer
+          description: The ID of the one-time send to link your content to. Required when `type` is `newsletter`.
+        action_id:
+          type: integer
+          description: The ID of the action in the automation or API-triggered broadcast to link your content to. Required when `type` is `campaign_action`.
+      example:
+        type: campaign_action
+        action_id: 42
+    UnpublishedChangesResponse:
+      type: object
+      properties:
+        has_unpublished_changes:
+          type: boolean
+          description: Indicates whether the email or any of its translations has content changes that haven't been published.
+      example:
+        has_unpublished_changes: true
+    LinkRequest:
+      type: object
+      required:
+      - target
+      properties:
+        target:
+          $ref: '#/components/schemas/LinkTarget'
+        force:
+          type: boolean
+          description: 'Replace an existing link if the workflow or action is already linked to *different* Design Studio content.
+
+            '
+          default: false
+      example:
+        target:
+          type: campaign_action
+          action_id: 42
+        force: false
+    LinkResponse:
+      type: object
+      properties:
+        node_id:
+          type: string
+          format: uuid
+          description: The UUID of the linked message.
+        template_id:
+          type: integer
+          description: The ID of the workflow template the content is now linked to.
+        target:
+          $ref: '#/components/schemas/LinkTargetResponse'
+      example:
+        node_id: 123e4567-e89b-12d3-a456-426614174000
+        template_id: 987654
+        target:
+          type: campaign_action
+          action_id: 42
+    PublishMapping:
+      type: object
+      description: A single node-to-template-version mapping produced by the publish process.
+      properties:
+        node_id:
+          type: string
+          format: uuid
+          description: The UUID of the published email node (default or translation).
+        template_id:
+          type: integer
+          description: The ID of the workflow template that received the content.
+        version_id:
+          type: string
+          description: The identifier of the template version created by the publish.
+        language:
+          type: string
+          description: The language code of the published node. Empty for the default-language email.
+  parameters:
+    email_id:
+      name: id
+      in: path
+      required: true
+      description: The id of the email. If your email has multiple languages, you must provide the ID of the **default** language template. This links the workflow to all of the language variants for the template.
+      schema:
+        type: string
+        format: uuid
+  securitySchemes:
+    Tracking-API-Key:
+      type: http
+      scheme: basic
+      description: 'The Track API uses a basic authentication scheme. Your credentials are your **Site ID** and your **API key**, **Base-64 encoded** in the format `site_id:api_key`.
+
+
+        You can find your Site ID and API key on the [Track API Keys page](https://fly.customer.io/settings/api_credentials).
+
+        '
+    Bearer-Auth:
+      type: http
+      scheme: bearer
+      description: 'The App API uses a bearer authentication scheme.
+
+
+        You can generate a bearer token, known as an **App API Key**, with a defined scope in [your account settings](https://fly.customer.io/settings/api_credentials?keyType=app). [Learn more about bearer authorization in Customer.io](/accounts/settings/managing-credentials).
+
+        '
+    ServiceAccount-Auth:
+      x-scalar-ignore: true
+      type: http
+      scheme: bearer
+      bearerFormat: sa_live_
+      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/whatsapp`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
+
+
+        Service-account tokens are intended for testing and one-off sends—for example, using the Customer.io CLI with an AI agent like Claude to verify that a transactional message renders correctly before wiring it into your production backend. **For the production integration that triggers the message from your application, use an App API Key instead**: it''s workspace-scoped, easier to rotate, and has a smaller blast radius.
+
+
+        Service-account tokens are server-side credentials. Treat them like any API key—keep them in environment variables or a secret manager, and never embed them in client-side code, mobile apps, or other untrusted contexts.
+
+        '
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: API key passed as a Bearer token.
+x-tagGroups:
+- name: Track API v2
+  tags:
+  - track_v2
+  - Object Schemas
+  - Person Schemas
+  - Deliveries
+- name: Track API
+  tags:
+  - trackOverview
+  - trackJsOrBackend
+  - trackLimit
+  - trackRegion
+  - Track Customers
+  - Track Events
+  - Forms
+  - Track Segments
+  - Track v1 Overview
+- name: App API
+  tags:
+  - appOverview
+  - appLimit
+  - appAuth
+  - Activities
+  - Automations
+  - Broadcasts
+  - Collections
+  - Customers
+  - Data Index
+  - ESP Suppression
+  - Exports
+  - Imports
+  - Info
+  - Live Notifications
+  - Messages
+  - Newsletters
+  - Opt-outs
+  - Reporting Webhooks
+  - Segments
+  - Sender Identities
+  - Snippets
+  - Subscription Center
+  - Transactional
+  - Workspaces
+  - Send Messages
+  - Objects
+  - Newsletter Variants
+  - Newsletter Metrics
+  - Assets
+- name: Design Studio API
+  tags:
+  - Folders
+  - Components
+  - Emails
+  - Email link and publish
+  - Email testing
+  - SMS
+  - SMS link and publish

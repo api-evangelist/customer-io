@@ -1,9 +1,13 @@
 openapi: 3.2.0
 info:
   version: 1.0.0
-  title: Customer.io App Exports API
-  description: Our App API provides ways to trigger messages and retrieve information about people, campaigns, broadcasts, and more.
+  title: Customer.io Journeys API Reference Exports API
+  description: Customer.io provides REST APIs to send real-time customer data, retrieve data from your account, and trigger messages.
 servers:
+- url: https://track.customer.io
+  description: The base URL for the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+- url: https://track-eu.customer.io
+  description: The base URL for the Track API (EU region). Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
 - url: https://api.customer.io
   description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
 - url: https://api-eu.customer.io
@@ -15,13 +19,15 @@ paths:
   /v1/exports:
     servers:
     - url: https://api.customer.io
-      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
     get:
       summary: List exports
       operationId: listExports
       security:
       - Bearer-Auth: []
-      description: Return a list of your exports. Exports are point-in-time people or campaign metrics.
+      description: Return a list of your exports. Exports are point-in-time people or automation metrics.
       tags:
       - Exports
       responses:
@@ -35,147 +41,17 @@ paths:
                   exports:
                     type: array
                     items:
-                      x-scalar-ignore: true
-                      type: object
-                      description: Metadata about an export.
-                      properties:
-                        id:
-                          x-scalar-ignore: true
-                          type: integer
-                          description: The identifier for the export.
-                          example: 110
-                        user_id:
-                          type: integer
-                          description: The user who created the export.
-                        user_email:
-                          type: string
-                          description: The email of the user who created the export.
-                        total:
-                          type: integer
-                          description: The number of entries in the export. Exports report 0 until done.
-                        deduplicate_id:
-                          x-scalar-ignore: true
-                          type: string
-                          readOnly: true
-                          description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
-                          example: 15:1492548073
-                        type:
-                          x-scalar-ignore: true
-                          type: string
-                          description: The type of information contained in the export.
-                          enum:
-                          - customers
-                          - deliveries
-                          example: customers
-                        failed:
-                          x-scalar-ignore: true
-                          type: boolean
-                          description: If true, the export was unsuccessful.
-                          example: false
-                        description:
-                          x-scalar-ignore: true
-                          type: string
-                          description: A description of the export.
-                          example: Customers with segment filters—in Purchased Flowers
-                        downloads:
-                          x-scalar-ignore: true
-                          type: integer
-                          description: Counts the total number of times the export has been downloaded.
-                          example: 2
-                        created_at:
-                          x-scalar-ignore: true
-                          type: integer
-                          format: unix timestamp
-                          description: The date time when the referenced ID was created.
-                          example: 1552341937
-                          readOnly: true
-                        updated_at:
-                          x-scalar-ignore: true
-                          type: integer
-                          format: unix timestamp
-                          description: The date time when the referenced ID was last updated.
-                          example: 1552341937
-                          readOnly: true
-                        status:
-                          type: string
-                          enum:
-                          - done
-                          - pending
-                          - failed
-                          description: The state of your export where `done` indicates an export that you can download, `pending`, indicates that your export is not ready to download, and `failed` indicates an export that has failed and will not be downloadable.
-                      example:
-                        id: 110
-                        user_id: 0
-                        user_email: person@email.com
-                        total: 1234
-                        deduplicate_id: 110:1530296738
-                        type: customers
-                        failed: false
-                        status: done
-                        description: Customers with segment filters—in \Purchased Flowers\
-                        downloads: 2
-                        created_at: 1530296738
-                        updated_at: 1530296738
+                      $ref: '#/components/schemas/exportObject'
         '429':
-          description: Your request is over the 10-per-second limit.
-      x-codeSamples:
-      - lang: Shell + Curl
-        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/exports"
-      - lang: Node + Native
-        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/exports\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
-      - lang: Ruby + Native
-        source: 'require ''uri''
-
-          require ''net/http''
-
-          require ''openssl''
-
-
-          url = URI("https://api.customer.io/v1/exports")
-
-
-          http = Net::HTTP.new(url.host, url.port)
-
-          http.use_ssl = true
-
-          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-
-          request = Net::HTTP::Get.new(url)
-
-
-          response = http.request(request)
-
-          puts response.read_body'
-      - lang: Python + Python3
-        source: 'import http.client
-
-
-          conn = http.client.HTTPSConnection("api.customer.io")
-
-
-          conn.request("GET", "/v1/exports")
-
-
-          res = conn.getresponse()
-
-          data = res.read()
-
-
-          print(data.decode("utf-8"))'
-      - lang: Go + Native
-        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/exports\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+          $ref: '#/components/responses/429'
   /v1/exports/{export_id}:
     servers:
     - url: https://api.customer.io
-      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
     parameters:
-    - name: export_id
-      in: path
-      required: true
-      description: The export_id you want to access.
-      schema:
-        type: integer
+    - $ref: '#/components/parameters/export_id'
     get:
       summary: Get an export
       operationId: getExport
@@ -193,149 +69,19 @@ paths:
                 type: object
                 properties:
                   export:
-                    x-scalar-ignore: true
-                    type: object
-                    description: Metadata about an export.
-                    properties:
-                      id:
-                        x-scalar-ignore: true
-                        type: integer
-                        description: The identifier for the export.
-                        example: 110
-                      user_id:
-                        type: integer
-                        description: The user who created the export.
-                      user_email:
-                        type: string
-                        description: The email of the user who created the export.
-                      total:
-                        type: integer
-                        description: The number of entries in the export. Exports report 0 until done.
-                      deduplicate_id:
-                        x-scalar-ignore: true
-                        type: string
-                        readOnly: true
-                        description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
-                        example: 15:1492548073
-                      type:
-                        x-scalar-ignore: true
-                        type: string
-                        description: The type of information contained in the export.
-                        enum:
-                        - customers
-                        - deliveries
-                        example: customers
-                      failed:
-                        x-scalar-ignore: true
-                        type: boolean
-                        description: If true, the export was unsuccessful.
-                        example: false
-                      description:
-                        x-scalar-ignore: true
-                        type: string
-                        description: A description of the export.
-                        example: Customers with segment filters—in Purchased Flowers
-                      downloads:
-                        x-scalar-ignore: true
-                        type: integer
-                        description: Counts the total number of times the export has been downloaded.
-                        example: 2
-                      created_at:
-                        x-scalar-ignore: true
-                        type: integer
-                        format: unix timestamp
-                        description: The date time when the referenced ID was created.
-                        example: 1552341937
-                        readOnly: true
-                      updated_at:
-                        x-scalar-ignore: true
-                        type: integer
-                        format: unix timestamp
-                        description: The date time when the referenced ID was last updated.
-                        example: 1552341937
-                        readOnly: true
-                      status:
-                        type: string
-                        enum:
-                        - done
-                        - pending
-                        - failed
-                        description: The state of your export where `done` indicates an export that you can download, `pending`, indicates that your export is not ready to download, and `failed` indicates an export that has failed and will not be downloadable.
-                    example:
-                      id: 110
-                      user_id: 0
-                      user_email: person@email.com
-                      total: 1234
-                      deduplicate_id: 110:1530296738
-                      type: customers
-                      failed: false
-                      status: done
-                      description: Customers with segment filters—in \Purchased Flowers\
-                      downloads: 2
-                      created_at: 1530296738
-                      updated_at: 1530296738
+                    $ref: '#/components/schemas/exportObject'
         '404':
           description: The export ID does not exist.
         '429':
-          description: Your request is over the 10-per-second limit.
-      x-codeSamples:
-      - lang: Shell + Curl
-        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/exports/{export_id}"
-      - lang: Node + Native
-        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/exports/%7Bexport_id%7D\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
-      - lang: Ruby + Native
-        source: 'require ''uri''
-
-          require ''net/http''
-
-          require ''openssl''
-
-
-          url = URI("https://api.customer.io/v1/exports/%7Bexport_id%7D")
-
-
-          http = Net::HTTP.new(url.host, url.port)
-
-          http.use_ssl = true
-
-          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-
-          request = Net::HTTP::Get.new(url)
-
-
-          response = http.request(request)
-
-          puts response.read_body'
-      - lang: Python + Python3
-        source: 'import http.client
-
-
-          conn = http.client.HTTPSConnection("api.customer.io")
-
-
-          conn.request("GET", "/v1/exports/%7Bexport_id%7D")
-
-
-          res = conn.getresponse()
-
-          data = res.read()
-
-
-          print(data.decode("utf-8"))'
-      - lang: Go + Native
-        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/exports/%7Bexport_id%7D\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+          $ref: '#/components/responses/429'
   /v1/exports/{export_id}/download:
     servers:
     - url: https://api.customer.io
-      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
     parameters:
-    - name: export_id
-      in: path
-      required: true
-      description: The export_id you want to access.
-      schema:
-        type: integer
+    - $ref: '#/components/parameters/export_id'
     get:
       summary: Download an export
       operationId: downloadExport
@@ -359,58 +105,13 @@ paths:
         '404':
           description: The export ID does not exist.
         '429':
-          description: Your request is over the 10-per-second limit.
-      x-codeSamples:
-      - lang: Shell + Curl
-        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/exports/{export_id}/download"
-      - lang: Node + Native
-        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/exports/%7Bexport_id%7D/download\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
-      - lang: Ruby + Native
-        source: 'require ''uri''
-
-          require ''net/http''
-
-          require ''openssl''
-
-
-          url = URI("https://api.customer.io/v1/exports/%7Bexport_id%7D/download")
-
-
-          http = Net::HTTP.new(url.host, url.port)
-
-          http.use_ssl = true
-
-          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-
-          request = Net::HTTP::Get.new(url)
-
-
-          response = http.request(request)
-
-          puts response.read_body'
-      - lang: Python + Python3
-        source: 'import http.client
-
-
-          conn = http.client.HTTPSConnection("api.customer.io")
-
-
-          conn.request("GET", "/v1/exports/%7Bexport_id%7D/download")
-
-
-          res = conn.getresponse()
-
-          data = res.read()
-
-
-          print(data.decode("utf-8"))'
-      - lang: Go + Native
-        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/exports/%7Bexport_id%7D/download\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+          $ref: '#/components/responses/429'
   /v1/exports/customers:
     servers:
     - url: https://api.customer.io
-      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
     post:
       summary: Export customer data
       operationId: exportPeopleData
@@ -428,1192 +129,7 @@ paths:
               - filters
               properties:
                 filters:
-                  x-scalar-ignore: true
-                  title: Audience Filter
-                  description: Use `and`, `or`, and `not` to combine segment and attribute conditions. The top-level object accepts one property; nest groups for complex filters.
-                  oneOf:
-                  - x-scalar-ignore: true
-                    title: and
-                    type: object
-                    properties:
-                      and:
-                        type: array
-                        description: Match *all* conditions to return results.
-                        items:
-                          type: object
-                          properties:
-                            or:
-                              type: array
-                              description: Returns results matching *any* conditions.
-                              items:
-                                x-scalar-ignore: true
-                                anyOf:
-                                - title: segment
-                                  description: Filter for people who belong to a segment.
-                                  type: object
-                                  properties:
-                                    segment:
-                                      x-scalar-ignore: true
-                                      title: segment
-                                      type: object
-                                      description: Provide the `id` of a segment containing people you want to search for.
-                                      properties:
-                                        id:
-                                          type: integer
-                                          description: The ID of the segment you want to return people from.
-                                          example: 4
-                                - title: audience
-                                  type: object
-                                  description: filter for people who have an attribute or an attribute value.
-                                  properties:
-                                    attribute:
-                                      x-scalar-ignore: true
-                                      title: attribute
-                                      description: Filter your audience by attribute.
-                                      type: object
-                                      required:
-                                      - field
-                                      - operator
-                                      properties:
-                                        field:
-                                          type: string
-                                          description: The name of the attribute you want to filter against.
-                                          example: first_name
-                                        operator:
-                                          type: string
-                                          description: Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.
-                                          enum:
-                                          - eq
-                                          - exists
-                                        value:
-                                          type: string
-                                          description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
-                                      example:
-                                        field: unsubscribed
-                                        operator: eq
-                                        value: true
-                            not:
-                              description: Returns results if a condition is false. While and/or support an array of items, `not` supports a single filter object.
-                              oneOf:
-                              - title: and
-                                type: object
-                                properties:
-                                  and:
-                                    type: array
-                                    description: Match *all* conditions to return results.
-                                    items:
-                                      x-scalar-ignore: true
-                                      anyOf:
-                                      - title: segment
-                                        description: Filter for people who belong to a segment.
-                                        type: object
-                                        properties:
-                                          segment:
-                                            x-scalar-ignore: true
-                                            title: segment
-                                            type: object
-                                            description: Provide the `id` of a segment containing people you want to search for.
-                                            properties:
-                                              id:
-                                                type: integer
-                                                description: The ID of the segment you want to return people from.
-                                                example: 4
-                                      - title: audience
-                                        type: object
-                                        description: filter for people who have an attribute or an attribute value.
-                                        properties:
-                                          attribute:
-                                            x-scalar-ignore: true
-                                            title: attribute
-                                            description: Filter your audience by attribute.
-                                            type: object
-                                            required:
-                                            - field
-                                            - operator
-                                            properties:
-                                              field:
-                                                type: string
-                                                description: The name of the attribute you want to filter against.
-                                                example: first_name
-                                              operator:
-                                                type: string
-                                                description: Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.
-                                                enum:
-                                                - eq
-                                                - exists
-                                              value:
-                                                type: string
-                                                description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
-                                            example:
-                                              field: unsubscribed
-                                              operator: eq
-                                              value: true
-                              - title: or
-                                type: object
-                                properties:
-                                  or:
-                                    type: array
-                                    description: Match *any* condition to return results.
-                                    items:
-                                      x-scalar-ignore: true
-                                      anyOf:
-                                      - title: segment
-                                        description: Filter for people who belong to a segment.
-                                        type: object
-                                        properties:
-                                          segment:
-                                            x-scalar-ignore: true
-                                            title: segment
-                                            type: object
-                                            description: Provide the `id` of a segment containing people you want to search for.
-                                            properties:
-                                              id:
-                                                type: integer
-                                                description: The ID of the segment you want to return people from.
-                                                example: 4
-                                      - title: audience
-                                        type: object
-                                        description: filter for people who have an attribute or an attribute value.
-                                        properties:
-                                          attribute:
-                                            x-scalar-ignore: true
-                                            title: attribute
-                                            description: Filter your audience by attribute.
-                                            type: object
-                                            required:
-                                            - field
-                                            - operator
-                                            properties:
-                                              field:
-                                                type: string
-                                                description: The name of the attribute you want to filter against.
-                                                example: first_name
-                                              operator:
-                                                type: string
-                                                description: Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.
-                                                enum:
-                                                - eq
-                                                - exists
-                                              value:
-                                                type: string
-                                                description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
-                                            example:
-                                              field: unsubscribed
-                                              operator: eq
-                                              value: true
-                              - title: segment
-                                type: object
-                                properties:
-                                  segment:
-                                    x-scalar-ignore: true
-                                    title: segment
-                                    type: object
-                                    description: Provide the `id` of a segment containing people you want to search for.
-                                    properties:
-                                      id:
-                                        type: integer
-                                        description: The ID of the segment you want to return people from.
-                                        example: 4
-                              - title: attribute
-                                type: object
-                                properties:
-                                  attribute:
-                                    x-scalar-ignore: true
-                                    title: attribute
-                                    description: Filter your audience by attribute.
-                                    type: object
-                                    required:
-                                    - field
-                                    - operator
-                                    properties:
-                                      field:
-                                        type: string
-                                        description: The name of the attribute you want to filter against.
-                                        example: first_name
-                                      operator:
-                                        type: string
-                                        description: Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.
-                                        enum:
-                                        - eq
-                                        - exists
-                                      value:
-                                        type: string
-                                        description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
-                                    example:
-                                      field: unsubscribed
-                                      operator: eq
-                                      value: true
-                            segment:
-                              x-scalar-ignore: true
-                              title: segment
-                              type: object
-                              description: Provide the `id` of a segment containing people you want to search for.
-                              properties:
-                                id:
-                                  type: integer
-                                  description: The ID of the segment you want to return people from.
-                                  example: 4
-                            attribute:
-                              x-scalar-ignore: true
-                              title: attribute
-                              description: Filter your audience by attribute.
-                              type: object
-                              required:
-                              - field
-                              - operator
-                              properties:
-                                field:
-                                  type: string
-                                  description: The name of the attribute you want to filter against.
-                                  example: first_name
-                                operator:
-                                  type: string
-                                  description: Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.
-                                  enum:
-                                  - eq
-                                  - exists
-                                value:
-                                  type: string
-                                  description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
-                              example:
-                                field: unsubscribed
-                                operator: eq
-                                value: true
-                  - x-scalar-ignore: true
-                    title: or
-                    type: object
-                    properties:
-                      or:
-                        type: array
-                        description: Match *any* condition to return results.
-                        items:
-                          type: object
-                          properties:
-                            and:
-                              type: array
-                              description: Returns results matching *all* conditions.
-                              items:
-                                x-scalar-ignore: true
-                                anyOf:
-                                - title: segment
-                                  description: Filter for people who belong to a segment.
-                                  type: object
-                                  properties:
-                                    segment:
-                                      x-scalar-ignore: true
-                                      title: segment
-                                      type: object
-                                      description: Provide the `id` of a segment containing people you want to search for.
-                                      properties:
-                                        id:
-                                          type: integer
-                                          description: The ID of the segment you want to return people from.
-                                          example: 4
-                                - title: audience
-                                  type: object
-                                  description: filter for people who have an attribute or an attribute value.
-                                  properties:
-                                    attribute:
-                                      x-scalar-ignore: true
-                                      title: attribute
-                                      description: Filter your audience by attribute.
-                                      type: object
-                                      required:
-                                      - field
-                                      - operator
-                                      properties:
-                                        field:
-                                          type: string
-                                          description: The name of the attribute you want to filter against.
-                                          example: first_name
-                                        operator:
-                                          type: string
-                                          description: Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.
-                                          enum:
-                                          - eq
-                                          - exists
-                                        value:
-                                          type: string
-                                          description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
-                                      example:
-                                        field: unsubscribed
-                                        operator: eq
-                                        value: true
-                            not:
-                              description: Returns results if a condition is false. While and/or support an array of items, `not` supports a single filter object.
-                              oneOf:
-                              - title: and
-                                type: object
-                                properties:
-                                  and:
-                                    type: array
-                                    description: Match *all* conditions to return results.
-                                    items:
-                                      x-scalar-ignore: true
-                                      anyOf:
-                                      - title: segment
-                                        description: Filter for people who belong to a segment.
-                                        type: object
-                                        properties:
-                                          segment:
-                                            x-scalar-ignore: true
-                                            title: segment
-                                            type: object
-                                            description: Provide the `id` of a segment containing people you want to search for.
-                                            properties:
-                                              id:
-                                                type: integer
-                                                description: The ID of the segment you want to return people from.
-                                                example: 4
-                                      - title: audience
-                                        type: object
-                                        description: filter for people who have an attribute or an attribute value.
-                                        properties:
-                                          attribute:
-                                            x-scalar-ignore: true
-                                            title: attribute
-                                            description: Filter your audience by attribute.
-                                            type: object
-                                            required:
-                                            - field
-                                            - operator
-                                            properties:
-                                              field:
-                                                type: string
-                                                description: The name of the attribute you want to filter against.
-                                                example: first_name
-                                              operator:
-                                                type: string
-                                                description: Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.
-                                                enum:
-                                                - eq
-                                                - exists
-                                              value:
-                                                type: string
-                                                description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
-                                            example:
-                                              field: unsubscribed
-                                              operator: eq
-                                              value: true
-                              - title: or
-                                type: object
-                                properties:
-                                  or:
-                                    type: array
-                                    description: Match *any* condition to return results.
-                                    items:
-                                      x-scalar-ignore: true
-                                      anyOf:
-                                      - title: segment
-                                        description: Filter for people who belong to a segment.
-                                        type: object
-                                        properties:
-                                          segment:
-                                            x-scalar-ignore: true
-                                            title: segment
-                                            type: object
-                                            description: Provide the `id` of a segment containing people you want to search for.
-                                            properties:
-                                              id:
-                                                type: integer
-                                                description: The ID of the segment you want to return people from.
-                                                example: 4
-                                      - title: audience
-                                        type: object
-                                        description: filter for people who have an attribute or an attribute value.
-                                        properties:
-                                          attribute:
-                                            x-scalar-ignore: true
-                                            title: attribute
-                                            description: Filter your audience by attribute.
-                                            type: object
-                                            required:
-                                            - field
-                                            - operator
-                                            properties:
-                                              field:
-                                                type: string
-                                                description: The name of the attribute you want to filter against.
-                                                example: first_name
-                                              operator:
-                                                type: string
-                                                description: Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.
-                                                enum:
-                                                - eq
-                                                - exists
-                                              value:
-                                                type: string
-                                                description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
-                                            example:
-                                              field: unsubscribed
-                                              operator: eq
-                                              value: true
-                              - title: segment
-                                type: object
-                                properties:
-                                  segment:
-                                    x-scalar-ignore: true
-                                    title: segment
-                                    type: object
-                                    description: Provide the `id` of a segment containing people you want to search for.
-                                    properties:
-                                      id:
-                                        type: integer
-                                        description: The ID of the segment you want to return people from.
-                                        example: 4
-                              - title: attribute
-                                type: object
-                                properties:
-                                  attribute:
-                                    x-scalar-ignore: true
-                                    title: attribute
-                                    description: Filter your audience by attribute.
-                                    type: object
-                                    required:
-                                    - field
-                                    - operator
-                                    properties:
-                                      field:
-                                        type: string
-                                        description: The name of the attribute you want to filter against.
-                                        example: first_name
-                                      operator:
-                                        type: string
-                                        description: Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.
-                                        enum:
-                                        - eq
-                                        - exists
-                                      value:
-                                        type: string
-                                        description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
-                                    example:
-                                      field: unsubscribed
-                                      operator: eq
-                                      value: true
-                            segment:
-                              x-scalar-ignore: true
-                              title: segment
-                              type: object
-                              description: Provide the `id` of a segment containing people you want to search for.
-                              properties:
-                                id:
-                                  type: integer
-                                  description: The ID of the segment you want to return people from.
-                                  example: 4
-                            attribute:
-                              x-scalar-ignore: true
-                              title: attribute
-                              description: Filter your audience by attribute.
-                              type: object
-                              required:
-                              - field
-                              - operator
-                              properties:
-                                field:
-                                  type: string
-                                  description: The name of the attribute you want to filter against.
-                                  example: first_name
-                                operator:
-                                  type: string
-                                  description: Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.
-                                  enum:
-                                  - eq
-                                  - exists
-                                value:
-                                  type: string
-                                  description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
-                              example:
-                                field: unsubscribed
-                                operator: eq
-                                value: true
-                  - x-scalar-ignore: true
-                    title: not
-                    description: Returns results if a condition is false. While and/or support an array of items, `not` supports a single filter object.
-                    oneOf:
-                    - title: and
-                      type: object
-                      properties:
-                        and:
-                          type: array
-                          description: Match *all* conditions to return results.
-                          items:
-                            x-scalar-ignore: true
-                            title: People Filter
-                            type: object
-                            description: Filter people with `and`, `or`, and `not` groups made from `segment` and `attribute` conditions.
-                            properties:
-                              and:
-                                type: array
-                                description: Returns results matching *all* conditions.
-                                items:
-                                  x-scalar-ignore: true
-                                  anyOf:
-                                  - title: segment
-                                    description: Filter for people who belong to a segment.
-                                    type: object
-                                    properties:
-                                      segment:
-                                        x-scalar-ignore: true
-                                        title: segment
-                                        type: object
-                                        description: Provide the `id` of a segment containing people you want to search for.
-                                        properties:
-                                          id:
-                                            type: integer
-                                            description: The ID of the segment you want to return people from.
-                                            example: 4
-                                  - title: audience
-                                    type: object
-                                    description: filter for people who have an attribute or an attribute value.
-                                    properties:
-                                      attribute:
-                                        x-scalar-ignore: true
-                                        title: attribute
-                                        description: Filter your audience by attribute.
-                                        type: object
-                                        required:
-                                        - field
-                                        - operator
-                                        properties:
-                                          field:
-                                            type: string
-                                            description: The name of the attribute you want to filter against.
-                                            example: first_name
-                                          operator:
-                                            type: string
-                                            description: Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.
-                                            enum:
-                                            - eq
-                                            - exists
-                                          value:
-                                            type: string
-                                            description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
-                                        example:
-                                          field: unsubscribed
-                                          operator: eq
-                                          value: true
-                              or:
-                                type: array
-                                description: Returns results matching *any* conditions.
-                                items:
-                                  x-scalar-ignore: true
-                                  anyOf:
-                                  - title: segment
-                                    description: Filter for people who belong to a segment.
-                                    type: object
-                                    properties:
-                                      segment:
-                                        x-scalar-ignore: true
-                                        title: segment
-                                        type: object
-                                        description: Provide the `id` of a segment containing people you want to search for.
-                                        properties:
-                                          id:
-                                            type: integer
-                                            description: The ID of the segment you want to return people from.
-                                            example: 4
-                                  - title: audience
-                                    type: object
-                                    description: filter for people who have an attribute or an attribute value.
-                                    properties:
-                                      attribute:
-                                        x-scalar-ignore: true
-                                        title: attribute
-                                        description: Filter your audience by attribute.
-                                        type: object
-                                        required:
-                                        - field
-                                        - operator
-                                        properties:
-                                          field:
-                                            type: string
-                                            description: The name of the attribute you want to filter against.
-                                            example: first_name
-                                          operator:
-                                            type: string
-                                            description: Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.
-                                            enum:
-                                            - eq
-                                            - exists
-                                          value:
-                                            type: string
-                                            description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
-                                        example:
-                                          field: unsubscribed
-                                          operator: eq
-                                          value: true
-                              not:
-                                description: Returns results if a condition is false. While and/or support an array of items, `not` supports a single filter object.
-                                oneOf:
-                                - title: and
-                                  type: object
-                                  properties:
-                                    and:
-                                      type: array
-                                      description: Match *all* conditions to return results.
-                                      items:
-                                        x-scalar-ignore: true
-                                        anyOf:
-                                        - title: segment
-                                          description: Filter for people who belong to a segment.
-                                          type: object
-                                          properties:
-                                            segment:
-                                              x-scalar-ignore: true
-                                              title: segment
-                                              type: object
-                                              description: Provide the `id` of a segment containing people you want to search for.
-                                              properties:
-                                                id:
-                                                  type: integer
-                                                  description: The ID of the segment you want to return people from.
-                                                  example: 4
-                                        - title: audience
-                                          type: object
-                                          description: filter for people who have an attribute or an attribute value.
-                                          properties:
-                                            attribute:
-                                              x-scalar-ignore: true
-                                              title: attribute
-                                              description: Filter your audience by attribute.
-                                              type: object
-                                              required:
-                                              - field
-                                              - operator
-                                              properties:
-                                                field:
-                                                  type: string
-                                                  description: The name of the attribute you want to filter against.
-                                                  example: first_name
-                                                operator:
-                                                  type: string
-                                                  description: Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.
-                                                  enum:
-                                                  - eq
-                                                  - exists
-                                                value:
-                                                  type: string
-                                                  description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
-                                              example:
-                                                field: unsubscribed
-                                                operator: eq
-                                                value: true
-                                - title: or
-                                  type: object
-                                  properties:
-                                    or:
-                                      type: array
-                                      description: Match *any* condition to return results.
-                                      items:
-                                        x-scalar-ignore: true
-                                        anyOf:
-                                        - title: segment
-                                          description: Filter for people who belong to a segment.
-                                          type: object
-                                          properties:
-                                            segment:
-                                              x-scalar-ignore: true
-                                              title: segment
-                                              type: object
-                                              description: Provide the `id` of a segment containing people you want to search for.
-                                              properties:
-                                                id:
-                                                  type: integer
-                                                  description: The ID of the segment you want to return people from.
-                                                  example: 4
-                                        - title: audience
-                                          type: object
-                                          description: filter for people who have an attribute or an attribute value.
-                                          properties:
-                                            attribute:
-                                              x-scalar-ignore: true
-                                              title: attribute
-                                              description: Filter your audience by attribute.
-                                              type: object
-                                              required:
-                                              - field
-                                              - operator
-                                              properties:
-                                                field:
-                                                  type: string
-                                                  description: The name of the attribute you want to filter against.
-                                                  example: first_name
-                                                operator:
-                                                  type: string
-                                                  description: Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.
-                                                  enum:
-                                                  - eq
-                                                  - exists
-                                                value:
-                                                  type: string
-                                                  description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
-                                              example:
-                                                field: unsubscribed
-                                                operator: eq
-                                                value: true
-                                - title: segment
-                                  type: object
-                                  properties:
-                                    segment:
-                                      x-scalar-ignore: true
-                                      title: segment
-                                      type: object
-                                      description: Provide the `id` of a segment containing people you want to search for.
-                                      properties:
-                                        id:
-                                          type: integer
-                                          description: The ID of the segment you want to return people from.
-                                          example: 4
-                                - title: attribute
-                                  type: object
-                                  properties:
-                                    attribute:
-                                      x-scalar-ignore: true
-                                      title: attribute
-                                      description: Filter your audience by attribute.
-                                      type: object
-                                      required:
-                                      - field
-                                      - operator
-                                      properties:
-                                        field:
-                                          type: string
-                                          description: The name of the attribute you want to filter against.
-                                          example: first_name
-                                        operator:
-                                          type: string
-                                          description: Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.
-                                          enum:
-                                          - eq
-                                          - exists
-                                        value:
-                                          type: string
-                                          description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
-                                      example:
-                                        field: unsubscribed
-                                        operator: eq
-                                        value: true
-                              segment:
-                                x-scalar-ignore: true
-                                title: segment
-                                type: object
-                                description: Provide the `id` of a segment containing people you want to search for.
-                                properties:
-                                  id:
-                                    type: integer
-                                    description: The ID of the segment you want to return people from.
-                                    example: 4
-                              attribute:
-                                x-scalar-ignore: true
-                                title: attribute
-                                description: Filter your audience by attribute.
-                                type: object
-                                required:
-                                - field
-                                - operator
-                                properties:
-                                  field:
-                                    type: string
-                                    description: The name of the attribute you want to filter against.
-                                    example: first_name
-                                  operator:
-                                    type: string
-                                    description: Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.
-                                    enum:
-                                    - eq
-                                    - exists
-                                  value:
-                                    type: string
-                                    description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
-                                example:
-                                  field: unsubscribed
-                                  operator: eq
-                                  value: true
-                    - title: or
-                      type: object
-                      properties:
-                        or:
-                          type: array
-                          description: Match *any* condition to return results.
-                          items:
-                            x-scalar-ignore: true
-                            title: People Filter
-                            type: object
-                            description: Filter people with `and`, `or`, and `not` groups made from `segment` and `attribute` conditions.
-                            properties:
-                              and:
-                                type: array
-                                description: Returns results matching *all* conditions.
-                                items:
-                                  x-scalar-ignore: true
-                                  anyOf:
-                                  - title: segment
-                                    description: Filter for people who belong to a segment.
-                                    type: object
-                                    properties:
-                                      segment:
-                                        x-scalar-ignore: true
-                                        title: segment
-                                        type: object
-                                        description: Provide the `id` of a segment containing people you want to search for.
-                                        properties:
-                                          id:
-                                            type: integer
-                                            description: The ID of the segment you want to return people from.
-                                            example: 4
-                                  - title: audience
-                                    type: object
-                                    description: filter for people who have an attribute or an attribute value.
-                                    properties:
-                                      attribute:
-                                        x-scalar-ignore: true
-                                        title: attribute
-                                        description: Filter your audience by attribute.
-                                        type: object
-                                        required:
-                                        - field
-                                        - operator
-                                        properties:
-                                          field:
-                                            type: string
-                                            description: The name of the attribute you want to filter against.
-                                            example: first_name
-                                          operator:
-                                            type: string
-                                            description: Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.
-                                            enum:
-                                            - eq
-                                            - exists
-                                          value:
-                                            type: string
-                                            description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
-                                        example:
-                                          field: unsubscribed
-                                          operator: eq
-                                          value: true
-                              or:
-                                type: array
-                                description: Returns results matching *any* conditions.
-                                items:
-                                  x-scalar-ignore: true
-                                  anyOf:
-                                  - title: segment
-                                    description: Filter for people who belong to a segment.
-                                    type: object
-                                    properties:
-                                      segment:
-                                        x-scalar-ignore: true
-                                        title: segment
-                                        type: object
-                                        description: Provide the `id` of a segment containing people you want to search for.
-                                        properties:
-                                          id:
-                                            type: integer
-                                            description: The ID of the segment you want to return people from.
-                                            example: 4
-                                  - title: audience
-                                    type: object
-                                    description: filter for people who have an attribute or an attribute value.
-                                    properties:
-                                      attribute:
-                                        x-scalar-ignore: true
-                                        title: attribute
-                                        description: Filter your audience by attribute.
-                                        type: object
-                                        required:
-                                        - field
-                                        - operator
-                                        properties:
-                                          field:
-                                            type: string
-                                            description: The name of the attribute you want to filter against.
-                                            example: first_name
-                                          operator:
-                                            type: string
-                                            description: Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.
-                                            enum:
-                                            - eq
-                                            - exists
-                                          value:
-                                            type: string
-                                            description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
-                                        example:
-                                          field: unsubscribed
-                                          operator: eq
-                                          value: true
-                              not:
-                                description: Returns results if a condition is false. While and/or support an array of items, `not` supports a single filter object.
-                                oneOf:
-                                - title: and
-                                  type: object
-                                  properties:
-                                    and:
-                                      type: array
-                                      description: Match *all* conditions to return results.
-                                      items:
-                                        x-scalar-ignore: true
-                                        anyOf:
-                                        - title: segment
-                                          description: Filter for people who belong to a segment.
-                                          type: object
-                                          properties:
-                                            segment:
-                                              x-scalar-ignore: true
-                                              title: segment
-                                              type: object
-                                              description: Provide the `id` of a segment containing people you want to search for.
-                                              properties:
-                                                id:
-                                                  type: integer
-                                                  description: The ID of the segment you want to return people from.
-                                                  example: 4
-                                        - title: audience
-                                          type: object
-                                          description: filter for people who have an attribute or an attribute value.
-                                          properties:
-                                            attribute:
-                                              x-scalar-ignore: true
-                                              title: attribute
-                                              description: Filter your audience by attribute.
-                                              type: object
-                                              required:
-                                              - field
-                                              - operator
-                                              properties:
-                                                field:
-                                                  type: string
-                                                  description: The name of the attribute you want to filter against.
-                                                  example: first_name
-                                                operator:
-                                                  type: string
-                                                  description: Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.
-                                                  enum:
-                                                  - eq
-                                                  - exists
-                                                value:
-                                                  type: string
-                                                  description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
-                                              example:
-                                                field: unsubscribed
-                                                operator: eq
-                                                value: true
-                                - title: or
-                                  type: object
-                                  properties:
-                                    or:
-                                      type: array
-                                      description: Match *any* condition to return results.
-                                      items:
-                                        x-scalar-ignore: true
-                                        anyOf:
-                                        - title: segment
-                                          description: Filter for people who belong to a segment.
-                                          type: object
-                                          properties:
-                                            segment:
-                                              x-scalar-ignore: true
-                                              title: segment
-                                              type: object
-                                              description: Provide the `id` of a segment containing people you want to search for.
-                                              properties:
-                                                id:
-                                                  type: integer
-                                                  description: The ID of the segment you want to return people from.
-                                                  example: 4
-                                        - title: audience
-                                          type: object
-                                          description: filter for people who have an attribute or an attribute value.
-                                          properties:
-                                            attribute:
-                                              x-scalar-ignore: true
-                                              title: attribute
-                                              description: Filter your audience by attribute.
-                                              type: object
-                                              required:
-                                              - field
-                                              - operator
-                                              properties:
-                                                field:
-                                                  type: string
-                                                  description: The name of the attribute you want to filter against.
-                                                  example: first_name
-                                                operator:
-                                                  type: string
-                                                  description: Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.
-                                                  enum:
-                                                  - eq
-                                                  - exists
-                                                value:
-                                                  type: string
-                                                  description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
-                                              example:
-                                                field: unsubscribed
-                                                operator: eq
-                                                value: true
-                                - title: segment
-                                  type: object
-                                  properties:
-                                    segment:
-                                      x-scalar-ignore: true
-                                      title: segment
-                                      type: object
-                                      description: Provide the `id` of a segment containing people you want to search for.
-                                      properties:
-                                        id:
-                                          type: integer
-                                          description: The ID of the segment you want to return people from.
-                                          example: 4
-                                - title: attribute
-                                  type: object
-                                  properties:
-                                    attribute:
-                                      x-scalar-ignore: true
-                                      title: attribute
-                                      description: Filter your audience by attribute.
-                                      type: object
-                                      required:
-                                      - field
-                                      - operator
-                                      properties:
-                                        field:
-                                          type: string
-                                          description: The name of the attribute you want to filter against.
-                                          example: first_name
-                                        operator:
-                                          type: string
-                                          description: Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.
-                                          enum:
-                                          - eq
-                                          - exists
-                                        value:
-                                          type: string
-                                          description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
-                                      example:
-                                        field: unsubscribed
-                                        operator: eq
-                                        value: true
-                              segment:
-                                x-scalar-ignore: true
-                                title: segment
-                                type: object
-                                description: Provide the `id` of a segment containing people you want to search for.
-                                properties:
-                                  id:
-                                    type: integer
-                                    description: The ID of the segment you want to return people from.
-                                    example: 4
-                              attribute:
-                                x-scalar-ignore: true
-                                title: attribute
-                                description: Filter your audience by attribute.
-                                type: object
-                                required:
-                                - field
-                                - operator
-                                properties:
-                                  field:
-                                    type: string
-                                    description: The name of the attribute you want to filter against.
-                                    example: first_name
-                                  operator:
-                                    type: string
-                                    description: Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.
-                                    enum:
-                                    - eq
-                                    - exists
-                                  value:
-                                    type: string
-                                    description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
-                                example:
-                                  field: unsubscribed
-                                  operator: eq
-                                  value: true
-                    - title: segment
-                      type: object
-                      properties:
-                        segment:
-                          x-scalar-ignore: true
-                          title: segment
-                          type: object
-                          description: Provide the `id` of a segment containing people you want to search for.
-                          properties:
-                            id:
-                              type: integer
-                              description: The ID of the segment you want to return people from.
-                              example: 4
-                    - title: attribute
-                      type: object
-                      properties:
-                        attribute:
-                          x-scalar-ignore: true
-                          title: attribute
-                          description: Filter your audience by attribute.
-                          type: object
-                          required:
-                          - field
-                          - operator
-                          properties:
-                            field:
-                              type: string
-                              description: The name of the attribute you want to filter against.
-                              example: first_name
-                            operator:
-                              type: string
-                              description: Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.
-                              enum:
-                              - eq
-                              - exists
-                            value:
-                              type: string
-                              description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
-                          example:
-                            field: unsubscribed
-                            operator: eq
-                            value: true
-                  - title: segment
-                    description: Filter for people who belong to a segment.
-                    type: object
-                    properties:
-                      segment:
-                        x-scalar-ignore: true
-                        title: segment
-                        type: object
-                        description: Provide the `id` of a segment containing people you want to search for.
-                        properties:
-                          id:
-                            type: integer
-                            description: The ID of the segment you want to return people from.
-                            example: 4
-                  - title: audience
-                    type: object
-                    description: filter for people who have an attribute or an attribute value.
-                    properties:
-                      attribute:
-                        x-scalar-ignore: true
-                        title: attribute
-                        description: Filter your audience by attribute.
-                        type: object
-                        required:
-                        - field
-                        - operator
-                        properties:
-                          field:
-                            type: string
-                            description: The name of the attribute you want to filter against.
-                            example: first_name
-                          operator:
-                            type: string
-                            description: Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.
-                            enum:
-                            - eq
-                            - exists
-                          value:
-                            type: string
-                            description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
-                        example:
-                          field: unsubscribed
-                          operator: eq
-                          value: true
+                  $ref: '#/components/schemas/audienceFilter'
                 attributes:
                   description: Recipient attributes you want to include as extra columns in your export.
                   type: array
@@ -1647,161 +163,23 @@ paths:
                 type: object
                 properties:
                   export:
-                    x-scalar-ignore: true
-                    type: object
-                    description: Metadata about an export.
-                    properties:
-                      id:
-                        x-scalar-ignore: true
-                        type: integer
-                        description: The identifier for the export.
-                        example: 110
-                      user_id:
-                        type: integer
-                        description: The user who created the export.
-                      user_email:
-                        type: string
-                        description: The email of the user who created the export.
-                      total:
-                        type: integer
-                        description: The number of entries in the export. Exports report 0 until done.
-                      deduplicate_id:
-                        x-scalar-ignore: true
-                        type: string
-                        readOnly: true
-                        description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
-                        example: 15:1492548073
-                      type:
-                        x-scalar-ignore: true
-                        type: string
-                        description: The type of information contained in the export.
-                        enum:
-                        - customers
-                        - deliveries
-                        example: customers
-                      failed:
-                        x-scalar-ignore: true
-                        type: boolean
-                        description: If true, the export was unsuccessful.
-                        example: false
-                      description:
-                        x-scalar-ignore: true
-                        type: string
-                        description: A description of the export.
-                        example: Customers with segment filters—in Purchased Flowers
-                      downloads:
-                        x-scalar-ignore: true
-                        type: integer
-                        description: Counts the total number of times the export has been downloaded.
-                        example: 2
-                      created_at:
-                        x-scalar-ignore: true
-                        type: integer
-                        format: unix timestamp
-                        description: The date time when the referenced ID was created.
-                        example: 1552341937
-                        readOnly: true
-                      updated_at:
-                        x-scalar-ignore: true
-                        type: integer
-                        format: unix timestamp
-                        description: The date time when the referenced ID was last updated.
-                        example: 1552341937
-                        readOnly: true
-                      status:
-                        type: string
-                        enum:
-                        - done
-                        - pending
-                        - failed
-                        description: The state of your export where `done` indicates an export that you can download, `pending`, indicates that your export is not ready to download, and `failed` indicates an export that has failed and will not be downloadable.
-                    example:
-                      id: 110
-                      user_id: 0
-                      user_email: person@email.com
-                      total: 1234
-                      deduplicate_id: 110:1530296738
-                      type: customers
-                      failed: false
-                      status: done
-                      description: Customers with segment filters—in \Purchased Flowers\
-                      downloads: 2
-                      created_at: 1530296738
-                      updated_at: 1530296738
+                    $ref: '#/components/schemas/exportObject'
         '400':
           description: The request is malformed.
         '429':
-          description: Your request is over the 10-per-second limit.
-      x-codeSamples:
-      - lang: json
-        label: JSON
-        source: "{\n  \"filters\": {\n    \"and\": [\n      {\n        \"segment\": {\n          \"id\": 3\n        }\n      },\n      {\n        \"or\": [\n          {\n            \"attribute\": {\n              \"field\": \"interest\",\n              \"operator\": \"eq\",\n              \"value\": \"roadrunners\"\n            }\n          },\n          {\n            \"attribute\": {\n              \"field\": \"state\",\n              \"operator\": \"eq\",\n              \"value\": \"NM\"\n            }\n          },\n          {\n            \"not\": {\n              \"attribute\": {\n                \"field\": \"species\",\n                \"operator\": \"eq\",\n                \"value\": \"roadrunners\"\n              }\n            }\n          }\n        ]\n      }\n    ]\n  }\n}"
-      - lang: Shell + Curl
-        source: "curl --request POST \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/exports/customers \\\n  --header 'content-type: application/json' \\\n  --data '{\"filters\":{\"and\":[{\"or\":[{\"segment\":{\"id\":4}}],\"not\":{\"and\":[{\"segment\":{\"id\":4}}]},\"segment\":{\"id\":4},\"attribute\":{\"field\":\"unsubscribed\",\"operator\":\"eq\",\"value\":true}}]},\"attributes\":[\"string\"]}'"
-      - lang: Node + Native
-        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"POST\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/exports/customers\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({\n  filters: {\n    and: [\n      {\n        or: [{segment: {id: 4}}],\n        not: {and: [{segment: {id: 4}}]},\n        segment: {id: 4},\n        attribute: {field: 'unsubscribed', operator: 'eq', value: true}\n      }\n    ]\n  },\n  attributes: ['string']\n}));\nreq.end();"
-      - lang: Ruby + Native
-        source: 'require ''uri''
-
-          require ''net/http''
-
-          require ''openssl''
-
-
-          url = URI("https://api.customer.io/v1/exports/customers")
-
-
-          http = Net::HTTP.new(url.host, url.port)
-
-          http.use_ssl = true
-
-          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-
-          request = Net::HTTP::Post.new(url)
-
-          request["content-type"] = ''application/json''
-
-          request.body = "{\"filters\":{\"and\":[{\"or\":[{\"segment\":{\"id\":4}}],\"not\":{\"and\":[{\"segment\":{\"id\":4}}]},\"segment\":{\"id\":4},\"attribute\":{\"field\":\"unsubscribed\",\"operator\":\"eq\",\"value\":true}}]},\"attributes\":[\"string\"]}"
-
-
-          response = http.request(request)
-
-          puts response.read_body'
-      - lang: Python + Python3
-        source: 'import http.client
-
-
-          conn = http.client.HTTPSConnection("api.customer.io")
-
-
-          payload = "{\"filters\":{\"and\":[{\"or\":[{\"segment\":{\"id\":4}}],\"not\":{\"and\":[{\"segment\":{\"id\":4}}]},\"segment\":{\"id\":4},\"attribute\":{\"field\":\"unsubscribed\",\"operator\":\"eq\",\"value\":true}}]},\"attributes\":[\"string\"]}"
-
-
-          headers = { ''content-type'': "application/json" }
-
-
-          conn.request("POST", "/v1/exports/customers", payload, headers)
-
-
-          res = conn.getresponse()
-
-          data = res.read()
-
-
-          print(data.decode("utf-8"))'
-      - lang: Go + Native
-        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/exports/customers\"\n\n\tpayload := strings.NewReader(\"{\\\"filters\\\":{\\\"and\\\":[{\\\"or\\\":[{\\\"segment\\\":{\\\"id\\\":4}}],\\\"not\\\":{\\\"and\\\":[{\\\"segment\\\":{\\\"id\\\":4}}]},\\\"segment\\\":{\\\"id\\\":4},\\\"attribute\\\":{\\\"field\\\":\\\"unsubscribed\\\",\\\"operator\\\":\\\"eq\\\",\\\"value\\\":true}}]},\\\"attributes\\\":[\\\"string\\\"]}\")\n\n\treq, _ := http.NewRequest(\"POST\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+          $ref: '#/components/responses/429'
   /v1/exports/deliveries:
     servers:
     - url: https://api.customer.io
-      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
     post:
       summary: Export information about deliveries
       operationId: exportDeliveriesData
       security:
       - Bearer-Auth: []
-      description: 'Provide filters for the newsletter, campaign, or action you want to return delivery information from. This endpoint starts an export, but you cannot download your export from this endpoint. Use the `/exports/{export_id}` endpoint to download your export.
+      description: 'Provide filters for the one-time send, automation, or action you want to return delivery information from. This endpoint starts an export, but you cannot download your export from this endpoint. Use the `/exports/{export_id}` endpoint to download your export.
 
 
         Use the `start` and `end` to find messages within a time range. If your request doesn''t include `start` and `end` parameters, we''ll return the most recent 6 months of messages. If your `start` and `end` range is more than 12 months, we''ll return 12 months of data from the most recent timestamp in your request. Timestamps reflect when deliveries were created in our system, not when they were actually sent to recipients. There may be a delay between creation and sending.'
@@ -1820,54 +198,9 @@ paths:
                   properties:
                     newsletter_id:
                       type: integer
-                      description: The ID of a newsletter you want to export information from.
+                      description: The ID of a one-time send you want to export information from.
                       example: 999
-                - x-scalar-ignore: true
-                  description: Contains properties shared by export filters.
-                  type: object
-                  properties:
-                    start:
-                      x-scalar-ignore: true
-                      description: The unix timestamp representing the beginning of the export.
-                      type: integer
-                      format: unix timestamp
-                      example: 1517529600
-                    end:
-                      x-scalar-ignore: true
-                      description: The unix timestamp representing the end of the export.
-                      type: integer
-                      format: unix timestamp
-                      example: 1517702400
-                    attributes:
-                      description: Recipient attributes you want to include as extra columns in your export. You can't include event or trigger properties.
-                      type: array
-                      items:
-                        type: string
-                    metric:
-                      x-scalar-ignore: true
-                      description: Determines the metric(s) you want to return.
-                      type: string
-                      enum:
-                      - created
-                      - attempted
-                      - sent
-                      - delivered
-                      - opened
-                      - clicked
-                      - converted
-                      - bounced
-                      - spammed
-                      - unsubscribed
-                      - dropped
-                      - failed
-                      - undeliverable
-                    drafts:
-                      x-scalar-ignore: true
-                      description: If true, your request returns both drafts and active/sent messages.
-                      type: boolean
-                    template_id:
-                      type: integer
-                      description: Restrict the export to a specific message template (content) within the selected campaign, newsletter, or transactional message.
+                - $ref: '#/components/schemas/exportSharedProps'
               - title: Campaign
                 allOf:
                 - type: object
@@ -1876,54 +209,9 @@ paths:
                   properties:
                     campaign_id:
                       type: integer
-                      description: The ID of a campaign you want to export information from.
+                      description: The ID of an automation you want to export information from.
                       example: 46
-                - x-scalar-ignore: true
-                  description: Contains properties shared by export filters.
-                  type: object
-                  properties:
-                    start:
-                      x-scalar-ignore: true
-                      description: The unix timestamp representing the beginning of the export.
-                      type: integer
-                      format: unix timestamp
-                      example: 1517529600
-                    end:
-                      x-scalar-ignore: true
-                      description: The unix timestamp representing the end of the export.
-                      type: integer
-                      format: unix timestamp
-                      example: 1517702400
-                    attributes:
-                      description: Recipient attributes you want to include as extra columns in your export. You can't include event or trigger properties.
-                      type: array
-                      items:
-                        type: string
-                    metric:
-                      x-scalar-ignore: true
-                      description: Determines the metric(s) you want to return.
-                      type: string
-                      enum:
-                      - created
-                      - attempted
-                      - sent
-                      - delivered
-                      - opened
-                      - clicked
-                      - converted
-                      - bounced
-                      - spammed
-                      - unsubscribed
-                      - dropped
-                      - failed
-                      - undeliverable
-                    drafts:
-                      x-scalar-ignore: true
-                      description: If true, your request returns both drafts and active/sent messages.
-                      type: boolean
-                    template_id:
-                      type: integer
-                      description: Restrict the export to a specific message template (content) within the selected campaign, newsletter, or transactional message.
+                - $ref: '#/components/schemas/exportSharedProps'
               - title: Transactional Message
                 allOf:
                 - type: object
@@ -1934,52 +222,7 @@ paths:
                       example: 22
                       type: integer
                       description: The ID of the transactional message you want to export information for.
-                - x-scalar-ignore: true
-                  description: Contains properties shared by export filters.
-                  type: object
-                  properties:
-                    start:
-                      x-scalar-ignore: true
-                      description: The unix timestamp representing the beginning of the export.
-                      type: integer
-                      format: unix timestamp
-                      example: 1517529600
-                    end:
-                      x-scalar-ignore: true
-                      description: The unix timestamp representing the end of the export.
-                      type: integer
-                      format: unix timestamp
-                      example: 1517702400
-                    attributes:
-                      description: Recipient attributes you want to include as extra columns in your export. You can't include event or trigger properties.
-                      type: array
-                      items:
-                        type: string
-                    metric:
-                      x-scalar-ignore: true
-                      description: Determines the metric(s) you want to return.
-                      type: string
-                      enum:
-                      - created
-                      - attempted
-                      - sent
-                      - delivered
-                      - opened
-                      - clicked
-                      - converted
-                      - bounced
-                      - spammed
-                      - unsubscribed
-                      - dropped
-                      - failed
-                      - undeliverable
-                    drafts:
-                      x-scalar-ignore: true
-                      description: If true, your request returns both drafts and active/sent messages.
-                      type: boolean
-                    template_id:
-                      type: integer
-                      description: Restrict the export to a specific message template (content) within the selected campaign, newsletter, or transactional message.
+                - $ref: '#/components/schemas/exportSharedProps'
               - title: Action
                 allOf:
                 - type: object
@@ -1990,52 +233,7 @@ paths:
                       example: 77
                       type: integer
                       description: The ID of an action you want to export information from.
-                - x-scalar-ignore: true
-                  description: Contains properties shared by export filters.
-                  type: object
-                  properties:
-                    start:
-                      x-scalar-ignore: true
-                      description: The unix timestamp representing the beginning of the export.
-                      type: integer
-                      format: unix timestamp
-                      example: 1517529600
-                    end:
-                      x-scalar-ignore: true
-                      description: The unix timestamp representing the end of the export.
-                      type: integer
-                      format: unix timestamp
-                      example: 1517702400
-                    attributes:
-                      description: Recipient attributes you want to include as extra columns in your export. You can't include event or trigger properties.
-                      type: array
-                      items:
-                        type: string
-                    metric:
-                      x-scalar-ignore: true
-                      description: Determines the metric(s) you want to return.
-                      type: string
-                      enum:
-                      - created
-                      - attempted
-                      - sent
-                      - delivered
-                      - opened
-                      - clicked
-                      - converted
-                      - bounced
-                      - spammed
-                      - unsubscribed
-                      - dropped
-                      - failed
-                      - undeliverable
-                    drafts:
-                      x-scalar-ignore: true
-                      description: If true, your request returns both drafts and active/sent messages.
-                      type: boolean
-                    template_id:
-                      type: integer
-                      description: Restrict the export to a specific message template (content) within the selected campaign, newsletter, or transactional message.
+                - $ref: '#/components/schemas/exportSharedProps'
       responses:
         '200':
           description: Returns an export.
@@ -2045,87 +243,7 @@ paths:
                 type: object
                 properties:
                   export:
-                    x-scalar-ignore: true
-                    type: object
-                    description: Metadata about an export.
-                    properties:
-                      id:
-                        x-scalar-ignore: true
-                        type: integer
-                        description: The identifier for the export.
-                        example: 110
-                      user_id:
-                        type: integer
-                        description: The user who created the export.
-                      user_email:
-                        type: string
-                        description: The email of the user who created the export.
-                      total:
-                        type: integer
-                        description: The number of entries in the export. Exports report 0 until done.
-                      deduplicate_id:
-                        x-scalar-ignore: true
-                        type: string
-                        readOnly: true
-                        description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Campaigns, Deliveries, Exports, Identities, Newsletters, Segments, and Templates), and the timestamp is the last time the object was updated.
-                        example: 15:1492548073
-                      type:
-                        x-scalar-ignore: true
-                        type: string
-                        description: The type of information contained in the export.
-                        enum:
-                        - customers
-                        - deliveries
-                        example: customers
-                      failed:
-                        x-scalar-ignore: true
-                        type: boolean
-                        description: If true, the export was unsuccessful.
-                        example: false
-                      description:
-                        x-scalar-ignore: true
-                        type: string
-                        description: A description of the export.
-                        example: Customers with segment filters—in Purchased Flowers
-                      downloads:
-                        x-scalar-ignore: true
-                        type: integer
-                        description: Counts the total number of times the export has been downloaded.
-                        example: 2
-                      created_at:
-                        x-scalar-ignore: true
-                        type: integer
-                        format: unix timestamp
-                        description: The date time when the referenced ID was created.
-                        example: 1552341937
-                        readOnly: true
-                      updated_at:
-                        x-scalar-ignore: true
-                        type: integer
-                        format: unix timestamp
-                        description: The date time when the referenced ID was last updated.
-                        example: 1552341937
-                        readOnly: true
-                      status:
-                        type: string
-                        enum:
-                        - done
-                        - pending
-                        - failed
-                        description: The state of your export where `done` indicates an export that you can download, `pending`, indicates that your export is not ready to download, and `failed` indicates an export that has failed and will not be downloadable.
-                    example:
-                      id: 110
-                      user_id: 0
-                      user_email: person@email.com
-                      total: 1234
-                      deduplicate_id: 110:1530296738
-                      type: customers
-                      failed: false
-                      status: done
-                      description: Customers with segment filters—in \Purchased Flowers\
-                      downloads: 2
-                      created_at: 1530296738
-                      updated_at: 1530296738
+                    $ref: '#/components/schemas/exportObject'
                 example:
                   export:
                     id: 111,
@@ -2139,69 +257,498 @@ paths:
         '400':
           description: The request is malformed.
         '429':
-          description: Your request is over the 10-per-second limit.
-      x-codeSamples:
-      - lang: json
-        label: JSON
-        source: "{\n  \"newsletter_id\": 999\n}"
-      - lang: Shell + Curl
-        source: "curl --request POST \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/exports/deliveries \\\n  --header 'content-type: application/json' \\\n  --data '{\"newsletter_id\":999,\"start\":1517529600,\"end\":1517702400,\"attributes\":[\"string\"],\"metric\":\"created\",\"drafts\":true,\"template_id\":0}'"
-      - lang: Node + Native
-        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"POST\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/exports/deliveries\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({\n  newsletter_id: 999,\n  start: 1517529600,\n  end: 1517702400,\n  attributes: ['string'],\n  metric: 'created',\n  drafts: true,\n  template_id: 0\n}));\nreq.end();"
-      - lang: Ruby + Native
-        source: 'require ''uri''
-
-          require ''net/http''
-
-          require ''openssl''
-
-
-          url = URI("https://api.customer.io/v1/exports/deliveries")
-
-
-          http = Net::HTTP.new(url.host, url.port)
-
-          http.use_ssl = true
-
-          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-
-          request = Net::HTTP::Post.new(url)
-
-          request["content-type"] = ''application/json''
-
-          request.body = "{\"newsletter_id\":999,\"start\":1517529600,\"end\":1517702400,\"attributes\":[\"string\"],\"metric\":\"created\",\"drafts\":true,\"template_id\":0}"
-
-
-          response = http.request(request)
-
-          puts response.read_body'
-      - lang: Python + Python3
-        source: 'import http.client
-
-
-          conn = http.client.HTTPSConnection("api.customer.io")
-
-
-          payload = "{\"newsletter_id\":999,\"start\":1517529600,\"end\":1517702400,\"attributes\":[\"string\"],\"metric\":\"created\",\"drafts\":true,\"template_id\":0}"
-
-
-          headers = { ''content-type'': "application/json" }
-
-
-          conn.request("POST", "/v1/exports/deliveries", payload, headers)
-
-
-          res = conn.getresponse()
-
-          data = res.read()
-
-
-          print(data.decode("utf-8"))'
-      - lang: Go + Native
-        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/exports/deliveries\"\n\n\tpayload := strings.NewReader(\"{\\\"newsletter_id\\\":999,\\\"start\\\":1517529600,\\\"end\\\":1517702400,\\\"attributes\\\":[\\\"string\\\"],\\\"metric\\\":\\\"created\\\",\\\"drafts\\\":true,\\\"template_id\\\":0}\")\n\n\treq, _ := http.NewRequest(\"POST\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+          $ref: '#/components/responses/429'
 components:
+  schemas:
+    export_id:
+      x-scalar-ignore: true
+      type: integer
+      description: The identifier for the export.
+      example: 110
+    start:
+      x-scalar-ignore: true
+      description: The unix timestamp representing the beginning of the export.
+      type: integer
+      format: unix timestamp
+      example: 1517529600
+    metric:
+      x-scalar-ignore: true
+      description: Determines the metric(s) you want to return.
+      type: string
+      enum:
+      - created
+      - attempted
+      - sent
+      - delivered
+      - opened
+      - clicked
+      - converted
+      - bounced
+      - spammed
+      - unsubscribed
+      - dropped
+      - failed
+      - undeliverable
+    notAudienceFilter:
+      x-scalar-ignore: true
+      title: not
+      description: Returns people who don't match the condition inside it. `not` takes a single object, not an array. That object can be one condition, or an `and` or `or` group when you want to exclude people who match a combination of conditions.
+      oneOf:
+      - title: and
+        type: object
+        properties:
+          and:
+            type: array
+            description: Match *all* conditions to return results.
+            items:
+              $ref: '#/components/schemas/complexAudienceFilter'
+      - title: or
+        type: object
+        properties:
+          or:
+            type: array
+            description: Match *any* condition to return results.
+            items:
+              $ref: '#/components/schemas/complexAudienceFilter'
+      - title: segment
+        type: object
+        properties:
+          segment:
+            $ref: '#/components/schemas/segmentAudienceFilter'
+      - title: attribute
+        type: object
+        properties:
+          attribute:
+            $ref: '#/components/schemas/attributeAudienceFilter'
+    appApiError:
+      x-scalar-ignore: true
+      type: object
+      description: An array/list of failures where each entry is a separate failure reason.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: One entry for each reason the request failed.
+          items:
+            type: object
+            required:
+            - detail
+            - status
+            properties:
+              detail:
+                type: string
+                description: What went wrong, in plain text. Most messages end with a support reference you can use if you need to contact support.
+                example: bad request (reference a1b2c3)
+              status:
+                type: string
+                description: The HTTP status code as a string.
+                example: '400'
+              code:
+                type: string
+                description: A stable identifier for the failure, on the errors that carry one. Use this rather than the text in `detail` if you need to identify the error programmatically.
+                example: invalid_credentials
+              source:
+                type: object
+                description: The part of the request that the error refers to.
+                properties:
+                  pointer:
+                    type: string
+                    description: A JSON pointer to the part of the request body that the error refers to.
+                    example: /data/attributes/email
+              meta:
+                type: object
+                additionalProperties: true
+                description: Extra context (if available).
+    audienceFilter:
+      x-scalar-ignore: true
+      title: Audience Filter
+      description: Use `and`, `or`, and `not` to combine segment and attribute conditions. The top-level object accepts one property; nest groups for complex filters.
+      oneOf:
+      - $ref: '#/components/schemas/andAudienceFilter'
+      - $ref: '#/components/schemas/orAudienceFilter'
+      - $ref: '#/components/schemas/notAudienceFilter'
+      - title: segment
+        description: Filter for people who belong to a segment.
+        type: object
+        properties:
+          segment:
+            $ref: '#/components/schemas/segmentAudienceFilter'
+      - title: audience
+        type: object
+        description: filter for people who have an attribute or an attribute value.
+        properties:
+          attribute:
+            $ref: '#/components/schemas/attributeAudienceFilter'
+    exportObject:
+      x-scalar-ignore: true
+      type: object
+      description: Metadata about an export.
+      properties:
+        id:
+          $ref: '#/components/schemas/export_id'
+        user_id:
+          type: integer
+          description: The user who created the export.
+        user_email:
+          type: string
+          description: The email of the user who created the export.
+        total:
+          type: integer
+          description: The number of entries in the export. Exports report 0 until done.
+        deduplicate_id:
+          $ref: '#/components/schemas/deduplicate_id'
+        type:
+          $ref: '#/components/schemas/export_type'
+        failed:
+          $ref: '#/components/schemas/export_failed'
+        description:
+          $ref: '#/components/schemas/export_description'
+        downloads:
+          $ref: '#/components/schemas/export_downloads'
+        created_at:
+          $ref: '#/components/schemas/created'
+        updated_at:
+          $ref: '#/components/schemas/updated'
+        status:
+          type: string
+          enum:
+          - done
+          - pending
+          - failed
+          description: The state of your export where `done` indicates an export that you can download, `pending`, indicates that your export is not ready to download, and `failed` indicates an export that has failed and will not be downloadable.
+      example:
+        id: 110
+        user_id: 0
+        user_email: person@email.com
+        total: 1234
+        deduplicate_id: 110:1530296738
+        type: customers
+        failed: false
+        status: done
+        description: Customers with segment filters—in \Purchased Flowers\
+        downloads: 2
+        created_at: 1530296738
+        updated_at: 1530296738
+    updated:
+      x-scalar-ignore: true
+      type: integer
+      format: unix timestamp
+      description: The date time when the referenced ID was last updated.
+      example: 1552341937
+      readOnly: true
+    deduplicate_id:
+      x-scalar-ignore: true
+      type: string
+      readOnly: true
+      description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Automations, Deliveries, Exports, Identities, One-time sends, Segments, and Templates), and the timestamp is the last time the object was updated.
+      example: 15:1492548073
+    end:
+      x-scalar-ignore: true
+      description: The unix timestamp representing the end of the export.
+      type: integer
+      format: unix timestamp
+      example: 1517702400
+    segmentAudienceFilter:
+      x-scalar-ignore: true
+      title: segment
+      type: object
+      description: Provide the `id` of a segment containing people you want to search for.
+      properties:
+        id:
+          type: integer
+          description: The ID of the segment you want to return people from.
+          example: 4
+        inverse:
+          type: boolean
+          default: false
+          description: Set to `true` to match people who *aren't* in the segment.
+    export_downloads:
+      x-scalar-ignore: true
+      type: integer
+      description: Counts the total number of times the export has been downloaded.
+      example: 2
+    complexAudienceFilter:
+      x-scalar-ignore: true
+      title: People Filter
+      type: object
+      description: Filter people with `and`, `or`, and `not` groups made from `segment` and `attribute` conditions.
+      properties:
+        and:
+          type: array
+          description: Returns results matching *all* conditions.
+          items:
+            $ref: '#/components/schemas/simpleAudienceFilter'
+        or:
+          type: array
+          description: Returns results matching *any* conditions.
+          items:
+            $ref: '#/components/schemas/simpleAudienceFilter'
+        not:
+          description: Returns people who don't match conditions. `not` takes a single object, not an array. That object can be one condition, or an `and` or `or` group when you want to exclude people who match a combination of conditions.
+          oneOf:
+          - title: and
+            type: object
+            properties:
+              and:
+                type: array
+                description: Match *all* conditions to return results.
+                items:
+                  $ref: '#/components/schemas/simpleAudienceFilter'
+          - title: or
+            type: object
+            properties:
+              or:
+                type: array
+                description: Match *any* condition to return results.
+                items:
+                  $ref: '#/components/schemas/simpleAudienceFilter'
+          - title: segment
+            type: object
+            properties:
+              segment:
+                $ref: '#/components/schemas/segmentAudienceFilter'
+          - title: attribute
+            type: object
+            properties:
+              attribute:
+                $ref: '#/components/schemas/attributeAudienceFilter'
+        segment:
+          $ref: '#/components/schemas/segmentAudienceFilter'
+        attribute:
+          $ref: '#/components/schemas/attributeAudienceFilter'
+    attributeAudienceFilter:
+      x-scalar-ignore: true
+      title: attribute
+      description: Filter your audience by attribute.
+      type: object
+      required:
+      - field
+      - operator
+      properties:
+        field:
+          type: string
+          description: The name of the attribute you want to filter against.
+          example: first_name
+        operator:
+          type: string
+          description: Determine how to evaluate criteria against the field—`exists` returns results if a person in the audience has the attribute; `eq` returns results if the audience has the attribute and the attribute has the `value` you specify.
+          enum:
+          - eq
+          - exists
+        value:
+          type: string
+          description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
+        inverse:
+          type: boolean
+          default: false
+          description: Set to `true` to match people who *don't* meet the condition.
+      example:
+        field: unsubscribed
+        operator: eq
+        value: true
+    simpleAudienceFilter:
+      x-scalar-ignore: true
+      anyOf:
+      - title: segment
+        description: Filter for people who belong to a segment.
+        type: object
+        properties:
+          segment:
+            $ref: '#/components/schemas/segmentAudienceFilter'
+      - title: audience
+        type: object
+        description: filter for people who have an attribute or an attribute value.
+        properties:
+          attribute:
+            $ref: '#/components/schemas/attributeAudienceFilter'
+    export_description:
+      x-scalar-ignore: true
+      type: string
+      description: A description of the export.
+      example: Customers with segment filters—in Purchased Flowers
+    export_failed:
+      x-scalar-ignore: true
+      type: boolean
+      description: If true, the export was unsuccessful.
+      example: false
+    andAudienceFilter:
+      x-scalar-ignore: true
+      title: and
+      type: object
+      properties:
+        and:
+          type: array
+          description: Match *all* conditions to return results.
+          items:
+            type: object
+            properties:
+              or:
+                type: array
+                description: Returns results matching *any* conditions.
+                items:
+                  $ref: '#/components/schemas/simpleAudienceFilter'
+              not:
+                description: Returns people who don't match the condition inside it. `not` takes a single object, not an array. That object can be one condition, or an `and` or `or` group when you want to exclude people who match a combination of conditions.
+                oneOf:
+                - title: and
+                  type: object
+                  properties:
+                    and:
+                      type: array
+                      description: Match *all* conditions to return results.
+                      items:
+                        $ref: '#/components/schemas/simpleAudienceFilter'
+                - title: or
+                  type: object
+                  properties:
+                    or:
+                      type: array
+                      description: Match *any* condition to return results.
+                      items:
+                        $ref: '#/components/schemas/simpleAudienceFilter'
+                - title: segment
+                  type: object
+                  properties:
+                    segment:
+                      $ref: '#/components/schemas/segmentAudienceFilter'
+                - title: attribute
+                  type: object
+                  properties:
+                    attribute:
+                      $ref: '#/components/schemas/attributeAudienceFilter'
+              segment:
+                $ref: '#/components/schemas/segmentAudienceFilter'
+              attribute:
+                $ref: '#/components/schemas/attributeAudienceFilter'
+    orAudienceFilter:
+      x-scalar-ignore: true
+      title: or
+      type: object
+      properties:
+        or:
+          type: array
+          description: Match *any* condition to return results.
+          items:
+            type: object
+            properties:
+              and:
+                type: array
+                description: Returns results matching *all* conditions.
+                items:
+                  $ref: '#/components/schemas/simpleAudienceFilter'
+              not:
+                description: Returns people who don't match the condition inside it. `not` takes a single object, not an array. That object can be one condition, or an `and` or `or` group when you want to exclude people who match a combination of conditions.
+                oneOf:
+                - title: and
+                  type: object
+                  properties:
+                    and:
+                      type: array
+                      description: Match *all* conditions to return results.
+                      items:
+                        $ref: '#/components/schemas/simpleAudienceFilter'
+                - title: or
+                  type: object
+                  properties:
+                    or:
+                      type: array
+                      description: Match *any* condition to return results.
+                      items:
+                        $ref: '#/components/schemas/simpleAudienceFilter'
+                - title: segment
+                  type: object
+                  properties:
+                    segment:
+                      $ref: '#/components/schemas/segmentAudienceFilter'
+                - title: attribute
+                  type: object
+                  properties:
+                    attribute:
+                      $ref: '#/components/schemas/attributeAudienceFilter'
+              segment:
+                $ref: '#/components/schemas/segmentAudienceFilter'
+              attribute:
+                $ref: '#/components/schemas/attributeAudienceFilter'
+    drafts:
+      x-scalar-ignore: true
+      description: If true, your request returns both drafts and active/sent messages.
+      type: boolean
+    exportSharedProps:
+      x-scalar-ignore: true
+      description: Contains properties shared by export filters.
+      type: object
+      properties:
+        start:
+          $ref: '#/components/schemas/start'
+        end:
+          $ref: '#/components/schemas/end'
+        attributes:
+          description: Recipient attributes you want to include as extra columns in your export. You can't include event or trigger properties.
+          type: array
+          items:
+            type: string
+        metric:
+          $ref: '#/components/schemas/metric'
+        drafts:
+          $ref: '#/components/schemas/drafts'
+        template_id:
+          type: integer
+          description: Restrict the export to a specific message template (content) within the selected automation, one-time send, or transactional message.
+    export_type:
+      x-scalar-ignore: true
+      type: string
+      description: The type of information contained in the export.
+      enum:
+      - customers
+      - deliveries
+      example: customers
+    created:
+      x-scalar-ignore: true
+      type: integer
+      format: unix timestamp
+      description: The date time when the referenced ID was created.
+      example: 1552341937
+      readOnly: true
+  headers:
+    Retry-After:
+      description: How many seconds you must wait before you send another request. This header is present when you are rate limited by a per-second limit. If you hit a daily quota, this header is not set.
+      schema:
+        type: integer
+        minimum: 1
+        example: 1
+  responses:
+    '429':
+      description: Your request is over the 10-per-second limit. `Retry-After` tells you how many seconds you must wait before you send the next request.
+      headers:
+        Retry-After:
+          $ref: '#/components/headers/Retry-After'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/appApiError'
+          example:
+            errors:
+            - detail: rate limited to 10 requests per 1s (reference a1b2c3)
+              status: '429'
+  parameters:
+    export_id:
+      name: export_id
+      in: path
+      required: true
+      description: The export_id you want to access.
+      schema:
+        type: integer
   securitySchemes:
+    Tracking-API-Key:
+      type: http
+      scheme: basic
+      description: 'The Track API uses a basic authentication scheme. Your credentials are your **Site ID** and your **API key**, **Base-64 encoded** in the format `site_id:api_key`.
+
+
+        You can find your Site ID and API key on the [Track API Keys page](https://fly.customer.io/settings/api_credentials).
+
+        '
     Bearer-Auth:
       type: http
       scheme: bearer
@@ -2216,7 +763,7 @@ components:
       type: http
       scheme: bearer
       bearerFormat: sa_live_
-      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
+      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/whatsapp`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
 
 
         Service-account tokens are intended for testing and one-off sends—for example, using the Customer.io CLI with an AI agent like Claude to verify that a transactional message renders correctly before wiring it into your production backend. **For the production integration that triggers the message from your application, use an App API Key instead**: it''s workspace-scoped, easier to rotate, and has a smaller blast radius.
@@ -2228,4 +775,62 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
-      description: API key passed as a Bearer token
+      description: API key passed as a Bearer token.
+x-tagGroups:
+- name: Track API v2
+  tags:
+  - track_v2
+  - Object Schemas
+  - Person Schemas
+  - Deliveries
+- name: Track API
+  tags:
+  - trackOverview
+  - trackJsOrBackend
+  - trackLimit
+  - trackRegion
+  - Track Customers
+  - Track Events
+  - Forms
+  - Track Segments
+  - Track v1 Overview
+- name: App API
+  tags:
+  - appOverview
+  - appLimit
+  - appAuth
+  - Activities
+  - Automations
+  - Broadcasts
+  - Collections
+  - Customers
+  - Data Index
+  - ESP Suppression
+  - Exports
+  - Imports
+  - Info
+  - Live Notifications
+  - Messages
+  - Newsletters
+  - Opt-outs
+  - Reporting Webhooks
+  - Segments
+  - Sender Identities
+  - Snippets
+  - Subscription Center
+  - Transactional
+  - Workspaces
+  - Send Messages
+  - Objects
+  - Newsletter Variants
+  - Newsletter Metrics
+  - Assets
+- name: Design Studio API
+  tags:
+  - Folders
+  - Components
+  - Emails
+  - Email link and publish
+  - Email testing
+  - SMS
+  - SMS link and publish

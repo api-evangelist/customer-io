@@ -1,20 +1,30 @@
 openapi: 3.2.0
 info:
   version: 1.0.0
-  title: Customer.io App Opt Outs API
-  description: Our App API provides ways to trigger messages and retrieve information about people, campaigns, broadcasts, and more.
+  title: Customer.io Journeys API Reference Opt Outs API
+  description: Customer.io provides REST APIs to send real-time customer data, retrieve data from your account, and trigger messages.
 servers:
+- url: https://track.customer.io
+  description: The base URL for the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+- url: https://track-eu.customer.io
+  description: The base URL for the Track API (EU region). Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
 - url: https://api.customer.io
   description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
 - url: https://api-eu.customer.io
   description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
 tags:
 - name: Opt Outs
+  description: 'Programmatically manage SMS and WhatsApp opt-outs. A person opts out of a specific sender on a specific channel—for example, they can opt out of SMS from one sender number while continuing to receive messages from another. Use these endpoints to list opt-outs across your workspace or for a single person, and to opt people out of, or back in to, specific senders.
+
+
+    Opt-outs are distinct from subscription preferences, which govern the separate subscription-center/unsubscribe feature.'
 paths:
   /v1/optouts:
     servers:
     - url: https://api.customer.io
-      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
     parameters:
     - name: from
       in: query
@@ -30,14 +40,7 @@ paths:
       schema:
         type: string
         example: MTox
-    - name: limit
-      in: query
-      required: false
-      description: The maximum number of results you want to retrieve per page.
-      schema:
-        type: integer
-        default: 100
-        maximum: 1000
+    - $ref: '#/components/parameters/limit-100-1000'
     get:
       tags:
       - Opt Outs
@@ -74,28 +77,9 @@ paths:
                           description: The person's ID.
                           example: abc123
                         cio_id:
-                          x-scalar-ignore: true
-                          type: string
-                          description: A unique identifier set by Customer.io, used to reference a person if you want to update their identifiers.
-                          example: a3000001
+                          $ref: '#/components/schemas/cio_id'
                         optouts:
-                          x-scalar-ignore: true
-                          type: array
-                          description: The senders and channels that the person is opted out of. An entry's presence means the person is opted out of that sender on that channel.
-                          items:
-                            type: object
-                            properties:
-                              channel:
-                                type: string
-                                description: The channel that the person is opted out of.
-                                enum:
-                                - sms
-                                - whatsapp
-                                example: sms
-                              from:
-                                type: string
-                                description: The sender that the person is opted out of. For SMS, this is a sender phone number (E.164), an alphanumeric sender ID, or a messaging-service SID; for WhatsApp, it's the sender phone number.
-                                example: '+15551234567'
+                          $ref: '#/components/schemas/optoutChannels'
                   next:
                     type: string
                     description: The `start` value for the next page of results. Absent or empty when there are no more results.
@@ -110,79 +94,18 @@ paths:
                     from: '+15559876543'
                 next: MTox
         '401':
-          description: Unauthorized request. Make sure that you provided the right credentials.
+          $ref: '#/components/responses/401'
         '429':
-          description: Your request is over the 10-per-second limit.
-      x-codeSamples:
-      - lang: Shell + Curl
-        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/optouts"
-      - lang: Node + Native
-        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/optouts\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
-      - lang: Ruby + Native
-        source: 'require ''uri''
-
-          require ''net/http''
-
-          require ''openssl''
-
-
-          url = URI("https://api.customer.io/v1/optouts")
-
-
-          http = Net::HTTP.new(url.host, url.port)
-
-          http.use_ssl = true
-
-          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-
-          request = Net::HTTP::Get.new(url)
-
-
-          response = http.request(request)
-
-          puts response.read_body'
-      - lang: Python + Python3
-        source: 'import http.client
-
-
-          conn = http.client.HTTPSConnection("api.customer.io")
-
-
-          conn.request("GET", "/v1/optouts")
-
-
-          res = conn.getresponse()
-
-          data = res.read()
-
-
-          print(data.decode("utf-8"))'
-      - lang: Go + Native
-        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/optouts\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+          $ref: '#/components/responses/429'
   /v1/customers/{customer_id}/optouts:
     servers:
     - url: https://api.customer.io
-      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
     parameters:
-    - name: customer_id
-      required: true
-      in: path
-      description: The ID of the customer you want to perform an operation against.
-      schema:
-        type: string
-        example: 12345
-    - name: id_type
-      required: false
-      in: query
-      description: The type of `customer_id` you want to use to reference a person. If you don't provide this parameter, we assume that the `customer_id` in your request is a person's `id`. You can use `email` and `phone` only if they're enabled as identifiers in your [workspace settings](/accounts/workspaces/overview/#migrate-workspace); otherwise the request returns `400`. Reference `phone` values in [E.164 format](https://en.wikipedia.org/wiki/E.164), like `+14155552671`, and URL-encode the leading `+` as `%2B`.
-      schema:
-        type: string
-        enum:
-        - id
-        - email
-        - phone
-        - cio_id
+    - $ref: '#/components/parameters/customer_id'
+    - $ref: '#/components/parameters/id_type'
     get:
       tags:
       - Opt Outs
@@ -203,23 +126,7 @@ paths:
                 type: object
                 properties:
                   optouts:
-                    x-scalar-ignore: true
-                    type: array
-                    description: The senders and channels that the person is opted out of. An entry's presence means the person is opted out of that sender on that channel.
-                    items:
-                      type: object
-                      properties:
-                        channel:
-                          type: string
-                          description: The channel that the person is opted out of.
-                          enum:
-                          - sms
-                          - whatsapp
-                          example: sms
-                        from:
-                          type: string
-                          description: The sender that the person is opted out of. For SMS, this is a sender phone number (E.164), an alphanumeric sender ID, or a messaging-service SID; for WhatsApp, it's the sender phone number.
-                          example: '+15551234567'
+                    $ref: '#/components/schemas/optoutChannels'
               example:
                 optouts:
                 - channel: sms
@@ -229,54 +136,7 @@ paths:
         '404':
           description: The `customer_id` does not exist.
         '429':
-          description: Your request is over the 10-per-second limit.
-      x-codeSamples:
-      - lang: Shell + Curl
-        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/customers/{customer_id}/optouts"
-      - lang: Node + Native
-        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/customers/%7Bcustomer_id%7D/optouts\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
-      - lang: Ruby + Native
-        source: 'require ''uri''
-
-          require ''net/http''
-
-          require ''openssl''
-
-
-          url = URI("https://api.customer.io/v1/customers/%7Bcustomer_id%7D/optouts")
-
-
-          http = Net::HTTP.new(url.host, url.port)
-
-          http.use_ssl = true
-
-          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-
-          request = Net::HTTP::Get.new(url)
-
-
-          response = http.request(request)
-
-          puts response.read_body'
-      - lang: Python + Python3
-        source: 'import http.client
-
-
-          conn = http.client.HTTPSConnection("api.customer.io")
-
-
-          conn.request("GET", "/v1/customers/%7Bcustomer_id%7D/optouts")
-
-
-          res = conn.getresponse()
-
-          data = res.read()
-
-
-          print(data.decode("utf-8"))'
-      - lang: Go + Native
-        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/customers/%7Bcustomer_id%7D/optouts\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+          $ref: '#/components/responses/429'
     put:
       tags:
       - Opt Outs
@@ -290,7 +150,10 @@ paths:
         Set `optout` to `true` to opt the person out of a sender, or `false` to opt them back in. The `channel` field is optional and defaults to `sms`.
 
 
-        This request is processed asynchronously; it may take a moment for changes to reflect in read requests.'
+        This request is processed asynchronously; it may take a moment for changes to reflect in read requests.
+
+
+        Customer.io also writes a consent record for each entry, with the collection point `api`.'
       requestBody:
         content:
           application/json:
@@ -337,69 +200,135 @@ paths:
         '404':
           description: The `customer_id` does not exist.
         '429':
-          description: Your request is over the 10-per-second limit.
-      x-codeSamples:
-      - lang: json
-        label: JSON
-        source: "{\n  \"optouts\": [\n    {\n      \"from\": \"+15551234567\",\n      \"optout\": true,\n      \"channel\": \"sms\"\n    }\n  ]\n}"
-      - lang: Shell + Curl
-        source: "curl --request PUT \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url https://api.customer.io/v1/customers/{customer_id}/optouts \\\n  --header 'content-type: application/json' \\\n  --data '{\"optouts\":[{\"from\":\"+15551234567\",\"optout\":true,\"channel\":\"sms\"}]}'"
-      - lang: Node + Native
-        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"PUT\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/customers/%7Bcustomer_id%7D/optouts\",\n  \"headers\": {\n    \"content-type\": \"application/json\"\n  }\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.write(JSON.stringify({optouts: [{from: '+15551234567', optout: true, channel: 'sms'}]}));\nreq.end();"
-      - lang: Ruby + Native
-        source: 'require ''uri''
-
-          require ''net/http''
-
-          require ''openssl''
-
-
-          url = URI("https://api.customer.io/v1/customers/%7Bcustomer_id%7D/optouts")
-
-
-          http = Net::HTTP.new(url.host, url.port)
-
-          http.use_ssl = true
-
-          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-
-          request = Net::HTTP::Put.new(url)
-
-          request["content-type"] = ''application/json''
-
-          request.body = "{\"optouts\":[{\"from\":\"+15551234567\",\"optout\":true,\"channel\":\"sms\"}]}"
-
-
-          response = http.request(request)
-
-          puts response.read_body'
-      - lang: Python + Python3
-        source: 'import http.client
-
-
-          conn = http.client.HTTPSConnection("api.customer.io")
-
-
-          payload = "{\"optouts\":[{\"from\":\"+15551234567\",\"optout\":true,\"channel\":\"sms\"}]}"
-
-
-          headers = { ''content-type'': "application/json" }
-
-
-          conn.request("PUT", "/v1/customers/%7Bcustomer_id%7D/optouts", payload, headers)
-
-
-          res = conn.getresponse()
-
-          data = res.read()
-
-
-          print(data.decode("utf-8"))'
-      - lang: Go + Native
-        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/customers/%7Bcustomer_id%7D/optouts\"\n\n\tpayload := strings.NewReader(\"{\\\"optouts\\\":[{\\\"from\\\":\\\"+15551234567\\\",\\\"optout\\\":true,\\\"channel\\\":\\\"sms\\\"}]}\")\n\n\treq, _ := http.NewRequest(\"PUT\", url, payload)\n\n\treq.Header.Add(\"content-type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+          $ref: '#/components/responses/429'
 components:
+  schemas:
+    appApiError:
+      x-scalar-ignore: true
+      type: object
+      description: An array/list of failures where each entry is a separate failure reason.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: One entry for each reason the request failed.
+          items:
+            type: object
+            required:
+            - detail
+            - status
+            properties:
+              detail:
+                type: string
+                description: What went wrong, in plain text. Most messages end with a support reference you can use if you need to contact support.
+                example: bad request (reference a1b2c3)
+              status:
+                type: string
+                description: The HTTP status code as a string.
+                example: '400'
+              code:
+                type: string
+                description: A stable identifier for the failure, on the errors that carry one. Use this rather than the text in `detail` if you need to identify the error programmatically.
+                example: invalid_credentials
+              source:
+                type: object
+                description: The part of the request that the error refers to.
+                properties:
+                  pointer:
+                    type: string
+                    description: A JSON pointer to the part of the request body that the error refers to.
+                    example: /data/attributes/email
+              meta:
+                type: object
+                additionalProperties: true
+                description: Extra context (if available).
+    cio_id:
+      x-scalar-ignore: true
+      type: string
+      description: A unique identifier set by Customer.io, used to reference a person if you want to update their identifiers.
+      example: a3000001
+    optoutChannels:
+      x-scalar-ignore: true
+      type: array
+      description: The senders and channels that the person is opted out of. An entry's presence means the person is opted out of that sender on that channel.
+      items:
+        type: object
+        properties:
+          channel:
+            type: string
+            description: The channel that the person is opted out of.
+            enum:
+            - sms
+            - whatsapp
+            example: sms
+          from:
+            type: string
+            description: The sender that the person is opted out of. For SMS, this is a sender phone number (E.164), an alphanumeric sender ID, or a messaging-service SID; for WhatsApp, it's the sender phone number.
+            example: '+15551234567'
+  headers:
+    Retry-After:
+      description: How many seconds you must wait before you send another request. This header is present when you are rate limited by a per-second limit. If you hit a daily quota, this header is not set.
+      schema:
+        type: integer
+        minimum: 1
+        example: 1
+  parameters:
+    limit-100-1000:
+      name: limit
+      in: query
+      required: false
+      description: The maximum number of results you want to retrieve per page.
+      schema:
+        type: integer
+        default: 100
+        maximum: 1000
+    id_type:
+      name: id_type
+      required: false
+      in: query
+      description: The type of `customer_id` you want to use to reference a person. If you don't provide this parameter, we assume that the `customer_id` in your request is a person's `id`. You can use `email` and `phone` only if they're enabled as identifiers in your [workspace settings](/accounts/workspaces/overview/#migrate-workspace); otherwise the request returns `400`. Reference `phone` values in [E.164 format](https://en.wikipedia.org/wiki/E.164), like `+14155552671`, and URL-encode the leading `+` as `%2B`.
+      schema:
+        type: string
+        enum:
+        - id
+        - email
+        - phone
+        - cio_id
+    customer_id:
+      name: customer_id
+      required: true
+      in: path
+      description: The ID of the customer you want to perform an operation against.
+      schema:
+        type: string
+        example: 12345
+  responses:
+    '429':
+      description: Your request is over the 10-per-second limit. `Retry-After` tells you how many seconds you must wait before you send the next request.
+      headers:
+        Retry-After:
+          $ref: '#/components/headers/Retry-After'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/appApiError'
+          example:
+            errors:
+            - detail: rate limited to 10 requests per 1s (reference a1b2c3)
+              status: '429'
+    '401':
+      description: Unauthorized request. Make sure that you provided the right credentials.
   securitySchemes:
+    Tracking-API-Key:
+      type: http
+      scheme: basic
+      description: 'The Track API uses a basic authentication scheme. Your credentials are your **Site ID** and your **API key**, **Base-64 encoded** in the format `site_id:api_key`.
+
+
+        You can find your Site ID and API key on the [Track API Keys page](https://fly.customer.io/settings/api_credentials).
+
+        '
     Bearer-Auth:
       type: http
       scheme: bearer
@@ -414,7 +343,7 @@ components:
       type: http
       scheme: bearer
       bearerFormat: sa_live_
-      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
+      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/whatsapp`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
 
 
         Service-account tokens are intended for testing and one-off sends—for example, using the Customer.io CLI with an AI agent like Claude to verify that a transactional message renders correctly before wiring it into your production backend. **For the production integration that triggers the message from your application, use an App API Key instead**: it''s workspace-scoped, easier to rotate, and has a smaller blast radius.
@@ -426,4 +355,62 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
-      description: API key passed as a Bearer token
+      description: API key passed as a Bearer token.
+x-tagGroups:
+- name: Track API v2
+  tags:
+  - track_v2
+  - Object Schemas
+  - Person Schemas
+  - Deliveries
+- name: Track API
+  tags:
+  - trackOverview
+  - trackJsOrBackend
+  - trackLimit
+  - trackRegion
+  - Track Customers
+  - Track Events
+  - Forms
+  - Track Segments
+  - Track v1 Overview
+- name: App API
+  tags:
+  - appOverview
+  - appLimit
+  - appAuth
+  - Activities
+  - Automations
+  - Broadcasts
+  - Collections
+  - Customers
+  - Data Index
+  - ESP Suppression
+  - Exports
+  - Imports
+  - Info
+  - Live Notifications
+  - Messages
+  - Newsletters
+  - Opt-outs
+  - Reporting Webhooks
+  - Segments
+  - Sender Identities
+  - Snippets
+  - Subscription Center
+  - Transactional
+  - Workspaces
+  - Send Messages
+  - Objects
+  - Newsletter Variants
+  - Newsletter Metrics
+  - Assets
+- name: Design Studio API
+  tags:
+  - Folders
+  - Components
+  - Emails
+  - Email link and publish
+  - Email testing
+  - SMS
+  - SMS link and publish

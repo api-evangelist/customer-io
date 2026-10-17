@@ -1,0 +1,2611 @@
+openapi: 3.2.0
+info:
+  version: 1.0.0
+  title: Customer.io Journeys API Reference Automations API
+  description: Customer.io provides REST APIs to send real-time customer data, retrieve data from your account, and trigger messages.
+servers:
+- url: https://track.customer.io
+  description: The base URL for the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+- url: https://track-eu.customer.io
+  description: The base URL for the Track API (EU region). Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+- url: https://api.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+- url: https://api-eu.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+tags:
+- name: Automations
+  x-displayName: Automations/Campaigns
+  description: An automation, sometimes referred to as a campaign, is a workflow that people in your audience trigger and traverse.
+paths:
+  /v1/campaigns:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    get:
+      summary: List automations
+      operationId: listCampaigns
+      security:
+      - Bearer-Auth: []
+      description: Returns a list of your automations and associated metadata.
+      tags:
+      - Automations
+      responses:
+        '200':
+          description: Returns an array of automation objects.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  campaigns:
+                    type: array
+                    description: Each object is an automation in your workspace with one of seven types of automation triggers.
+                    items:
+                      $ref: '#/components/schemas/campaignObject'
+        '429':
+          $ref: '#/components/responses/429'
+  /v1/campaigns/{campaign_id}:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - $ref: '#/components/parameters/campaign_id'
+    get:
+      summary: Get an automation
+      operationId: getCampaigns
+      security:
+      - Bearer-Auth: []
+      description: Returns metadata for an individual automation.
+      tags:
+      - Automations
+      responses:
+        '200':
+          description: Returns metadata for the automation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  campaign:
+                    description: An automation in your workspace with one of seven types of automation triggers.
+                    $ref: '#/components/schemas/campaignObject'
+        '400':
+          $ref: '#/components/responses/400-campaigns'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+  /v1/campaigns/{campaign_id}/metrics:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - $ref: '#/components/parameters/campaign_id'
+    - name: version
+      in: query
+      required: false
+      description: 'Send `2`. We recommend version 2: it takes an explicit window (`start`, `end`, and `res`) in the time zone you pass as `tz`.
+
+
+        Any other value, including leaving the parameter off, uses version 1: a window derived from `period` and `steps`, always in Eastern time.
+
+        '
+      example: '2'
+      schema:
+        type: string
+        enum:
+        - '1'
+        - '2'
+    - name: res
+      in: query
+      required: false
+      description: '**Version 2.** Required when you send `version=2`. Sets the increment for each point in the series—hourly, daily, weekly, or monthly.'
+      example: days
+      schema:
+        type: string
+        enum:
+        - hours
+        - hourly
+        - days
+        - daily
+        - weeks
+        - weekly
+        - months
+        - monthly
+    - name: start
+      in: query
+      required: false
+      description: '**Version 2.** Required when you send `version=2`. The unix timestamp for the beginning of your metrics.'
+      example: 1735718400
+      schema:
+        type: integer
+        format: unix timestamp
+    - name: end
+      in: query
+      required: false
+      description: '**Version 2.** Required when you send `version=2`. The unix timestamp for the end of your metrics. Limited to 10 years from the `start` parameter.'
+      example: 1735804800
+      schema:
+        type: integer
+        format: unix timestamp
+    - name: tz
+      in: query
+      required: false
+      description: '**Version 2.** The time zone for the window you request. Defaults to UTC. Use the [region format](/messaging/send/timezones/example-timezones/#region-format).'
+      examples:
+        default:
+          value: America/New_York
+          x-disabled: true
+      schema:
+        type: string
+    - name: period
+      in: query
+      required: false
+      deprecated: true
+      description: '**Version 1.** The unit of time for your report. Send `version=2` and set `res` instead.'
+      examples:
+        default:
+          value: days
+          x-disabled: true
+      schema:
+        type: string
+        default: days
+        enum:
+        - hours
+        - days
+        - weeks
+        - months
+    - name: steps
+      in: query
+      required: false
+      deprecated: true
+      description: '**Version 1.** The number of periods you want to return. Defaults to the maximum available, or `12` if the period is in `months`. Maximums are 24 hours, 45 days, 12 weeks, or 121 months. Days start at 00:00 EST, weeks at 00:00 EST on Sunday, months at 00:00 EST on the 1st. Send `version=2` and set `start` and `end` instead.'
+      examples:
+        default:
+          value: 45
+          x-disabled: true
+      schema:
+        type: integer
+    - $ref: '#/components/parameters/metricType'
+    get:
+      summary: Get automation metrics
+      operationId: campaignMetrics
+      security:
+      - Bearer-Auth: []
+      description: 'Returns metrics for an individual automation as a series of counts, oldest first—the 0-index of any result is the oldest point in the window.
+
+
+        **We recommend version 2. Send `version=2`.** It accepts an explicit `start`, `end`, and `res`, reported in the `tz` you choose. Without it, the endpoint answers with version 1 behavior instead: a window built from `period` and `steps`, always in Eastern time.
+
+
+        Version 1 can''t return fewer than 2 steps of any period. `?period=days&steps=1` means two days—the 48 hours before the request—and `?period=days&steps=0` returns the maximum for the period, the same as `?period=days&steps=45`.'
+      tags:
+      - Automations
+      x-codeSamples:
+      - label: cURL
+        lang: shell
+        source: "curl --request GET \\\n  --url \"https://api.customer.io/v1/campaigns/{campaign_id}/metrics?start=1735718400&end=1735804800&res=days&version=2\"\n"
+      - label: Node.js (SDK)
+        lang: javascript
+        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/campaigns/{campaign_id}/metrics?start=1735718400&end=1735804800&res=days&version=2\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();\n"
+      - label: Ruby (SDK)
+        lang: ruby
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI("https://api.customer.io/v1/campaigns/{campaign_id}/metrics?start=1735718400&end=1735804800&res=days&version=2")
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+
+          response = http.request(request)
+
+          puts response.read_body
+
+          '
+      - label: Python (SDK)
+        lang: python
+        source: 'import http.client
+
+
+          conn = http.client.HTTPSConnection("api.customer.io")
+
+
+          conn.request("GET", "/v1/campaigns/{campaign_id}/metrics?start=1735718400&end=1735804800&res=days&version=2")
+
+
+          res = conn.getresponse()
+
+          data = res.read()
+
+
+          print(data.decode("utf-8"))
+
+          '
+      - label: Go (SDK)
+        lang: go
+        source: "package main\n\nimport (\n  \"fmt\"\n  \"net/http\"\n  \"io/ioutil\"\n)\n\nfunc main() {\n\n  url := \"https://api.customer.io/v1/campaigns/{campaign_id}/metrics?start=1735718400&end=1735804800&res=days&version=2\"\n\n  req, _ := http.NewRequest(\"GET\", url, nil)\n\n  res, _ := http.DefaultClient.Do(req)\n\n  defer res.Body.Close()\n  body, _ := ioutil.ReadAll(res.Body)\n\n  fmt.Println(res)\n  fmt.Println(string(body))\n\n}\n"
+      responses:
+        '200':
+          description: Returns automation metrics by `series` based on the parameters of the request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  start:
+                    type: string
+                    format: ISO 8601
+                    description: The start period set in the request, in ISO 8601 format.
+                    example: 2025-01-01 00:00:00 +0000 UTC
+                  end:
+                    type: string
+                    format: ISO 8601
+                    description: The end period set in the request, in ISO 8601 format.
+                    example: 2025-01-02 00:00:00 +0000 UTC
+                  res:
+                    type: string
+                    description: The resolution for metrics set in the request.
+                    enum:
+                    - hours
+                    - hourly
+                    - days
+                    - daily
+                    - weeks
+                    - weekly
+                    - months
+                    - monthly
+                    example: days
+                  metric:
+                    type: object
+                    properties:
+                      series:
+                        $ref: '#/components/schemas/periodMessageMetrics'
+        '400':
+          $ref: '#/components/responses/400-campaigns'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+  /v1/campaigns/{campaign_id}/metrics/links:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - $ref: '#/components/parameters/campaign_id'
+    - $ref: '#/components/parameters/period'
+    - $ref: '#/components/parameters/steps'
+    - $ref: '#/components/parameters/unique'
+    get:
+      summary: Get automation link metrics
+      operationId: campaignLinkMetrics
+      security:
+      - Bearer-Auth: []
+      description: 'Returns metrics for link clicks within an automation, both in total and in `series` periods (days, weeks, etc). `series` metrics are ordered oldest to newest (i.e. the 0-index for any result is the oldest step/period).
+
+
+        You cannot request fewer than 2 steps of any period (2 hours, 2 days, 2 weeks, or 2 months). For instance, `?period=days&steps=1` means two days - the 48 hours before the API request was made. `?period=days&steps=0` returns the same as the maximum of the period - `?period=days&steps=45`. See the `steps` parameter below for the maximum count of each period.'
+      tags:
+      - Automations
+      responses:
+        '200':
+          description: Returns an array of link objects. Each object represents a different link in your automation and contains independent metrics.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/linkMetrics'
+        '400':
+          $ref: '#/components/responses/400-campaigns'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+  /v1/campaigns/{campaign_id}/actions:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - $ref: '#/components/parameters/campaign_id'
+    - $ref: '#/components/parameters/start'
+    get:
+      summary: List automation actions
+      operationId: listCampaignActions
+      security:
+      - Bearer-Auth: []
+      description: 'Returns the operations in an automation workflow. Each object in the response represents an action or ''tile'' in the automation builder.
+
+
+        This endpoint returns up to 10 `actions` at a time. If there is another page of results, the response will include a `next` string. Pass this string as the `start` parameter to get the next page of results.
+
+
+        You get the actions that have content, like messages, attribute updates, and events—not delays or flow control blocks like t/f branches.
+
+
+        If a message block contains multiple languages, this endpoint returns an object for each language variant. Each language variant includes the `multi_language_branch_action_id` property with the same value. Use this id to retrieve metrics for each language variant in a single request through Get automation action metrics.'
+      tags:
+      - Automations
+      responses:
+        '200':
+          description: Returns automation `actions`. Each object represents an individual action.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  actions:
+                    description: Each object in the array represents an action in your automation.
+                    type: array
+                    maxItems: 10
+                    items:
+                      $ref: '#/components/schemas/actionObject'
+                  next:
+                    $ref: '#/components/schemas/next'
+        '400':
+          $ref: '#/components/responses/400-campaigns'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+  /v1/campaigns/{campaign_id}/messages:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - $ref: '#/components/parameters/campaign_id'
+    - $ref: '#/components/parameters/start'
+    - $ref: '#/components/parameters/limit-50-1000'
+    - $ref: '#/components/parameters/metricType'
+    - $ref: '#/components/parameters/metric'
+    - $ref: '#/components/parameters/drafts'
+    - $ref: '#/components/parameters/start_ts'
+    - $ref: '#/components/parameters/end_ts'
+    - $ref: '#/components/parameters/get_tracked_responses'
+    get:
+      summary: Get automation message metadata
+      operationId: getCampaignMessages
+      security:
+      - Bearer-Auth: []
+      description: 'Returns information about the deliveries (instances of messages sent to individual people) sent from an automation. Provide query parameters to refine the metrics you want to return.
+
+        Use the `start_ts` and `end_ts` to find messages within a time range. If your request doesn''t include `start_ts` and `end_ts` parameters, we''ll return the most recent 6 months of messages. If your `start_ts` and `end_ts` range is more than 12 months, we''ll return 12 months of data from the most recent timestamp in your request. Timestamps reflect when deliveries were created in our system, not when they were actually sent to recipients. There may be a delay between creation and sending.'
+      tags:
+      - Automations
+      responses:
+        '200':
+          description: Returns an array of `messages`. Each object represents a different message in your automation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  messages:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/messageObject'
+              examples:
+                email:
+                  summary: An email message
+                  value:
+                    messages:
+                    - id: dgOq6QWq6QUDAAF22PaOyFVqVxHY3rI5fsg=
+                      deduplicate_id: dgOq6QWq6QUDAAF22PaOyFVqVxHY3rI5fsg=:1609957872
+                      msg_template_id: 0
+                      action_id: 196
+                      customer_id: 1a55d8d1-b13d-4f1f-858f-a93ef21e3a7d
+                      customer_identifiers:
+                        id: 1a55d8d1-b13d-4f1f-858f-a93ef21e3a7d
+                        email: person@example.com
+                        cio_id: 3000001
+                      recipient: person@email.com
+                      subject: Did you get that thing I sent you?
+                      metrics:
+                        delivered: 1609957872
+                        sent: 1609957832
+                      created: 1609957805
+                      failure_message: null
+                      newsletter_id: null
+                      content_id: null
+                      campaign_id: 89
+                      broadcast_id: null
+                      type: email
+                      forgotten: false
+                in-app:
+                  summary: An in-app message with tracked survey responses
+                  value:
+                    messages:
+                    - id: bX2r7YZq8RCAAB5_DGopeWY8nGlEcSGv8fl=
+                      deduplicate_id: bX2r7YZq8RCAAB5_DGopeWY8nGlEcSGv8fl=:1715769500
+                      msg_template_id: 87
+                      action_id: 312
+                      customer_id: user_2048
+                      customer_identifiers:
+                        id: user_2048
+                        cio_id: '04000001'
+                      recipient: user_2048
+                      subject: null
+                      metrics:
+                        opened: 1715769550
+                        sent: 1715769500
+                      created: 1715769500
+                      failure_message: null
+                      newsletter_id: null
+                      content_id: null
+                      campaign_id: 89
+                      broadcast_id: null
+                      type: in_app
+                      forgotten: false
+                      tracked_responses:
+                        how-satisfied:
+                          id: 1
+                          ts: 1715769560
+                        would-recommend:
+                          id: 2
+                          ts: 1715769565
+        '400':
+          $ref: '#/components/responses/400-campaigns'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+  /v1/campaigns/{campaign_id}/actions/{action_id}:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - $ref: '#/components/parameters/campaign_id'
+    - $ref: '#/components/parameters/action_id'
+    get:
+      summary: Get an automation action
+      operationId: getCampaignAction
+      security:
+      - Bearer-Auth: []
+      description: Returns information about a specific action in an automation.
+      tags:
+      - Automations
+      responses:
+        '200':
+          description: Returns the requested automation `action`.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  action:
+                    $ref: '#/components/schemas/actionObject'
+        '400':
+          $ref: '#/components/responses/400-campaigns-lang'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+    put:
+      summary: Update an automation action
+      operationId: updateCampaignAction
+      security:
+      - Bearer-Auth: []
+      description: 'Update the contents of an automation action, including the body of messages and HTTP requests.
+
+
+        **NOTE**: You can''t manage content made with Design Studio with this endpoint. Use the Design Studio APIs instead.'
+      tags:
+      - Automations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateActionObject'
+      responses:
+        '200':
+          description: Returns the updated automation `action`.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  action:
+                    $ref: '#/components/schemas/actionObject'
+        '400':
+          $ref: '#/components/responses/400-campaigns-lang'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+  /v1/campaigns/{campaign_id}/actions/{action_id}/language/{language}:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - $ref: '#/components/parameters/campaign_id'
+    - $ref: '#/components/parameters/action_id'
+    - $ref: '#/components/parameters/language-2'
+    get:
+      summary: Get a translation of an automation message
+      operationId: getCampaignActionTranslation
+      security:
+      - Bearer-Auth: []
+      description: Returns a translated version of a message in an automation. The message is identified by the `action_id`.
+      tags:
+      - Automations
+      responses:
+        '200':
+          description: Returns information for the requested automation `action` language variant.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  action:
+                    $ref: '#/components/schemas/actionObject'
+        '400':
+          $ref: '#/components/responses/400-campaigns-lang'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+    put:
+      summary: Update a translation of an automation message
+      operationId: updateCampaignActionTranslation
+      security:
+      - Bearer-Auth: []
+      description: 'Update the contents of a language variant of an automation action, including the body of the messages and HTTP requests.
+
+
+        **NOTE**: You can''t manage content made with Design Studio with this endpoint. Use the Design Studio APIs instead.'
+      tags:
+      - Automations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateActionObject'
+      responses:
+        '200':
+          description: Returns the updated automation action.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  action:
+                    $ref: '#/components/schemas/actionObject'
+        '400':
+          $ref: '#/components/responses/400-campaigns-lang'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+  /v1/campaigns/{campaign_id}/actions/{action_id}/metrics:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - $ref: '#/components/parameters/campaign_id'
+    - name: action_id
+      in: path
+      required: true
+      description: 'The action in the automation. If the action is a message with translations, you can pass the `id` of the action to get metrics for a specific language variant or pass the `multi_language_branch_action_id` to get metrics for each language variant and total metrics across the variants.
+
+        '
+      schema:
+        type: integer
+    - name: version
+      in: query
+      required: false
+      description: 'Send `2`. We recommend version 2: it takes an explicit window (`start`, `end`, and `res`) in the time zone you pass as `tz`.
+
+
+        Any other value, including leaving the parameter off, uses version 1: a window derived from `period` and `steps`, always in Eastern time.
+
+        '
+      example: '2'
+      schema:
+        type: string
+        enum:
+        - '1'
+        - '2'
+    - name: res
+      in: query
+      required: false
+      description: '**Version 2.** Required when you send `version=2`. Sets the increment for each point in the series—hourly, daily, weekly, or monthly.'
+      example: days
+      schema:
+        type: string
+        enum:
+        - hours
+        - hourly
+        - days
+        - daily
+        - weeks
+        - weekly
+        - months
+        - monthly
+    - name: start
+      in: query
+      required: false
+      description: '**Version 2.** Required when you send `version=2`. The unix timestamp for the beginning of your metrics.'
+      example: 1735718400
+      schema:
+        type: integer
+        format: unix timestamp
+    - name: end
+      in: query
+      required: false
+      description: '**Version 2.** Required when you send `version=2`. The unix timestamp for the end of your metrics. Limited to 10 years from the `start` parameter.'
+      example: 1735804800
+      schema:
+        type: integer
+        format: unix timestamp
+    - name: tz
+      in: query
+      required: false
+      description: '**Version 2.** The time zone for the window you request. Defaults to UTC. Use the [region format](/messaging/send/timezones/example-timezones/#region-format).'
+      examples:
+        default:
+          value: America/New_York
+          x-disabled: true
+      schema:
+        type: string
+    - name: period
+      in: query
+      required: false
+      deprecated: true
+      description: '**Version 1.** The unit of time for your report. Send `version=2` and set `res` instead.'
+      examples:
+        default:
+          value: days
+          x-disabled: true
+      schema:
+        type: string
+        default: days
+        enum:
+        - hours
+        - days
+        - weeks
+        - months
+    - name: steps
+      in: query
+      required: false
+      deprecated: true
+      description: '**Version 1.** The number of periods you want to return. Defaults to the maximum available, or `12` if the period is in `months`. Maximums are 24 hours, 45 days, 12 weeks, or 121 months. Days start at 00:00 EST, weeks at 00:00 EST on Sunday, months at 00:00 EST on the 1st. Send `version=2` and set `start` and `end` instead.'
+      examples:
+        default:
+          value: 45
+          x-disabled: true
+      schema:
+        type: integer
+    - $ref: '#/components/parameters/metricType'
+    get:
+      summary: Get automation action metrics
+      operationId: campaignActionMetrics
+      security:
+      - Bearer-Auth: []
+      description: 'Returns metrics for an individual action, both in total and as a series of counts, oldest first—the 0-index of any result is the oldest point in the window.
+
+
+        **We recommend version 2. Send `version=2`.** It accepts an explicit `start`, `end`, and `res`, reported in the `tz` you choose. Without it, the endpoint answers with version 1 behavior instead: a window built from `period` and `steps`, always in Eastern time.
+
+
+        Version 1 can''t return fewer than 2 steps of any period. `?period=days&steps=1` means two days—the 48 hours before the request—and `?period=days&steps=0` returns the maximum for the period, the same as `?period=days&steps=45`.
+
+
+        **Multi-language messages**
+
+
+        If the action is a multi-language message, you can retrieve metrics for a single language variant or all language variants. To retrieve metrics for a single language variant, pass the `id` of the action. To retrieve aggregate metrics and a breakdown for each language variant, pass the `multi_language_branch_action_id`, which is the same for each variant of a message. You can get both ids from the List automation actions endpoint.
+
+
+        If you pass the `multi_language_branch_action_id`, then the `metric` object shows the *total* across every variant. The `language_variants` object shows a breakdown for each language variant.
+
+
+        If you want to get the sum of all metrics across all of an automation''s actions, you can use each action id of a multi-language message, like you would for other types of actions.'
+      tags:
+      - Automations
+      responses:
+        '200':
+          description: Returns action metrics by `series`, where each increment is based on the `res` in your request. For a multi-language message, also returns a per-variant breakdown in `language_variants`.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  start:
+                    type: string
+                    format: ISO 8601
+                    description: The start of the window we reported on, in ISO 8601 format.
+                    example: 2025-01-01 00:00:00 +0000 UTC
+                  end:
+                    type: string
+                    format: ISO 8601
+                    description: The end of the window we reported on, in ISO 8601 format.
+                    example: 2025-01-02 00:00:00 +0000 UTC
+                  res:
+                    type: string
+                    description: The resolution we reported at.
+                    enum:
+                    - hours
+                    - hourly
+                    - days
+                    - daily
+                    - weeks
+                    - weekly
+                    - months
+                    - monthly
+                    example: days
+                  metric:
+                    type: object
+                    properties:
+                      series:
+                        $ref: '#/components/schemas/periodMessageMetrics'
+                  language_variants:
+                    $ref: '#/components/schemas/languageVariantMetrics'
+        '400':
+          $ref: '#/components/responses/400-campaigns'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+  /v1/campaigns/{campaign_id}/actions/{action_id}/metrics/links:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - $ref: '#/components/parameters/campaign_id'
+    - $ref: '#/components/parameters/action_id'
+    - $ref: '#/components/parameters/period'
+    - $ref: '#/components/parameters/steps'
+    - $ref: '#/components/parameters/metricType'
+    - $ref: '#/components/parameters/unique'
+    get:
+      summary: Get link metrics for an action
+      operationId: campaignActionLinks
+      security:
+      - Bearer-Auth: []
+      description: 'Returns link click metrics for an individual action. Unless you specify otherwise, the response contains data for the maximum period by days (45 days).
+
+
+        You cannot request fewer than 2 steps of any period (2 hours, 2 days, 2 weeks, or 2 months). For instance, `?period=days&steps=1` means two days - the 48 hours before the API request was made. `?period=days&steps=0` returns the same as the maximum of the period - `?period=days&steps=45`. See the `steps` parameter below for the maximum count of each period.'
+      tags:
+      - Automations
+      responses:
+        '200':
+          description: Returns action metrics by `series` (with increments are based on the `period` and `step` in your request) for the automation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    type: array
+                    description: Each object in the array represents a link in your action.
+                    items:
+                      $ref: '#/components/schemas/linkMetrics'
+        '400':
+          $ref: '#/components/responses/400-campaigns'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+  /v1/campaigns/{campaign_id}/journey_metrics:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - $ref: '#/components/parameters/campaign_id'
+    - name: start
+      in: query
+      description: The unix timestamp for the beginning of your journey metrics report.
+      required: true
+      schema:
+        type: integer
+        format: unix timestamp
+        example: 1652718066
+    - name: end
+      in: query
+      description: The unix timestamp for the end of your journey metrics report.
+      required: true
+      schema:
+        type: integer
+        format: unix timestamp
+    - $ref: '#/components/parameters/journey_resolution'
+    get:
+      summary: Get automation journey metrics
+      operationId: campaignJourneyMetrics
+      security:
+      - Bearer-Auth: []
+      description: 'Returns a list of Journey Metrics for your automation. These metrics show how many people triggered your automation, were messaged, etc for the time period and "resolution" you set. You must provide the `start`, `end`, and `resolution` parameters or your request will return `400`.
+
+
+        Metrics in the response are arrays, and each index in the array corresponds to the `resolution` in your request. If you request metrics in `days`, the first result in each metric array is the first day of results and each successive increment represents another day.
+
+
+        Each increment represents the number of journeys that started within a time period and eventually achieved a particular metric. For example, array index 0 for the `converted` metric represents the number of journeys that started on the first day/month of results that achieved a conversion.'
+      tags:
+      - Automations
+      responses:
+        '200':
+          description: Each `journey_metric` item in the response is an array. Each item in a metric array represents the number of journeys that started within the time increment ("resolution"—day or month) and eventually achieved that metric.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  journey_metric:
+                    type: object
+                    properties:
+                      started:
+                        description: The total number of people who meet the trigger criteria for a journey. This count occurs before filters are applied.
+                        type: array
+                        items:
+                          type: integer
+                      activated:
+                        description: People who started a journey and were not filtered out before they experienced an action.
+                        type: array
+                        items:
+                          type: integer
+                      exited_early:
+                        description: People who started a journey but stopped meeting the automation trigger/filter criteria.
+                        type: array
+                        items:
+                          type: integer
+                      finished:
+                        description: People who finished the journey.
+                        type: array
+                        items:
+                          type: integer
+                      converted:
+                        description: People who matched the conversion criteria for the automation.
+                        type: array
+                        items:
+                          type: integer
+                      never_activated:
+                        description: People who started a journey but were filtered out before they could experience any of the actions in the journey.
+                        type: array
+                        items:
+                          type: integer
+                      messaged:
+                        description: People who experienced at least one non-delay action in the journey. This metric typically represents journeys in progress.
+                        type: array
+                        items:
+                          type: integer
+        '400':
+          description: You may have omitted query parameters or the `start` time occurred after the `end` time. The `campaignID` or `actionID` may also be invalid.
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+      x-codeSamples:
+      - label: cURL
+        lang: shell
+        source: 'curl --request GET \
+
+          --url ''https://api.customer.io/v1/campaigns/{campaign_id}/journey_metrics?start=1650151266&end=1652052066&resolution=weeks'' \
+
+          --header ''Authorization: Bearer REPLACE_BEARER_TOKEN''
+
+          '
+      - label: Node.js (SDK)
+        lang: javascript
+        source: "const http = require(\"https\");\n\nconst options = {\n  method: \"GET\",\n  hostname: \"api.customer.io\",\n  port: null,\n  path: \"/v1/campaigns/{campaign_id}/journey_metrics?start=1650151266&end=1650151266&resolution=weeks\",\n  headers: {\n    Authorization: \"Bearer REPLACE_BEARER_TOKEN\",\n  },\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();\n"
+      - label: Ruby (SDK)
+        lang: ruby
+        source: 'require ''uri''
+
+          require ''net/http''
+
+          require ''openssl''
+
+
+          url = URI(''https://api.customer.io/v1/campaigns/{campaign_id}/journey_metrics'')
+
+          params = { start: ''1650151266'', end: ''1652052066'', resolution: ''weeks'' }
+
+          url.query = URI.encode_www_form(params)
+
+
+          http = Net::HTTP.new(url.host, url.port)
+
+          http.use_ssl = true
+
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+
+          request = Net::HTTP::Get.new(url)
+
+          request[''Authorization''] = ''Bearer REPLACE_BEARER_TOKEN''
+
+
+          response = http.request(request)
+
+          puts response.read_body
+
+          '
+      - label: Python (SDK)
+        lang: python
+        source: "import requests\n\nurl = \"https://api.customer.io/v1/campaigns/{campaign_id}/journey_metrics\"\n\nheaders = { \"Authorization\": \"Bearer REPLACE_BEARER_TOKEN\" }\n\nparams = {\n    \"start\": \"1650151266\",\n    \"end\": \"1652052066\",\n    \"resolution\": \"weeks\"\n}\n\nr = requests.get(url=url, params=params, headers=headers)\n\ndata = r.json()\n\nprint(data)\n"
+      - label: Go (SDK)
+        lang: go
+        source: "package main\n\nimport (\n  \"fmt\"\n  \"io/ioutil\"\n  \"net/http\"\n)\n\nfunc main() {\n\n  url := \"https://api.customer.io/v1/campaigns/{campaign_id}/journey_metrics\"\n\n  req, _ := http.NewRequest(\"GET\", url, nil)\n  req.Header.Add(\"Authorization\", \"Bearer REPLACE_BEARER_TOKEN\")\n\n  params := req.URL.Query()\n  params.Add(\"start\", \"1650151266\")\n  params.Add(\"end\", \"1652052066\")\n  params.Add(\"resolution\", \"weeks\")\n  req.URL.RawQuery = params.Encode()\n\n  res, _ := http.DefaultClient.Do(req)\n\n  defer res.Body.Close()\n  body, _ := ioutil.ReadAll(res.Body)\n\n  fmt.Println(res)\n  fmt.Println(string(body))\n\n}\n"
+components:
+  schemas:
+    content_id:
+      x-scalar-ignore: true
+      description: The identifier for a message in a one-time send. One-time sends can have multiple content IDs (for multi-language messages or A/B tests).
+      type: integer
+      readOnly: true
+      example: 1
+    preheader_text:
+      x-scalar-ignore: true
+      type: string
+      description: '[Also known as "preview text"](/journeys/channels/email/headers/custom-preheader-text/), this is the small block of text shown in an email inbox next to or underneath the subject line.
+
+        '
+    customer_identifiers:
+      x-scalar-ignore: true
+      type: object
+      description: Identifiers for the person in a response—`id`, `cio_id`, and `email`. Unset `id` or `email` values are `null`. We recommend this object over the less descriptive `customer_id`. This object doesn't include `phone`, even if your workspace uses phone numbers as an identifier; look for the person's `phone` attribute instead.
+      required:
+      - email
+      - id
+      - cio_id
+      properties:
+        email:
+          type:
+          - string
+          - 'null'
+          format: email
+          description: A person's email address, if set.
+          example: test@example.com
+        id:
+          type:
+          - string
+          - 'null'
+          description: A person's unique ID, if set. This is the same as the `customer_id` if present.
+          example: 2
+        cio_id:
+          $ref: '#/components/schemas/cio_id'
+    action_id:
+      x-scalar-ignore: true
+      description: The identifier for an action.
+      type: integer
+      readOnly: true
+      example: 96
+    parent_action_id:
+      x-scalar-ignore: true
+      type: integer
+      description: The ID of the parent action, if the action occurred within an automation and has a parent (like a randomized split, etc).
+      example: 1
+      readOnly: true
+    headers:
+      x-scalar-ignore: true
+      description: A JSON string containing header objects with `name` and `value`. Names and values must be strings, with no non-ASCII characters or spaces. You can't overwrite reserved headers.
+      type: string
+      format: json
+      example: '[{"name":"X-Mailgun-Tag","value":"my-cool-tag"},{"name":"X-Custom-Header","value":"custom-value"}]'
+    linkMetrics:
+      x-scalar-ignore: true
+      type: object
+      properties:
+        link:
+          type: object
+          properties:
+            id:
+              type: integer
+              description: The ID of the link.
+              example: 1234
+            href:
+              type: string
+              description: The link destination—a URL, mailto, etc.
+              example: https://docs.customer.io
+        metric:
+          type: object
+          description: Contains metrics for the link.
+          properties:
+            series:
+              type: object
+              properties:
+                clicked:
+                  type: array
+                  description: An array of results from oldest to newest, where each result indicates a period.
+                  items:
+                    type: integer
+                  example:
+                  - 1
+                  - 3
+                  - 5
+                  - 7
+                human_clicked:
+                  type: array
+                  description: An array of human click counts (clicks excluding machine clicks) from oldest to newest, where each result indicates a period. This metric is reliable starting April 20, 2025. [Learn more](/messaging/metrics/analytics/#delivery-metrics).
+                  items:
+                    type: integer
+                  example:
+                  - 1
+                  - 2
+                  - 3
+                  - 4
+                machine_clicked:
+                  type: array
+                  description: An array of machine click counts (clicks attributed to bots or prefetching) from oldest to newest, where each result indicates a period. This metric is reliable starting April 20, 2025. [Learn more](/messaging/metrics/analytics/#delivery-metrics).
+                  items:
+                    type: integer
+                  example:
+                  - 0
+                  - 1
+                  - 1
+                  - 2
+    bcc:
+      x-scalar-ignore: true
+      readOnly: true
+      description: The blind-copy address(es) for this action.
+      type: string
+    filter_relationship_attributes:
+      x-scalar-ignore: true
+      description: A list of relationship attributes used in the automation filter, returned if the automation audience was filtered on one or more relationship attributes.
+      type: string
+      example: '{"and":[{"relationship_attribute":{"type_id":1,"field":"email","operator":"eq","value":"dscs@test.com"}},{"relationship_attribute":{"type_id":1,"field":"trig","operator":"eq","value":"false"}}]}'
+    actionObject:
+      x-scalar-ignore: true
+      oneOf:
+      - title: Email / message
+        allOf:
+        - $ref: '#/components/schemas/emailActionObject'
+        - type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/action_id'
+            campaign_id:
+              $ref: '#/components/schemas/campaign_id'
+              readOnly: true
+            parent_action_id:
+              $ref: '#/components/schemas/parent_action_id'
+            multi_language_branch_action_id:
+              $ref: '#/components/schemas/multi_language_branch_action_id'
+            headers:
+              $ref: '#/components/schemas/headers'
+      - title: SMS/MMS
+        allOf:
+        - type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/action_id'
+            campaign_id:
+              $ref: '#/components/schemas/campaign_id'
+              readOnly: true
+            parent_action_id:
+              $ref: '#/components/schemas/parent_action_id'
+            multi_language_branch_action_id:
+              $ref: '#/components/schemas/multi_language_branch_action_id'
+        - $ref: '#/components/schemas/smsActionObject'
+      - title: WhatsApp
+        allOf:
+        - type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/action_id'
+            campaign_id:
+              $ref: '#/components/schemas/campaign_id'
+              readOnly: true
+            parent_action_id:
+              $ref: '#/components/schemas/parent_action_id'
+            multi_language_branch_action_id:
+              $ref: '#/components/schemas/multi_language_branch_action_id'
+        - $ref: '#/components/schemas/whatsAppActionObject'
+      - title: Webhook
+        allOf:
+        - type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/action_id'
+            campaign_id:
+              $ref: '#/components/schemas/campaign_id'
+              readOnly: true
+            parent_action_id:
+              $ref: '#/components/schemas/parent_action_id'
+            multi_language_branch_action_id:
+              $ref: '#/components/schemas/multi_language_branch_action_id'
+        - $ref: '#/components/schemas/webhookActionObject'
+    tags:
+      x-scalar-ignore: true
+      type: array
+      description: An array of tags you set on this automation.
+      items:
+        type: string
+      example:
+      - new
+      - welcome
+    webhookActionObject:
+      x-scalar-ignore: true
+      type: object
+      properties:
+        deduplicate_id:
+          $ref: '#/components/schemas/deduplicate_id'
+        name:
+          type: string
+          description: The name of the action, if it exists.
+          readOnly: true
+          example: Opening Message
+        layout:
+          type: string
+          description: The layout used for the action, if it exists.
+          readOnly: true
+        created:
+          $ref: '#/components/schemas/created'
+        updated:
+          $ref: '#/components/schemas/updated'
+        body:
+          type: string
+          description: The body of the action. You cannot modify the body if you created it with our drag-and-drop editor.
+        type:
+          type: string
+          description: The type of action.
+          enum:
+          - webhook
+          readOnly: true
+        url:
+          type: string
+          description: The URL to send a webhook to, applies to `webhook` type actions.
+          example: https://my.example.com/webhook
+        headers:
+          $ref: '#/components/schemas/headers'
+        method:
+          description: The HTTP method for your webhook.
+          type: string
+          enum:
+          - get
+          - post
+          - put
+          - delete
+          - patch
+          example: post
+        sending_state:
+          $ref: '#/components/schemas/sending_state'
+    reply_to:
+      x-scalar-ignore: true
+      type: string
+      description: The address that receives replies for the message, if applicable.
+      readOnly: true
+      example: replyto@example.com
+    emailActionObject:
+      x-scalar-ignore: true
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/action_id'
+        broadcast_id:
+          $ref: '#/components/schemas/broadcast_id'
+          readOnly: true
+        deduplicate_id:
+          $ref: '#/components/schemas/deduplicate_id'
+        name:
+          type: string
+          description: The name of the action, if it exists.
+          readOnly: true
+          example: Opening Message
+        layout:
+          type: string
+          description: The layout used for the action, if it exists.
+          readOnly: true
+        created:
+          $ref: '#/components/schemas/created'
+        updated:
+          $ref: '#/components/schemas/updated'
+        body:
+          type: string
+          description: The body of the action. You cannot modify the body if you created it with our drag-and-drop editor.
+        type:
+          type: string
+          description: The type of action.
+          enum:
+          - email
+          - in_app
+          - push
+          - twilio
+          - slack
+          - whatsapp
+          readOnly: true
+        sending_state:
+          $ref: '#/components/schemas/sending_state'
+        language:
+          $ref: '#/components/schemas/language'
+        from:
+          $ref: '#/components/schemas/from'
+        from_id:
+          $ref: '#/components/schemas/from_id'
+        reply_to:
+          $ref: '#/components/schemas/reply_to'
+        reply_to_id:
+          $ref: '#/components/schemas/reply_to_id'
+        preprocessor:
+          $ref: '#/components/schemas/preprocessor'
+        recipient:
+          $ref: '#/components/schemas/recipient'
+        subject:
+          $ref: '#/components/schemas/subject'
+        cc:
+          $ref: '#/components/schemas/cc'
+        bcc:
+          $ref: '#/components/schemas/bcc'
+        fake_bcc:
+          $ref: '#/components/schemas/fake_bcc'
+        preheader_text:
+          $ref: '#/components/schemas/preheader_text'
+        body_amp:
+          $ref: '#/components/schemas/body_amp'
+    object_type_id_trigger:
+      x-scalar-ignore: true
+      description: The object type ID of the trigger.
+      type: integer
+    campaign_actions:
+      x-scalar-ignore: true
+      type: array
+      description: An array of actions contained within the automation.
+      items:
+        type: object
+        properties:
+          type:
+            type: string
+            description: The action type.
+            example: email
+          id:
+            type: integer
+            description: The identifier for the action.
+            example: 259
+    message_template_id:
+      x-scalar-ignore: true
+      description: The identifier of the message template used to create a message.
+      type: integer
+      readOnly: true
+      deprecated: true
+    appApiError:
+      x-scalar-ignore: true
+      type: object
+      description: An array/list of failures where each entry is a separate failure reason.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: One entry for each reason the request failed.
+          items:
+            type: object
+            required:
+            - detail
+            - status
+            properties:
+              detail:
+                type: string
+                description: What went wrong, in plain text. Most messages end with a support reference you can use if you need to contact support.
+                example: bad request (reference a1b2c3)
+              status:
+                type: string
+                description: The HTTP status code as a string.
+                example: '400'
+              code:
+                type: string
+                description: A stable identifier for the failure, on the errors that carry one. Use this rather than the text in `detail` if you need to identify the error programmatically.
+                example: invalid_credentials
+              source:
+                type: object
+                description: The part of the request that the error refers to.
+                properties:
+                  pointer:
+                    type: string
+                    description: A JSON pointer to the part of the request body that the error refers to.
+                    example: /data/attributes/email
+              meta:
+                type: object
+                additionalProperties: true
+                description: Extra context (if available).
+    messageObjectBase:
+      x-scalar-ignore: true
+      type: object
+      description: Describes an individual message delivery. The object contains keys for all possible parents of the message (`newsletter_id`, `broadcast_id`, etc) but only the parents of the delivery are populated. Other parent IDs are null.
+      properties:
+        id:
+          $ref: '#/components/schemas/message_id'
+        deduplicate_id:
+          $ref: '#/components/schemas/deduplicate_id'
+        message_template_id:
+          $ref: '#/components/schemas/message_template_id'
+        customer_id:
+          $ref: '#/components/schemas/customer_id'
+        customer_identifiers:
+          $ref: '#/components/schemas/customer_identifiers'
+        recipient:
+          $ref: '#/components/schemas/recipient'
+        subject:
+          $ref: '#/components/schemas/subject'
+        metrics:
+          $ref: '#/components/schemas/messageMetrics'
+        created:
+          $ref: '#/components/schemas/created'
+        failure_message:
+          type:
+          - string
+          - 'null'
+          description: Explains why a message failed, if applicable.
+        campaign_id:
+          oneOf:
+          - $ref: '#/components/schemas/campaign_id'
+          - type: 'null'
+        action_id:
+          $ref: '#/components/schemas/action_id'
+        parent_action_id:
+          $ref: '#/components/schemas/parent_action_id'
+        newsletter_id:
+          oneOf:
+          - $ref: '#/components/schemas/newsletter_id'
+          - type: 'null'
+        content_id:
+          $ref: '#/components/schemas/content_id'
+        broadcast_id:
+          oneOf:
+          - $ref: '#/components/schemas/broadcast_id'
+          - type: 'null'
+        trigger_event_id:
+          $ref: '#/components/schemas/trigger_event_id'
+        forgotten:
+          type: boolean
+          description: If true message contents are not retained by Customer.io.
+        tracked_responses:
+          type: object
+          description: Tracked in-app survey responses, keyed by response option name. Present only when `get_tracked_responses` is `true`.
+          additionalProperties:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: The identifier for the tracked response.
+              ts:
+                type: integer
+                description: A unix timestamp representing when the response was tracked.
+          example:
+            cool-button:
+              id: 1
+              ts: 1715769600
+            cool-button-2:
+              id: 2
+              ts: 1715769600
+    periodMessageMetrics:
+      x-scalar-ignore: true
+      description: Metrics grouped by the requested resolution. Each property is an array where each entry represents one period, such as one day.
+      type: object
+      properties:
+        attempted:
+          type: array
+          items:
+            type: integer
+          description: The number of `attempted` messages.
+        bounced:
+          type: array
+          items:
+            type: integer
+          description: The number of `bounced` messages.
+        clicked:
+          type: array
+          items:
+            type: integer
+          description: The number of `clicked` messages.
+        human_clicked:
+          type: array
+          items:
+            type: integer
+          description: The number of `clicked` emails excluding machine clicks. This metric is reliable starting April 20, 2025. [Learn more](/messaging/metrics/analytics/#delivery-metrics).
+        machine_clicked:
+          type: array
+          items:
+            type: integer
+          description: The number of `clicked` emails attributed to machines—security scanners, bot user agents, known proxy services, and repetitive click patterns. This metric is reliable starting April 20, 2025. [Learn more](/messaging/metrics/analytics/#delivery-metrics).
+        converted:
+          type: array
+          items:
+            type: integer
+          description: The number of `converted` messages.
+        created:
+          type: array
+          items:
+            type: integer
+          description: The number of `created` messages.
+        deferred:
+          type: array
+          items:
+            type: integer
+          description: The number of `deferred` messages.
+        delivered:
+          type: array
+          items:
+            type: integer
+          description: The number of `delivered` messages.
+        drafted:
+          type: array
+          items:
+            type: integer
+          description: The number of `drafted` messages.
+        failed:
+          type: array
+          items:
+            type: integer
+          description: The number of `failed` messages.
+        opened:
+          type: array
+          items:
+            type: integer
+          description: The number of `opened` messages.
+        human_opened:
+          type: array
+          items:
+            type: integer
+          description: The number of `opened` emails excluding machine opens. This metric is reliable starting March 20, 2025. [Learn more](/messaging/metrics/analytics/#delivery-metrics).
+        prefetch_opened:
+          type: array
+          items:
+            type: integer
+          description: The number of `opened` emails attributed to machines. This metric is reliable starting March 20, 2025.
+        sent:
+          type: array
+          items:
+            type: integer
+          description: The number of sent messages.
+        spammed:
+          type: array
+          items:
+            type: integer
+          description: The number of spam complaints.
+        suppressed:
+          type: array
+          items:
+            type: integer
+          description: The number of `suppressed` messages.
+        undeliverable:
+          type: array
+          items:
+            type: integer
+          description: The number of `undeliverable` messages.
+        topic_unsubscribed:
+          type: array
+          items:
+            type: integer
+          description: The number of topic unsubscribes in a given period.
+        unsubscribed:
+          type: array
+          items:
+            type: integer
+          description: The number of unsubscribes attributed to the automation or message.
+        replied:
+          type: array
+          items:
+            type: integer
+          description: The number of SMS/MMS messages a person replied to with a keyword. [Learn more about inbound messages](/messaging/channels/sms/inbound/get-started/).
+        untracked:
+          type: array
+          items:
+            type: integer
+          description: The number of `sent` emails whose open pixel we withheld because the person opted out of open tracking. We exclude these from the open-rate denominator; click tracking is unaffected.
+        open_untracked:
+          type: array
+          items:
+            type: integer
+          description: The number of emails delivered with open tracking inactive for any reason—including the consent opt-outs that `untracked` counts and messages sent with open tracking disabled. We subtract these from the open-rate denominator.
+        link_untracked:
+          type: array
+          items:
+            type: integer
+          description: The number of emails delivered with link tracking inactive for any reason. We subtract these from the click-rate denominator.
+        tracking_consent_granted:
+          type: array
+          items:
+            type: integer
+          description: The number of people who granted consent to email open tracking in the period.
+        tracking_consent_denied:
+          type: array
+          items:
+            type: integer
+          description: The number of people who denied consent to email open tracking in the period.
+    deduplicate_id:
+      x-scalar-ignore: true
+      type: string
+      readOnly: true
+      description: An identifier in the format `id:timestamp` where the id is for the object you're working with (Automations, Deliveries, Exports, Identities, One-time sends, Segments, and Templates), and the timestamp is the last time the object was updated.
+      example: 15:1492548073
+    newsletter_id:
+      x-scalar-ignore: true
+      description: The identifier for a one-time send.
+      type: integer
+      example: 10
+    state:
+      x-scalar-ignore: true
+      type: string
+      description: The status of the automation.
+      enum:
+      - running
+      - draft
+      - stopped
+    fake_bcc:
+      x-scalar-ignore: true
+      readOnly: true
+      type: boolean
+      description: 'If true, rather than sending true copies to BCC addresses, Customer.io sends a copy of the message with the subject line containing the recipient address(es).
+
+        '
+    trigger_event_id:
+      x-scalar-ignore: true
+      type: string
+      description: The id of the event that triggered an event-triggered automation (not an API-triggered broadcast).
+      example: 21E4C3CT6YDC7Y4N7FE1GWWABC
+    broadcast_id:
+      x-scalar-ignore: true
+      type: integer
+      description: The identifier for a broadcast.
+      example: 2
+    created:
+      x-scalar-ignore: true
+      type: integer
+      format: unix timestamp
+      description: The date time when the referenced ID was created.
+      example: 1552341937
+      readOnly: true
+    cio_id:
+      x-scalar-ignore: true
+      type: string
+      description: A unique identifier set by Customer.io, used to reference a person if you want to update their identifiers.
+      example: a3000001
+    messageObject:
+      x-scalar-ignore: true
+      description: Describes an individual message delivery. The object contains keys for all possible parents of the message (`newsletter_id`, `broadcast_id`, etc) but only the parents of the delivery are populated. Other parent IDs are null.
+      allOf:
+      - $ref: '#/components/schemas/messageObjectBase'
+      - type: object
+        properties:
+          type:
+            $ref: '#/components/schemas/messageType'
+      example:
+        id: ag1q6QWq6QUBAAF4_CGoeVX7mFkDbRFu7ek=
+        deduplicate_id: ag1q6QWq6QUBAAF4_CGoeVX7mFkDbRFu7ek=:1619137768
+        msg_template_id: 43
+        action_id: 215
+        parent_action_id: null
+        customer_id: null
+        recipient: person@example.com
+        subject: Did you get that thing I sent you?
+        metrics:
+          delivered: 1619137768
+          sent: 1619137768
+        created: 1619137767
+        failure_message: null
+        newsletter_id: null
+        content_id: null
+        campaign_id: 23
+        broadcast_id: null
+        trigger_event_id: null
+        type: email
+        forgotten: false
+    language:
+      x-scalar-ignore: true
+      type: string
+      description: The language variant for your message. If you don't use our [localization feature](/journeys/channels/localization/getting-started), or this is the default message, this value is an empty string.
+      example: fr
+      readOnly: true
+    campaignObject:
+      x-scalar-ignore: true
+      type: object
+      oneOf:
+      - title: Segment
+        type: object
+        properties:
+          id:
+            $ref: '#/components/schemas/campaign_id'
+          deduplicate_id:
+            $ref: '#/components/schemas/deduplicate_id'
+          name:
+            $ref: '#/components/schemas/campaign_name'
+          description:
+            $ref: '#/components/schemas/campaign_description'
+          type:
+            type: string
+            deprecated: true
+            description: The type of automation trigger. **Sunsetting on March 30, 2025**
+            enum:
+            - segment
+          created:
+            $ref: '#/components/schemas/created'
+          updated:
+            $ref: '#/components/schemas/updated'
+          active:
+            $ref: '#/components/schemas/active'
+          state:
+            $ref: '#/components/schemas/state'
+          actions:
+            $ref: '#/components/schemas/campaign_actions'
+          first_started:
+            $ref: '#/components/schemas/first_started'
+          tags:
+            $ref: '#/components/schemas/tags'
+          trigger_segment_ids:
+            description: A list of segments used in the automation trigger, returned if the automation trigger included one or more segment conditions.
+            type: array
+            items:
+              type: integer
+            example:
+            - 90
+          filter_segment_ids:
+            $ref: '#/components/schemas/filter_segment_ids'
+          msg_templates:
+            type: array
+            deprecated: true
+            description: Indicates the message templates used in this automation.
+            items:
+              type: object
+              properties:
+                type:
+                  type: string
+                  description: The message type the template represents.
+                  enum:
+                  - email
+                  - sms
+                  - push
+                  - slack
+                id:
+                  type: integer
+                  description: The identifier for the template.
+      - title: Event
+        type: object
+        properties:
+          id:
+            $ref: '#/components/schemas/campaign_id'
+          deduplicate_id:
+            $ref: '#/components/schemas/deduplicate_id'
+          name:
+            $ref: '#/components/schemas/campaign_name'
+          description:
+            $ref: '#/components/schemas/campaign_description'
+          type:
+            type: string
+            deprecated: true
+            description: The type of automation trigger. **Sunsetting on March 30, 2025**
+            enum:
+            - event
+          created:
+            $ref: '#/components/schemas/created'
+          updated:
+            $ref: '#/components/schemas/updated'
+          active:
+            $ref: '#/components/schemas/active'
+          state:
+            $ref: '#/components/schemas/state'
+          actions:
+            $ref: '#/components/schemas/campaign_actions'
+          first_started:
+            $ref: '#/components/schemas/first_started'
+          tags:
+            $ref: '#/components/schemas/tags'
+          filter_segment_ids:
+            $ref: '#/components/schemas/filter_segment_ids'
+          event_name:
+            description: The name of the event. How you reference the event in automations or segments.
+            type: string
+      - title: Form
+        type: object
+        properties:
+          id:
+            $ref: '#/components/schemas/campaign_id'
+          deduplicate_id:
+            $ref: '#/components/schemas/deduplicate_id'
+          name:
+            $ref: '#/components/schemas/campaign_name'
+          description:
+            $ref: '#/components/schemas/campaign_description'
+          type:
+            type: string
+            deprecated: true
+            description: The type of automation trigger. **Sunsetting on March 30, 2025**
+            enum:
+            - form
+          created:
+            $ref: '#/components/schemas/created'
+          updated:
+            $ref: '#/components/schemas/updated'
+          active:
+            $ref: '#/components/schemas/active'
+          state:
+            $ref: '#/components/schemas/state'
+          actions:
+            $ref: '#/components/schemas/campaign_actions'
+          first_started:
+            $ref: '#/components/schemas/first_started'
+          tags:
+            $ref: '#/components/schemas/tags'
+          filter_segment_ids:
+            $ref: '#/components/schemas/filter_segment_ids'
+      - title: Date
+        type: object
+        properties:
+          id:
+            $ref: '#/components/schemas/campaign_id'
+          deduplicate_id:
+            $ref: '#/components/schemas/deduplicate_id'
+          name:
+            $ref: '#/components/schemas/campaign_name'
+          description:
+            $ref: '#/components/schemas/campaign_description'
+          type:
+            type: string
+            deprecated: true
+            description: The type of automation trigger. **Sunsetting on March 30, 2025**
+            enum:
+            - date
+          created:
+            $ref: '#/components/schemas/created'
+          updated:
+            $ref: '#/components/schemas/updated'
+          active:
+            $ref: '#/components/schemas/active'
+          state:
+            $ref: '#/components/schemas/state'
+          actions:
+            $ref: '#/components/schemas/campaign_actions'
+          first_started:
+            $ref: '#/components/schemas/first_started'
+          tags:
+            $ref: '#/components/schemas/tags'
+          filter_segment_ids:
+            $ref: '#/components/schemas/filter_segment_ids'
+          frequency:
+            description: How often a person will receive this automation based on the date specified in the automation trigger.
+            type: string
+            enum:
+            - once
+            - monthly
+            - yearly
+          date_attribute:
+            description: The attribute on people's profiles you use to configure the date of the automation trigger.
+            type: string
+          timezone:
+            description: The time zone you set to configure the date of the automation trigger.
+            type: string
+            example: America/Chicago
+          use_customer_timezone:
+            description: If you chose "the user's time zone" while configuring the date of the automation trigger, this is `true`. Otherwise, you set a specific time zone so it's `false`.
+            type: boolean
+          start_hour:
+            description: The hour you set the automation to trigger. Follows the 24-hour clock.
+            type: integer
+          start_minutes:
+            description: The minutes you set the automation to trigger. Follows the 24-hour clock.
+            type: integer
+      - title: Relationship
+        type: object
+        properties:
+          id:
+            $ref: '#/components/schemas/campaign_id'
+          deduplicate_id:
+            $ref: '#/components/schemas/deduplicate_id'
+          name:
+            $ref: '#/components/schemas/campaign_name'
+          description:
+            $ref: '#/components/schemas/campaign_description'
+          type:
+            type: string
+            deprecated: true
+            description: The type of automation trigger. **Sunsetting on March 30, 2025**
+            enum:
+            - relationship
+          created:
+            $ref: '#/components/schemas/created'
+          updated:
+            $ref: '#/components/schemas/updated'
+          active:
+            $ref: '#/components/schemas/active'
+          state:
+            $ref: '#/components/schemas/state'
+          actions:
+            $ref: '#/components/schemas/campaign_actions'
+          first_started:
+            $ref: '#/components/schemas/first_started'
+          tags:
+            $ref: '#/components/schemas/tags'
+          filter_segment_ids:
+            $ref: '#/components/schemas/filter_segment_ids'
+          object_type_id:
+            $ref: '#/components/schemas/object_type_id_trigger'
+          filter_object_attributes:
+            $ref: '#/components/schemas/filter_object_attributes'
+          filter_relationship_attributes:
+            $ref: '#/components/schemas/filter_relationship_attributes'
+          audience:
+            description: Defines the people who will start a journey in your automation.
+            type: object
+            properties:
+              type:
+                description: The selected audience type. `0` means person added to object; `1` can mean every or certain people in the object. Filters appear only for subset audiences.
+                type: integer
+                minimum: 0
+                maximum: 1
+              person_filters:
+                description: Returns the profile attributes you filtered the audience by, if any. Only applies to `type 1`, "Certain people in the object".
+                type: object
+                example: '{"and":[{"attribute":{"field":"title","operator":"eq","value":"asdca"}}]}'
+              relationship_filters:
+                description: Returns the relationship attributes you filtered the audience by, if any. Only applies to `type 1`, "Certain people in the object".
+                type: object
+                example: '{"and":[{"relationship_attribute":{"type_id":1,"field":"trig","operator":"eq","value":"asd"}}]}'
+          relationship_attribute_triggers:
+            description: A list of relationship attributes used to trigger the automation.
+            type: object
+            example: '{"and":[{"relationship_attribute":{"type_id":1,"field":"trig","operator":"eq","value":"true"}}]}'
+      - title: Object
+        type: object
+        properties:
+          id:
+            $ref: '#/components/schemas/campaign_id'
+          deduplicate_id:
+            $ref: '#/components/schemas/deduplicate_id'
+          name:
+            $ref: '#/components/schemas/campaign_name'
+          description:
+            $ref: '#/components/schemas/campaign_description'
+          type:
+            type: string
+            deprecated: true
+            description: The type of automation trigger. **Sunsetting on March 30, 2025**
+            enum:
+            - object
+          created:
+            $ref: '#/components/schemas/created'
+          updated:
+            $ref: '#/components/schemas/updated'
+          active:
+            $ref: '#/components/schemas/active'
+          state:
+            $ref: '#/components/schemas/state'
+          actions:
+            $ref: '#/components/schemas/campaign_actions'
+          first_started:
+            $ref: '#/components/schemas/first_started'
+          tags:
+            $ref: '#/components/schemas/tags'
+          filter_segment_ids:
+            $ref: '#/components/schemas/filter_segment_ids'
+          object_type_id:
+            $ref: '#/components/schemas/object_type_id_trigger'
+          filter_object_attributes:
+            $ref: '#/components/schemas/filter_object_attributes'
+          filter_relationship_attributes:
+            $ref: '#/components/schemas/filter_relationship_attributes'
+          audience:
+            description: Defines the people who will start a journey in your automation.
+            type: object
+            properties:
+              type:
+                description: The type of audience selected. "Every person in the object" is `1`. "Certain people in the object" is also `1`. "Certain people" will always have one or more audience filters (see below). "Every person" will never have an audience filter.
+                type: integer
+                minimum: 0
+                maximum: 1
+              person_filters:
+                description: Returns the profile attributes you filtered the audience by, if any. Only applies to `type 1`, "Certain people in the object".
+                type: object
+                example: '{"and":[{"attribute":{"field":"title","operator":"eq","value":"asdca"}}]}'
+              relationship_filters:
+                description: Returns the relationship attributes you filtered the audience by, if any. Only applies to `type 1`, "Certain people in the object".
+                type: object
+                example: '{"and":[{"relationship_attribute":{"type_id":1,"field":"trig","operator":"eq","value":"asd"}}]}'
+          object_attribute_triggers:
+            description: A list of object attributes used to trigger the automation.
+            type: object
+            example: '{"and":[{"object_attribute":{"type_id":1,"field":"name","operator":"eq","value":"sfa"}},{"object_attribute":{"type_id":1,"field":"renewal_date","operator":"eq","value":"sdfs"}}]}'
+      - title: Webhook
+        type: object
+        properties:
+          id:
+            $ref: '#/components/schemas/campaign_id'
+          deduplicate_id:
+            $ref: '#/components/schemas/deduplicate_id'
+          name:
+            $ref: '#/components/schemas/campaign_name'
+          description:
+            $ref: '#/components/schemas/campaign_description'
+          type:
+            type: string
+            deprecated: true
+            description: The type of automation trigger. **Sunsetting on March 30, 2025**
+            enum:
+            - webhook
+          created:
+            $ref: '#/components/schemas/created'
+          updated:
+            $ref: '#/components/schemas/updated'
+          active:
+            $ref: '#/components/schemas/active'
+          state:
+            $ref: '#/components/schemas/state'
+          actions:
+            $ref: '#/components/schemas/campaign_actions'
+          first_started:
+            $ref: '#/components/schemas/first_started'
+          tags:
+            $ref: '#/components/schemas/tags'
+          webhook_id:
+            description: The ID of the webhook trigger generated by Customer.io.
+            type: integer
+    cc:
+      x-scalar-ignore: true
+      readOnly: true
+      description: The carbon-copy address(es) for this action.
+      type: string
+    messageType:
+      x-scalar-ignore: true
+      description: The type of message or action for a delivery, automation action, or related object. Includes channels that one-time sends do not support (for example, `slack` and `whatsapp`).
+      type: string
+      enum:
+      - email
+      - webhook
+      - twilio
+      - push
+      - in_app
+      - slack
+      - whatsapp
+      - live_notification
+      readOnly: true
+      example: email
+    active:
+      x-scalar-ignore: true
+      type: boolean
+      description: If true, the automation is active and can still send messages.
+    whatsAppActionObject:
+      x-scalar-ignore: true
+      description: The action object for WhatsApp messages sent from Customer.io using your Facebook Business Account (not Twilio). Messages sent through Twilio still use the `twilio` type and are treated similarly to SMS messages.
+      type: object
+      properties:
+        deduplicate_id:
+          $ref: '#/components/schemas/deduplicate_id'
+        name:
+          type: string
+          description: The name of the action.
+          readOnly: true
+          example: Welcome Message
+        created:
+          $ref: '#/components/schemas/created'
+        updated:
+          $ref: '#/components/schemas/updated'
+        body:
+          type: string
+          description: A JSON string containing WhatsApp template metadata from Meta and template parameters with Liquid variables. Use `GET /v1/environments/{environment_id}/whatsapp/templates` to list templates.
+          example: '{"body":"","image_url":"","whatsapp_message_template":{"id":"12345","name":"welcome","language":"en_US","status":"APPROVED","components":[...]},"template_parameters":{"name":"welcome","components":[{"type":"BODY","parameters":[{"type":"text","text":"{{customer.name}}","parameter_name":"name"}]}]}}'
+        body_json:
+          type: string
+          description: For visual editor content (if applicable).
+        language:
+          $ref: '#/components/schemas/language'
+        type:
+          type: string
+          description: For WhatsApp messages sent from Customer.io using your Facebook Business Account (not Twilio), the `type` is always `whatsapp`.
+          enum:
+          - whatsapp
+          readOnly: true
+        sending_state:
+          $ref: '#/components/schemas/sending_state'
+        recipient:
+          type: string
+          description: The recipient's phone number in E.164 format, usually referenced with Liquid like `{{customer.phone}}`. If you use Liquid, this field is blank in `GET` responses because we resolve the recipient at send time.
+          example: ''
+        sender_identity_id:
+          type: integer
+          description: 'The ID of the WhatsApp Business phone number to send from. This corresponds to
+
+            a phone number registered in your WhatsApp Business Account and synced via
+
+            `GET /v1/environments/{environment_id}/whatsapp/sync`.
+
+            '
+        send_to_unsubscribed:
+          type: boolean
+          description: Whether to send this message to unsubscribed customers.
+        tracked:
+          type: boolean
+          description: Whether links in template parameters should be tracked.
+          default: false
+    sending_state:
+      x-scalar-ignore: true
+      type: string
+      enum:
+      - automatic
+      - draft
+      - 'off'
+      description: Determines the sending behavior for the action. `automatic` sends the action automatically when triggered; `draft` queues drafts when the action is triggered; or `off` to disable the action.
+    recipient:
+      x-scalar-ignore: true
+      description: The recipient address for an action.
+      type: string
+      example: '{{customer.email}}'
+    first_started:
+      x-scalar-ignore: true
+      type: integer
+      format: unix timestamp
+      description: The date and time when you first started the automation and it first became eligible to be triggered.
+      example: 1552341937
+    preprocessor:
+      x-scalar-ignore: true
+      type: string
+      description: If CSS pre-processing is enabled, this key is populated with `premailer`. Note, Juice replaced Premailer as the pre-processor, but you will only see `premailer` as the value.
+      enum:
+      - premailer
+      readOnly: true
+    customer_id:
+      x-scalar-ignore: true
+      type:
+      - string
+      - 'null'
+      description: The ID of a customer profile, analogous to a "person" in the UI. If your workspace supports multiple identifiers (email and ID), this value can be null.
+      example: '42'
+    updateActionObject:
+      x-scalar-ignore: true
+      oneOf:
+      - title: Email / message
+        allOf:
+        - $ref: '#/components/schemas/emailActionObject'
+        - type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/action_id'
+            campaign_id:
+              $ref: '#/components/schemas/campaign_id'
+              readOnly: true
+            parent_action_id:
+              $ref: '#/components/schemas/parent_action_id'
+            headers:
+              $ref: '#/components/schemas/update_headers'
+      - title: SMS/MMS
+        allOf:
+        - type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/action_id'
+            campaign_id:
+              $ref: '#/components/schemas/campaign_id'
+              readOnly: true
+            parent_action_id:
+              $ref: '#/components/schemas/parent_action_id'
+        - $ref: '#/components/schemas/smsActionObject'
+      - title: WhatsApp
+        allOf:
+        - type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/action_id'
+            campaign_id:
+              $ref: '#/components/schemas/campaign_id'
+              readOnly: true
+            parent_action_id:
+              $ref: '#/components/schemas/parent_action_id'
+        - $ref: '#/components/schemas/whatsAppActionObject'
+      - title: Webhook
+        allOf:
+        - type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/action_id'
+            campaign_id:
+              $ref: '#/components/schemas/campaign_id'
+              readOnly: true
+            parent_action_id:
+              $ref: '#/components/schemas/parent_action_id'
+        - $ref: '#/components/schemas/webhookActionObject'
+    campaign_description:
+      x-scalar-ignore: true
+      type: string
+      description: The description of the automation, if one was set.
+      example: Sends a welcome series to new trial signups.
+    from:
+      x-scalar-ignore: true
+      type: string
+      description: The address that the message is from, relevant if the action `type` is `email`.
+      readOnly: true
+      example: sentFrom@example.com
+    body_amp:
+      x-scalar-ignore: true
+      type: string
+      description: AMP-enabled content for your email. If a recipient's email client doesn't support AMP, they receive your `body` content instead. Make sure you're [set up to send AMP](/journeys/channels/email/layouts/amp-for-email/) first.
+    subject:
+      x-scalar-ignore: true
+      type: string
+      description: The subject line for an `email` action.
+      example: Did you get that thing I sent you?
+    messageMetrics:
+      x-scalar-ignore: true
+      type: object
+      description: Metrics for an individual instance of a message; each item in the object represents the timestamp when a message achieved a particular metric. This object only contains metrics that have been recorded.
+      properties:
+        bounced:
+          type: integer
+          description: The timestamp when the message `bounced`.
+        clicked:
+          type: integer
+          description: The timestamp when the message was `clicked`.
+        human_clicked:
+          type: integer
+          description: The number of `clicked` messages excluding machine clicks. This metric is reliable starting April 20, 2025. [Learn more](/messaging/metrics/analytics/#delivery-metrics).
+        prefetch_clicked:
+          type: integer
+          description: The number of `clicked` messages attributed to machines. This metric is reliable starting April 20, 2025.
+        converted:
+          type: integer
+          description: The timestamp when the message was `converted`.
+        created:
+          type: integer
+          description: The timestamp when the message was `created`.
+        delivered:
+          type: integer
+          description: The timestamp when the message was `delivered`.
+        drafted:
+          type: integer
+          description: The timestamp when the message was `drafted`.
+        dropped:
+          type: integer
+          description: The timestamp when the message was `dropped`.
+        failed:
+          type: integer
+          description: The timestamp when the message `failed`.
+        opened:
+          type: integer
+          description: The timestamp when the message was `opened`.
+        human_opened:
+          type: integer
+          description: The number of `opened` messages excluding machine opens. This metric is reliable starting March 20, 2025. [Learn more](/messaging/metrics/analytics/#delivery-metrics).
+        prefetch_opened:
+          type: integer
+          description: The number of `opened` messages attributed to machines. This metric is reliable starting March 20, 2025.
+        sent:
+          type: integer
+          description: The timestamp when the message was `sent`.
+        spammed:
+          type: integer
+          description: The timestamp when the message was marked as spam.
+        undeliverable:
+          type: integer
+          description: The timestamp when the message became `undeliverable`.
+        unsubscribed:
+          type: integer
+          description: The timestamp when a person unsubscribed based on this message.
+    from_id:
+      x-scalar-ignore: true
+      type: integer
+      description: The identifier of the `from` address, commonly known as the "sender". Use [List sender identities](/integrations/api/app/tag/sender-identities/listSenders/) to find valid IDs.
+      example: 1
+    updated:
+      x-scalar-ignore: true
+      type: integer
+      format: unix timestamp
+      description: The date time when the referenced ID was last updated.
+      example: 1552341937
+      readOnly: true
+    filter_segment_ids:
+      x-scalar-ignore: true
+      description: A list of segments used in the automation filter, returned if the automation audience was filtered on one or more segments.
+      type: array
+      items:
+        type: integer
+      example:
+      - 21
+      - 42
+    campaign_id:
+      x-scalar-ignore: true
+      description: The identifier for an automation.
+      type: integer
+      example: 5
+    multi_language_branch_action_id:
+      x-scalar-ignore: true
+      type: integer
+      description: Returned when the action is a language variant of a multi-language message. This id is the same for each variant of a message, so you can use this to retrieve metrics for a message and all its variants.
+      example: 23
+      readOnly: true
+    smsActionObject:
+      x-scalar-ignore: true
+      type: object
+      properties:
+        deduplicate_id:
+          $ref: '#/components/schemas/deduplicate_id'
+        name:
+          type: string
+          description: The name of the action.
+          readOnly: true
+          example: Opening Message
+        layout:
+          type: string
+          description: The layout used for the action, if it exists.
+          readOnly: true
+        created:
+          $ref: '#/components/schemas/created'
+        updated:
+          $ref: '#/components/schemas/updated'
+        body:
+          type: string
+          description: The body of your SMS.
+        language:
+          $ref: '#/components/schemas/language'
+        type:
+          type: string
+          description: For SMS/MMS messages, the `type` is always `twilio`.
+          enum:
+          - twilio
+          readOnly: true
+        image_url:
+          type: string
+          description: The URL of the image in your SMS (MMS) message.
+        sending_state:
+          $ref: '#/components/schemas/sending_state'
+        recipient:
+          type: string
+          description: The recipient, usually an attribute you reference with Liquid like `{{customer.phone}}`. If you use Liquid, this field is blank in `GET` responses because we resolve the recipient at send time.
+          example: ''
+    reply_to_id:
+      x-scalar-ignore: true
+      type:
+      - integer
+      - 'null'
+      description: The identifier for the `reply_to` address, if applicable. Use [List sender identities](/integrations/api/app/tag/sender-identities/listSenders/) to find valid IDs.
+      example: 38
+    campaign_name:
+      x-scalar-ignore: true
+      type: string
+      description: The name of the automation.
+      readOnly: true
+    next:
+      x-scalar-ignore: true
+      type: string
+      description: Indicates the next page of results. Add `?start=<next_value>` to the request to get the next page of results.
+    update_headers:
+      x-scalar-ignore: true
+      description: Headers you want to add or update. Names and values must be strings, with no non-ASCII characters or spaces. You can't overwrite reserved headers.
+      type: array
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+            description: The name of the header.
+          value:
+            type: string
+            description: The value of the header.
+        example:
+        - name: X-Mailgun-Tag
+          value: my-cool-tag
+    filter_object_attributes:
+      x-scalar-ignore: true
+      description: A list of object attributes used in the automation filter, returned if the automation audience was filtered on one or more object attributes.
+      type: string
+      example: '{"and":[{"object_attribute":{"type_id":1,"field":"name","operator":"eq","value":"sfa"}},{"object_attribute":{"type_id":1,"field":"renewal_date","operator":"eq","value":"sdfs"}}]}'
+    languageVariantMetrics:
+      x-scalar-ignore: true
+      type: object
+      description: 'Metrics for each language variant of a multi-language message, keyed by the variant''s action ID. Only returned when you request metrics for a multi-language branch action.
+
+        '
+      additionalProperties:
+        type: object
+        properties:
+          language:
+            type: string
+            description: The language code for this variant, such as `es` or `fr-CA`. Empty for the default variant—the one that people fall back to when no other variant matches their language.
+            example: es
+          default:
+            type: boolean
+            description: Whether this is the default variant. Exactly one variant per multi-language message is the default, and it always has an empty `language`.
+            example: false
+          series:
+            $ref: '#/components/schemas/periodMessageMetrics'
+    message_id:
+      x-scalar-ignore: true
+      description: The identifier for a delivery—the instance of a message intended for an individual recipient.
+      type: string
+      readOnly: true
+      example: dgOq6QWq6QUBAAF4_CGoeVX7mFkDbRFu7ek=
+  headers:
+    Retry-After:
+      description: How many seconds you must wait before you send another request. This header is present when you are rate limited by a per-second limit. If you hit a daily quota, this header is not set.
+      schema:
+        type: integer
+        minimum: 1
+        example: 1
+  parameters:
+    steps:
+      name: steps
+      in: query
+      required: false
+      description: The number of periods you want to return. Defaults to the maximum available, or `12` if the period is in `months`. Maximums are 24 hours, 45 days, 12 weeks, or 121 months. Days start at 00:00 EST. Weeks start at 00:00 EST on Sunday. Months start at 00:00 EST on the 1st of the month.
+      schema:
+        type: integer
+    drafts:
+      name: drafts
+      in: query
+      required: false
+      description: If true, your request returns drafts rather than active/sent messages.
+      schema:
+        type: boolean
+    campaign_id:
+      name: campaign_id
+      in: path
+      required: true
+      description: The ID of the automation that you want to trigger or return information about.
+      schema:
+        type: integer
+        example: 3
+    metric:
+      name: metric
+      in: query
+      required: false
+      description: Determines the metric(s) you want to return.
+      schema:
+        type: string
+        enum:
+        - attempted
+        - sent
+        - delivered
+        - opened
+        - clicked
+        - converted
+        - bounced
+        - spammed
+        - unsubscribed
+        - dropped
+        - failed
+        - undeliverable
+    get_tracked_responses:
+      name: get_tracked_responses
+      in: query
+      required: false
+      description: If true, the response includes `tracked_responses` for each message—an object containing tracked response option names for in-app survey responses.
+      schema:
+        type: boolean
+        default: false
+    limit-50-1000:
+      name: limit
+      in: query
+      required: false
+      description: The maximum number of results you want to retrieve per page.
+      schema:
+        type: integer
+        default: 50
+        maximum: 1000
+    metricType:
+      name: type
+      in: query
+      required: false
+      description: The type of item you want to return metrics for. When empty, the response contains metrics for all possible types.
+      schema:
+        type: string
+        enum:
+        - email
+        - webhook
+        - twilio
+        - whatsapp
+        - slack
+        - push
+        - in_app
+        - live_notification
+    unique:
+      name: unique
+      in: query
+      required: false
+      description: If true, the response contains only unique customer results, i.e. a customer who clicks a link twice is only counted once. If false, the response contains the total number of results without regard to uniqueness.
+      schema:
+        type: boolean
+        default: false
+    action_id:
+      name: action_id
+      in: path
+      required: true
+      description: The action you want to lookup or act on.
+      schema:
+        type: integer
+    journey_resolution:
+      name: resolution
+      in: query
+      description: Determines the increment for journey metrics—hourly, daily, weekly, or monthly.
+      required: true
+      schema:
+        type: string
+        enum:
+        - hours
+        - hourly
+        - days
+        - daily
+        - weeks
+        - weekly
+        - months
+        - monthly
+    period:
+      name: period
+      in: query
+      required: false
+      description: The unit of time for your report.
+      schema:
+        type: string
+        default: days
+        enum:
+        - hours
+        - days
+        - weeks
+        - months
+    end_ts:
+      name: end_ts
+      in: query
+      required: false
+      description: The ending timestamp for your query.
+      schema:
+        type: integer
+        format: unix timestamp
+    language-2:
+      name: language
+      in: path
+      required: true
+      description: A [language tag](/journeys/channels/subscriptions/unsubscribe-faqs/#currently-supported-languages) of a language variant. If you don't provide a language (an empty string), we'll use your default language. If the language variant does not exist, we'll return an error.
+      schema:
+        type: string
+    start:
+      name: start
+      in: query
+      required: false
+      description: The token for the page of results you want to return. Responses contain a `next` property. Use this property as the `start` value to return the next page of results.
+      schema:
+        type: string
+    start_ts:
+      name: start_ts
+      in: query
+      required: false
+      description: The beginning timestamp for your query.
+      schema:
+        type: integer
+        format: unix timestamp
+  responses:
+    400-campaigns:
+      description: The `campaignID` or `actionID` is invalid.
+    '429':
+      description: Your request is over the 10-per-second limit. `Retry-After` tells you how many seconds you must wait before you send the next request.
+      headers:
+        Retry-After:
+          $ref: '#/components/headers/Retry-After'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/appApiError'
+          example:
+            errors:
+            - detail: rate limited to 10 requests per 1s (reference a1b2c3)
+              status: '429'
+    '404':
+      description: The automation and/or action do not exist.
+    400-campaigns-lang:
+      description: The `campaignID` or `actionID` is invalid. It could also be that the `language` requested does not exist for this action.
+  securitySchemes:
+    Tracking-API-Key:
+      type: http
+      scheme: basic
+      description: 'The Track API uses a basic authentication scheme. Your credentials are your **Site ID** and your **API key**, **Base-64 encoded** in the format `site_id:api_key`.
+
+
+        You can find your Site ID and API key on the [Track API Keys page](https://fly.customer.io/settings/api_credentials).
+
+        '
+    Bearer-Auth:
+      type: http
+      scheme: bearer
+      description: 'The App API uses a bearer authentication scheme.
+
+
+        You can generate a bearer token, known as an **App API Key**, with a defined scope in [your account settings](https://fly.customer.io/settings/api_credentials?keyType=app). [Learn more about bearer authorization in Customer.io](/accounts/settings/managing-credentials).
+
+        '
+    ServiceAccount-Auth:
+      x-scalar-ignore: true
+      type: http
+      scheme: bearer
+      bearerFormat: sa_live_
+      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/whatsapp`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
+
+
+        Service-account tokens are intended for testing and one-off sends—for example, using the Customer.io CLI with an AI agent like Claude to verify that a transactional message renders correctly before wiring it into your production backend. **For the production integration that triggers the message from your application, use an App API Key instead**: it''s workspace-scoped, easier to rotate, and has a smaller blast radius.
+
+
+        Service-account tokens are server-side credentials. Treat them like any API key—keep them in environment variables or a secret manager, and never embed them in client-side code, mobile apps, or other untrusted contexts.
+
+        '
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: API key passed as a Bearer token.
+x-tagGroups:
+- name: Track API v2
+  tags:
+  - track_v2
+  - Object Schemas
+  - Person Schemas
+  - Deliveries
+- name: Track API
+  tags:
+  - trackOverview
+  - trackJsOrBackend
+  - trackLimit
+  - trackRegion
+  - Track Customers
+  - Track Events
+  - Forms
+  - Track Segments
+  - Track v1 Overview
+- name: App API
+  tags:
+  - appOverview
+  - appLimit
+  - appAuth
+  - Activities
+  - Automations
+  - Broadcasts
+  - Collections
+  - Customers
+  - Data Index
+  - ESP Suppression
+  - Exports
+  - Imports
+  - Info
+  - Live Notifications
+  - Messages
+  - Newsletters
+  - Opt-outs
+  - Reporting Webhooks
+  - Segments
+  - Sender Identities
+  - Snippets
+  - Subscription Center
+  - Transactional
+  - Workspaces
+  - Send Messages
+  - Objects
+  - Newsletter Variants
+  - Newsletter Metrics
+  - Assets
+- name: Design Studio API
+  tags:
+  - Folders
+  - Components
+  - Emails
+  - Email link and publish
+  - Email testing
+  - SMS
+  - SMS link and publish

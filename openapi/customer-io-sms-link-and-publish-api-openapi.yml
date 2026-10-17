@@ -1,0 +1,377 @@
+openapi: 3.2.0
+info:
+  version: 1.0.0
+  title: Customer.io Journeys API Reference SMS link and publish API
+  description: Customer.io provides REST APIs to send real-time customer data, retrieve data from your account, and trigger messages.
+servers:
+- url: https://track.customer.io
+  description: The base URL for the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+- url: https://track-eu.customer.io
+  description: The base URL for the Track API (EU region). Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+- url: https://api.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+- url: https://api-eu.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+tags:
+- name: SMS link and publish
+  description: A Design Studio SMS doesn't send anything on its own. After you create an SMS, you link it to a single workflow, like an SMS action in an automation or a transactional message. Then you publish to push your updates from Design Studio to that workflow.
+paths:
+  /v1/design_studio/sms/{id}/link:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for the Design Studio API. These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for the Design Studio API (EU region). These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    post:
+      tags:
+      - SMS link and publish
+      summary: Link an SMS to a workflow
+      description: 'Link an existing SMS to a workflow—a transactional message, a one-time send, an automation action, or an API-triggered broadcast—to send it to your audience.
+
+
+        If your workflow is already live, people start receiving this SMS as soon as you link it. If you make changes to the message after linking it, you need to publish the SMS to send the latest content to your audience.
+
+
+        You can only link an SMS to one workflow at a time. If you try to link an SMS to a workflow or action that''s already linked to a *different* message, the request fails with a `409` unless you pass `"force": true`. The `force` parameter replaces (and unlinks) the other message.'
+      operationId: linkSms
+      parameters:
+      - $ref: '#/components/parameters/sms_id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LinkRequest'
+      responses:
+        '200':
+          description: SMS linked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LinkResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: 'The destination is already linked to a different message. Pass `"force": true` to replace that link.
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                errors:
+                - detail: 'destination is already linked to a different Design Studio sms; pass "force": true to replace that link'
+                  status: '409'
+        '422':
+          description: 'The liquid in the SMS''s content or recipient isn''t valid, so Customer.io doesn''t link it. Each error''s `source.pointer` names the field that failed, as `/data/attributes/content` or `/data/attributes/recipient`. Fix the SMS, then link it again.
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/design_studio/sms/{id}/publish:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for the Design Studio API. These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for the Design Studio API (EU region). These endpoints use bearer authorization, and require an [App API Key that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    post:
+      tags:
+      - SMS link and publish
+      summary: Publish an SMS
+      description: If you made changes to a linked SMS message, you need to publish the SMS when you're ready so your workflows send the latest content.
+      operationId: publishSms
+      parameters:
+      - $ref: '#/components/parameters/sms_id'
+      responses:
+        '200':
+          description: SMS published
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelPublishResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          description: 'The liquid in the SMS''s content or recipient isn''t valid, so Customer.io doesn''t publish it. Each error''s `source.pointer` names the field that failed, as `/data/attributes/content` or `/data/attributes/recipient`. Fix the SMS, then publish it again.
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  responses:
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+            - detail: resource not found
+              status: '404'
+    BadRequest:
+      description: The request is invalid due to malformed parameters, missing required fields, or constraint violations.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Authentication failed due to a missing or invalid API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+            - detail: unauthorized
+              status: '401'
+  schemas:
+    Error:
+      type: object
+      description: An error response containing one or more error details.
+      properties:
+        errors:
+          type: array
+          description: A list of errors that occurred while processing the request.
+          items:
+            type: object
+            properties:
+              detail:
+                type: string
+                description: A human-readable description of the error.
+              status:
+                type: string
+                description: The HTTP status code for this error, as a string.
+              source:
+                type: object
+                description: The request field that caused the error. Validation errors (`422`) include it.
+                properties:
+                  pointer:
+                    type: string
+                    description: The path to the field that failed, like `/data/attributes/content`.
+              meta:
+                type: object
+                description: Additional detail about the error, when there is any. A failed publish uses this to list Liquid errors per language.
+    ChannelPublishResponse:
+      type: object
+      description: The result of the publish process.
+      properties:
+        template_ids:
+          type: array
+          description: The IDs of the workflow templates that received the content.
+          items:
+            type: integer
+        version_id:
+          type: string
+          description: The identifier of the template version created by the publish process.
+      example:
+        template_ids:
+        - 987654
+        version_id: v_01H8XK
+    LinkTargetResponse:
+      type: object
+      description: The workflow linked to the message. The response returns `campaign_action` for an automation or an API-triggered broadcast.
+      required:
+      - type
+      properties:
+        type:
+          type: string
+          description: 'The type of workflow linked.
+
+            '
+          enum:
+          - transactional_message
+          - newsletter
+          - campaign_action
+        transactional_message_id:
+          type: integer
+          description: The ID of the transactional message linked.
+        newsletter_id:
+          type: integer
+          description: The ID of the one-time send linked.
+        action_id:
+          type: integer
+          description: The ID of the action in the automation or API-triggered broadcast that was linked.
+      example:
+        type: campaign_action
+        action_id: 42
+    LinkTarget:
+      type: object
+      description: The workflow to link the content to.
+      required:
+      - type
+      properties:
+        type:
+          type: string
+          description: 'The kind of workflow to link. Provide the matching ID field for the type you choose. Use `campaign_action` for an automation or API-triggered broadcast.
+
+            '
+          enum:
+          - transactional_message
+          - newsletter
+          - campaign_action
+        transactional_message_id:
+          type: integer
+          description: The ID of the transactional message to link your content to. Required when `type` is `transactional_message`.
+        newsletter_id:
+          type: integer
+          description: The ID of the one-time send to link your content to. Required when `type` is `newsletter`.
+        action_id:
+          type: integer
+          description: The ID of the action in the automation or API-triggered broadcast to link your content to. Required when `type` is `campaign_action`.
+      example:
+        type: campaign_action
+        action_id: 42
+    LinkRequest:
+      type: object
+      required:
+      - target
+      properties:
+        target:
+          $ref: '#/components/schemas/LinkTarget'
+        force:
+          type: boolean
+          description: 'Replace an existing link if the workflow or action is already linked to *different* Design Studio content.
+
+            '
+          default: false
+      example:
+        target:
+          type: campaign_action
+          action_id: 42
+        force: false
+    LinkResponse:
+      type: object
+      properties:
+        node_id:
+          type: string
+          format: uuid
+          description: The UUID of the linked message.
+        template_id:
+          type: integer
+          description: The ID of the workflow template the content is now linked to.
+        target:
+          $ref: '#/components/schemas/LinkTargetResponse'
+      example:
+        node_id: 123e4567-e89b-12d3-a456-426614174000
+        template_id: 987654
+        target:
+          type: campaign_action
+          action_id: 42
+  parameters:
+    sms_id:
+      name: id
+      in: path
+      required: true
+      description: The UUID of the SMS.
+      schema:
+        type: string
+        format: uuid
+  securitySchemes:
+    Tracking-API-Key:
+      type: http
+      scheme: basic
+      description: 'The Track API uses a basic authentication scheme. Your credentials are your **Site ID** and your **API key**, **Base-64 encoded** in the format `site_id:api_key`.
+
+
+        You can find your Site ID and API key on the [Track API Keys page](https://fly.customer.io/settings/api_credentials).
+
+        '
+    Bearer-Auth:
+      type: http
+      scheme: bearer
+      description: 'The App API uses a bearer authentication scheme.
+
+
+        You can generate a bearer token, known as an **App API Key**, with a defined scope in [your account settings](https://fly.customer.io/settings/api_credentials?keyType=app). [Learn more about bearer authorization in Customer.io](/accounts/settings/managing-credentials).
+
+        '
+    ServiceAccount-Auth:
+      x-scalar-ignore: true
+      type: http
+      scheme: bearer
+      bearerFormat: sa_live_
+      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/whatsapp`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
+
+
+        Service-account tokens are intended for testing and one-off sends—for example, using the Customer.io CLI with an AI agent like Claude to verify that a transactional message renders correctly before wiring it into your production backend. **For the production integration that triggers the message from your application, use an App API Key instead**: it''s workspace-scoped, easier to rotate, and has a smaller blast radius.
+
+
+        Service-account tokens are server-side credentials. Treat them like any API key—keep them in environment variables or a secret manager, and never embed them in client-side code, mobile apps, or other untrusted contexts.
+
+        '
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: API key passed as a Bearer token.
+x-tagGroups:
+- name: Track API v2
+  tags:
+  - track_v2
+  - Object Schemas
+  - Person Schemas
+  - Deliveries
+- name: Track API
+  tags:
+  - trackOverview
+  - trackJsOrBackend
+  - trackLimit
+  - trackRegion
+  - Track Customers
+  - Track Events
+  - Forms
+  - Track Segments
+  - Track v1 Overview
+- name: App API
+  tags:
+  - appOverview
+  - appLimit
+  - appAuth
+  - Activities
+  - Automations
+  - Broadcasts
+  - Collections
+  - Customers
+  - Data Index
+  - ESP Suppression
+  - Exports
+  - Imports
+  - Info
+  - Live Notifications
+  - Messages
+  - Newsletters
+  - Opt-outs
+  - Reporting Webhooks
+  - Segments
+  - Sender Identities
+  - Snippets
+  - Subscription Center
+  - Transactional
+  - Workspaces
+  - Send Messages
+  - Objects
+  - Newsletter Variants
+  - Newsletter Metrics
+  - Assets
+- name: Design Studio API
+  tags:
+  - Folders
+  - Components
+  - Emails
+  - Email link and publish
+  - Email testing
+  - SMS
+  - SMS link and publish

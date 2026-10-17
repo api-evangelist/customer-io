@@ -1,201 +1,37 @@
 openapi: 3.2.0
 info:
   version: 1.0.0
-  title: Customer.io App Activities API
-  description: Our App API provides ways to trigger messages and retrieve information about people, campaigns, broadcasts, and more.
+  title: Customer.io Journeys API Reference Activities API
+  description: Customer.io provides REST APIs to send real-time customer data, retrieve data from your account, and trigger messages.
 servers:
+- url: https://track.customer.io
+  description: The base URL for the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+- url: https://track-eu.customer.io
+  description: The base URL for the Track API (EU region). Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
 - url: https://api.customer.io
   description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
 - url: https://api-eu.customer.io
   description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
 tags:
 - name: Activities
-  description: Return information about activities. Activities are cards in campaigns, broadcasts, etc. They might be messages, webhooks, attribute changes, etc.
+  description: Return information about activities. Activities are cards in automations, broadcasts, etc. They might be messages, webhooks, attribute changes, etc.
 paths:
   /v1/activities:
     servers:
     - url: https://api.customer.io
-      description: This API uses bearer authorization, requiring a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
     get:
       operationId: listActivities
       parameters:
-      - name: start
-        in: query
-        required: false
-        description: The token for the page of results you want to return. Responses contain a `next` property. Use this property as the `start` value to return the next page of results.
-        schema:
-          type: string
-      - name: type
-        description: The type of activity you want to search for. Types with `_o:<object_type_id>` are for objects and types with `_r:<object_type_id>` are for relationships.
-        in: query
-        required: false
-        schema:
-          x-scalar-ignore: true
-          description: The type of activity. Types with `_o:<object_type_id>` are for objects and types with `_r:<object_type_id>` are for relationships.
-          type: string
-          enum:
-          - add_relationship
-          - anon_merge
-          - attempted_action
-          - attempted_email
-          - attempted_in_app
-          - attempted_push
-          - attempted_slack
-          - attempted_twilio
-          - attempted_webhook
-          - attempted_whatsapp
-          - attribute_change
-          - bounced_action
-          - bounced_email
-          - bounced_push
-          - bounced_twilio
-          - bounced_whatsapp
-          - clicked_action
-          - clicked_content
-          - clicked_email
-          - clicked_in_app
-          - clicked_push
-          - clicked_twilio
-          - clicked_webhook
-          - converted_action
-          - converted_content
-          - converted_email
-          - converted_in_app
-          - converted_slack
-          - converted_twilio
-          - converted_webhook
-          - converted_whatsapp
-          - deferred_action
-          - deferred_email
-          - deferred_in_app
-          - deferred_push
-          - deferred_slack
-          - deferred_twilio
-          - deferred_webhook
-          - deferred_whatsapp
-          - delete_relationship
-          - delivered_action
-          - delivered_email
-          - delivered_push
-          - delivered_twilio
-          - delivered_whatsapp
-          - device_change
-          - drafted_action
-          - drafted_email
-          - drafted_in_app
-          - drafted_push
-          - drafted_slack
-          - drafted_twilio
-          - drafted_webhook
-          - dropped_action
-          - dropped_email
-          - dropped_push
-          - dropped_twilio
-          - dropped_webhook
-          - dropped_whatasapp
-          - event
-          - failed_action
-          - failed_attribute_change
-          - failed_batch_update
-          - failed_email
-          - failed_event
-          - failed_in_app
-          - failed_object_journeys
-          - failed_push
-          - failed_query_collection
-          - failed_slack
-          - failed_twilio
-          - failed_webhook
-          - failed_whatsapp
-          - opened_action
-          - opened_email
-          - opened_in_app
-          - opened_push
-          - page
-          - profile_create
-          - profile_delete
-          - profile_merge
-          - relationship_attribute_change
-          - relationship_failed_attribute_change
-          - screen
-          - sent_action
-          - sent_email
-          - sent_in_app
-          - sent_push
-          - sent_slack
-          - sent_twilio
-          - sent_webhook
-          - sent_whatsapp
-          - skipped_update
-          - spammed_email
-          - suppressed_twilio
-          - suppressed_whatsapp
-          - topic_unsubscribed_email
-          - undeliverable_action
-          - undeliverable_email
-          - undeliverable_in_app
-          - undeliverable_push
-          - undeliverable_slack
-          - undeliverable_twilio
-          - undeliverable_webhook
-          - undeliverable_whatsapp
-          - unsubscribed_action
-          - unsubscribed_email
-          - viewed_content
-          - webhook_event
-          - _o:<object_type_id>:add_relationship
-          - _o:<object_type_id>:attribute_change
-          - _o:<object_type_id>:create
-          - _o:<object_type_id>:delete
-          - _o:<object_type_id>:delete_relationship
-          - _o:<object_type_id>:failed_attribute_change
-          - _r:<object_type_id>:attribute_change
-          - _r:<object_type_id>:failed_attribute_change
-          example: sent_email
-      - name: name
-        in: query
-        description: The name of the event or attribute you want to return.
-        required: false
-        schema:
-          type: string
-          example: something_happened
-      - name: deleted
-        in: query
-        description: If true, return results for deleted people.
-        required: false
-        schema:
-          type: boolean
-          default: false
-      - name: customer_id
-        required: false
-        in: query
-        description: 'The `identifier` of the person you want to look up. By default, this is a person''s `id`. You can use the `id_type` parameter to look up a person by `email`, `phone`, or `cio_id`.
-
-
-          If you use a person''s `cio_id`, you must prefix the value with `cio_` when using it to find or reference a person (i.e. `cio_03000010` for a `cio_id` value of 03000010).
-
-          '
-        schema:
-          type: string
-      - name: id_type
-        required: false
-        in: query
-        description: The type of `customer_id` you want to use to reference a person. If you don't provide this parameter, we assume that the `customer_id` in your request is a person's `id`. You can use `email` and `phone` only if they're enabled as identifiers in your [workspace settings](/accounts/workspaces/overview/#migrate-workspace); otherwise the request returns `400`. Reference `phone` values in [E.164 format](https://en.wikipedia.org/wiki/E.164), like `+14155552671`, and URL-encode the leading `+` as `%2B`.
-        schema:
-          type: string
-          enum:
-          - id
-          - email
-          - phone
-          - cio_id
-      - name: limit
-        in: query
-        required: false
-        description: The maximum number of results you want to retrieve per page.
-        schema:
-          type: integer
-          default: 10
-          maximum: 100
+      - $ref: '#/components/parameters/start'
+      - $ref: '#/components/parameters/activityTypes'
+      - $ref: '#/components/parameters/activityName'
+      - $ref: '#/components/parameters/deleted'
+      - $ref: '#/components/parameters/customer_id_query'
+      - $ref: '#/components/parameters/id_type'
+      - $ref: '#/components/parameters/limit-10-100'
       summary: List activities
       security:
       - Bearer-Auth: []
@@ -213,289 +49,463 @@ paths:
                   activities:
                     type: array
                     items:
-                      x-scalar-ignore: true
-                      type: object
-                      properties:
-                        customer_id:
-                          x-scalar-ignore: true
-                          type:
-                          - string
-                          - 'null'
-                          description: The ID of a customer profile, analogous to a "person" in the UI. If your workspace supports multiple identifiers (email and ID), this value can be null.
-                          example: '42'
-                        customer_identifiers:
-                          x-scalar-ignore: true
-                          type: object
-                          description: Identifiers for the person in a response—`id`, `cio_id`, and `email`. Unset `id` or `email` values are `null`. We recommend this object over the less descriptive `customer_id`. This object doesn't include `phone`, even if your workspace uses phone numbers as an identifier; look for the person's `phone` attribute instead.
-                          required:
-                          - email
-                          - id
-                          - cio_id
-                          properties:
-                            email:
-                              type:
-                              - string
-                              - 'null'
-                              format: email
-                              description: A person's email address, if set.
-                              example: test@example.com
-                            id:
-                              type:
-                              - string
-                              - 'null'
-                              description: A person's unique ID, if set. This is the same as the `customer_id` if present.
-                              example: 2
-                            cio_id:
-                              x-scalar-ignore: true
-                              type: string
-                              description: A unique identifier set by Customer.io, used to reference a person if you want to update their identifiers.
-                              example: a3000001
-                        data:
-                          oneOf:
-                          - title: Message delivery
-                            type: object
-                            properties:
-                              delivered:
-                                type:
-                                - integer
-                                - 'null'
-                                format: unix timestamp
-                                description: The date-time when the message was delivered, if applicable.
-                              delivery_id:
-                                type: string
-                                description: The message ID.
-                              opened:
-                                type:
-                                - boolean
-                                - 'null'
-                                description: Indicates whether or not a customer opened a message, if the message was delivered.
-                            example:
-                              delivery_id: ZAIAAVTJVG0QcCok0-0ZKj6yiQ==
-                              opened: null
-                              delivered: null
-                          - title: Attribute change
-                            description: The name of the object is the attribute that changed.
-                            type: object
-                            additionalProperties:
-                              x-scalar-ignore: true
-                              type: object
-                              properties:
-                                from:
-                                  type: string
-                                  description: The old attribute value. If empty, the customer probably didn't bear the attribute before this action.
-                                to:
-                                  type: string
-                                  description: The new attribute value.
-                            example:
-                              email:
-                                from: newPerson@example.com
-                                to: newPerson@customer.io
-                        delivery_id:
-                          type: string
-                          description: The message ID.
-                          example: ZAIAAVTJVG0QcCok0-0ZKj6yiQ==
-                        delivery_type:
-                          type: string
-                          description: The recipient device, if applicable.
-                          enum:
-                          - ios
-                          - android
-                          - email
-                          - phone
-                          example: email
-                        id:
-                          description: The identifier for the action.
-                          type: string
-                          example: 01AK4N8V8G8KVA4HN8Y50CCZ59
-                        timestamp:
-                          type: integer
-                          format: unix timestamp
-                          description: The date and time when the action occurred.
-                          example: 1397566226
-                        type:
-                          x-scalar-ignore: true
-                          description: The type of activity. Types with `_o:<object_type_id>` are for objects and types with `_r:<object_type_id>` are for relationships.
-                          type: string
-                          enum:
-                          - add_relationship
-                          - anon_merge
-                          - attempted_action
-                          - attempted_email
-                          - attempted_in_app
-                          - attempted_push
-                          - attempted_slack
-                          - attempted_twilio
-                          - attempted_webhook
-                          - attempted_whatsapp
-                          - attribute_change
-                          - bounced_action
-                          - bounced_email
-                          - bounced_push
-                          - bounced_twilio
-                          - bounced_whatsapp
-                          - clicked_action
-                          - clicked_content
-                          - clicked_email
-                          - clicked_in_app
-                          - clicked_push
-                          - clicked_twilio
-                          - clicked_webhook
-                          - converted_action
-                          - converted_content
-                          - converted_email
-                          - converted_in_app
-                          - converted_slack
-                          - converted_twilio
-                          - converted_webhook
-                          - converted_whatsapp
-                          - deferred_action
-                          - deferred_email
-                          - deferred_in_app
-                          - deferred_push
-                          - deferred_slack
-                          - deferred_twilio
-                          - deferred_webhook
-                          - deferred_whatsapp
-                          - delete_relationship
-                          - delivered_action
-                          - delivered_email
-                          - delivered_push
-                          - delivered_twilio
-                          - delivered_whatsapp
-                          - device_change
-                          - drafted_action
-                          - drafted_email
-                          - drafted_in_app
-                          - drafted_push
-                          - drafted_slack
-                          - drafted_twilio
-                          - drafted_webhook
-                          - dropped_action
-                          - dropped_email
-                          - dropped_push
-                          - dropped_twilio
-                          - dropped_webhook
-                          - dropped_whatasapp
-                          - event
-                          - failed_action
-                          - failed_attribute_change
-                          - failed_batch_update
-                          - failed_email
-                          - failed_event
-                          - failed_in_app
-                          - failed_object_journeys
-                          - failed_push
-                          - failed_query_collection
-                          - failed_slack
-                          - failed_twilio
-                          - failed_webhook
-                          - failed_whatsapp
-                          - opened_action
-                          - opened_email
-                          - opened_in_app
-                          - opened_push
-                          - page
-                          - profile_create
-                          - profile_delete
-                          - profile_merge
-                          - relationship_attribute_change
-                          - relationship_failed_attribute_change
-                          - screen
-                          - sent_action
-                          - sent_email
-                          - sent_in_app
-                          - sent_push
-                          - sent_slack
-                          - sent_twilio
-                          - sent_webhook
-                          - sent_whatsapp
-                          - skipped_update
-                          - spammed_email
-                          - suppressed_twilio
-                          - suppressed_whatsapp
-                          - topic_unsubscribed_email
-                          - undeliverable_action
-                          - undeliverable_email
-                          - undeliverable_in_app
-                          - undeliverable_push
-                          - undeliverable_slack
-                          - undeliverable_twilio
-                          - undeliverable_webhook
-                          - undeliverable_whatsapp
-                          - unsubscribed_action
-                          - unsubscribed_email
-                          - viewed_content
-                          - webhook_event
-                          - _o:<object_type_id>:add_relationship
-                          - _o:<object_type_id>:attribute_change
-                          - _o:<object_type_id>:create
-                          - _o:<object_type_id>:delete
-                          - _o:<object_type_id>:delete_relationship
-                          - _o:<object_type_id>:failed_attribute_change
-                          - _r:<object_type_id>:attribute_change
-                          - _r:<object_type_id>:failed_attribute_change
-                          example: sent_email
-                        name:
-                          type: string
-                          description: The name of the event, for `event` and `screen` activities.
-                        url:
-                          type: string
-                          description: The page URL, for `page` activities.
+                      $ref: '#/components/schemas/activityObject'
                   next:
-                    x-scalar-ignore: true
-                    type: string
-                    description: Indicates the next page of results. Add `?start=<next_value>` to the request to get the next page of results.
+                    $ref: '#/components/schemas/next'
         '429':
-          description: Your request is over the 10-per-second limit.
-      x-codeSamples:
-      - lang: Shell + Curl
-        source: "curl --request GET \\\n  --header 'Authorization: Bearer REPLACE_BEARER_TOKEN' \\\n  --url 'https://api.customer.io/v1/activities?start=SOME_STRING_VALUE&type=sent_email&name=something_happened&deleted=SOME_BOOLEAN_VALUE&customer_id=SOME_STRING_VALUE&id_type=SOME_STRING_VALUE&limit=SOME_INTEGER_VALUE'"
-      - lang: Node + Native
-        source: "const http = require(\"https\");\n\nconst options = {\n  \"method\": \"GET\",\n  \"hostname\": \"api.customer.io\",\n  \"port\": null,\n  \"path\": \"/v1/activities?start=SOME_STRING_VALUE&type=sent_email&name=something_happened&deleted=SOME_BOOLEAN_VALUE&customer_id=SOME_STRING_VALUE&id_type=SOME_STRING_VALUE&limit=SOME_INTEGER_VALUE\",\n  \"headers\": {}\n};\n\nconst req = http.request(options, function (res) {\n  const chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function () {\n    const body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n});\n\nreq.end();"
-      - lang: Ruby + Native
-        source: 'require ''uri''
-
-          require ''net/http''
-
-          require ''openssl''
-
-
-          url = URI("https://api.customer.io/v1/activities?start=SOME_STRING_VALUE&type=sent_email&name=something_happened&deleted=SOME_BOOLEAN_VALUE&customer_id=SOME_STRING_VALUE&id_type=SOME_STRING_VALUE&limit=SOME_INTEGER_VALUE")
-
-
-          http = Net::HTTP.new(url.host, url.port)
-
-          http.use_ssl = true
-
-          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-
-          request = Net::HTTP::Get.new(url)
-
-
-          response = http.request(request)
-
-          puts response.read_body'
-      - lang: Python + Python3
-        source: 'import http.client
-
-
-          conn = http.client.HTTPSConnection("api.customer.io")
-
-
-          conn.request("GET", "/v1/activities?start=SOME_STRING_VALUE&type=sent_email&name=something_happened&deleted=SOME_BOOLEAN_VALUE&customer_id=SOME_STRING_VALUE&id_type=SOME_STRING_VALUE&limit=SOME_INTEGER_VALUE")
-
-
-          res = conn.getresponse()
-
-          data = res.read()
-
-
-          print(data.decode("utf-8"))'
-      - lang: Go + Native
-        source: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"io/ioutil\"\n)\n\nfunc main() {\n\n\turl := \"https://api.customer.io/v1/activities?start=SOME_STRING_VALUE&type=sent_email&name=something_happened&deleted=SOME_BOOLEAN_VALUE&customer_id=SOME_STRING_VALUE&id_type=SOME_STRING_VALUE&limit=SOME_INTEGER_VALUE\"\n\n\treq, _ := http.NewRequest(\"GET\", url, nil)\n\n\tres, _ := http.DefaultClient.Do(req)\n\n\tdefer res.Body.Close()\n\tbody, _ := ioutil.ReadAll(res.Body)\n\n\tfmt.Println(res)\n\tfmt.Println(string(body))\n\n}"
+          $ref: '#/components/responses/429'
 components:
+  parameters:
+    limit-10-100:
+      name: limit
+      in: query
+      required: false
+      description: The maximum number of results you want to retrieve per page.
+      schema:
+        type: integer
+        default: 10
+        maximum: 100
+    deleted:
+      name: deleted
+      in: query
+      description: If true, return results for deleted people.
+      required: false
+      schema:
+        type: boolean
+        default: false
+    activityName:
+      name: name
+      in: query
+      description: The name of the event or attribute you want to return. For `consent` activities, the consent action, like `opted_in` or `opted_out`.
+      required: false
+      schema:
+        type: string
+        example: something_happened
+    start:
+      name: start
+      in: query
+      required: false
+      description: The token for the page of results you want to return. Responses contain a `next` property. Use this property as the `start` value to return the next page of results.
+      schema:
+        type: string
+    activityTypes:
+      name: type
+      description: The type of activity you want to search for. Types with `_o:<object_type_id>` are for objects and types with `_r:<object_type_id>` are for relationships.
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/activityTypes'
+    id_type:
+      name: id_type
+      required: false
+      in: query
+      description: The type of `customer_id` you want to use to reference a person. If you don't provide this parameter, we assume that the `customer_id` in your request is a person's `id`. You can use `email` and `phone` only if they're enabled as identifiers in your [workspace settings](/accounts/workspaces/overview/#migrate-workspace); otherwise the request returns `400`. Reference `phone` values in [E.164 format](https://en.wikipedia.org/wiki/E.164), like `+14155552671`, and URL-encode the leading `+` as `%2B`.
+      schema:
+        type: string
+        enum:
+        - id
+        - email
+        - phone
+        - cio_id
+    customer_id_query:
+      name: customer_id
+      required: false
+      in: query
+      description: 'The `identifier` of the person you want to look up. By default, this is a person''s `id`. You can use the `id_type` parameter to look up a person by `email`, `phone`, or `cio_id`.
+
+
+        If you use a person''s `cio_id`, you must prefix the value with `cio_` when using it to find or reference a person (i.e. `cio_03000010` for a `cio_id` value of 03000010).
+
+        '
+      schema:
+        type: string
+  schemas:
+    appApiError:
+      x-scalar-ignore: true
+      type: object
+      description: An array/list of failures where each entry is a separate failure reason.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: One entry for each reason the request failed.
+          items:
+            type: object
+            required:
+            - detail
+            - status
+            properties:
+              detail:
+                type: string
+                description: What went wrong, in plain text. Most messages end with a support reference you can use if you need to contact support.
+                example: bad request (reference a1b2c3)
+              status:
+                type: string
+                description: The HTTP status code as a string.
+                example: '400'
+              code:
+                type: string
+                description: A stable identifier for the failure, on the errors that carry one. Use this rather than the text in `detail` if you need to identify the error programmatically.
+                example: invalid_credentials
+              source:
+                type: object
+                description: The part of the request that the error refers to.
+                properties:
+                  pointer:
+                    type: string
+                    description: A JSON pointer to the part of the request body that the error refers to.
+                    example: /data/attributes/email
+              meta:
+                type: object
+                additionalProperties: true
+                description: Extra context (if available).
+    cio_id:
+      x-scalar-ignore: true
+      type: string
+      description: A unique identifier set by Customer.io, used to reference a person if you want to update their identifiers.
+      example: a3000001
+    customer_id:
+      x-scalar-ignore: true
+      type:
+      - string
+      - 'null'
+      description: The ID of a customer profile, analogous to a "person" in the UI. If your workspace supports multiple identifiers (email and ID), this value can be null.
+      example: '42'
+    customer_identifiers:
+      x-scalar-ignore: true
+      type: object
+      description: Identifiers for the person in a response—`id`, `cio_id`, and `email`. Unset `id` or `email` values are `null`. We recommend this object over the less descriptive `customer_id`. This object doesn't include `phone`, even if your workspace uses phone numbers as an identifier; look for the person's `phone` attribute instead.
+      required:
+      - email
+      - id
+      - cio_id
+      properties:
+        email:
+          type:
+          - string
+          - 'null'
+          format: email
+          description: A person's email address, if set.
+          example: test@example.com
+        id:
+          type:
+          - string
+          - 'null'
+          description: A person's unique ID, if set. This is the same as the `customer_id` if present.
+          example: 2
+        cio_id:
+          $ref: '#/components/schemas/cio_id'
+    next:
+      x-scalar-ignore: true
+      type: string
+      description: Indicates the next page of results. Add `?start=<next_value>` to the request to get the next page of results.
+    activityTypes:
+      x-scalar-ignore: true
+      description: The type of activity. Types with `_o:<object_type_id>` are for objects and types with `_r:<object_type_id>` are for relationships.
+      type: string
+      enum:
+      - add_relationship
+      - anon_merge
+      - attempted_action
+      - attempted_email
+      - attempted_in_app
+      - attempted_push
+      - attempted_slack
+      - attempted_twilio
+      - attempted_webhook
+      - attempted_whatsapp
+      - attribute_change
+      - bounced_action
+      - bounced_email
+      - bounced_push
+      - bounced_twilio
+      - bounced_whatsapp
+      - clicked_action
+      - clicked_content
+      - clicked_email
+      - clicked_in_app
+      - clicked_push
+      - clicked_twilio
+      - clicked_webhook
+      - consent
+      - converted_action
+      - converted_content
+      - converted_email
+      - converted_in_app
+      - converted_slack
+      - converted_twilio
+      - converted_webhook
+      - converted_whatsapp
+      - deferred_action
+      - deferred_email
+      - deferred_in_app
+      - deferred_push
+      - deferred_slack
+      - deferred_twilio
+      - deferred_webhook
+      - deferred_whatsapp
+      - delete_relationship
+      - delivered_action
+      - delivered_email
+      - delivered_push
+      - delivered_twilio
+      - delivered_whatsapp
+      - device_change
+      - drafted_action
+      - drafted_email
+      - drafted_in_app
+      - drafted_push
+      - drafted_slack
+      - drafted_twilio
+      - drafted_webhook
+      - dropped_action
+      - dropped_email
+      - dropped_push
+      - dropped_twilio
+      - dropped_webhook
+      - dropped_whatasapp
+      - event
+      - failed_action
+      - failed_attribute_change
+      - failed_batch_update
+      - failed_email
+      - failed_event
+      - failed_in_app
+      - failed_object_journeys
+      - failed_push
+      - failed_query_collection
+      - failed_slack
+      - failed_twilio
+      - failed_webhook
+      - failed_whatsapp
+      - opened_action
+      - opened_email
+      - opened_in_app
+      - opened_push
+      - page
+      - profile_create
+      - profile_delete
+      - profile_merge
+      - relationship_attribute_change
+      - relationship_failed_attribute_change
+      - screen
+      - sent_action
+      - sent_email
+      - sent_in_app
+      - sent_push
+      - sent_slack
+      - sent_twilio
+      - sent_webhook
+      - sent_whatsapp
+      - skipped_update
+      - spammed_email
+      - suppressed_twilio
+      - suppressed_whatsapp
+      - topic_unsubscribed_email
+      - undeliverable_action
+      - undeliverable_email
+      - undeliverable_in_app
+      - undeliverable_push
+      - undeliverable_slack
+      - undeliverable_twilio
+      - undeliverable_webhook
+      - undeliverable_whatsapp
+      - unsubscribed_action
+      - unsubscribed_email
+      - viewed_content
+      - webhook_event
+      - _o:<object_type_id>:add_relationship
+      - _o:<object_type_id>:attribute_change
+      - _o:<object_type_id>:create
+      - _o:<object_type_id>:delete
+      - _o:<object_type_id>:delete_relationship
+      - _o:<object_type_id>:failed_attribute_change
+      - _r:<object_type_id>:attribute_change
+      - _r:<object_type_id>:failed_attribute_change
+      example: sent_email
+    attributeChangeAction:
+      x-scalar-ignore: true
+      type: object
+      properties:
+        from:
+          type: string
+          description: The old attribute value. If empty, the customer probably didn't bear the attribute before this action.
+        to:
+          type: string
+          description: The new attribute value.
+    activityObject:
+      x-scalar-ignore: true
+      type: object
+      properties:
+        customer_id:
+          $ref: '#/components/schemas/customer_id'
+        customer_identifiers:
+          $ref: '#/components/schemas/customer_identifiers'
+        data:
+          oneOf:
+          - title: Message delivery
+            type: object
+            properties:
+              delivered:
+                type:
+                - integer
+                - 'null'
+                format: unix timestamp
+                description: The date-time when the message was delivered, if applicable.
+              delivery_id:
+                type: string
+                description: The message ID.
+              opened:
+                type:
+                - boolean
+                - 'null'
+                description: Indicates whether or not a customer opened a message, if the message was delivered.
+            example:
+              delivery_id: ZAIAAVTJVG0QcCok0-0ZKj6yiQ==
+              opened: null
+              delivered: null
+          - title: Attribute change
+            description: The name of the object is the attribute that changed.
+            type: object
+            additionalProperties:
+              x-additionalPropertyName: Attribute Name
+              $ref: '#/components/schemas/attributeChangeAction'
+            example:
+              email:
+                from: newPerson@example.com
+                to: newPerson@customer.io
+          - title: Consent record
+            description: The data for a `consent` activity. The activity's `name` is the action, `opted_in` or `opted_out`. Customer.io fills in the optional fields when the change that created the record has that information. See [Consent records](/messaging/channels/subscriptions/consent-records/#what-a-record-contains).
+            type: object
+            properties:
+              consent_state:
+                type: string
+                description: The state the change left the person in.
+                enum:
+                - subscribed
+                - unsubscribed
+              collection_point:
+                type: string
+                description: Where the change came from, like your subscription center or an SMS reply. The `subscription_preference_migration` and `sender_optout_migration` values mark records that Customer.io imported from preferences and opt-outs that existed before your account recorded consent.
+                enum:
+                - api
+                - carrier_report
+                - double_opt_in_confirmation
+                - form
+                - import
+                - in_app_prompt
+                - inbound_reply
+                - list_unsubscribe_header
+                - one_click_unsubscribe
+                - operator
+                - sender_optout_migration
+                - subscription_center
+                - subscription_preference_migration
+                - unsubscribe_link
+              channel:
+                type: string
+                description: The channel the consent applies to, like `email` or `sms`. Absent when the consent applies to all of your messages.
+              topic_id:
+                type: integer
+                description: The subscription topic the consent applies to, if any.
+              topic_name:
+                type: string
+                description: The topic's name when the change happened. Renaming the topic later doesn't change this value.
+              sender_id:
+                type: integer
+                description: The sender identity the consent applies to, if any.
+              from:
+                type: string
+                description: The sender's email address or phone number when the change happened.
+              delivery_id:
+                type: string
+                description: The message the person responded to, like the email that contained the unsubscribe link.
+              received_on:
+                type: string
+                description: The address or phone number the person's reply came from.
+              profile_identifier:
+                type: string
+                description: The identifier your request used to find the person.
+              profile_identifier_type:
+                type: string
+                description: The type of `profile_identifier`, like `email` or `id`.
+              response:
+                type: string
+                description: What the person sent back, like the body of an SMS reply.
+              source_event_id:
+                type: string
+                description: The ID of the activity that produced this record, like the inbound SMS that contained STOP.
+            example:
+              consent_state: unsubscribed
+              collection_point: inbound_reply
+              channel: sms
+              sender_id: 19
+              from: '+15485712226'
+              received_on: '+15555550123'
+              response: STOP
+              delivery_id: RPILAgUBcRhIBqSfeiIwdIYJKxTY
+        delivery_id:
+          type: string
+          description: The message ID.
+          example: ZAIAAVTJVG0QcCok0-0ZKj6yiQ==
+        delivery_type:
+          type: string
+          description: The recipient device, if applicable.
+          enum:
+          - ios
+          - android
+          - email
+          - phone
+          example: email
+        id:
+          description: The identifier for the action.
+          type: string
+          example: 01AK4N8V8G8KVA4HN8Y50CCZ59
+        timestamp:
+          type: integer
+          format: unix timestamp
+          description: The date and time when the action occurred.
+          example: 1397566226
+        type:
+          $ref: '#/components/schemas/activityTypes'
+        name:
+          type: string
+          description: The name of the event, for `event` and `screen` activities. For `consent` activities, the consent action, which is `opted_in`, `opted_out`, or `voided`.
+        url:
+          type: string
+          description: The page URL, for `page` activities.
+  responses:
+    '429':
+      description: Your request is over the 10-per-second limit. `Retry-After` tells you how many seconds you must wait before you send the next request.
+      headers:
+        Retry-After:
+          $ref: '#/components/headers/Retry-After'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/appApiError'
+          example:
+            errors:
+            - detail: rate limited to 10 requests per 1s (reference a1b2c3)
+              status: '429'
+  headers:
+    Retry-After:
+      description: How many seconds you must wait before you send another request. This header is present when you are rate limited by a per-second limit. If you hit a daily quota, this header is not set.
+      schema:
+        type: integer
+        minimum: 1
+        example: 1
   securitySchemes:
+    Tracking-API-Key:
+      type: http
+      scheme: basic
+      description: 'The Track API uses a basic authentication scheme. Your credentials are your **Site ID** and your **API key**, **Base-64 encoded** in the format `site_id:api_key`.
+
+
+        You can find your Site ID and API key on the [Track API Keys page](https://fly.customer.io/settings/api_credentials).
+
+        '
     Bearer-Auth:
       type: http
       scheme: bearer
@@ -510,7 +520,7 @@ components:
       type: http
       scheme: bearer
       bearerFormat: sa_live_
-      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
+      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/whatsapp`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
 
 
         Service-account tokens are intended for testing and one-off sends—for example, using the Customer.io CLI with an AI agent like Claude to verify that a transactional message renders correctly before wiring it into your production backend. **For the production integration that triggers the message from your application, use an App API Key instead**: it''s workspace-scoped, easier to rotate, and has a smaller blast radius.
@@ -522,4 +532,62 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
-      description: API key passed as a Bearer token
+      description: API key passed as a Bearer token.
+x-tagGroups:
+- name: Track API v2
+  tags:
+  - track_v2
+  - Object Schemas
+  - Person Schemas
+  - Deliveries
+- name: Track API
+  tags:
+  - trackOverview
+  - trackJsOrBackend
+  - trackLimit
+  - trackRegion
+  - Track Customers
+  - Track Events
+  - Forms
+  - Track Segments
+  - Track v1 Overview
+- name: App API
+  tags:
+  - appOverview
+  - appLimit
+  - appAuth
+  - Activities
+  - Automations
+  - Broadcasts
+  - Collections
+  - Customers
+  - Data Index
+  - ESP Suppression
+  - Exports
+  - Imports
+  - Info
+  - Live Notifications
+  - Messages
+  - Newsletters
+  - Opt-outs
+  - Reporting Webhooks
+  - Segments
+  - Sender Identities
+  - Snippets
+  - Subscription Center
+  - Transactional
+  - Workspaces
+  - Send Messages
+  - Objects
+  - Newsletter Variants
+  - Newsletter Metrics
+  - Assets
+- name: Design Studio API
+  tags:
+  - Folders
+  - Components
+  - Emails
+  - Email link and publish
+  - Email testing
+  - SMS
+  - SMS link and publish
