@@ -987,6 +987,8 @@ apis:
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags:
+  - Automation
+  tags_raw:
   - Automations
   properties:
   - type: OpenAPI
@@ -1135,6 +1137,8 @@ apis:
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags:
+  - Email Testing
+  tags_raw:
   - Email testing
   properties:
   - type: OpenAPI
@@ -1176,6 +1180,8 @@ apis:
   humanURL: https://docs.customer.io/integrations/api/track/
   baseURL: https://track.customer.io
   tags:
+  - Email
+  tags_raw:
   - Emails
   properties:
   - type: OpenAPI
