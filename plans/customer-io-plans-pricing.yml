@@ -170,11 +170,16 @@ maintainers:
 x-ported-from: customerio
 x-ported: '2026-08-04'
 x-ported-note: Carried over from the retired duplicate `customerio` during the duplicate-provider merge. Content unchanged; provider identity repointed.
+delivery:
+  delivery: managed
+audience: business-product
+pricing_basis: tiered-subscription
+published: true
+note: '2026-10-12: Builder tier removed — it no longer appears on customer.io/pricing and docs.customer.io/accounts/billing/builder-plan.md now returns 404. Premium is billed yearly per the page.'
 x-canonical:
-  generated: '2026-10-08'
+  generated: '2026-10-18'
   vocabulary: all/0-working/economics/plans-canonical.yml
   models:
-  - metered
   - subscription
   units:
   - credit
@@ -182,18 +187,6 @@ x-canonical:
   - negotiated
   - period
   plans:
-  - name: Builder
-    access: other
-    model: metered
-    model_how: stated
-    units:
-    - credit
-    - message
-    - other
-    - period
-    periods:
-    - month
-    - one-time
   - name: Essentials
     access: other
     model: subscription
@@ -223,9 +216,3 @@ x-canonical:
     - negotiated
     periods:
     - year
-delivery:
-  delivery: managed
-audience: business-product
-pricing_basis: tiered-subscription
-published: true
-note: '2026-10-12: Builder tier removed — it no longer appears on customer.io/pricing and docs.customer.io/accounts/billing/builder-plan.md now returns 404. Premium is billed yearly per the page.'
