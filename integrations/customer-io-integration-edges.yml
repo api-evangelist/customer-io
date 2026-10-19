@@ -9,9 +9,11 @@ source:
 - https://monid.ai/tools/customer-io
 checked:
 - https://a2aregistry.org/api/agents
+- https://api.nuget.org/v3
 - https://composio.dev/toolkits/customer-io
 - https://connectors.airbyte.com/files/registries/v0/cloud_registry.json
 - https://connectors.airbyte.com/files/registries/v0/oss_registry.json
+- https://crates.io/api/v1
 - https://customer.io/integrations
 - https://docs.mparticle.com/integrations/customerio/audience/
 - https://github.com/PipedreamHQ/pipedream/tree/94800dd6de6640b942c65ea7ee655f71ac56d438/components/
@@ -21,6 +23,11 @@ checked:
 - https://n8n.io/integrations/customer-io/
 - https://n8n.io/integrations/customer/
 - https://n8n.io/integrations/customerio/
+- https://proxy.golang.org
+- https://pypi.org/pypi
+- https://registry.npmjs.org
+- https://repo1.maven.org/maven2
+- https://rubygems.org/api/v1
 - https://www.make.com/en/integrations/customer-io
 - https://www.twilio.com/docs/segment/connections/destinations/catalog/actions-customerio
 - https://zapier.com/api/v4/apps/
@@ -390,6 +397,150 @@ edges:
   detected: '2026-10-18'
   detected_by: mirror-platform-listings.py
   category: Slack app
+- partner_name: Go module proxy
+  partner: null
+  partner_match: null
+  type: register
+  direction: provider-built
+  category: official SDK (Go)
+  evidence: https://pkg.go.dev/github.com/customerio/cli
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: Go module proxy (public registry JSON)
+    spec_file: null
+    language: Go
+    packages:
+    - name: github.com/customerio/cli
+      version: v0.0.31
+      released: '2026-10-14'
+      released_field: Time
+      lapsed: false
+      page: https://pkg.go.dev/github.com/customerio/cli
+      repo_leg: github-org:customerio
+      publisher_leg: org:customerio
+      matched_by: github-org
+    - name: github.com/customerio/go-customerio/v3
+      version: v3.12.0
+      released: '2026-07-24'
+      released_field: Time
+      lapsed: false
+      page: https://pkg.go.dev/github.com/customerio/go-customerio/v3
+      repo_leg: github-org:customerio
+      publisher_leg: org:customerio
+      matched_by: github-org
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
+- partner_name: npm registry
+  partner: npm
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (JavaScript/TypeScript)
+  evidence: https://www.npmjs.com/package/@customerio/cdp-analytics-browser
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: npm registry (public registry JSON)
+    spec_file: null
+    language: JavaScript/TypeScript
+    packages:
+    - name: '@customerio/cdp-analytics-browser'
+      version: 0.6.0
+      released: '2026-10-09'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@customerio/cdp-analytics-browser
+      repo_leg: github-org:customerio
+      publisher_leg: email:customer.io
+      matched_by: domain
+    - name: '@customerio/cdp-analytics-node'
+      version: 0.6.0
+      released: '2026-10-09'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@customerio/cdp-analytics-node
+      repo_leg: github-org:customerio
+      publisher_leg: email:customer.io
+      matched_by: domain
+    - name: '@customerio/cli'
+      version: 0.0.31
+      released: '2026-10-14'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@customerio/cli
+      repo_leg: github-org:customerio
+      publisher_leg: email:customer.io
+      matched_by: domain
+    - name: customerio-expo-plugin
+      version: 3.11.1
+      released: '2026-10-07'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/customerio-expo-plugin
+      repo_leg: github-org:customerio
+      publisher_leg: email:customer.io
+      matched_by: domain
+    - name: customerio-node
+      version: 5.2.0
+      released: '2026-07-15'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/customerio-node
+      repo_leg: github-org:customerio
+      publisher_leg: email:customer.io
+      matched_by: domain
+    - name: customerio-reactnative
+      version: 6.13.1
+      released: '2026-09-30'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/customerio-reactnative
+      repo_leg: github-org:customerio
+      publisher_leg: email:customer.io
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
+- partner_name: RubyGems
+  partner: rubygems
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (Ruby)
+  evidence: https://rubygems.org/gems/customerio
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: RubyGems (public registry JSON)
+    spec_file: null
+    language: Ruby
+    packages:
+    - name: customerio
+      version: 6.2.0
+      released: '2026-07-24'
+      released_field: version_created_at
+      lapsed: false
+      page: https://rubygems.org/gems/customerio
+      repo_leg: domain:customer.io
+      publisher_leg: org:customerio
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
 templates: []
 skips:
 - label: Amplitude
