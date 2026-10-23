@@ -317,3 +317,9 @@ components:
       description: 'The Data Pipelines API uses a basic authentication scheme with your API key. Because basic authorization typically expects a username and password combination, you''ll use the API Key as the username and leave the password blank—base64 encoding your credentials in the format `API_key:`.
 
         '
+x-provenance:
+  method: harvested
+  publisher: Customer.io
+  source: https://docs.customer.io/files/pipelines.json
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)

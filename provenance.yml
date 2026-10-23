@@ -58,11 +58,11 @@ artifacts:
     method: derived
     evidence: openapi/customer-io-broadcasts-api
   collections/customer-io-campaigns-api.opencollection.json:
-    method: derived
-    evidence: openapi/customer-io-campaigns-api
+    method: unknown
+    evidence: no authorship recorded
   collections/customer-io-campaigns-api.postman_collection.json:
-    method: derived
-    evidence: openapi/customer-io-campaigns-api
+    method: unknown
+    evidence: no authorship recorded
   collections/customer-io-collections-api.opencollection.json:
     method: derived
     evidence: openapi/customer-io-collections-api
@@ -190,144 +190,186 @@ artifacts:
     method: derived
     evidence: declared in the artifact
   finops/customer-io-finops.yml:
-    method: unknown
-    evidence: no authorship recorded
+    method: generated
+    evidence: declared in the artifact
   front-door-ai/2026-09-17.yml:
     method: unknown
     evidence: no authorship recorded
+  hosts/customer-io-hosts.yml:
+    method: derived
+    evidence: declared in the artifact
+  integrations/_index.yml:
+    method: generated
+    evidence: carries an API Evangelist house phrase
+  integrations/customer-io-calendly-invitees-to-events-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  integrations/customer-io-calendly-invitees-to-events.yml:
+    method: generated
+    evidence: declared in the artifact
+  integrations/customer-io-fillout-submissions-to-events-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  integrations/customer-io-fillout-submissions-to-events.yml:
+    method: generated
+    evidence: declared in the artifact
+  integrations/customer-io-google-sheets-rows-to-people-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  integrations/customer-io-google-sheets-rows-to-people.yml:
+    method: generated
+    evidence: declared in the artifact
+  integrations/customer-io-integration-edges.yml:
+    method: searched
+    evidence: declared in the artifact
+  integrations/customer-io-integration-map.yml:
+    method: unknown
+    evidence: no authorship recorded
+  integrations/customer-io-jotform-submissions-to-people-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  integrations/customer-io-jotform-submissions-to-people.yml:
+    method: generated
+    evidence: declared in the artifact
+  integrations/customer-io-mailchimp-unsubscribes-to-people-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  integrations/customer-io-mailchimp-unsubscribes-to-people.yml:
+    method: generated
+    evidence: declared in the artifact
   json-ld/customer-io-context.jsonld:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-activity-object-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-alias-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-anonymous-events-request-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-anonymous-id-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-batch-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-campaign-object-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-campaign-request-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-cio-id-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-create-email-newsletter-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-create-in-app-newsletter-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-create-inbox-newsletter-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-create-push-newsletter-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-create-sms-newsletter-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-create-webhook-newsletter-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-customer-id-schema.json:
     method: unknown
     evidence: no authorship recorded
   json-schema/customer-io-customer-schema.json:
     method: unknown
     evidence: no authorship recorded
+  json-schema/customer-io-delivery-operations-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-device-object-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-email-address-schema.json:
+    method: unknown
+    evidence: no authorship recorded
   json-schema/customer-io-event-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-events-request-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-group-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-identify-person-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-identify-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-newsletter-object-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-not-nullable-customer-id-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-not-nullable-email-address-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-page-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-person-event-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-person-merge-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-person-page-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-person-screen-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-screen-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-track-metrics-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-track-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-transformers-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-update-email-content-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-update-inbox-content-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-update-push-content-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-update-sms-content-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-update-webhook-content-schema.json:
+    method: unknown
+    evidence: no authorship recorded
+  json-schema/customer-io-v1-cio-relationships-schema.json:
     method: unknown
     evidence: no authorship recorded
   json-schema/customer-io-webhook-payload-schema.json:
     method: unknown
     evidence: no authorship recorded
-  kin/checks-2026-09-24T161608.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-25T125852.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-25T133943.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-25T143147.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-25T154045.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-26T215308.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-27T094438.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-27T103455.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-27T123021.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-27T132314.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-27T140727.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-28T221322.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-29T213958.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-29T230545.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-30T203505.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-30T220315.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-31T223420.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-01T063623.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-01T210448.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-01T222808.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-02T211804.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-02T224043.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-03T161828.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-03T174231.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-04T062714.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-04T212454.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-04T224856.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-05T055819.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-05T072335.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-05T144739.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-05T195450.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-05T211839.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-06T011047.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-06T211804.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-06T224210.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-07T200636.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-07T213054.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-08T214843.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-08T232836.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-10T204815.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-10T222408.yml:
+  kin/checks-2026-10-11T110117.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
   kin/score-2026-09-12T062655.yml:
@@ -411,9 +453,27 @@ artifacts:
   kin/score-2026-09-24T161608.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-25T210408.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-25T232841.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-10-03T000835.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-10-03T024842.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-10-11T110117.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
   lifecycle/customer-io-lifecycle.yml:
     method: searched
     evidence: declared in the artifact
+  llms/customer-io-llms-provenance.yml:
+    method: searched
+    evidence: 'derive-llms-provenance.py: harvested'
   llms/customer-io-llms.txt:
     method: searched
     evidence: 'derive-llms-provenance.py: harvested'
@@ -427,18 +487,22 @@ artifacts:
     method: harvested
     evidence: found in openapi/_original/; the fetch URL and bytes were not recorded, so byte-identity
       to the provider's source is unverified
+  openapi/_original/customer-io-journeys-api-openapi.json:
+    method: harvested
+    evidence: the same operations as https://docs.customer.io/openapi.yaml (sha256 acea5e07e9b7, fetched
+      2026-10-19)
   openapi/_original/customer-io-pipelines-api-openapi.json:
     method: harvested
-    evidence: found in openapi/_original/; the fetch URL and bytes were not recorded, so byte-identity
-      to the provider's source is unverified
+    evidence: the same operations as https://docs.customer.io/files/pipelines.json (sha256 9195a7b1d767,
+      fetched 2026-10-04)
   openapi/_original/customer-io-reporting-webhooks-openapi.json:
     method: harvested
     evidence: found in openapi/_original/; the fetch URL and bytes were not recorded, so byte-identity
       to the provider's source is unverified
   openapi/_original/customer-io-track-api-openapi.json:
     method: harvested
-    evidence: found in openapi/_original/; the fetch URL and bytes were not recorded, so byte-identity
-      to the provider's source is unverified
+    evidence: the same operations as https://docs.customer.io/files/journeys-track.json (sha256 d97469931d47,
+      fetched 2026-10-04)
   openapi/customer-io-activities-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
@@ -448,19 +512,22 @@ artifacts:
   openapi/customer-io-assets-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/customer-io-automations-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
   openapi/customer-io-batch-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
   openapi/customer-io-broadcasts-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
-  openapi/customer-io-campaigns-api-openapi.yml:
-    method: derived
-    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
   openapi/customer-io-collections-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
-  openapi/customer-io-customer-io-app-api-api-openapi.yml:
+  openapi/customer-io-components-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/customer-io-customer-io-journeys-api-reference-api-openapi.yml:
     method: unknown
     evidence: no authorship recorded
   openapi/customer-io-customers-api-openapi.yml:
@@ -469,13 +536,22 @@ artifacts:
   openapi/customer-io-data-index-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
-  openapi/customer-io-design-studio-api-openapi.yml:
+  openapi/customer-io-email-link-and-publish-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/customer-io-email-testing-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/customer-io-emails-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
   openapi/customer-io-esp-suppression-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
   openapi/customer-io-exports-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/customer-io-folders-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
   openapi/customer-io-forms-api-openapi.yml:
@@ -532,6 +608,12 @@ artifacts:
   openapi/customer-io-sender-identities-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/customer-io-sms-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/customer-io-sms-link-and-publish-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
   openapi/customer-io-snippets-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
@@ -562,16 +644,136 @@ artifacts:
   openapi/customer-io-workspaces-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  overlays/customer-io-activities-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-alias-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
   overlays/customer-io-app-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/customer-io-assets-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-batch-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-broadcasts-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-campaigns-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-collections-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-customers-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-data-index-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-design-studio-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-esp-suppression-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-exports-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-forms-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-group-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-identify-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-imports-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-info-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-live-notifications-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-messages-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-newsletter-metrics-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-newsletter-variants-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-newsletters-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-objects-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-opt-outs-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-page-api-phrasing-overlay.yaml:
     method: generated
     evidence: declared in the artifact
   overlays/customer-io-pipelines-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/customer-io-reporting-webhooks-api-phrasing-overlay.yaml:
     method: generated
     evidence: declared in the artifact
   overlays/customer-io-reporting-webhooks-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/customer-io-screen-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-segments-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-send-messages-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-sender-identities-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-snippets-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-subscription-center-api-phrasing-overlay.yaml:
     method: generated
     evidence: declared in the artifact
   overlays/customer-io-track-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/customer-io-track-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-track-customers-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-track-events-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-track-segments-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-track-v2-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-trackregion-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-transactional-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/customer-io-workspaces-api-phrasing-overlay.yaml:
     method: generated
     evidence: declared in the artifact
   packages/customer-io-packages.yml:
@@ -581,6 +783,9 @@ artifacts:
     method: searched
     evidence: declared in the artifact
   rate-limits/customer-io-rate-limits.yml:
+    method: searched
+    evidence: declared in the artifact
+  regulatory/customer-io-regulatory-posture.yml:
     method: searched
     evidence: declared in the artifact
   rules/customer-io-asyncapi-spectral-rules.yml:
@@ -622,9 +827,12 @@ artifacts:
   skills/customer-io-trigger-broadcast.md:
     method: generated
     evidence: declared in the artifact
-  vocabulary/customer-io-vocabulary.yml:
+  vendors/customer-io-vendors.yml:
     method: unknown
     evidence: no authorship recorded
+  vocabulary/customer-io-vocabulary.yml:
+    method: generated
+    evidence: declared in the artifact
   well-known/customer-io-api-catalog.json:
     method: unknown
     evidence: no authorship recorded
