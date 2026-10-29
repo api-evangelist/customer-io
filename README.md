@@ -1,4 +1,4 @@
-# Customer.io (customer-io)
+# Customer.io
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -66,118 +66,311 @@
 
 Customer.io is a customer engagement platform that combines a customer data platform, marketing automation, and messaging delivery to send behavior-triggered email, push, SMS, and in-app messages. Its API surface includes the Track API for sending behavioral data and customer profile updates, the App API for managing workspace resources and sending transactional and broadcast messages, the Pipelines API which is a Segment-spec data ingestion interface, and outbound reporting webhooks that deliver message lifecycle events.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/customer-io/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/customer-io/refs/heads/main/apis.yml)
+**Areas:** Behavioral Data · Broadcast · Campaigns · CDP · Customer Data · Customer Data Platform · Data Ingestion · Email · Event Tracking · Marketing Automation · Messaging · Push Notifications
 
-## Tags
+## Customer.io on APIs.io
 
-- Behavioral Data
-- Broadcasts
-- Campaigns
-- CDP
-- Customer Data
-- Customer Data Platform
-- Data Ingestion
-- Email
-- Event Tracking
-- Marketing Automation
-- Messaging
-- Push Notifications
-- Segments
-- SMS
-- Transactional Email
+Everything profiled for Customer.io is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/customer-io/](https://apis.io/providers/customer-io/)** — or go straight to one of the APIs or properties below.
 
-## Timestamps
+### APIs (48)
 
-- **Created:** 2024-01-01
-- **Modified:** 2026-05-19
+- [Customer.io Track API](https://apis.io/apis/customer-io/track-api/) — The Customer.io Track API allows developers to send behavioral data and customer profile information into Customer.io. It provides endpoints for identifying…
+- [Customer.io Activities API](https://apis.io/apis/customer-io/customer-io-activities-api/) — Retrieve activity logs for your workspace.
+- [Customer.io Alias API](https://apis.io/apis/customer-io/customer-io-alias-api/) — Merge two user identities by creating an alias linking a new identity to an existing one.
+- [Customer.io Batch API](https://apis.io/apis/customer-io/customer-io-batch-api/) — Send multiple API calls in a single request for improved performance.
+- [Customer.io Broadcasts API](https://apis.io/apis/customer-io/customer-io-broadcasts-api/) — Trigger API-triggered broadcasts to send messages to groups of people based on segments or filters.
+- [Customer.io Collections API](https://apis.io/apis/customer-io/customer-io-collections-api/) — Manage collections of data used in message personalization.
+- [Customer.io Customers API](https://apis.io/apis/customer-io/customer-io-customers-api/) — Look up customer profiles, search for customers, and retrieve customer attributes and activity data.
+- [Customer.io Exports API](https://apis.io/apis/customer-io/customer-io-exports-api/) — Export customer data, deliveries, and other information from your workspace.
+- [Customer.io Group API](https://apis.io/apis/customer-io/customer-io-group-api/) — Associate people with groups or organizations.
+- [Customer.io Identify API](https://apis.io/apis/customer-io/customer-io-identify-api/) — Identify people and set their profile attributes. The identify call tells Customer.io who the current user is and assigns traits to them.
+- [Customer.io Messages API](https://apis.io/apis/customer-io/customer-io-messages-api/) — Retrieve information about individual messages sent to customers.
+- [Customer.io Newsletters API](https://apis.io/apis/customer-io/customer-io-newsletters-api/) — Retrieve information about newsletters and newsletter variants.
+- [Customer.io Page API](https://apis.io/apis/customer-io/customer-io-page-api/) — Record page views from web applications.
+- [Customer.io Screen API](https://apis.io/apis/customer-io/customer-io-screen-api/) — Record screen views from mobile applications.
+- [Customer.io Segments API](https://apis.io/apis/customer-io/customer-io-segments-api/) — Create and manage manual segments, and retrieve segment membership information.
+- [Customer.io Sender Identities API](https://apis.io/apis/customer-io/customer-io-sender-identities-api/) — Manage sender identities used for sending messages.
+- [Customer.io Snippets API](https://apis.io/apis/customer-io/customer-io-snippets-api/) — Manage reusable content snippets for use in messages.
+- [Customer.io Transactional API](https://apis.io/apis/customer-io/customer-io-transactional-api/) — Send transactional messages such as password resets, purchase receipts, and other important notifications triggered by user actions.
+- [Customer.io MCP](https://apis.io/apis/customer-io/mcp/) — Customer.io's first-party hosted Model Context Protocol server. It exposes the full Journeys App API and CDP Data Pipelines API to any MCP client through…
+- [Customer.io Assets API](https://apis.io/apis/customer-io/customer-io-assets-api/) — Manage file assets such as images and PDFs and organize them into folders.
+- [Customer.io Data Index API](https://apis.io/apis/customer-io/customer-io-data-index-api/) — Update descriptions for attributes and events in your workspace. This helps improve AI-generated content and segments.
+- [Customer.io ESP Suppression API](https://apis.io/apis/customer-io/customer-io-esp-suppression-api/) — If you use Customer.io as your email service provider (ESP), these endpoints help you retrieve information about email addresses suppressed directly by the…
+- [Customer.io Forms API](https://apis.io/apis/customer-io/customer-io-forms-api/) — Connect forms to your workspace to identify people, apply form responses to people, and trigger campaigns for people who fill out forms on your website or…
+- [Customer.io Imports API](https://apis.io/apis/customer-io/customer-io-imports-api/) — APIs to upload CSV files containing lists of people. These endpoints provide a convenient way to add and update people without having to make an `identify`…
+- [Customer.io Info API](https://apis.io/apis/customer-io/customer-io-info-api/) — Returns the list of addresses used by Customer.io. You must add add these addresses to your allowlist when using a custom SMTP provider and blocking unknown…
+- [Customer.io Live Notifications API](https://apis.io/apis/customer-io/customer-io-live-notifications-api/) — Start, update, and end live notifications—real-time activities on the iOS Lock Screen and Dynamic Island, and in the Android notification shade. Your server…
+- [Customer.io Newsletter Metrics API](https://apis.io/apis/customer-io/customer-io-newsletter-metrics-api/) — Newsletter metrics include metrics for translations, A/B tests, and links. These endpoints return information about newsletter metrics including metrics for…
+- [Customer.io Newsletter Variants API](https://apis.io/apis/customer-io/customer-io-newsletter-variants-api/) — A newsletter variant is a translation or an A/B test. You can create, update, or delete variants in newsletters from these endpoints. You can also create a…
+- [Customer.io Objects API](https://apis.io/apis/customer-io/customer-io-objects-api/) — Objects are "groups" that you can relate people to in Customer.io—like the companies they work for, the online classes they take, and so on. These APIs help…
+- [Customer.io Opt Outs API](https://apis.io/apis/customer-io/customer-io-opt-outs-api/) — The Opt-outs API from Customer.io — 2 operation(s) for opt-outs.
+- [Customer.io Reporting Webhooks API](https://apis.io/apis/customer-io/customer-io-reporting-webhooks-api/) — Set up webhooks to inform an external service about Customer.io events. Webhooks can notify you immediately when immediately when customer attributes change…
+- [Customer.io Send Messages API](https://apis.io/apis/customer-io/customer-io-send-messages-api/) — Use these endpoints to send broadcasts or transactional messages to your audience. They use the same authentication method, but review the limits for both…
+- [Customer.io Subscription Center API](https://apis.io/apis/customer-io/customer-io-subscription-center-api/) — A subscription center differentiates the types of messages available for your product. Your audience sets subscription preferences by name, but we record…
+- [Customer.io Track Customers API](https://apis.io/apis/customer-io/customer-io-track-customers-api/) — Add, modify, suppress, or unsuppress people (referred to as "customers" in our APIs). You can also use these endpoints to set attributes on people.
+- [Customer.io Track Events API](https://apis.io/apis/customer-io/customer-io-track-events-api/) — Use customer events to trigger campaigns or add users to segments. You can attribute events directly to customers or send anonymous events and associate…
+- [Customer.io Track Segments API](https://apis.io/apis/customer-io/customer-io-track-segments-api/) — Manual segments are lists of people that you incorporate using the API or by uploading CSVs. You can add people to, or remove people from, manual segments…
+- [Customer.io Track V2 API](https://apis.io/apis/customer-io/customer-io-track-v2-api/) — This version of our edge API has only two endpoints, but supports the majority of our traditional v1 track operations and then some based on the `type` and…
+- [Customer.io Track Region API](https://apis.io/apis/customer-io/customer-io-trackregion-api/) — Determine whether your account and data are hosted in the US or EU data center using your [Track API Key](https://fly.customer.io/settings/api_credentials).
+- [Customer.io Workspaces API](https://apis.io/apis/customer-io/customer-io-workspaces-api/) — An API to retrieve information about your workspaces in your account. You can use this to look up counts for messages sent, monthly billable emails sent,…
+- [Customer.io Automations API](https://apis.io/apis/customer-io/customer-io-automations-api/) — An automation, sometimes referred to as a campaign, is a workflow that people in your audience trigger and traverse. The items that happen within the…
+- [Customer.io Components API](https://apis.io/apis/customer-io/customer-io-components-api/) — Custom components are reusable blocks of content that you build once and reference from any email. Use these endpoints to list, create, update, and delete…
+- [Customer.io Customer.io Journeys API Reference API](https://apis.io/apis/customer-io/customer-io-customer-io-journeys-api-reference-api/) — The Customer.io Journeys API Reference API from Customer.io — 0 operation(s) for customer.io journeys api reference.
+- [Customer.io Email link and publish API](https://apis.io/apis/customer-io/customer-io-email-link-and-publish-api/) — A Design Studio email doesn't send anything on its own. You [link](/integrations/api/design-studio/tag/email-email-link-and-publish/linkEmail/) it to a…
+- [Customer.io Email testing API](https://apis.io/apis/customer-io/customer-io-email-testing-api/) — Check an email before you publish or send it. - [Render](/integrations/api/design-studio/tag/email-testing/renderEmail/) returns the compiled HTML with…
+- [Customer.io Emails API](https://apis.io/apis/customer-io/customer-io-emails-api/) — Create and manage the emails you build in Design Studio, along with their translations and versions. - **Emails** hold the content, envelope details, and…
+- [Customer.io Folders API](https://apis.io/apis/customer-io/customer-io-folders-api/) — Folders organize your Design Studio files. Use these endpoints to list, create, rename, move, and delete folders. Folders hold emails, SMS, and components,…
+- [Customer.io SMS API](https://apis.io/apis/customer-io/customer-io-sms-api/) — Create and manage the SMS messages you write in Design Studio. These endpoints only work if your workspace writes SMS in Design Studio. Workspaces that set…
+- [Customer.io SMS link and publish API](https://apis.io/apis/customer-io/customer-io-sms-link-and-publish-api/) — A Design Studio SMS doesn't send anything on its own. After you [create](/integrations/api/design-studio/tag/sms/createSms/) an SMS, you…
 
-## APIs
+### Published properties
 
-### Customer.io Track API
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-The Customer.io Track API allows developers to send behavioral data and customer profile information into Customer.io. It provides endpoints for identifying customers, tracking events, managing devices for push notifications, and sending anonymous events. The API uses basic authentication with a Site ID and API key, and accepts JSON request bodies.
+#### AsyncAPI (1)
 
-- **Human URL:** [https://docs.customer.io/integrations/api/track/](https://docs.customer.io/integrations/api/track/)
-- **Base URL:** `https://track.customer.io`
+Event-driven and webhook contracts.
 
-#### Tags
+- [Customer.io Reporting Webhooks](https://apis.io/asyncapis/customer-io/customer-io-reporting-webhooks-asyncapi/)
 
-- Behavioral Data
-- Customer Data
-- Event Tracking
-- Marketing Automation
-- Messaging
+#### Event channels (1)
 
-#### Properties
+Individual events and webhooks the provider emits.
 
-- [Documentation](https://docs.customer.io/integrations/api/track/)
-- [OpenAPI](openapi/customer-io-track-api-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/customer-io-track-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/customer-io-track-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [/webhook](https://apis.io/channels/customer-io/webhook/)
 
-### Customer.io App API
+#### GraphQL (1)
 
-The Customer.io App API enables developers to manage workspace resources and send messages programmatically. It provides endpoints for sending transactional messages, triggering broadcasts, managing customers and segments, retrieving campaign and newsletter data, and exporting customer information.
+GraphQL schemas.
 
-- **Human URL:** [https://docs.customer.io/integrations/api/app/](https://docs.customer.io/integrations/api/app/)
-- **Base URL:** `https://api.customer.io`
+- [Moved to /providers/customer-io/](https://apis.io/graphqls/customer-io/customer-io-graphql/)
 
-#### Tags
+#### MCP servers (1)
 
-- Broadcasts
-- Campaigns
-- Marketing Automation
-- Messaging
-- Segments
-- Transactional Email
+Model Context Protocol servers that expose the API to agents.
 
-#### Properties
+- [Customer.io MCP](https://apis.io/servers/customer-io/customer-io-mcp/)
 
-- [Documentation](https://docs.customer.io/integrations/api/app/)
-- [OpenAPI](openapi/customer-io-app-api-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/customer-io-app-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/customer-io-app-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+#### Agentic access (1)
 
-### Customer.io Pipelines API
+Which operations an agent can call, which act, and which need a human in the loop.
 
-The Customer.io Pipelines API is the newer data ingestion interface for getting customer and event data into Customer.io. It follows the Segment spec and supports identify, track, page, screen, group, and alias calls. Customer.io recommends the Pipelines API for new integrations because it is easier to use, supports outbound data integrations and transformations, and is the focus of ongoing development.
+- [Customer Io Agentic Access](https://apis.io/agentic-access/customer-io/customer-io-agentic-access/)
 
-- **Human URL:** [https://docs.customer.io/integrations/data-in/connections/http-api/](https://docs.customer.io/integrations/data-in/connections/http-api/)
-- **Base URL:** `https://cdp.customer.io`
+#### JSON Schema (43)
 
-#### Tags
+The data models the API reads and writes.
 
-- CDP
-- Customer Data Platform
-- Data Ingestion
-- Marketing Automation
-- Messaging
+- [activityObject](https://apis.io/schemas/customer-io/customer-io-activity-object/)
+- [alias](https://apis.io/schemas/customer-io/customer-io-alias/)
+- [anonymousEventsRequest](https://apis.io/schemas/customer-io/customer-io-anonymous-events-request/)
+- [anonymous_id](https://apis.io/schemas/customer-io/customer-io-anonymous-id/)
+- [batch](https://apis.io/schemas/customer-io/customer-io-batch/)
+- [campaignObject](https://apis.io/schemas/customer-io/customer-io-campaign-object/)
+- [campaignRequest](https://apis.io/schemas/customer-io/customer-io-campaign-request/)
+- [cio_id](https://apis.io/schemas/customer-io/customer-io-cio-id/)
+- [Email](https://apis.io/schemas/customer-io/customer-io-create-email-newsletter/)
+- [In-App](https://apis.io/schemas/customer-io/customer-io-create-in-app-newsletter/)
+- [Inbox message](https://apis.io/schemas/customer-io/customer-io-create-inbox-newsletter/)
+- [Push](https://apis.io/schemas/customer-io/customer-io-create-push-newsletter/)
+- [SMS](https://apis.io/schemas/customer-io/customer-io-create-sms-newsletter/)
+- [Webhook](https://apis.io/schemas/customer-io/customer-io-create-webhook-newsletter/)
+- [Customer.io Customer](https://apis.io/schemas/customer-io/customer-io-customer/)
+- [customer_id](https://apis.io/schemas/customer-io/customer-io-customer-id/)
+- [Delivery: Event](https://apis.io/schemas/customer-io/customer-io-delivery-operations/)
+- [device_object](https://apis.io/schemas/customer-io/customer-io-device-object/)
+- [email_address](https://apis.io/schemas/customer-io/customer-io-email-address/)
+- [Customer.io Event](https://apis.io/schemas/customer-io/customer-io-event/)
+- [eventsRequest](https://apis.io/schemas/customer-io/customer-io-events-request/)
+- [group](https://apis.io/schemas/customer-io/customer-io-group/)
+- [identify](https://apis.io/schemas/customer-io/customer-io-identify/)
+- [Person: Identify](https://apis.io/schemas/customer-io/customer-io-identify-person/)
+- [newsletterObject](https://apis.io/schemas/customer-io/customer-io-newsletter-object/)
+- …and 18 more published on APIs.io
 
-#### Properties
+#### JSON-LD (1)
 
-- [Documentation](https://docs.customer.io/integrations/data-in/connections/http-api/)
-- [OpenAPI](openapi/customer-io-pipelines-api-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/customer-io-pipelines-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/customer-io-pipelines-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+Linked-data contexts for the provider's vocabulary.
 
-## Common Properties
+- [Customer Io Context](https://apis.io/jsonld/customer-io/customer-io-context/)
 
-- [GitHub Organization](https://github.com/customerio)
-- [LinkedIn](https://www.linkedin.com/company/customer-io)
+#### Vocabulary (1)
+
+The provider's domain terms, defined.
+
+- [Customer.io Vocabulary](https://apis.io/vocabularies/customer-io/customer-io-vocabulary/)
+
+#### Collections (25)
+
+Postman and Open Collection request collections.
+
+- [Customer.io App Activities API](https://apis.io/collections/customer-io/open-customer-io-activities-api/)
+- [Customer.io App Activities Alias API](https://apis.io/collections/customer-io/open-customer-io-alias-api/)
+- [Customer.io App API](https://apis.io/collections/customer-io/open-customer-io-app-api/)
+- [Customer.io App Activities Batch API](https://apis.io/collections/customer-io/open-customer-io-batch-api/)
+- [Customer.io App Activities Broadcasts API](https://apis.io/collections/customer-io/open-customer-io-broadcasts-api/)
+- [Customer.io App Activities Campaigns API](https://apis.io/collections/customer-io/open-customer-io-campaigns-api/)
+- [Customer.io App Activities Collections API](https://apis.io/collections/customer-io/open-customer-io-collections-api/)
+- [Customer.io App Activities Customers API](https://apis.io/collections/customer-io/open-customer-io-customers-api/)
+- [Customer.io App Activities Devices API](https://apis.io/collections/customer-io/open-customer-io-devices-api/)
+- [Customer.io App Activities Entity API](https://apis.io/collections/customer-io/open-customer-io-entity-api/)
+- [Customer.io App Activities Events API](https://apis.io/collections/customer-io/open-customer-io-events-api/)
+- [Customer.io App Activities Exports API](https://apis.io/collections/customer-io/open-customer-io-exports-api/)
+- [Customer.io App Activities Group API](https://apis.io/collections/customer-io/open-customer-io-group-api/)
+- [Customer.io App Activities Identify API](https://apis.io/collections/customer-io/open-customer-io-identify-api/)
+- [Customer.io App Activities Merge API](https://apis.io/collections/customer-io/open-customer-io-merge-api/)
+- [Customer.io App Activities Messages API](https://apis.io/collections/customer-io/open-customer-io-messages-api/)
+- [Customer.io App Activities Newsletters API](https://apis.io/collections/customer-io/open-customer-io-newsletters-api/)
+- [Customer.io App Activities Page API](https://apis.io/collections/customer-io/open-customer-io-page-api/)
+- [Customer.io Pipelines API](https://apis.io/collections/customer-io/open-customer-io-pipelines-api/)
+- [Customer.io App Activities Screen API](https://apis.io/collections/customer-io/open-customer-io-screen-api/)
+- [Customer.io App Activities Segments API](https://apis.io/collections/customer-io/open-customer-io-segments-api/)
+- [Customer.io App Activities Sender Identities API](https://apis.io/collections/customer-io/open-customer-io-sender-identities-api/)
+- [Customer.io App Activities Snippets API](https://apis.io/collections/customer-io/open-customer-io-snippets-api/)
+- [Customer.io App Activities Track API](https://apis.io/collections/customer-io/open-customer-io-track-api/)
+- [Customer.io App Activities Transactional API](https://apis.io/collections/customer-io/open-customer-io-transactional-api/)
+
+#### Overlays (44)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Customer Io Activities Api Phrasing Overlay](https://apis.io/overlays/customer-io/customer-io-activities-api-phrasing-overlay/)
+- [Customer Io Alias Api Phrasing Overlay](https://apis.io/overlays/customer-io/customer-io-alias-api-phrasing-overlay/)
+- [Customer Io App Api Overlay](https://apis.io/overlays/customer-io/customer-io-app-api-overlay/)
+- [Customer Io Assets Api Phrasing Overlay](https://apis.io/overlays/customer-io/customer-io-assets-api-phrasing-overlay/)
+- [Customer Io Batch Api Phrasing Overlay](https://apis.io/overlays/customer-io/customer-io-batch-api-phrasing-overlay/)
+- [Customer Io Broadcasts Api Phrasing Overlay](https://apis.io/overlays/customer-io/customer-io-broadcasts-api-phrasing-overlay/)
+- [Customer Io Campaigns Api Phrasing Overlay](https://apis.io/overlays/customer-io/customer-io-campaigns-api-phrasing-overlay/)
+- [Customer Io Collections Api Phrasing Overlay](https://apis.io/overlays/customer-io/customer-io-collections-api-phrasing-overlay/)
+- [Customer Io Customers Api Phrasing Overlay](https://apis.io/overlays/customer-io/customer-io-customers-api-phrasing-overlay/)
+- [Customer Io Data Index Api Phrasing Overlay](https://apis.io/overlays/customer-io/customer-io-data-index-api-phrasing-overlay/)
+- [Customer Io Design Studio Api Phrasing Overlay](https://apis.io/overlays/customer-io/customer-io-design-studio-api-phrasing-overlay/)
+- [Customer Io Esp Suppression Api Phrasing Overlay](https://apis.io/overlays/customer-io/customer-io-esp-suppression-api-phrasing-overlay/)
+- [Customer Io Exports Api Phrasing Overlay](https://apis.io/overlays/customer-io/customer-io-exports-api-phrasing-overlay/)
+- [Customer Io Forms Api Phrasing Overlay](https://apis.io/overlays/customer-io/customer-io-forms-api-phrasing-overlay/)
+- [Customer Io Group Api Phrasing Overlay](https://apis.io/overlays/customer-io/customer-io-group-api-phrasing-overlay/)
+- [Customer Io Identify Api Phrasing Overlay](https://apis.io/overlays/customer-io/customer-io-identify-api-phrasing-overlay/)
+- [Customer Io Imports Api Phrasing Overlay](https://apis.io/overlays/customer-io/customer-io-imports-api-phrasing-overlay/)
+- [Customer Io Info Api Phrasing Overlay](https://apis.io/overlays/customer-io/customer-io-info-api-phrasing-overlay/)
+- [Customer Io Live Notifications Api Phrasing Overlay](https://apis.io/overlays/customer-io/customer-io-live-notifications-api-phrasing-overlay/)
+- [Customer Io Messages Api Phrasing Overlay](https://apis.io/overlays/customer-io/customer-io-messages-api-phrasing-overlay/)
+- [Customer Io Newsletter Metrics Api Phrasing Overlay](https://apis.io/overlays/customer-io/customer-io-newsletter-metrics-api-phrasing-overlay/)
+- [Customer Io Newsletter Variants Api Phrasing Overlay](https://apis.io/overlays/customer-io/customer-io-newsletter-variants-api-phrasing-overlay/)
+- [Customer Io Newsletters Api Phrasing Overlay](https://apis.io/overlays/customer-io/customer-io-newsletters-api-phrasing-overlay/)
+- [Customer Io Objects Api Phrasing Overlay](https://apis.io/overlays/customer-io/customer-io-objects-api-phrasing-overlay/)
+- [Customer Io Opt Outs Api Phrasing Overlay](https://apis.io/overlays/customer-io/customer-io-opt-outs-api-phrasing-overlay/)
+- …and 19 more published on APIs.io
+
+#### Governance rules (3)
+
+Spectral rulesets for the provider's contracts.
+
+- [Customer.io — asyncapi rules](https://apis.io/rules/customer-io/customer-io-asyncapi-spectral-rules/)
+- [Customer.io — jsonschema rules](https://apis.io/rules/customer-io/customer-io-jsonschema-spectral-rules/)
+- [Customer.io API Rules](https://apis.io/rules/customer-io/customer-io-rules/)
+
+#### Security (4)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Customer Io Authentication](https://apis.io/security/customer-io/customer-io-authentication/)
+- [Customer Io Domain Security](https://apis.io/security/customer-io/customer-io-domain-security/)
+- [Customer Io Trust Center](https://apis.io/security/customer-io/customer-io-trust-center/)
+- [Customer Io Vulnerability Disclosure](https://apis.io/security/customer-io/customer-io-vulnerability-disclosure/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Customer Io Scopes](https://apis.io/scopes/customer-io/customer-io-scopes/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Customer Io Plans Pricing](https://apis.io/plans/customer-io/customer-io-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Customer Io Rate Limits](https://apis.io/rate-limits/customer-io/customer-io-rate-limits/)
+
+#### FinOps (1)
+
+What the API costs to run, by operation.
+
+- [Customer Io Finops](https://apis.io/finops/customer-io/customer-io-finops/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
 - [Website](https://customer.io)
 - [Documentation](https://docs.customer.io)
-- [AsyncAPI](asyncapi/customer-io-reporting-webhooks-asyncapi.yml) — [AsyncAPI Specification](https://www.asyncapi.com/docs/reference/specification/latest)
-- [JSON Schema](json-schema/customer-io-customer-schema.json) — [JSON Schema](https://json-schema.org/specification)
-- [JSON Schema](json-schema/customer-io-event-schema.json) — [JSON Schema](https://json-schema.org/specification)
-- [JSON Schema](json-schema/customer-io-webhook-payload-schema.json) — [JSON Schema](https://json-schema.org/specification)
-- [JSON-LD](json-ld/customer-io-context.jsonld) — [JSON-LD](https://www.w3.org/TR/json-ld11/)
-- [Vocabulary](vocabulary/customer-io-vocabulary.yml)
-- [Rules](rules/customer-io-rules.yml)
-- [Capabilities](capabilities/customer-io-capabilities.yml)
-- [Integrations](https://customer.io/integrations)
-- [L L Ms Txt](https://docs.customer.io/llms.txt)
+- [Getting started](https://docs.customer.io/get-started/)
+- [API reference](https://docs.customer.io/integrations/api/customerio-apis/)
+- [Pricing](https://customer.io/pricing)
+- [Sign up](https://fly.customer.io/signup)
+- [Support](https://customer.io/contact)
+- [Blog](https://customer.io/blog/)
+- [Security](https://customer.io/legal/reporting-vulnerability)
+- [Terms of service](https://customer.io/legal/terms-of-service)
+- [Privacy policy](https://customer.io/legal/privacy-policy)
+- [GitHub](https://github.com/customerio)
+- [Status](https://status.customerio.com)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 84.0** — exemplar · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 80.0 |
+| Contract quality | 70.6 |
+| Contract governance | 35.6 |
+| Operational transparency | 92.1 |
+| Developer ergonomics | 80.4 |
+| Access clarity | 85.5 |
+
+**Agent readiness 69.9** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | verified |
+| MCP Server | verified |
+| Auth Clarity | served (partial credit) |
+| Idempotency | — |
+| Error Semantics | verified |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | verified |
+| Event Surface Described | yes |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | yes |
+| Consent Identity | — |
+| Agent Card | flavored (partial credit) |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | yes |
+| Agentic Commerce | — |
+| Pagination Ratio | — |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 44.2** — Telecommunications
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/customer-io/](https://apis.io/providers/customer-io/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Customer.io: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/customer-io/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
