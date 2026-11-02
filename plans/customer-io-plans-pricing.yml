@@ -1,0 +1,218 @@
+name: Customer.io API Plans
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+generated: '2026-10-12'
+method: searched
+source: https://customer.io/pricing
+plan_count: 4
+provider: Customer.io
+providerId: customer-io
+created: '2026-06-20'
+modified: '2026-08-13'
+reconciled: true
+tags:
+- Customer Messaging
+- Marketing Automation
+- Email
+- CDP
+- Transactional
+- Plans
+description: Customer.io uses platform subscription tiers (Essentials and Premium) priced primarily on the number of profiles (people plus objects) in the workspace, with bundled email volume and overage rates for additional profiles, emails, and AI credits. The same API surface (Track, App / Transactional, Pipelines) is available across paid plans; pricing is on the platform, not metered per-API-call. An Enterprise tier with custom pricing covers dedicated infrastructure and support.
+notes: Prices captured from the public customer.io/pricing page and are subject to change; verify the live pricing page and per-region terms during reconciliation. Profile counts, bundled volumes, and overage rates can change.
+sources:
+- https://customer.io/pricing
+- https://docs.customer.io
+plans:
+- id: customerio-essentials
+  name: Essentials
+  type: subscription
+  description: Entry platform tier starting at $100/month, bundling a base profile allotment and email volume with the visual workflow builder, core AI Agent skills, and basic data integrations. Additional usage is billed at overage rates.
+  entries:
+  - label: Base Subscription
+    name: base_subscription
+    type: flat
+    metric: subscription
+    limit: 1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: from $100/month
+    userMultiplied: false
+  - label: Included Profiles
+    name: included_profiles
+    type: included
+    metric: profiles
+    limit: 5000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: included in base
+    userMultiplied: false
+  - label: Included Email Volume
+    name: included_email
+    type: included
+    metric: emails
+    limit: 1000000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: up to 1,000,000 emails/month included
+    userMultiplied: false
+  - label: Additional Profiles
+    name: overage_profiles
+    type: usage
+    metric: profiles
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $0.009 per profile
+    userMultiplied: false
+  - label: Additional Emails
+    name: overage_email
+    type: usage
+    metric: emails
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1000
+    price: $0.12 per 1,000 emails
+    userMultiplied: false
+  - label: AI Credits
+    name: ai_credits
+    type: usage
+    metric: credits
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 100000
+    price: $10 per 100K credits
+    userMultiplied: false
+  elements:
+  - name: Track API
+  - name: App / Transactional API
+  - name: Pipelines / CDP API
+  - name: Visual Workflow Builder
+  - name: AI Agent (core skills)
+  - name: Basic Data Integrations
+  price_text: starts at $ 100 per month
+  price: 100
+- id: customerio-premium
+  name: Premium
+  type: subscription
+  description: Higher tier starting at $1,000/month (billed yearly) with everything in Essentials plus more object types, elevated AI Agent limits with custom skills, Daily Routines, premium support with onboarding, HIPAA compliance, and premium data integrations. Profile and email volume are custom.
+  entries:
+  - label: Base Subscription
+    name: base_subscription
+    type: flat
+    metric: subscription
+    limit: 1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: from $1,000/month (billed yearly)
+    userMultiplied: false
+  - label: Included Profiles
+    name: included_profiles
+    type: included
+    metric: profiles
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: custom volume
+    userMultiplied: false
+  - label: Included Email Volume
+    name: included_email
+    type: included
+    metric: emails
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: custom volume
+    userMultiplied: false
+  elements:
+  - name: Everything in Essentials
+  - name: 10 Object Types
+  - name: AI Agent (custom skills)
+  - name: Daily Routines
+  - name: HIPAA Compliance
+  - name: Premium Data Integrations
+  - name: Premium Support
+  price_text: starts at $ 1,000 per month
+  price: 1000
+- id: customerio-enterprise
+  name: Enterprise
+  type: enterprise
+  description: Custom pricing for organizations requiring dedicated infrastructure, advanced security and compliance, and dedicated support. Contact Customer.io sales.
+  entries:
+  - label: Enterprise Agreement
+    name: enterprise
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: contact sales
+    userMultiplied: false
+  elements:
+  - name: Dedicated Infrastructure
+  - name: Custom Volume Pricing
+  - name: Dedicated Support
+  price_text: Let's talk
+  price: Contact sales
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
+x-ported-from: customerio
+x-ported: '2026-08-04'
+x-ported-note: Carried over from the retired duplicate `customerio` during the duplicate-provider merge. Content unchanged; provider identity repointed.
+delivery:
+  delivery: managed
+audience: business-product
+pricing_basis: tiered-subscription
+published: true
+note: '2026-10-12: Builder tier removed — it no longer appears on customer.io/pricing and docs.customer.io/accounts/billing/builder-plan.md now returns 404. Premium is billed yearly per the page.'
+x-canonical:
+  generated: '2026-11-01'
+  vocabulary: engine/economics/plans-canonical.yml
+  models:
+  - subscription
+  units:
+  - credit
+  - message
+  - negotiated
+  - period
+  plans:
+  - name: Essentials
+    access: other
+    model: subscription
+    model_how: stated
+    units:
+    - credit
+    - message
+    - other
+    - period
+    periods:
+    - month
+  - name: Premium
+    access: other
+    model: subscription
+    model_how: stated
+    units:
+    - message
+    - other
+    - period
+    periods:
+    - month
+  - name: Enterprise
+    access: enterprise
+    model: subscription
+    model_how: derived
+    units:
+    - negotiated
+    periods:
+    - year

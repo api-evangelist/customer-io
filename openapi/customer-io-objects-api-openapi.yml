@@ -1,0 +1,601 @@
+openapi: 3.2.0
+info:
+  version: 1.0.0
+  title: Customer.io Journeys API Reference Objects API
+  description: Customer.io provides REST APIs to send real-time customer data, retrieve data from your account, and trigger messages.
+servers:
+- url: https://track.customer.io
+  description: The base URL for the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+- url: https://track-eu.customer.io
+  description: The base URL for the Track API (EU region). Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+- url: https://api.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+- url: https://api-eu.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+tags:
+- name: Objects
+  x-displayName: Objects
+  description: Objects are "groups" that you can relate people to in Customer.io—like the companies they work for, the online classes they take, and so on. These APIs help you find objects, their attributes, the people they're related to, etc. Use the track API v1 or the Track v2 API to add and relate people to objects to your workspace and assign their attributes.
+paths:
+  /v1/object_types:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    get:
+      operationId: getObjectTypes
+      summary: List object types
+      security:
+      - Bearer-Auth: []
+      description: Returns a list of object types in your system. Because each object type is an incrementing ID, you may need to use this endpoint to find the ID of the object type you want to query, create, or modify.
+      tags:
+      - Objects
+      responses:
+        '200':
+          description: Returns an array of `types`.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  types:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: The `object_type_id` that you'll use with the Journeys Track API to create or modify objects. Object type IDs are integers passed as strings.
+                        name:
+                          type: string
+                          description: The name of the object type.
+                        singular_name:
+                          type: string
+                          description: The singular name of the object type.
+                        slug:
+                          type: string
+                          description: The slug of the page in the Customer.io UI for the object type.
+                        singular_slug:
+                          type: string
+                          description: The singular slug of the page in the Customer.io UI for the object type.
+                        enabled:
+                          type: boolean
+                          description: If true, the object type is enabled.
+                        icon:
+                          type: string
+                          description: The name of the icon or emoji that represents the object type in the Customer.io UI. Most commonly, you'll see this in the left-side navigation panel in Journeys.
+                      example:
+                        enabled: true
+                        icon: calendar
+                        id: '1'
+                        name: Concerts
+                        singular_name: Concert
+                        singular_slug: concert
+                        slug: concerts
+        '401':
+          $ref: '#/components/responses/401'
+        '429':
+          $ref: '#/components/responses/429'
+  /v1/objects:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    post:
+      parameters:
+      - $ref: '#/components/parameters/start'
+      - $ref: '#/components/parameters/limit'
+      operationId: getObjectsFilter
+      summary: Find objects
+      security:
+      - Bearer-Auth: []
+      description: 'Use a set of filter conditions to find objects in your workspace. Returns a list of object IDs that you can use to look up object attributes, or to create or modify objects.
+
+
+        The list is paged if you have a large number of objects. You can set the `limit` for the number of objects returned, and use the `start` to page through the results. It''s possible that you''ll see duplicate entries across pages. If you want to export objects or relationships, you may want to use the export feature in our UI to return complete results.'
+      tags:
+      - Objects
+      requestBody:
+        description: The `object_type_id` you want to search in, and the `filter` you want to apply to find objects. Both are required. The object called `object_attribute` requires `type_id`, as well, which should match the `object_type_id`.
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - object_type_id
+              - filter
+              properties:
+                object_type_id:
+                  type: string
+                  description: The type of object you want to search in. Object type IDs are integers passed as strings.
+                  example: '1'
+                filter:
+                  $ref: '#/components/schemas/objectFilter'
+            example:
+              object_type_id: '1'
+              filter:
+                and:
+                - object_attribute:
+                    field: name
+                    operator: exists
+                    type_id: '1'
+                - not:
+                    object_attribute:
+                      field: name
+                      operator: eq
+                      value: acme corp
+                      type_id: '1'
+      responses:
+        '200':
+          description: Returns arrays of `identifiers` and `ids`.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  identifiers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        cio_object_id:
+                          type: string
+                          description: The canonical, immutable identifier for the object, assigned by Customer.io.
+                          example: ob020101
+                        object_id:
+                          type: string
+                          description: The ID of the object, assigned by you or your systems.
+                          example: ae3000
+                  ids:
+                    type: array
+                    description: A list of object IDs matching the object_type_id and filter in the request. Items are the same as the `object_id` values under `identifiers`, but this array may be easier to search/sort through if you have a large number of objects and don't need to to use the `cio_object_id`.
+                    items:
+                      type: string
+                    example:
+                    - ae3000
+                  next:
+                    $ref: '#/components/schemas/next'
+        '401':
+          $ref: '#/components/responses/401'
+        '429':
+          $ref: '#/components/responses/429'
+  /v1/objects/{object_type_id}/{object_id}/relationships:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    get:
+      parameters:
+      - $ref: '#/components/parameters/object_type_id'
+      - $ref: '#/components/parameters/object_id'
+      - $ref: '#/components/parameters/start'
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/object_id_type'
+      operationId: getObjectRelationships
+      summary: Get Object Relationships
+      security:
+      - Bearer-Auth: []
+      description: 'Get a list of people people related to an object.
+
+
+        You can use the `start` parameter with the `next` property in responses to return pages of results. However, it''s possible that you''ll see duplicate entries across pages. If you want to export objects or relationships, you may want to use the export feature in our UI to return complete results.'
+      tags:
+      - Objects
+      responses:
+        '200':
+          description: Returns an array of `cio_relationships`. Each object in the array represents a person related to the object specified in the endpoint path.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cio_relationships:
+                    type: array
+                    description: A list of people related to the object specified in the endpoint path.
+                    items:
+                      type: object
+                      properties:
+                        identifiers:
+                          description: Identifies an individual person.
+                          type: object
+                          properties:
+                            cio_id:
+                              $ref: '#/components/schemas/cio_id'
+                            id:
+                              $ref: '#/components/schemas/customer_id'
+                            email:
+                              $ref: '#/components/schemas/email_address'
+                        object_type_id:
+                          $ref: '#/components/schemas/object_type_id'
+                        object_type_disabled:
+                          type: boolean
+                          description: If true, the object is disabled.
+                      example:
+                      - identifiers:
+                          cio_id: ob020101
+                          id: acmeInc
+                        object_type_id: '1'
+                        object_type_disabled: false
+                  next:
+                    $ref: '#/components/schemas/next'
+        '401':
+          $ref: '#/components/responses/401'
+        '429':
+          $ref: '#/components/responses/429'
+  /v1/objects/{object_type_id}/{object_id}/attributes:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    get:
+      parameters:
+      - $ref: '#/components/parameters/object_type_id'
+      - $ref: '#/components/parameters/object_id'
+      - $ref: '#/components/parameters/object_id_type'
+      operationId: getObjectAttributes
+      summary: Get Object Attributes
+      security:
+      - Bearer-Auth: []
+      description: Get a list of attributes for an object. Attributes are things you know about an object—like an account name, billing date, etc.
+      tags:
+      - Objects
+      responses:
+        '200':
+          description: Returns information about the attributes for the `object` specified in the endpoint path.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  object:
+                    type: object
+                    description: The object specified in the endpoint path
+                    properties:
+                      attributes:
+                        type: object
+                        description: Attributes assigned to this object.
+                        additionalProperties:
+                          x-additionalPropertiesName: Object Attributes
+                      timestamps:
+                        type: object
+                        description: The epoch timestamps when corresponding attributes were set on the object.
+                        additionalProperties:
+                          type: integer
+                          format: unix timestamp
+                          x-additionalPropertiesName: Object Attribute Timestamps
+                      identifiers:
+                        description: Identifies an object.
+                        type: object
+                        properties:
+                          cio_object_id:
+                            $ref: '#/components/schemas/cio_id'
+                          id:
+                            $ref: '#/components/schemas/customer_id'
+                          email:
+                            $ref: '#/components/schemas/email_address'
+                      object_type_id:
+                        $ref: '#/components/schemas/object_type_id'
+        '401':
+          $ref: '#/components/responses/401'
+        '429':
+          $ref: '#/components/responses/429'
+components:
+  parameters:
+    object_id:
+      name: object_id
+      description: The `object_id` or `cio_object_id` of an object, depending on the `id_type` specified in query params. `id_type` defaults to `object_id`.
+      in: path
+      required: true
+      schema:
+        type: string
+        example: abc123
+    object_id_type:
+      name: id_type
+      required: false
+      in: query
+      schema:
+        type: string
+        enum:
+        - object_id
+        - cio_object_id
+        default: object_id
+    object_type_id:
+      name: object_type_id
+      description: The object type an object belongs to—like "Companies" or "Accounts". Object type IDs begin at `1` and increment for each new type.
+      in: path
+      required: true
+      schema:
+        type: integer
+        example: 1
+    start:
+      name: start
+      in: query
+      required: false
+      description: The token for the page of results you want to return. Responses contain a `next` property. Use this property as the `start` value to return the next page of results.
+      schema:
+        type: string
+    limit:
+      name: limit
+      in: query
+      required: false
+      description: The maximum number of results you want to retrieve per page.
+      schema:
+        type: integer
+  schemas:
+    customer_id:
+      x-scalar-ignore: true
+      type:
+      - string
+      - 'null'
+      description: The ID of a customer profile, analogous to a "person" in the UI. If your workspace supports multiple identifiers (email and ID), this value can be null.
+      example: '42'
+    cio_id:
+      x-scalar-ignore: true
+      type: string
+      description: A unique identifier set by Customer.io, used to reference a person if you want to update their identifiers.
+      example: a3000001
+    objectattributeFilter:
+      x-scalar-ignore: true
+      title: object attribute
+      description: Filter your objects by their attributes.
+      type: object
+      required:
+      - field
+      - operator
+      - type_id
+      properties:
+        field:
+          type: string
+          description: The name of the attribute you want to filter against.
+          example: location
+        operator:
+          type: string
+          description: Determine how to evaluate criteria against the field—`exists` returns results if an object has the attribute; `eq` returns results an object's attribute exists and the attribute has the `value` you specify.
+          enum:
+          - eq
+          - exists
+        value:
+          type: string
+          description: The value you want to match for this attribute. You must include a value if you use the `eq` operator.
+        type_id:
+          $ref: '#/components/schemas/object_type_id'
+      example:
+        field: cancelled
+        operator: eq
+        value: true
+        type_id: 1
+    objectFilter:
+      x-scalar-ignore: true
+      title: Object Filter
+      description: Use `and`, `or`, and `not` to combine object attribute conditions. The top-level object accepts one property; nest groups for complex filters.
+      oneOf:
+      - $ref: '#/components/schemas/objectFilterAnd'
+      - $ref: '#/components/schemas/objectFilterOr'
+      - $ref: '#/components/schemas/objectFilterNot'
+      - title: object attribute
+        type: object
+        description: A simple filter to find objects matching an attribute condition.
+        properties:
+          object_attribute:
+            $ref: '#/components/schemas/objectattributeFilter'
+    appApiError:
+      x-scalar-ignore: true
+      type: object
+      description: An array/list of failures where each entry is a separate failure reason.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: One entry for each reason the request failed.
+          items:
+            type: object
+            required:
+            - detail
+            - status
+            properties:
+              detail:
+                type: string
+                description: What went wrong, in plain text. Most messages end with a support reference you can use if you need to contact support.
+                example: bad request (reference a1b2c3)
+              status:
+                type: string
+                description: The HTTP status code as a string.
+                example: '400'
+              code:
+                type: string
+                description: A stable identifier for the failure, on the errors that carry one. Use this rather than the text in `detail` if you need to identify the error programmatically.
+                example: invalid_credentials
+              source:
+                type: object
+                description: The part of the request that the error refers to.
+                properties:
+                  pointer:
+                    type: string
+                    description: A JSON pointer to the part of the request body that the error refers to.
+                    example: /data/attributes/email
+              meta:
+                type: object
+                additionalProperties: true
+                description: Extra context (if available).
+    objectFilterOr:
+      x-scalar-ignore: true
+      title: or
+      type: object
+      properties:
+        or:
+          type: array
+          description: Match *any* condition to return results.
+          items:
+            type: object
+            properties:
+              object_attribute:
+                $ref: '#/components/schemas/objectattributeFilter'
+    objectFilterAnd:
+      x-scalar-ignore: true
+      title: and
+      type: object
+      properties:
+        and:
+          type: array
+          description: Match *all* conditions to return results.
+          items:
+            type: object
+            properties:
+              object_attribute:
+                $ref: '#/components/schemas/objectattributeFilter'
+    objectFilterNot:
+      x-scalar-ignore: true
+      title: not
+      type: object
+      properties:
+        not:
+          type: object
+          description: Returns results if a condition is false. While and/or support an array of items, `not` supports a single condition.
+          properties:
+            object_attribute:
+              $ref: '#/components/schemas/objectattributeFilter'
+    object_type_id:
+      x-scalar-ignore: true
+      type: string
+      description: The object type an object belongs to—like "Companies" or "Accounts". Object type IDs are string-formatted integers that begin at `1` and increment for each new type.
+      example: '1'
+    next:
+      x-scalar-ignore: true
+      type: string
+      description: Indicates the next page of results. Add `?start=<next_value>` to the request to get the next page of results.
+    email_address:
+      x-scalar-ignore: true
+      type:
+      - string
+      - 'null'
+      description: The email address of the customer.
+      example: test@example.com
+  headers:
+    Retry-After:
+      description: How many seconds you must wait before you send another request. This header is present when you are rate limited by a per-second limit. If you hit a daily quota, this header is not set.
+      schema:
+        type: integer
+        minimum: 1
+        example: 1
+  responses:
+    '429':
+      description: Your request is over the 10-per-second limit. `Retry-After` tells you how many seconds you must wait before you send the next request.
+      headers:
+        Retry-After:
+          $ref: '#/components/headers/Retry-After'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/appApiError'
+          example:
+            errors:
+            - detail: rate limited to 10 requests per 1s (reference a1b2c3)
+              status: '429'
+    '401':
+      description: Unauthorized request. Make sure that you provided the right credentials.
+  securitySchemes:
+    Tracking-API-Key:
+      type: http
+      scheme: basic
+      description: 'The Track API uses a basic authentication scheme. Your credentials are your **Site ID** and your **API key**, **Base-64 encoded** in the format `site_id:api_key`.
+
+
+        You can find your Site ID and API key on the [Track API Keys page](https://fly.customer.io/settings/api_credentials).
+
+        '
+    Bearer-Auth:
+      type: http
+      scheme: bearer
+      description: 'The App API uses a bearer authentication scheme.
+
+
+        You can generate a bearer token, known as an **App API Key**, with a defined scope in [your account settings](https://fly.customer.io/settings/api_credentials?keyType=app). [Learn more about bearer authorization in Customer.io](/accounts/settings/managing-credentials).
+
+        '
+    ServiceAccount-Auth:
+      x-scalar-ignore: true
+      type: http
+      scheme: bearer
+      bearerFormat: sa_live_
+      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/whatsapp`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
+
+
+        Service-account tokens are intended for testing and one-off sends—for example, using the Customer.io CLI with an AI agent like Claude to verify that a transactional message renders correctly before wiring it into your production backend. **For the production integration that triggers the message from your application, use an App API Key instead**: it''s workspace-scoped, easier to rotate, and has a smaller blast radius.
+
+
+        Service-account tokens are server-side credentials. Treat them like any API key—keep them in environment variables or a secret manager, and never embed them in client-side code, mobile apps, or other untrusted contexts.
+
+        '
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: API key passed as a Bearer token.
+x-tagGroups:
+- name: Track API v2
+  tags:
+  - track_v2
+  - Object Schemas
+  - Person Schemas
+  - Deliveries
+- name: Track API
+  tags:
+  - trackOverview
+  - trackJsOrBackend
+  - trackLimit
+  - trackRegion
+  - Track Customers
+  - Track Events
+  - Forms
+  - Track Segments
+  - Track v1 Overview
+- name: App API
+  tags:
+  - appOverview
+  - appLimit
+  - appAuth
+  - Activities
+  - Automations
+  - Broadcasts
+  - Collections
+  - Customers
+  - Data Index
+  - ESP Suppression
+  - Exports
+  - Imports
+  - Info
+  - Live Notifications
+  - Messages
+  - Newsletters
+  - Opt-outs
+  - Reporting Webhooks
+  - Segments
+  - Sender Identities
+  - Snippets
+  - Subscription Center
+  - Transactional
+  - Workspaces
+  - Send Messages
+  - Objects
+  - Newsletter Variants
+  - Newsletter Metrics
+  - Assets
+- name: Design Studio API
+  tags:
+  - Folders
+  - Components
+  - Emails
+  - Email link and publish
+  - Email testing
+  - SMS
+  - SMS link and publish
+x-provenance:
+  method: harvested
+  publisher: Customer.io
+  source: https://docs.customer.io/openapi.yaml
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)

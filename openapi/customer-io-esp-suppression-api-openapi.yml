@@ -1,0 +1,448 @@
+openapi: 3.2.0
+info:
+  version: 1.0.0
+  title: Customer.io Journeys API Reference ESP Suppression API
+  description: Customer.io provides REST APIs to send real-time customer data, retrieve data from your account, and trigger messages.
+servers:
+- url: https://track.customer.io
+  description: The base URL for the Track API. Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+- url: https://track-eu.customer.io
+  description: The base URL for the Track API (EU region). Track endpoints use basic authentication with your Site ID as the user name and your secret key as the password.
+- url: https://api.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+- url: https://api-eu.customer.io
+  description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+tags:
+- name: ESP Suppression
+  description: 'If you use Customer.io as your email service provider (ESP), these endpoints help you retrieve information about email addresses suppressed directly by the ESP. ESP-based suppressions are different from suppression in Customer.io: these are addresses that the ESP suppressed automatically because a message bounced, a customer requested they not be contacted again, etc. These are _not_ addresses that you deleted and suppressed either in our UI or through the API.'
+paths:
+  /v1/esp/search_suppression/{email_address}:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - name: email_address
+      in: path
+      required: true
+      description: The email address of the person you want to look up.
+      schema:
+        type: string
+    get:
+      summary: Look up an ESP-suppressed address
+      operationId: getSuppression
+      security:
+      - Bearer-Auth: []
+      description: Look up an email address to learn if, and why, it was suppressed by the email service provider (ESP).
+      tags:
+      - ESP Suppression
+      responses:
+        '200':
+          description: Returns an array of suppressed email addresses.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/esp_suppression'
+        '429':
+          $ref: '#/components/responses/429'
+  /v1/esp/suppression/{suppression_type}:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - $ref: '#/components/parameters/suppression_type'
+    - $ref: '#/components/parameters/limit-100-1000'
+    - $ref: '#/components/parameters/offset'
+    - name: domain
+      in: query
+      required: false
+      description: Filter by sending domain.
+      schema:
+        type: string
+        example: mail.example.com
+    get:
+      summary: Get ESP-suppressed emails by type
+      operationId: getSuppressionByType
+      security:
+      - Bearer-Auth: []
+      description: 'Find addresses suppressed by the Email Service Provider (ESP) for a particular reason—bounces, blocks, spam reports, or invalid email addresses.
+
+
+        You can get up to 1000 addresses per request. Use the `offset` parameter to get addresses beyond the first 1000.
+
+
+        If you have multiple sending domains, we recommend querying for each domain separately, as an email address may be suppressed on multiple domains.
+
+
+        **Note**: If you have a large number of suppressions, consider using the Get ESP-suppressed emails by domain endpoint. It''s more performant for large datasets.'
+      tags:
+      - ESP Suppression
+      responses:
+        '200':
+          description: Returns an array of suppressed email addresses.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/esp_suppression'
+        '429':
+          $ref: '#/components/responses/429'
+  /v1/esp/domains/{domain_name}/suppression/{suppression_type}:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - name: domain_name
+      in: path
+      required: true
+      description: The sending domain you want to look up suppressions for.
+      schema:
+        type: string
+        example: mail.example.com
+    - $ref: '#/components/parameters/suppression_type'
+    get:
+      summary: Get ESP-suppressed emails by domain
+      operationId: getDomainSuppressionsByType
+      security:
+      - Bearer-Auth: []
+      description: 'Find addresses suppressed by the Email Service Provider (ESP) for a particular reason on a specific sending domain.
+
+
+        You can get up to 1000 addresses per request. Use the `start` parameter with the `next` value from the previous response to paginate through results.'
+      tags:
+      - ESP Suppression
+      parameters:
+      - $ref: '#/components/parameters/limit-100-1000'
+      - $ref: '#/components/parameters/start'
+      - name: email
+        in: query
+        required: false
+        description: Filter results to a specific email address. When provided, returns at most one result and cursor-based pagination does not apply.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns an array of suppressed email addresses for the domain.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  category:
+                    type: string
+                    description: The reason the addresses are suppressed.
+                    enum:
+                    - bounces
+                    - spam
+                    example: bounces
+                  suppressions:
+                    type: array
+                    description: The addresses suppressed in this category.
+                    items:
+                      type: object
+                      properties:
+                        created:
+                          type: integer
+                          format: Unix timestamp
+                          description: The timestamp (in seconds), when the ESP suppressed the address.
+                          example: 1650895738
+                        email:
+                          type: string
+                          description: The email address that the ESP suppressed.
+                          example: bounced.person@example.com
+                        reason:
+                          type: string
+                          description: The reason for the suppression, as [recorded by Mailgun](https://documentation.mailgun.com/en/latest/api-suppressions.html).
+                          example: Uploaded manually via api.customer.io
+                        status:
+                          type: string
+                          description: The status code for the suppression, as [recorded by mailgun](https://documentation.mailgun.com/en/latest/api-suppressions.html). This is normally `550`.
+                          example: '550'
+                  next:
+                    type: string
+                    description: The `start` value for the next page of results.
+        '429':
+          $ref: '#/components/responses/429'
+  /v1/esp/suppression/{suppression_type}/{email_address}:
+    servers:
+    - url: https://api.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs. These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    - url: https://api-eu.customer.io
+      description: The base URL for broadcasts, transactional messages, and data-retrieval APIs (EU region). These endpoints use bearer authorization, and require a [token that you generate in the UI](https://fly.customer.io/settings/api_credentials?keyType=app).
+    parameters:
+    - $ref: '#/components/parameters/suppression_type'
+    - name: email_address
+      in: path
+      required: true
+      description: The email address of the person you want to look up.
+      schema:
+        type: string
+    delete:
+      summary: Un-suppress an ESP-suppressed address
+      operationId: deleteSuppression
+      security:
+      - Bearer-Auth: []
+      description: Remove an address from the ESP's suppression list.
+      tags:
+      - ESP Suppression
+      responses:
+        '204':
+          description: A successful request produces no content.
+        '429':
+          $ref: '#/components/responses/429'
+    post:
+      summary: Suppress an email at the ESP
+      operationId: postSuppression
+      security:
+      - Bearer-Auth: []
+      description: Suppress an email address at the email service provider (ESP). Addresses suppressed this way are only suppressed through the ESP; these adresses are _not_ suppressed in Customer.io, so the person can remain in your workspace (though emails to the address would be blocked at the ESP).
+      tags:
+      - ESP Suppression
+      responses:
+        '200':
+          description: A successful request produces an empty response.
+          content:
+            application/json:
+              schema:
+                type: object
+        '429':
+          $ref: '#/components/responses/429'
+components:
+  schemas:
+    appApiError:
+      x-scalar-ignore: true
+      type: object
+      description: An array/list of failures where each entry is a separate failure reason.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: One entry for each reason the request failed.
+          items:
+            type: object
+            required:
+            - detail
+            - status
+            properties:
+              detail:
+                type: string
+                description: What went wrong, in plain text. Most messages end with a support reference you can use if you need to contact support.
+                example: bad request (reference a1b2c3)
+              status:
+                type: string
+                description: The HTTP status code as a string.
+                example: '400'
+              code:
+                type: string
+                description: A stable identifier for the failure, on the errors that carry one. Use this rather than the text in `detail` if you need to identify the error programmatically.
+                example: invalid_credentials
+              source:
+                type: object
+                description: The part of the request that the error refers to.
+                properties:
+                  pointer:
+                    type: string
+                    description: A JSON pointer to the part of the request body that the error refers to.
+                    example: /data/attributes/email
+              meta:
+                type: object
+                additionalProperties: true
+                description: Extra context (if available).
+    esp_suppression:
+      x-scalar-ignore: true
+      type: object
+      properties:
+        category:
+          type: string
+          description: The reason the addresses are suppressed.
+          enum:
+          - bounces
+          - spam
+          example: bounces
+        suppressions:
+          type: array
+          description: The addresses suppressed in this category.
+          items:
+            type: object
+            properties:
+              created:
+                type: integer
+                format: Unix timestamp
+                description: The timestamp (in seconds), when the ESP suppressed the address.
+                example: 1650895738
+              email:
+                type: string
+                description: The email address that the ESP suppressed.
+                example: bounced.person@example.com
+              reason:
+                type: string
+                description: The reason for the suppression, as [recorded by Mailgun](https://documentation.mailgun.com/en/latest/api-suppressions.html).
+                example: Uploaded manually via api.customer.io
+              status:
+                type: string
+                description: The status code for the suppression, as [recorded by mailgun](https://documentation.mailgun.com/en/latest/api-suppressions.html). This is normally `550`.
+                example: '550'
+  parameters:
+    suppression_type:
+      name: suppression_type
+      description: The reason a person's email address was suppressed by the email service provider (ESP).
+      in: path
+      required: true
+      schema:
+        type: string
+        enum:
+        - blocks
+        - bounces
+        - spam_reports
+        - invalid_emails
+    limit-100-1000:
+      name: limit
+      in: query
+      required: false
+      description: The maximum number of results you want to retrieve per page.
+      schema:
+        type: integer
+        default: 100
+        maximum: 1000
+    offset:
+      name: offset
+      in: query
+      required: false
+      description: The number of records to skip before retrieving results.
+      schema:
+        type: integer
+        default: 0
+    start:
+      name: start
+      in: query
+      required: false
+      description: The token for the page of results you want to return. Responses contain a `next` property. Use this property as the `start` value to return the next page of results.
+      schema:
+        type: string
+  responses:
+    '429':
+      description: Your request is over the 10-per-second limit. `Retry-After` tells you how many seconds you must wait before you send the next request.
+      headers:
+        Retry-After:
+          $ref: '#/components/headers/Retry-After'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/appApiError'
+          example:
+            errors:
+            - detail: rate limited to 10 requests per 1s (reference a1b2c3)
+              status: '429'
+  headers:
+    Retry-After:
+      description: How many seconds you must wait before you send another request. This header is present when you are rate limited by a per-second limit. If you hit a daily quota, this header is not set.
+      schema:
+        type: integer
+        minimum: 1
+        example: 1
+  securitySchemes:
+    Tracking-API-Key:
+      type: http
+      scheme: basic
+      description: 'The Track API uses a basic authentication scheme. Your credentials are your **Site ID** and your **API key**, **Base-64 encoded** in the format `site_id:api_key`.
+
+
+        You can find your Site ID and API key on the [Track API Keys page](https://fly.customer.io/settings/api_credentials).
+
+        '
+    Bearer-Auth:
+      type: http
+      scheme: bearer
+      description: 'The App API uses a bearer authentication scheme.
+
+
+        You can generate a bearer token, known as an **App API Key**, with a defined scope in [your account settings](https://fly.customer.io/settings/api_credentials?keyType=app). [Learn more about bearer authorization in Customer.io](/accounts/settings/managing-credentials).
+
+        '
+    ServiceAccount-Auth:
+      x-scalar-ignore: true
+      type: http
+      scheme: bearer
+      bearerFormat: sa_live_
+      description: 'Transactional send endpoints (`/v1/send/email`, `/v1/send/push`, `/v1/send/sms`, `/v1/send/whatsapp`, `/v1/send/in_app`, `/v1/send/inbox_message`) also accept a service-account bearer token, prefixed with `sa_live_`. Service-account tokens work across workspaces, so you must pass the target workspace as the `X-Workspace-Id` header on each request.
+
+
+        Service-account tokens are intended for testing and one-off sends—for example, using the Customer.io CLI with an AI agent like Claude to verify that a transactional message renders correctly before wiring it into your production backend. **For the production integration that triggers the message from your application, use an App API Key instead**: it''s workspace-scoped, easier to rotate, and has a smaller blast radius.
+
+
+        Service-account tokens are server-side credentials. Treat them like any API key—keep them in environment variables or a secret manager, and never embed them in client-side code, mobile apps, or other untrusted contexts.
+
+        '
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: API key passed as a Bearer token.
+x-tagGroups:
+- name: Track API v2
+  tags:
+  - track_v2
+  - Object Schemas
+  - Person Schemas
+  - Deliveries
+- name: Track API
+  tags:
+  - trackOverview
+  - trackJsOrBackend
+  - trackLimit
+  - trackRegion
+  - Track Customers
+  - Track Events
+  - Forms
+  - Track Segments
+  - Track v1 Overview
+- name: App API
+  tags:
+  - appOverview
+  - appLimit
+  - appAuth
+  - Activities
+  - Automations
+  - Broadcasts
+  - Collections
+  - Customers
+  - Data Index
+  - ESP Suppression
+  - Exports
+  - Imports
+  - Info
+  - Live Notifications
+  - Messages
+  - Newsletters
+  - Opt-outs
+  - Reporting Webhooks
+  - Segments
+  - Sender Identities
+  - Snippets
+  - Subscription Center
+  - Transactional
+  - Workspaces
+  - Send Messages
+  - Objects
+  - Newsletter Variants
+  - Newsletter Metrics
+  - Assets
+- name: Design Studio API
+  tags:
+  - Folders
+  - Components
+  - Emails
+  - Email link and publish
+  - Email testing
+  - SMS
+  - SMS link and publish
+x-provenance:
+  method: harvested
+  publisher: Customer.io
+  source: https://docs.customer.io/openapi.yaml
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
