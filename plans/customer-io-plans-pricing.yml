@@ -177,7 +177,7 @@ pricing_basis: tiered-subscription
 published: true
 note: '2026-10-12: Builder tier removed — it no longer appears on customer.io/pricing and docs.customer.io/accounts/billing/builder-plan.md now returns 404. Premium is billed yearly per the page.'
 x-canonical:
-  generated: '2026-11-02'
+  generated: '2026-11-06'
   vocabulary: engine/economics/plans-canonical.yml
   models:
   - subscription
